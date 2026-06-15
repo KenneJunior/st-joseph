@@ -149,7 +149,13 @@ main {
   border-radius: 4px;
 }
 .preloader-cross::before { width: 10px; height: 70px; left: 20px; top: 0; }
-.preloader-cross::after { width: 50px; height: 10px; left: 0; top: 30px; }
+
+  .preloader-cross::after {
+      width: 50px;
+      height: 10px;
+      left: 0;
+      top: 17px;
+  }
 @keyframes preloaderPulse {
   0%,100% { transform: scale(0.9); opacity: 0.7; }
   50% { transform: scale(1.1); opacity: 1; }
@@ -411,8 +417,8 @@ body.dark-mode .section-title { color: var(--text-light); }
    ============================================ */
 .stats-section {
   position: relative;
-  background: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1400') no-repeat center center/cover;
-  background-attachment: fixed; /* subtle parallax */
+  /* subtle parallax */
+  background: url('/assets/Students.jpeg') no-repeat fixed center center;
   z-index: 1;
 }
 .stats-section::before {
@@ -547,7 +553,8 @@ body.dark-mode .bg-image-section::before {
    ============================================ */
 .carousel-wrapper { position: relative; max-width: 900px; margin: 0 auto; }
 .carousel-container {
-  position: relative; height: 440px;
+  position: relative;
+  height: 850px;
   overflow: hidden; border-radius: var(--radius-xl);
   box-shadow: 0 20px 60px rgba(0,0,0,0.15);
 }
@@ -580,7 +587,9 @@ body.dark-mode .bg-image-section::before {
   font-size: 1rem; font-weight: 500; letter-spacing: 0.3px;
 }
 .carousel-btn {
-  position: absolute; top: 50%; transform: translateY(-50%);
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
   background: rgba(255,255,255,0.85);
   color: var(--primary);
   border: none; width: 48px; height: 48px;
@@ -769,7 +778,9 @@ footer p { margin-bottom: 8px; font-size: 0.9rem; line-height: 1.7; }
    RESPONSIVE ADJUSTMENTS
    ============================================ */
 @media (max-width: 1024px) {
-  .carousel-container { height: 350px; }
+  .carousel-container {
+    height: 650px;
+  }
   .carousel-btn.prev { left: 8px; } .carousel-btn.next { right: 8px; }
   .stats-row { grid-template-columns: repeat(2, 1fr); }
 }
@@ -791,7 +802,10 @@ footer p { margin-bottom: 8px; font-size: 0.9rem; line-height: 1.7; }
   #navMenu a { padding: 14px 20px; border-radius: var(--radius-sm); width: 100%; }
   .hero-content h1 { font-size: 2rem; }
   .hero-buttons { flex-direction: column; align-items: center; }
-  .carousel-container { height: 280px; }
+
+  .carousel-container {
+    height: 480px;
+  }
   .carousel-btn { width: 38px; height: 38px; font-size: 1rem; }
   .carousel-btn.prev { left: 4px; } .carousel-btn.next { right: 4px; }
   .section-padding { padding: 60px 20px; }
@@ -803,7 +817,10 @@ footer p { margin-bottom: 8px; font-size: 0.9rem; line-height: 1.7; }
 @media (max-width: 480px) {
   .hero-content h1 { font-size: 1.6rem; }
   .hero-subtitle { font-size: 0.95rem; }
-  .carousel-container { height: 220px; }
+
+  .carousel-container {
+    height: 450px;
+  }
   .grid-container { grid-template-columns: 1fr; }
   .stats-row { grid-template-columns: 1fr; }
   .footer-content { grid-template-columns: 1fr; gap: 30px; }
@@ -945,6 +962,26 @@ body.dark-mode .level--advanced .level__title::before { color: var(--accent-glow
   font-weight: bold;
 }
 body.dark-mode .level__subjects li { color: var(--text-body); }
+
+  .level--commercial .level__title {
+    color: #2c5f2d; /* deep green for commerce */
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .level--commercial .level__title::before {
+    content: "◆";
+    color: #2c5f2d;
+    font-size: 0.8rem;
+  }
+
+  body.dark-mode .level--commercial .level__title {
+    color: #81c784;
+  }
 
 /* ---------- Responsive behaviour ---------- */
 @media (max-width: 768px) {
@@ -1504,7 +1541,7 @@ body.dark-mode .event-card__download:hover {
 /* ---------- News & Events Background Image ---------- */
 .bg-image-news {
   position: relative;
-  background: url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1400') no-repeat center center/cover;
+  background: url('/assets/Campus.jpeg') no-repeat center center/cover;
   z-index: 1;
   color: #fff; /* will be overridden for inner text if needed */
 }
@@ -1622,3 +1659,40 @@ body.dark-mode #darkModeToggle .toggle-moon { display: none; }
 .d-none{
   display: none !important;
 }
+
+  /* Carousel image styling */
+  .carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* fills the container, crops if needed */
+    object-position: center; /* centers the image */
+    display: block;
+  }
+
+  /* If you had a .carousel-placeholder, remove or override it */
+  .carousel-placeholder {
+    display: none; /* no longer needed */
+  }
+
+  .carousel-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%; /* covers the bottom half */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    pointer-events: none; /* allows clicking through to buttons */
+    z-index: 1;
+  }
+
+  .carousel-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 28px;
+    z-index: 2; /* above the overlay */
+    background: none; /* remove solid background */
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  }
