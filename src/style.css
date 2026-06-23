@@ -169,13 +169,13 @@ main {
   top: 0; left: 0; width: 100%;
   z-index: 1000;
   padding: 16px 0;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   background: rgba(10,31,63,1);
   transition: background 0.4s ease, padding 0.3s ease, box-shadow 0.4s ease;
 }
 #mainHeader.scrolled {
   background: rgba(10,31,63,0.5);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   padding: 10px 0;
   box-shadow: 0 4px 30px rgba(0,0,0,0.25);
   border-bottom: 1px solid var(--border-light);
@@ -1071,6 +1071,7 @@ body.dark-mode .level__subjects li { color: var(--text-body); }
   font-weight: bold;
 }
 .stat-icon {
+  color: var(--accent);
   font-size: 2.2rem;
   margin-bottom: 8px;
   opacity: 0.85;
