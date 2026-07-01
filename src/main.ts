@@ -481,9 +481,11 @@ class EnquiryModal {
     private fab: HTMLButtonElement | null;
     private modal: HTMLElement | null;
     private closeBtn: HTMLButtonElement | null;
+    private pMan: HTMLAnchorElement | null;
 
-    constructor(fabId: string, modalId: string, closeBtnId: string) {
+    constructor(fabId: string, modalId: string, closeBtnId: string, pManId: string) {
         this.fab = document.getElementById(fabId) as HTMLButtonElement | null;
+        this.pMan = document.getElementById(pManId) as HTMLAnchorElement | null;
         this.modal = document.getElementById(modalId) as HTMLElement | null;
         this.closeBtn = document.getElementById(closeBtnId) as HTMLButtonElement | null;
         this.init();
@@ -491,6 +493,7 @@ class EnquiryModal {
 
     private init(): void {
         this.fab?.addEventListener('click', () => this.open());
+        this.pMan?.addEventListener('click', () => this.open());
         this.closeBtn?.addEventListener('click', () => this.close());
         this.modal?.addEventListener('click', (e: MouseEvent) => {
             if (e.target === this.modal) this.close();
@@ -656,7 +659,7 @@ class App {
         new ScrollSpy('#navMenu a.nav-link');
 
         // 13. Enquiry modal
-        new EnquiryModal('enquiryFab', 'enquiryModal', 'modalClose');
+        new EnquiryModal('enquiryFab', 'enquiryModal', 'modalClose', 'pMan');
 
         // 14. Enquiry form (Formspree)
         new EnquiryForm('enquiryForm', 'formStatus', 'submitBtn', 'whatsappRoutingToggle');

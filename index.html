@@ -296,7 +296,8 @@
             </li>
           </ul>
           <p class="event-card__extra">
-            <i class="bi bi-telephone-fill"></i> Please contact the <a href="#contact">Principal Office </a> with any
+            <i class="bi bi-telephone-fill"></i> Please contact the <a class="event-card__link" id="pMan">Principal
+            Office </a> with any
             questions.
           </p>
         </div>
@@ -554,12 +555,12 @@
 <!-- Enquiry Modal -->
 <div class="modal-overlay" id="enquiryModal" role="dialog" aria-modal="true" aria-labelledby="enquiryTitle" hidden>
   <div class="modal-content">
-      <button aria-label="Close enquiry form" class="modal-close" id="modalClose">
+    <button aria-label="Close enquiry form" class="modal-close" id="modalClose">
           <i class="bi bi-x-lg"></i>
       </button>
     <h2 id="enquiryTitle">Send Us an Enquiry</h2>
 
-      <form action="https://formspree.io/f/xnjkgpgg" data-whatsapp-phone="237672829014" id="enquiryForm" method="POST"
+    <form action="https://formspree.io/f/xnjkgpgg" data-whatsapp-phone="237672829014" id="enquiryForm" method="POST"
             novalidate>
       <div class="form-group">
         <label for="enqName">Your Name *</label>
@@ -578,12 +579,12 @@
 
           <div class="form-group form-toggle">
               <label class="switch-label" for="whatsappRoutingToggle">
-                  <input id="whatsappRoutingToggle" name="sendViaWhatsApp" type="checkbox">
+                <input id="whatsappRoutingToggle" name="sendViaWhatsApp" type="checkbox">
                   <span class="toggle-text">Send instantly via WhatsApp instead of Email</span>
               </label>
           </div>
 
-          <button class="btn btn-primary" id="submitBtn" type="submit">Send Message</button>
+      <button class="btn btn-primary" id="submitBtn" type="submit">Send Message</button>
       <p class="form-note" id="formStatus" aria-live="polite"></p>
     </form>
   </div>
