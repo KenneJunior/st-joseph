@@ -518,15 +518,18 @@ class EnquiryModal {
 }
 
 // --------------------------------------------
-class EnquiryForm {
-    private form: HTMLFormElement | null;
-    private status: HTMLElement | null;
-    private submitBtn: HTMLButtonElement | null;
+// --------------------------------------------
+class EnquiryForm { // Fixed missing '{'
+    private readonly form: HTMLFormElement | null;
+    private readonly status: HTMLElement | null;
+    private readonly submitBtn: HTMLButtonElement | null;
+    private whatsappToggle: HTMLInputElement | null;
 
-    constructor(formId: string, statusId: string, submitBtnId: string) {
+    constructor(formId: string, statusId: string, submitBtnId: string, whatsappToggleId: string) {
         this.form = document.getElementById(formId) as HTMLFormElement | null;
         this.status = document.getElementById(statusId) as HTMLElement | null;
         this.submitBtn = document.getElementById(submitBtnId) as HTMLButtonElement | null;
+        this.whatsappToggle = document.getElementById(whatsappToggleId) as HTMLInputElement | null;
         this.init();
     }
 
@@ -541,8 +544,40 @@ class EnquiryForm {
         this.status.textContent = '';
         this.status.className = 'form-note';
         this.submitBtn.disabled = true;
-        this.submitBtn.textContent = 'Sending…';
+        this.submitBtn.textContent = 'Processing…';
 
+        // 1. ROUTE VIA WHATSAPP IF TOGGLE IS TRUE
+        if (this.whatsappToggle?.checked) {
+            try {
+                const formData = new FormData(this.form);
+                let textMessage = "🏫 *SJCCC Mbengwi - New Website Enquiry*\n\n";
+
+                formData.forEach((value, key) => {
+                    // Quick string formatting for form labels
+                    const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    textMessage += `*${label}:* ${value}\n`;
+                });
+
+                // Tries to pull phone from a 'data-phone' attribute on the form, otherwise defaults to a template placeholder
+                const phoneNumber = this.form.getAttribute('data-whatsapp-phone') || '237672829014';
+                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(textMessage)}`;
+
+                window.open(whatsappUrl, '_blank');
+
+                this.status.textContent = '✅ Opening WhatsApp to send your message...';
+                this.status.className = 'form-note success';
+                this.form.reset();
+            } catch (err) {
+                this.status.textContent = '⚠️ Could not generate WhatsApp link. Please try standard email.';
+                this.status.className = 'form-note error';
+            } finally {
+                this.submitBtn.disabled = false;
+                this.submitBtn.textContent = 'Send Message';
+            }
+            return;
+        }
+
+        // 2. FALLBACK TO FORMSPREE IF TOGGLE IS FALSE
         try {
             const response = await fetch(this.form.action, {
                 method: 'POST',
@@ -568,7 +603,6 @@ class EnquiryForm {
         }
     }
 }
-
 // ============================================
 // APPLICATION BOOTSTRAP
 // ============================================
@@ -621,7 +655,7 @@ class App {
         new EnquiryModal('enquiryFab', 'enquiryModal', 'modalClose');
 
         // 14. Enquiry form (Formspree)
-        new EnquiryForm('enquiryForm', 'formStatus', 'submitBtn');
+        new EnquiryForm('enquiryForm', 'formStatus', 'submitBtn', 'whatsappRoutingToggle');
     }
 }
 
