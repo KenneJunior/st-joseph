@@ -554,27 +554,40 @@
 <!-- Enquiry Modal -->
 <div class="modal-overlay" id="enquiryModal" role="dialog" aria-modal="true" aria-labelledby="enquiryTitle" hidden>
   <div class="modal-content">
-    <button class="modal-close" id="modalClose" aria-label="Close enquiry form"><i class="bi bi-x-lg"></i></button>
+      <button aria-label="Close enquiry form" class="modal-close" id="modalClose">
+          <i class="bi bi-x-lg"></i>
+      </button>
     <h2 id="enquiryTitle">Send Us an Enquiry</h2>
-    <form id="enquiryForm" action="https://formspree.io/f/xgobrywy" method="POST" novalidate>
+
+      <form action="https://formspree.io/f/xnjkgpgg" data-whatsapp-phone="237672829014" id="enquiryForm" method="POST"
+            novalidate>
       <div class="form-group">
         <label for="enqName">Your Name *</label>
         <input type="text" id="enqName" name="name" required placeholder="e.g. John N.">
       </div>
+
       <div class="form-group">
         <label for="enqEmail">Your Email *</label>
         <input type="email" id="enqEmail" name="email" required placeholder="you@email.com">
       </div>
-      <div class="form-group">
+
+          <div class="form-group">
         <label for="enqMessage">Message *</label>
         <textarea id="enqMessage" name="message" rows="4" required placeholder="How can we help you?"></textarea>
       </div>
-      <button type="submit" class="btn btn-primary" id="submitBtn">Send Message</button>
+
+          <div class="form-group form-toggle">
+              <label class="switch-label" for="whatsappRoutingToggle">
+                  <input id="whatsappRoutingToggle" name="sendViaWhatsApp" type="checkbox">
+                  <span class="toggle-text">Send instantly via WhatsApp instead of Email</span>
+              </label>
+          </div>
+
+          <button class="btn btn-primary" id="submitBtn" type="submit">Send Message</button>
       <p class="form-note" id="formStatus" aria-live="polite"></p>
     </form>
   </div>
 </div>
-
 <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
