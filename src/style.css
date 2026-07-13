@@ -458,12 +458,12 @@ body.dark-mode .stat-card {
   content: '';
   position: absolute; top: 0; left: 50%;
   transform: translateX(-50%);
-  width: 40px; height: 3px;
+  width: 80px; height: 3px;
   background: var(--gold-gradient);
   border-radius: 0 0 3px 3px;
   transition: width 0.4s ease;
 }
-.stat-card:hover::before { width: 80px; }
+.stat-card:hover::before { width: 200px; }
 .stat-card:hover { transform: translateY(-6px); box-shadow: var(--card-shadow-hover); }
 .stat-number {
   font-family: var(--font-heading);
@@ -472,7 +472,7 @@ body.dark-mode .stat-card {
 }
 body.dark-mode .stat-number { color: var(--accent-glow); }
 .stat-label {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   color: var(--text-dark);
   font-weight: 500; letter-spacing: 0.5px;
 }
@@ -828,7 +828,7 @@ footer p { margin-bottom: 8px; font-size: 0.9rem; line-height: 1.7; }
   .stats-row { grid-template-columns: 1fr; }
   .footer-content { grid-template-columns: 1fr; gap: 30px; }
   .logo-text { font-size: 1.75rem; }
-  .logo-icon { width: 36px; height: 36px; font-size: 1.1rem; }
+  .logo-icon { width: 56px; height: 96px; font-size: 1.1rem; }
 }
 /* ============================================
    ACADEMICS SECTION – TWO‑PILLAR GRID
@@ -1075,7 +1075,7 @@ body.dark-mode .level__subjects li { color: var(--text-body); }
 }
 .stat-icon {
   color: var(--accent);
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   margin-bottom: 8px;
   opacity: 0.85;
 }
@@ -1799,4 +1799,8 @@ body.dark-mode #darkModeToggle .toggle-moon { display: none; }
   .form-group input#whatsappRoutingToggle:focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.35);
+  }
+  .email{
+    color: var(--text-body);
+    text-decoration: underline;
   }
