@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SAJOCO | Official Prospectus 2026/2027</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #e9e7e0 0%, #d4cfc4 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2.5rem 1rem;
+      font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+    }
+
+    .prospectus-container {
+      max-width: 1200px;
+      width: 100%;
+      background: #fefdfa;
+      border-radius: 48px 48px 40px 40px;
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.25), 0 10px 25px rgba(10, 25, 45, 0.3);
+      overflow: hidden;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #fffef7;
+    }
+  </style>
+</head>
+<body>
+<div class="prospectus-container">
+  <canvas id="prospectusCanvas" width="1200" height="1750" aria-label="Saint Joseph College Mbengwi Official Prospectus 2026/2027"></canvas>
+</div>
+
+<script>
+  (function() {
+    const canvas = document.getElementById('prospectusCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Polyfill roundRect if needed
+    if (!ctx.roundRect) {
+      ctx.roundRect = function(x, y, w, h, r) {
+        if (typeof r === 'number') r = { tl: r, tr: r, br: r, bl: r };
+        ctx.beginPath();
+        ctx.moveTo(x + r.tl, y);
+        ctx.lineTo(x + w - r.tr, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r.tr);
+        ctx.lineTo(x + w, y + h - r.br);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
+        ctx.lineTo(x + r.bl, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r.bl);
+        ctx.lineTo(x, y + r.tl);
+        ctx.quadraticCurveTo(x, y, x + r.tl, y);
+        ctx.closePath();
+        return this;
+      };
+    }
+
+    // ───────────────────────────────────
+    // COLOR PALETTE
+    // ───────────────────────────────────
+    const colors = {
+      deepBlue: '#0B1F3B',
+      royalBlue: '#132E52',
+      gold: '#C9A229',
+      goldLight: '#E7C864',
+      textDark: '#1E1E1E',
+      softWhite: '#FFFDF7',
+      cream: '#F9F7F0',
+      borderSoft: '#D9D0B5',
+      accentRed: '#B22222',
+      accentGreen: '#2E5A3B',
+    };
+
+    // ───────────────────────────────────
+    // TEXT WRAPPER
+    // ───────────────────────────────────
+    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      let line = '';
+      let currentY = y;
+      const actualLineHeight = lineHeight || 24;
+
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = context.measureText(testLine);
+        if (metrics.width > maxWidth && n > 0) {
+          context.fillText(line.trim(), x, currentY);
+          line = words[n] + ' ';
+          currentY += actualLineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      context.fillText(line.trim(), x, currentY);
+      return currentY + actualLineHeight;
+    }
+
+    // ───────────────────────────────────
+    // DRAW SECTION HEADER - IMPROVED TO FIT TEXT
+    // ───────────────────────────────────
+    function drawSectionHeader(icon, text, x, y, width, bgColor = colors.deepBlue, textColor = '#FFFFFF') {
+      // Background pill
+      ctx.fillStyle = bgColor;
+      ctx.beginPath();
+      ctx.roundRect(x, y, width, 46, 23);
+      ctx.fill();
+
+      // Gold underline accent
+      ctx.fillStyle = colors.gold;
+      ctx.beginPath();
+      ctx.roundRect(x + 13, y + 40, width - 27, 3, 2);
+      ctx.fill();
+
+      // Icon
+      ctx.fillStyle = colors.goldLight;
+      ctx.font = '20px "Segoe UI Emoji", "Apple Color Emoji", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(icon, x + 12, y + 32);
+
+      // Text - adjust font size based on text length and column width
+      ctx.fillStyle = textColor;
+      let fontSize = 18;
+      ctx.font = `bold ${fontSize}px "Segoe UI", "Roboto", sans-serif`;
+      let textWidth = ctx.measureText(text.toUpperCase()).width;
+
+      // If text is too wide, reduce font size
+      const availableWidth = width - 48; // account for icon and padding
+      if (textWidth > availableWidth) {
+        fontSize = Math.max(13, Math.floor(18 * availableWidth / textWidth));
+        ctx.font = `bold ${fontSize}px "Segoe UI", "Roboto", sans-serif`;
+      }
+
+      ctx.fillText(text.toUpperCase(), x + 42, y + 32);
+      ctx.textAlign = 'left';
+    }
+
+    // ───────────────────────────────────
+    // MAIN DRAWING
+    // ───────────────────────────────────
+    function drawProspectus() {
+      ctx.clearRect(0, 0, 1200, 1750);
+
+      // ─────── TOP BORDER ───────
+      ctx.fillStyle = colors.deepBlue;
+      ctx.fillRect(0, 0, 1200, 8);
+      ctx.fillStyle = colors.gold;
+      ctx.fillRect(0, 8, 1200, 4);
+
+      // ─────── HEADER ───────
+      ctx.fillStyle = colors.royalBlue;
+      ctx.beginPath();
+      ctx.roundRect(30, 30, 1140, 170, 30);
+      ctx.fill();
+      ctx.fillStyle = colors.gold;
+      ctx.beginPath();
+      ctx.roundRect(35, 35, 1130, 160, 26);
+      ctx.fill();
+      ctx.fillStyle = colors.deepBlue;
+      ctx.beginPath();
+      ctx.roundRect(42, 42, 1116, 146, 22);
+      ctx.fill();
+
+      // Cross
+      ctx.fillStyle = colors.goldLight;
+      ctx.font = 'bold 42px "Georgia", serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('✟', 600, 80);
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 58px "Georgia", "Times New Roman", serif';
+      ctx.fillText('ST. JOSEPH COLLEGE', 600, 127);
+
+      ctx.fillStyle = colors.goldLight;
+      ctx.font = 'bold 26px "Segoe UI", sans-serif';
+      ctx.fillText('MBENGWI', 600, 158);
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'italic 20px "Georgia", serif';
+      ctx.fillText('Archdiocese of Bamenda', 600, 180);
+
+      // Motto
+      ctx.fillStyle = colors.goldLight;
+      ctx.fillRect(320, 215, 150, 2);
+      ctx.fillRect(730, 215, 150, 2);
+      ctx.fillStyle = colors.deepBlue;
+      ctx.font = 'italic 22px "Georgia", serif';
+      ctx.fillText('"Edificamus Regnum Dei- Let us build the house of God."', 600, 240);
+
+      // ─────── BANNER ───────
+      ctx.fillStyle = colors.deepBlue;
+      ctx.beginPath();
+      ctx.roundRect(50, 260, 1100, 56, 20);
+      ctx.fill();
+      ctx.fillStyle = colors.gold;
+      ctx.font = 'bold 26px "Segoe UI", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('📜  OFFICIAL STUDENT PROSPECTUS  •  2026/2027 ACADEMIC YEAR  📜', 600, 296);
+      ctx.textAlign = 'left';
+
+      // ══════════════════════════════════════
+      // ROW 1: WELCOME | UNIFORM | COMPOUND WEAR
+      // ══════════════════════════════════════
+
+      // WELCOME - width 340
+      drawSectionHeader('🏛️', 'WELCOME TO SAJOCO', 50, 340, 340, colors.royalBlue);
+      ctx.fillStyle = colors.textDark;
+      ctx.font = '18px "Segoe UI", sans-serif';
+      wrapText(ctx,
+        'Step into a legacy of excellence! St. Joseph College Mbengwi (SAJOCO) shapes visionary leaders through Catholic values, rigorous academics, and character formation. We cultivate discipline, curiosity, and compassion — empowering every student to thrive.',
+        55, 410, 330, 26);
+
+      // UNIFORM - width 460
+      drawSectionHeader('👔', 'COLLEGE UNIFORM', 420, 340, 460, colors.deepBlue);
+      ctx.fillStyle = colors.royalBlue;
+      ctx.font = 'bold 19px "Segoe UI", sans-serif';
+      ctx.fillText('👦 BOYS', 455, 405);
+      ctx.fillText('👧 GIRLS', 700, 405);
+
+      ctx.fillStyle = colors.textDark;
+      ctx.font = '14px "Segoe UI", sans-serif';
+      wrapText(ctx, '▸ White shirt & khaki trousers', 435, 435, 200, 24);
+      wrapText(ctx, '▸ Navy blue pullover (1st Cycle)', 435, 475, 200, 24);
+      wrapText(ctx, '▸ White pullover (2nd Cycle)', 435, 515, 200, 24);
+
+      wrapText(ctx, '▸ White square neck blouse', 680, 435, 200, 24);
+      wrapText(ctx, '▸ Navy blue pleated skirt', 680, 475, 200, 24);
+      wrapText(ctx, '▸ Blue pullover (1st Cycle)', 680, 515, 200, 24);
+
+      // COMPOUND WEAR - width 250 (increased slightly)
+      drawSectionHeader('🏡', 'COMPOUND WEAR', 910, 340, 240, colors.royalBlue);
+      ctx.fillStyle = colors.textDark;
+      ctx.font = '14px "Segoe UI", sans-serif';
+      wrapText(ctx, '👧 Girls: White sleeveless gown with gathers.', 918, 405, 225, 24);
+      wrapText(ctx, '👦 Boys: Black trousers & white short sleeve shirt.', 918, 465, 225, 24);
+
+      // ══════════════════════════════════════
+      // ROW 2: SHOES | FEES | REQUIREMENTS
+      // ══════════════════════════════════════
+
+      // SHOES & SPORTS - width 340
+      drawSectionHeader('👟', 'SHOES & SPORTS WEAR', 50, 610, 340, colors.deepBlue);
+      ctx.fillStyle = colors.royalBlue;
+      ctx.font = 'bold 18px "Segoe UI", sans-serif';
+      ctx.fillText('👞 OFFICIAL SHOES', 55, 675);
+      ctx.fillStyle = colors.textDark;
+      ctx.font = '16px "Segoe UI", sans-serif';
+      wrapText(ctx, 'Black sobo sandals or covered shoe with white socks.', 55, 698, 200, 24);
+
+      ctx.fillStyle = colors.royalBlue;
+      ctx.font = 'bold 16px "Segoe UI", sans-serif';
+      ctx.fillText('🏅 SPORTS WEAR', 55, 770);
+      ctx.fillStyle = colors.textDark;
+      wrapText(ctx, 'Obtained in school according to house colours. Available at school store.', 55, 793, 330, 24);
+
+      // FEES TABLE - width 460
+      drawSectionHeader('💰', 'FEES (ALL IN FCFA)', 420, 610, 460, colors.royalBlue);
+      const tableStartY = 668;
+      ctx.fillStyle = colors.deepBlue;
+      ctx.beginPath();
+      ctx.roundRect(420, tableStartY, 460, 40, 10);
+      ctx.fill();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 16px "Segoe UI", sans-serif';
+      ctx.fillText('ITEM', 445, tableStartY + 27);
+      ctx.fillText('AMOUNT (FCFA)', 730, tableStartY + 27);
+
+      const feeItems = [
+        ['🏠 Boarding', '200,000'],
+        ['📘 Tuition 1st Cycle', '65,000'],
+        ['📗 Tuition 2nd Cycle', '75,000'],
+        ['📝 Exam Fee', '2,500'],
+        ['🪪 ID Card', '1,000'],
+        ['💊 Health Fee', '2,000'],
+        ['📋 C.R.S.E Fee', '2,500'],
+        ['🔌 Practical (Tech)', '5,000']
+      ];
+
+      ctx.font = '14px "Segoe UI", sans-serif';
+      for (let i = 0; i < feeItems.length; i++) {
+        let rowY = tableStartY + 40 + (i * 36);
+        ctx.fillStyle = (i % 2 === 0) ? '#F4F1E8' : '#FFFFFF';
+        ctx.beginPath();
+        ctx.roundRect(420, rowY, 460, 36, 6);
+        ctx.fill();
+        ctx.strokeStyle = colors.borderSoft;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+        ctx.fillStyle = colors.textDark;
+        ctx.fillText(feeItems[i][0], 440, rowY + 25);
+        ctx.fillText(feeItems[i][1], 745, rowY + 25);
+      }
+
+      ctx.fillStyle = colors.accentRed;
+      ctx.font = 'bold 12px "Segoe UI", sans-serif';
+      wrapText(ctx, '⚡ Pay at designated bank branches. Account details provided upon admission.', 420, tableStartY + 40 + (feeItems.length * 36) + 22, 450, 20);
+
+      // STUDENT REQUIREMENTS - width 250 (increased)
+      drawSectionHeader('📋', 'STUDENT REQUIREMENTS', 910, 610, 240, colors.royalBlue);
+      ctx.fillStyle = colors.textDark;
+      ctx.font = '13px "Segoe UI", sans-serif';
+      const reqs = [
+        '✓ 5 sets of underwear',
+        '✓ 5 pairs white socks',
+        '✓ Blanket & mattress',
+        '✓ 2 pairs white canvas',
+        '✓ Pajamas',
+        '✓ A cutlass',
+        '✓ A hoe',
+        '✓ Rags/Brooms/Towel',
+        '✓ Bowl & tumbler'
+      ];
+      let reqY = 670;
+      reqs.forEach(r => {
+        ctx.fillText(r, 918, reqY);
+        reqY += 27;
+      });
+
+      // ══════════════════════════════════════
+      // ROW 3: RULES | DEPARTMENTS | BOOKS
+      // ══════════════════════════════════════
+
+      // SCHOOL RULES - width 370
+      drawSectionHeader('⛔', 'SCHOOL RULES & FORBIDDEN ITEMS', 50, 1040, 370, colors.accentRed, '#FFFFFF');
+      ctx.fillStyle = colors.textDark;
+      ctx.font = '14px "Segoe UI", sans-serif';
+      wrapText(ctx, '⛔ No wrong uniforms/shoes – will be confiscated.', 55, 1110, 350, 26);
+      wrapText(ctx, '⛔ No phones, electrical toys or appliances.', 55, 1165, 350, 26);
+      wrapText(ctx, '⛔ No breaking bounds or scaling fences.', 55, 1215, 350, 26);
+      wrapText(ctx, '⛔ No communication via teachers\' phones.', 55, 1265, 350, 26);
+
+      // DEPARTMENTS - width 250
+      drawSectionHeader('🔧', 'DEPARTMENTS', 450, 1040, 250, colors.deepBlue);
+      ctx.fillStyle = colors.goldLight;
+      ctx.font = 'bold 16px "Segoe UI", sans-serif';
+      ctx.fillText('📖 GRAMMAR', 460, 1105);
+      ctx.fillStyle = colors.textDark;
+      ctx.font = '14px "Segoe UI", sans-serif';
+      ctx.fillText('• Arts', 470, 1133);
+      ctx.fillText('• Science', 470, 1160);
+
+      ctx.fillStyle = colors.goldLight;
+      ctx.font = 'bold 16px "Segoe UI", sans-serif';
+      ctx.fillText('🔧 TECHNICAL(FORMS 1-3)', 460, 1205);
+      ctx.fillStyle = colors.textDark;
+      ctx.font = '13px "Segoe UI", sans-serif';
+      ctx.fillText('• Building & Construction', 470, 1233);
+      ctx.fillText('• Fashion Design', 470, 1260);
+      ctx.fillText('• Electrical Power Sys.', 470, 1287);
+      ctx.fillText('• Accounting', 470, 1314);
+
+      // BOOKS - width 430
+      drawSectionHeader('📚', 'BOOKS & STATIONERY', 730, 1040, 420, colors.deepBlue);
+      ctx.fillStyle = colors.textDark;
+      ctx.font = '14px "Segoe UI", sans-serif';
+      wrapText(ctx, '📚 Compulsory: English, French, Maths, Literature, I.C.T. Parents purchase before resumption.', 740, 1105, 400, 24);
+
+      ctx.fillStyle = colors.royalBlue;
+      ctx.font = 'bold 15px "Segoe UI", sans-serif';
+      ctx.fillText('📓 EXERCISE BOOKS', 740, 1190);
+      ctx.fillStyle = colors.textDark;
+      ctx.font = '13px "Segoe UI", sans-serif';
+      ctx.fillText('• F1-F2: 16 books (80 leaves)', 745, 1220);
+      ctx.fillText('• F3-F5: 6 books + 8 ledgers (500p)', 745, 1250);
+      ctx.fillText('• High Sch: 2 books + 4 ledgers', 745, 1280);
+
+      // ══════════════════════════════════════
+      // FOOTER SECTION
+      // ══════════════════════════════════════
+      ctx.fillStyle = colors.borderSoft;
+      ctx.fillRect(50, 1375, 1100, 2);
+
+      // Transport
+      ctx.fillStyle = colors.textDark;
+      ctx.font = '15px "Segoe UI", sans-serif';
+      wrapText(ctx, '🚌 School bus transports students on resumption & closing days.', 55, 1410, 500, 26);
+      wrapText(ctx, '📍 Kickoff point: All Saints Catholic Church, Mbengwi.', 630, 1410, 500, 26);
+
+      // Contact Box
+      ctx.fillStyle = colors.deepBlue;
+      ctx.beginPath();
+      ctx.roundRect(50, 1440, 500, 170, 24);
+      ctx.fill();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 22px "Segoe UI", sans-serif';
+      ctx.fillText('📞 CONTACT US', 80, 1480);
+      ctx.fillStyle = colors.goldLight;
+      ctx.font = '13px "Segoe UI", sans-serif';
+      ctx.fillText('(Admission continues daily for all classes)', 80, 1508);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '15px "Segoe UI", sans-serif';
+      ctx.fillText('☎ +237 683 758 002 (phone)', 80, 1535);
+	  ctx.fillText('📱 +237 672 829 014 (whatsapp)', 80, 1558);
+	  ctx.fillText('🔗 www.stjosephcolledge.vercel.app',80,1580)
+      ctx.fillText('✉️  saintjosephcolledge@gmail.com', 80, 1600);
+
+      // Important Notice
+      ctx.fillStyle = colors.royalBlue;
+      ctx.beginPath();
+      ctx.roundRect(580, 1440, 570, 170, 24);
+      ctx.fill();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 20px "Segoe UI", sans-serif';
+      ctx.fillText('🌟 IMPORTANT NOTICE', 610, 1480);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '14px "Segoe UI", sans-serif';
+      wrapText(ctx, 'Visits are 3 times a year. Provide all listed items to ensure comfort and focus. Together we build discipline and excellence.', 610, 1515, 520, 26);
+
+      ctx.fillStyle = colors.goldLight;
+      ctx.font = 'italic bold 17px "Georgia", serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('"Edificamus Regnum Dei.-Let us build the house of God"', 865, 1600);
+      ctx.textAlign = 'left';
+
+      // Bottom bar
+      ctx.fillStyle = colors.deepBlue;
+      ctx.fillRect(0, 1690, 1200, 60);
+      ctx.fillStyle = colors.gold;
+      ctx.font = 'bold 17px "Segoe UI", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('✟  CATHOLIC EDUCATION: FAITH IN ACTION, CHARACTER AND EXCELLENCE  ✟', 600, 1728);
+      ctx.textAlign = 'left';
+    }
+
+    drawProspectus();
+  })();
+</script>
+</body>
+</html>
