@@ -43,22 +43,22 @@ No build framework or UI library — the entire frontend is hand-rolled, class-b
 
 The site is composed of small, single-responsibility classes, each owning one piece of behaviour. An `App` class bootstraps all of them on `DOMContentLoaded`.
 
-| Class | Responsibility |
-|---|---|
-| `Preloader` | Fades out the loading screen once the page has fully loaded |
-| `ThemeManager` | Light/dark mode — persists choice in `localStorage`, falls back to OS preference, listens for live OS theme changes |
-| `HeaderScroll` | Adds a "scrolled" state to the header and shows/hides the back-to-top button |
-| `MobileNavigation` | Hamburger menu — toggling, closing on link click, closing on outside click |
-| `AnnouncementBar` | Dismissible top banner; keeps `--header-height` / `--bar-height` CSS variables in sync via `ResizeObserver` |
-| `Carousel` | Campus life image slider — dot navigation, autoplay, hover-to-pause, swipe support |
-| `CounterAnimation` | Animates the enrollment/pass-rate statistics from 0 once scrolled into view, using an eased `requestAnimationFrame` loop |
-| `ScrollReveal` | Fades elements in as they enter the viewport via `IntersectionObserver` |
-| `SmoothScroll` | Smooth in-page anchor scrolling, offset for the fixed header height |
-| `HeroParticles` | Generates decorative floating particles in the hero background |
-| `AcademicLevelToggles` | Expand/collapse behaviour for academic pathway details |
-| `ScrollSpy` | Highlights the active nav link based on which section is in view |
-| `EnquiryModal` | Floating action button that opens the enquiry modal; handles outside-click, `Escape`, and focus return |
-| `EnquiryForm` | Submits the enquiry form to Formspree via `fetch`, with loading/success/error states |
+| Class                  | Responsibility                                                                                                           |
+|------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| `Preloader`            | Fades out the loading screen once the page has fully loaded                                                              |
+| `ThemeManager`         | Light/dark mode — persists choice in `localStorage`, falls back to OS preference, listens for live OS theme changes      |
+| `HeaderScroll`         | Adds a "scrolled" state to the header and shows/hides the back-to-top button                                             |
+| `MobileNavigation`     | Hamburger menu — toggling, closing on link click, closing on outside click                                               |
+| `AnnouncementBar`      | Dismissible top banner; keeps `--header-height` / `--bar-height` CSS variables in sync via `ResizeObserver`              |
+| `Carousel`             | Campus life image slider — dot navigation, autoplay, hover-to-pause, swipe support                                       |
+| `CounterAnimation`     | Animates the enrollment/pass-rate statistics from 0 once scrolled into view, using an eased `requestAnimationFrame` loop |
+| `ScrollReveal`         | Fades elements in as they enter the viewport via `IntersectionObserver`                                                  |
+| `SmoothScroll`         | Smooth in-page anchor scrolling, offset for the fixed header height                                                      |
+| `HeroParticles`        | Generates decorative floating particles in the hero background                                                           |
+| `AcademicLevelToggles` | Expand/collapse behaviour for academic pathway details                                                                   |
+| `ScrollSpy`            | Highlights the active nav link based on which section is in view                                                         |
+| `EnquiryModal`         | Floating action button that opens the enquiry modal; handles outside-click, `Escape`, and focus return                   |
+| `EnquiryForm`          | Submits the enquiry form to Formspree via `fetch`, with loading/success/error states                                     |
 
 ### Design notes
 
