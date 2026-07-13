@@ -268,7 +268,7 @@ body.dark-mode #mainHeader.scrolled {
 .hero-bg-layer { position: absolute; inset: 0; z-index: 0; }
 .hero-bg-img {
   position: absolute; inset: 0;
-  background: url('public/assets/Students.jpeg') no-repeat center center/cover;
+  background: url('/assets/Students.jpeg') no-repeat center center/cover;
   opacity: 0.3;
   transform: scale(1.05);
   animation: heroSlowZoom 20s ease-in-out infinite alternate;
@@ -426,7 +426,7 @@ body.dark-mode .section-title { color: var(--text-light); }
 .stats-section::before {
   content: '';
   position: absolute; inset: 0;
-  background: rgba(10,31,63,0.85);
+  background: rgba(10, 31, 63, 0.4);
   z-index: 0;
 }
 body.dark-mode .stats-section::before {
@@ -443,7 +443,7 @@ body.dark-mode .stats-section::before {
 .stat-card {
   text-align: center;
   padding: 32px 20px;
-  background: rgba(255,255,255,0.92);
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   border-radius: var(--radius-md);
   box-shadow: var(--card-shadow);
@@ -472,7 +472,8 @@ body.dark-mode .stat-card {
 }
 body.dark-mode .stat-number { color: var(--accent-glow); }
 .stat-label {
-  font-size: 0.9rem; color: var(--text-muted);
+  font-size: 0.9rem;
+  color: var(--text-dark);
   font-weight: 500; letter-spacing: 0.5px;
 }
 
@@ -1080,7 +1081,7 @@ body.dark-mode .level__subjects li { color: var(--text-body); }
 }
 .stat-context {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--text-dark);
   margin-top: 6px;
   letter-spacing: 0.3px;
 }
