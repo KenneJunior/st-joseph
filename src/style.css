@@ -1800,7 +1800,11 @@ body.dark-mode #darkModeToggle .toggle-moon { display: none; }
       outline: none;
       box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.35);
   }
-  .email{
-    color: var(--text-body);
-    text-decoration: underline;
+  .contact-link {
+    color: var(--text-light);
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.5rem;
+    transition: var(--transition-smooth);
   }
+  .contact-link:hover { color: var(--accent); padding-left: 5px; }

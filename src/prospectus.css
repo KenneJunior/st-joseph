@@ -1,0 +1,752 @@
+/* ==========================================================================
+   SAJOCO OFFICIAL PROSPECTUS – PREMIUM STYLESHEET (2026/2027)
+   Crafted with precision for an unparalleled digital experience.
+   ========================================================================== */
+
+/* ─── 1. DESIGN TOKENS & SYSTEM VARIABLES ─── */
+:root {
+    /* Brand Palette – Refined & Regal */
+    --deep-blue: #07182E;
+    --royal-blue: #0E2746;
+    --gold: #C9A229;
+    --gold-light: #F3D779;
+    --accent-red: #C73636;
+    --accent-green: #2A5C3E;
+
+    /* Light Theme – Warm, Textured, & Elegant */
+    --bg-main: linear-gradient(165deg, #f8f6f0 0%, #eae5d9 100%);
+    --bg-container: rgba(255, 252, 245, 0.9);
+    --bg-card: #ffffff;
+    --bg-table-stripe: #FBF9F2;
+    --text-main: #1A1E2B;
+    --text-muted: #5A5D66;
+    --text-light: #ffffff;
+    --border-soft: rgba(201, 162, 41, 0.3);
+    --border-card: rgba(0, 0, 0, 0.05);
+    --shadow-main: 0 25px 50px -12px rgba(10, 25, 45, 0.18), 0 8px 20px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 35px 60px -15px rgba(10, 25, 45, 0.25), 0 12px 28px rgba(201, 162, 41, 0.2);
+    --backdrop-blur: blur(12px);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+
+    /* Typography & Motion */
+    --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
+    --transition-smooth: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --radius-xl: 28px;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+}
+
+/* Dark Theme – Deep, Immersive, & Luxurious */
+body.dark-mode {
+    --bg-main: linear-gradient(165deg, #0a0f16 0%, #111820 100%);
+    --bg-container: rgba(13, 17, 23, 0.9);
+    --bg-card: #161c24;
+    --bg-table-stripe: #1c232d;
+    --text-main: #e6edf3;
+    --text-muted: #8b949e;
+    --border-soft: rgba(201, 162, 41, 0.45);
+    --border-card: rgba(255, 255, 255, 0.08);
+    --shadow-main: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 8px 20px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 35px 60px -15px rgba(212, 175, 55, 0.2), 0 12px 28px rgba(0,0,0,0.5);
+    --backdrop-blur: blur(16px);
+    --glass-bg: rgba(22, 28, 36, 0.75);
+}
+
+body, .prospectus-container, .section-card, .motto-bar, .academic-banner,
+.main-header, .prospectus-footer, .footer-card, .data-table th, .data-table td {
+    transition: background-color 0.6s ease,
+    color 0.6s ease,
+    border-color 0.6s ease,
+    box-shadow 0.6s ease,
+    background 0.6s ease;
+}
+
+/* Theme switch overlay for cinematic effect */
+.theme-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gold);
+    z-index: 10000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.theme-transition-overlay.active {
+    opacity: 0.15;
+}
+/* ─── 2. GLOBAL RESET & FLUID FOUNDATION ─── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2.5rem 1.5rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.8s ease, color 0.8s ease;
+}
+
+/* Bootstrap Icons Seamless Integration */
+.bi {
+    display: inline-block;
+    vertical-align: -0.125em;
+    fill: currentColor;
+    transition: var(--transition-bounce);
+}
+
+/* ─── 3. MASTER CONTAINER – GLASS MORPHISM EFFECT ─── */
+.prospectus-container {
+    max-width: 1280px;
+    width: 100%;
+    background: var(--bg-container);
+    backdrop-filter: var(--backdrop-blur);
+    -webkit-backdrop-filter: var(--backdrop-blur);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-main);
+    border: 1px solid var(--border-soft);
+    overflow: hidden;
+    transition: var(--transition-smooth), backdrop-filter 0.8s ease;
+    animation: containerReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ─── 4. STICKY NAVIGATION – REFINED ELEVATION ─── */
+#mainHeader {
+    background: rgba(7, 24, 46, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: var(--text-light);
+    padding: 0.9rem 2.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(201, 162, 41, 0.5);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    transition: var(--transition-smooth);
+}
+
+.header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.logo-icon {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    color: var(--deep-blue);
+    font-weight: 800;
+    padding: 0.5rem 0.85rem;
+    border-radius: 12px;
+    font-size: 1.3rem;
+    box-shadow: 0 4px 12px rgba(201, 162, 41, 0.4);
+    transition: var(--transition-bounce);
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+}
+
+.logo-text small {
+    font-size: 0.75rem;
+    opacity: 0.85;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+}
+
+.logo-motto {
+    font-size: 0.7rem;
+    font-style: italic;
+    color: var(--gold-light);
+    font-family: var(--font-serif);
+}
+
+#navMenu {
+    display: flex;
+    align-items: center;
+    gap: 2.2rem;
+}
+
+.nav-link {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    padding: 0.3rem 0;
+    transition: var(--transition-smooth);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gold-light);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--gold-light);
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.nav-cta {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 0.5rem 0.8rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: var(--transition-bounce);
+    display: flex;
+    align-items: center;
+}
+
+.nav-cta:hover {
+    background: var(--gold);
+    color: var(--deep-blue);
+    transform: rotate(15deg);
+    box-shadow: 0 0 20px rgba(201, 162, 41, 0.5);
+}
+
+.toggle-sun, .toggle-moon {
+    font-size: 1.2rem;
+}
+
+body:not(.dark-mode) .toggle-sun { display: block; }
+body:not(.dark-mode) .toggle-moon { display: none; }
+body.dark-mode .toggle-sun { display: none; }
+body.dark-mode .toggle-moon { display: block; }
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+@media (max-width: 768px) {
+    .menu-toggle { display: block; }
+    #navMenu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(7, 24, 46, 0.95);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 1.5rem;
+        gap: 1.5rem;
+        border-bottom: 2px solid var(--gold);
+    }
+    #navMenu.active { display: flex; }
+}
+
+/* ─── 5. INSTITUTIONAL HEADER – MAJESTIC PRESENCE ─── */
+.main-header {
+    background: linear-gradient(135deg, var(--deep-blue) 0%, #0a1c38 100%);
+    border-bottom: 4px solid var(--gold);
+    padding: 3.5rem 2rem;
+    text-align: center;
+    position: relative;
+    color: var(--text-light);
+}
+
+.header-cross {
+    color: var(--gold-light);
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    animation: crossPulse 3.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    filter: drop-shadow(0 0 12px rgba(243, 215, 121, 0.5));
+}
+
+.header-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.header-subtitle {
+    color: var(--gold-light);
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+    font-weight: 600;
+    letter-spacing: 3px;
+    margin-top: 0.2rem;
+    text-transform: uppercase;
+}
+
+.header-diocese {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-top: 0.5rem;
+    color: #d1c49c;
+}
+
+.motto-bar {
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    color: var(--deep-blue);
+    padding: 1.2rem;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1rem, 1.8vw, 1.35rem);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-soft);
+    transition: background 0.8s ease, color 0.8s ease;
+}
+
+body.dark-mode .motto-bar {
+    color: var(--gold-light);
+}
+
+.academic-banner {
+    background: var(--deep-blue);
+    color: var(--gold);
+    text-align: center;
+    padding: 1.3rem;
+    font-weight: 700;
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    letter-spacing: 1.5px;
+    border-bottom: 2px solid var(--gold);
+    text-transform: uppercase;
+}
+
+/* ─── 6. RESPONSIVE GRID – PERFECT HARMONY ─── */
+.prospectus-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2.2rem;
+    padding: 2.8rem;
+}
+
+.col-4  { grid-column: span 4; }
+.col-5  { grid-column: span 5; }
+.col-3  { grid-column: span 3; }
+.col-6  { grid-column: span 6; }
+.col-7  { grid-column: span 7; }
+.col-8  { grid-column: span 8; }
+.col-12 { grid-column: span 12; }
+
+@media (max-width: 1024px) {
+    .col-4, .col-5, .col-3, .col-6, .col-7, .col-8 { grid-column: span 6; }
+}
+
+@media (max-width: 768px) {
+    .prospectus-grid { padding: 1.8rem; gap: 1.8rem; }
+    .col-4, .col-5, .col-3, .col-6, .col-7, .col-8, .col-12 { grid-column: span 12; }
+}
+
+/* ─── 7. SECTION CARDS – ELEVATED & INTERACTIVE ─── */
+.section-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-card);
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(4px);
+}
+
+.section-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.section-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--gold);
+}
+
+.section-card:hover::before {
+    opacity: 1;
+}
+
+.section-header {
+    background: var(--deep-blue);
+    color: var(--text-light);
+    padding: 0.8rem 1.4rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    margin-bottom: 1.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    border-bottom: 3px solid var(--gold);
+    transition: var(--transition-bounce);
+}
+
+.section-header.alt-header { background: var(--royal-blue); }
+.section-header.danger-header { background: var(--accent-red); }
+
+.section-card:hover .section-header {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+.section-card:hover .section-header .bi {
+    transform: scale(1.25) rotate(-8deg);
+    color: var(--gold-light);
+}
+
+.section-card p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+/* ─── 8. REFINED COMPONENT STYLING ─── */
+.uniform-split {
+    display: flex;
+    gap: 1.8rem;
+}
+
+.uniform-gender {
+    flex: 1;
+    background: rgba(201, 162, 41, 0.04);
+    padding: 1.3rem;
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border-soft);
+    transition: var(--transition-smooth);
+}
+
+.uniform-gender:hover {
+    background: rgba(201, 162, 41, 0.08);
+    border-style: solid;
+}
+
+.uniform-gender h4 {
+    color: var(--royal-blue);
+    margin-bottom: 1rem;
+    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+body.dark-mode .uniform-gender h4 { color: var(--gold-light); }
+
+.icon-list {
+    list-style: none;
+}
+
+.icon-list li {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 0.7rem;
+    color: var(--text-muted);
+    font-size: 0.98rem;
+    transition: var(--transition-smooth);
+}
+
+.icon-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-weight: 700;
+    transition: var(--transition-bounce);
+}
+
+.icon-list li:hover {
+    color: var(--text-main);
+    transform: translateX(5px);
+}
+
+.icon-list li:hover::before {
+    left: 6px;
+    color: var(--gold-light);
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-soft);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.98rem;
+}
+
+.data-table th {
+    background: var(--deep-blue);
+    color: var(--text-light);
+    padding: 1rem 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.data-table td {
+    padding: 0.9rem 1.2rem;
+    border-bottom: 1px solid var(--border-card);
+    color: var(--text-main);
+}
+
+.data-table tr:nth-child(even) {
+    background: var(--bg-table-stripe);
+}
+
+.data-table tr {
+    transition: background 0.3s ease;
+}
+
+.data-table tr:hover {
+    background: rgba(201, 162, 41, 0.12);
+}
+
+.alert-text {
+    color: var(--accent-red);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-top: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0;
+}
+
+body.dark-mode .alert-text { color: #ff7b7b; }
+
+/* ─── 9. FOOTER – IMMERSIVE & CONNECTED ─── */
+.prospectus-footer {
+    background: linear-gradient(135deg, #07182e, #0a1f3c);
+    border-top: 4px solid var(--gold);
+    color: var(--text-light);
+    padding: 3.5rem 2.8rem 2rem;
+}
+
+.footer-top-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.8rem;
+    margin-bottom: 3rem;
+}
+
+@media (max-width: 768px) {
+    .footer-top-grid { grid-template-columns: 1fr; gap: 2.2rem; }
+}
+
+.footer-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    padding: 2.2rem;
+    transition: var(--transition-smooth);
+    backdrop-filter: blur(8px);
+}
+
+.footer-card:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--gold-light);
+    transform: translateY(-5px);
+}
+
+.footer-card h3 {
+    font-size: 1.4rem;
+    color: var(--gold-light);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    padding-bottom: 0.7rem;
+}
+
+.contact-link-list {
+    list-style: none;
+}
+
+.contact-link-list li {
+    margin-bottom: 1rem;
+}
+
+.contact-link-list a {
+    color: #d1cfc4;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    transition: var(--transition-smooth);
+    font-size: 1.05rem;
+}
+
+.contact-link-list a:hover {
+    color: var(--gold);
+    transform: translateX(8px);
+}
+
+.bottom-strip {
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.8rem;
+    font-size: 0.95rem;
+    color: var(--gold-light);
+    letter-spacing: 1.5px;
+    font-weight: 600;
+}
+
+/* ─── 10. FLOATING ACTION BUTTON – ICONIC & DYNAMIC ─── */
+.download-action-container {
+    position: fixed;
+    bottom: 35px;
+    right: 35px;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.floating-action-btn {
+    pointer-events: auto;
+    background: linear-gradient(135deg, var(--gold) 0%, #e0b83b 100%);
+    color: var(--deep-blue);
+    border: none;
+    padding: 1.1rem 2.2rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border-radius: 60px;
+    cursor: pointer;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 0 4px rgba(201, 162, 41, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: var(--transition-bounce);
+    letter-spacing: 0.4px;
+}
+
+.floating-action-btn:hover {
+    background: linear-gradient(135deg, var(--gold-light) 0%, #f5e186 100%);
+    transform: translateY(-6px) scale(1.04);
+    box-shadow: 0 20px 40px rgba(243, 215, 121, 0.6), 0 0 0 6px rgba(201, 162, 41, 0.25);
+}
+
+/* ─── 11. ANIMATION MASTERPIECES ─── */
+@keyframes containerReveal {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes crossPulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 8px rgba(243, 215, 121, 0.4));
+    }
+    50% {
+        transform: scale(1.12);
+        filter: drop-shadow(0 0 20px rgba(243, 215, 121, 0.9));
+    }
+}
+
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s cubic-bezier(0.15, 0.85, 0.35, 1), transform 0.7s cubic-bezier(0.15, 0.85, 0.35, 1);
+}
+
+.reveal-on-scroll.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Staggered card appearance */
+.section-card:nth-child(1) { transition-delay: 0.05s; }
+.section-card:nth-child(2) { transition-delay: 0.1s; }
+.section-card:nth-child(3) { transition-delay: 0.15s; }
+.section-card:nth-child(4) { transition-delay: 0.2s; }
+.section-card:nth-child(5) { transition-delay: 0.25s; }
+.section-card:nth-child(6) { transition-delay: 0.3s; }
+.section-card:nth-child(7) { transition-delay: 0.35s; }
+.section-card:nth-child(8) { transition-delay: 0.4s; }
+
+/* ─── 12. PRINT PERFECTION ─── */
+@media print {
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0;
+    }
+    .prospectus-container {
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        max-width: 100% !important;
+        backdrop-filter: none !important;
+    }
+    #mainHeader, .download-action-container {
+        display: none !important;
+    }
+    .section-card {
+        box-shadow: none !important;
+        border: 1px solid #cccccc !important;
+        background: #ffffff !important;
+        page-break-inside: avoid;
+    }
+    .data-table tr:nth-child(even) {
+        background: #f5f5f5 !important;
+    }
+    .floating-action-btn {
+        display: none !important;
+    }
+}
