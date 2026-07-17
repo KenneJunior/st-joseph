@@ -233,7 +233,7 @@
         <ul class="contact-link-list">
           <li><a href="tel:+237683758002"><i class="bi bi-phone"></i> +237 683 758 002 (Phone)</a></li>
           <li><a href="https://wa.me/237672829014"><i class="bi bi-whatsapp"></i> +237 672 829 014 (WhatsApp)</a></li>
-          <li><a href="https://www.saintjosephcolledge.vercel.app"><i class="bi bi-globe"></i> www.saintjosephcolledge.vercel.app</a></li>
+          <li><a href="https://saintjosephcolledge.vercel.app"><i class="bi bi-globe"></i> www.saintjosephcolledge.vercel.app</a></li>
           <li><a href="mailto:saintjosephcolledge@gmail.com"><i class="bi bi-envelope-at"></i> saintjosephcolledge@gmail.com</a></li>
         </ul>
       </div>
@@ -266,97 +266,259 @@
 
 <!-- JavaScript System Core Logic -->
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+/* ==========================================================================
+   SAJOCO PROSPECTUS – ENHANCED JAVASCRIPT SYSTEM
+   ========================================================================== */
 
-    // 1. Intersection Observer for Fluid Asynchronous Scroll Animations
-    const scrollElements = document.querySelectorAll('.reveal-on-scroll');
+document.addEventListener("DOMContentLoaded", () => {
 
-    const elementInView = (el, dividend = 1) => {
-      const elementTop = el.getBoundingClientRect().top;
-      return (elementTop <= (window.innerHeight || document.documentElement.clientHeight) / dividend);
-    };
+    // ──────────────────────────────────────────────
+    // 1. DARK MODE TOGGLE WITH PERSISTENCE & ANIMATION
+    // ──────────────────────────────────────────────
+    const body = document.body;
+    const darkModeToggle = document.getElementById('darkModeToggle');
 
-    const displayScrollElement = (element) => {
-      element.classList.add('active');
-    };
-
-    const handleScrollAnimation = () => {
-      scrollElements.forEach((el) => {
-        if (elementInView(el, 1.15)) {
-          displayScrollElement(el);
-        }
-      });
-    };
-
-    window.addEventListener("scroll", () => {
-      handleScrollAnimation();
-    });
-
-    // Trigger initialization check on page load
-    handleScrollAnimation();
-
-    // 2. PDF Generation via window.print() for clean output
-    const downloadBtn = document.getElementById('downloadPdfBtn');
-    if (downloadBtn) {
-      downloadBtn.addEventListener('click', () => {
-        const actionContainer = document.querySelector('.download-action-container');
-        if (actionContainer) {
-          actionContainer.style.visibility = 'hidden';
-        }
-        window.print();
-        // Restore visibility after print dialog (approximate, as print event doesn't have a close callback universally)
-        setTimeout(() => {
-          if (actionContainer) {
-            actionContainer.style.visibility = 'visible';
-          }
-        }, 500);
-      });
+    // Check localStorage for saved theme preference
+    const savedTheme = localStorage.getItem('sajoco-theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
     }
 
-    // 3. Dark Mode Toggle Logic
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const body = document.body;
-
-// Check saved preference on load
-    if (localStorage.getItem('theme') === 'dark') {
-      body.classList.add('dark-mode');
+    // Also check system preference if no saved theme
+    if (!savedTheme) {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) {
+            body.classList.add('dark-mode');
+        }
     }
 
     if (darkModeToggle) {
-      darkModeToggle.addEventListener('click', () => {
-        // Create cinematic flash overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'theme-transition-overlay';
-        document.body.appendChild(overlay);
+        darkModeToggle.addEventListener('click', () => {
+            const overlay = document.createElement('div');
+            overlay.className = 'theme-transition-overlay';
+            document.body.appendChild(overlay);
 
-        requestAnimationFrame(() => {
-          overlay.classList.add('active');
+            requestAnimationFrame(() => {
+                overlay.classList.add('active');
+            });
+
+            setTimeout(() => {
+                body.classList.toggle('dark-mode');
+                const currentTheme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+                localStorage.setItem('sajoco-theme', currentTheme);
+
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+                    setTimeout(() => {
+                        if (overlay.parentNode) {
+                            overlay.parentNode.removeChild(overlay);
+                        }
+                    }, 400);
+                }, 150);
+            }, 120);
         });
-
-        setTimeout(() => {
-          body.classList.toggle('dark-mode');
-          // Save preference
-          localStorage.setItem('theme',
-                  body.classList.contains('dark-mode') ? 'dark' : 'light'
-          );
-
-          setTimeout(() => {
-            overlay.classList.remove('active');
-            setTimeout(() => overlay.remove(), 300);
-          }, 200);
-        }, 150);
-      });
     }
 
-    // 4. Mobile Menu Toggle
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        const hasManualPreference = localStorage.getItem('sajoco-theme');
+        if (!hasManualPreference) {
+            if (e.matches) {
+                body.classList.add('dark-mode');
+            } else {
+                body.classList.remove('dark-mode');
+            }
+        }
+    });
+
+
+    // ──────────────────────────────────────────────
+    // 2. MOBILE NAVIGATION TOGGLE
+    // ──────────────────────────────────────────────
     const menuToggle = document.getElementById('menuToggle');
     const navMenu = document.getElementById('navMenu');
+
     if (menuToggle && navMenu) {
-      menuToggle.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-      });
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navMenu.classList.toggle('active');
+            const isExpanded = navMenu.classList.contains('active');
+            menuToggle.setAttribute('aria-expanded', isExpanded);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!menuToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                navMenu.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
+                menuToggle.focus();
+            }
+        });
+
+        const navLinks = navMenu.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
     }
-  });
+
+
+    // ──────────────────────────────────────────────
+    // 3. SCROLL REVEAL ANIMATIONS – MOBILE OPTIMIZED
+    // ──────────────────────────────────────────────
+    const scrollElements = document.querySelectorAll('.reveal-on-scroll');
+
+    if (scrollElements.length > 0) {
+        // Detect if we're on a mobile device
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                         || window.innerWidth <= 768;
+
+        const observerOptions = {
+            root: null,
+            // More generous rootMargin on mobile to trigger earlier
+            rootMargin: isMobile ? '0px 0px -10px 0px' : '0px 0px -50px 0px',
+            // Lower threshold on mobile so elements reveal with less visibility
+            threshold: isMobile ? 0.05 : 0.1
+        };
+
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Add a tiny staggered delay for smoother cascade effect
+                    const delay = entry.target.dataset.delay || 0;
+                    setTimeout(() => {
+                        entry.target.classList.add('active');
+                    }, delay);
+                    
+                    // Stop observing once revealed
+                    scrollObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        scrollElements.forEach((el, index) => {
+            // Assign staggered delays for cascade effect
+            // Mobile gets shorter delays to feel snappier
+            const baseDelay = isMobile ? 30 : 60;
+            el.dataset.delay = index * baseDelay;
+            scrollObserver.observe(el);
+        });
+
+        // Fallback: Reveal all elements after 3 seconds if IntersectionObserver fails
+        // This handles edge cases on some mobile browsers
+        /*
+        setTimeout(() => {
+            scrollElements.forEach(el => {
+                if (!el.classList.contains('active')) {
+                    el.classList.add('active');
+                }
+            });
+        }, 3000);
+        */
+    }
+
+
+    // ──────────────────────────────────────────────
+    // 4. PDF DOWNLOAD / PRINT HANDLER
+    // ──────────────────────────────────────────────
+    const downloadBtn = document.getElementById('downloadPdfBtn');
+    const actionContainer = document.querySelector('.download-action-container');
+
+    if (downloadBtn && actionContainer) {
+        downloadBtn.addEventListener('click', () => {
+            actionContainer.style.display = 'none';
+            
+            const mainHeader = document.getElementById('mainHeader');
+            const originalHeaderDisplay = mainHeader ? mainHeader.style.display : '';
+            if (mainHeader) {
+                mainHeader.style.display = 'none';
+            }
+
+            window.print();
+
+            const restoreElements = () => {
+                actionContainer.style.display = '';
+                if (mainHeader) {
+                    mainHeader.style.display = originalHeaderDisplay;
+                }
+                window.removeEventListener('focus', restoreElements);
+            };
+
+            setTimeout(restoreElements, 500);
+            window.addEventListener('focus', restoreElements);
+        });
+    }
+
+
+    // ──────────────────────────────────────────────
+    // 5. SMOOTH SCROLL FOR ANCHOR LINKS
+    // ──────────────────────────────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                e.preventDefault();
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+
+    // ──────────────────────────────────────────────
+    // 6. ACTIVE NAV LINK HIGHLIGHT ON SCROLL
+    // ──────────────────────────────────────────────
+    const sections = document.querySelectorAll('section[id], header[id], footer[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    if (sections.length > 0 && navLinks.length > 0) {
+        const highlightNavOnScroll = () => {
+            let scrollPosition = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active-link');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active-link');
+                        }
+                    });
+                }
+            });
+        };
+
+        window.addEventListener('scroll', highlightNavOnScroll, { passive: true });
+    }
+
+
+    // ──────────────────────────────────────────────
+    // 7. INITIALIZATION LOG
+    // ──────────────────────────────────────────────
+    const currentTheme = body.classList.contains('dark-mode') ? 'Dark' : 'Light';
+    const initMessage = `SAJOCO Prospectus Initialized | Theme: ${currentTheme} | ${new Date().toLocaleTimeString()}`;
+    
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        console.log(`%c${initMessage}`, 'color: #C9A229; font-weight: bold;');
+    }
+
+});
 </script>
 </body>
 </html>
