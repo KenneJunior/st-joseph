@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>SAJOCO | Official Prospectus 2026/2027</title>
+  <title>SJCCC | Official Prospectus 2026/2027</title>
 
   <link rel="icon" type="text/xml" href="/assets/icons/168X168.svg">
 
@@ -106,12 +106,12 @@
   <!-- Responsive Grid System -->
   <main class="prospectus-grid">
 
-    <!-- WELCOME TO SAJOCO -->
+    <!-- WELCOME TO SJCCC -->
     <section class="section-card col-4 reveal-on-scroll">
       <div class="section-header alt-header">
-        <i class="bi bi-bank"></i> WELCOME TO SAJOCO
+        <i class="bi bi-bank"></i> WELCOME TO SJCCC
       </div>
-      <p>Step into a legacy of excellence! St. Joseph College Mbengwi (SAJOCO) shapes visionary leaders through Catholic values, rigorous academics, and character formation.</p>
+      <p>Step into a legacy of excellence! St. Joseph College Mbengwi (SJCCC) shapes visionary leaders through Catholic values, rigorous academics, and character formation.</p>
       <p>We cultivate discipline, curiosity, and compassion — empowering every student to thrive.</p>
     </section>
 
@@ -176,7 +176,8 @@
           </tr>
           </thead>
           <tbody>
-          <tr><td><i class="bi bi-house-heart"></i> Registration</td><td>5,000</td></tr>
+          <tr><td><i class="bi bi-house-heart"></i> Boarding</td><td>112,000</td></tr>
+          <tr><td><i class="bi bi-clipboard2"></i> Registration</td><td>5,000</td></tr>
           <tr><td><i class="bi bi-book"></i> Tuition 1st Cycle</td><td>63,000</td></tr>
           <tr><td><i class="bi bi-journal-bookmark-fill"></i> Tuition 2nd Cycle</td><td>63,000</td></tr>
           <tr><td><i class="bi bi-pencil-square"></i> Exam Fee</td><td>4,000</td></tr>
@@ -229,15 +230,16 @@
       </div>
       <p><strong><i class="bi bi-journal-text"></i> GRAMMAR</strong></p>
       <ul class="icon-list">
-        <li>Arts</li>
-        <li>Science</li>
+        <li><i class="bi bi-brush"></i> Arts </li>
+        <li><i class="bi bi-binoculars"></i> Science</li>
       </ul>
       <p><strong><i class="bi bi-tools"></i> TECHNICAL</strong></p>
       <ul class="icon-list">
-        <li>Building & Construction</li>
-        <li>Fashion Design</li>
-        <li>Electrical Power Sys.</li>
-        <li>Accounting</li>
+        <li><i class="bi bi-car-front-fill"></i> Automobile Repair Mechanicsm(ARM)</li>
+        <li><i class="bi bi-battery-charging"></i> Electrical Power System (EPS)</li>
+        <li><i class="bi bi-bag"></i> Fashion Design (FE)</li>
+        <li><i class="bi bi-building"></i> Building Construction (CE-BC)</li>
+        <li><i class="bi bi-egg"></i> Home Economics (HEc)</li>
       </ul>
     </section>
 
@@ -276,10 +278,11 @@
 
       <!-- Notices & Transportation Card -->
       <div class="footer-card reveal-on-scroll">
-        <h3><i class="bi bi-info-circle-fill"></i> IMPORTANT NOTICE & TRANSPORT</h3>
+        <h3><i class="bi bi-info-circle-fill"></i> IMPORTANT NOTICE</h3>
         <p style="margin-bottom: 1.2rem;">Visits are 3 times a year. Provide all listed items to ensure comfort and focus. Together we build discipline and excellence.</p>
         <div style="background: rgba(0,0,0,0.15); padding: 1.2rem; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.1);">
-          <p style="margin-bottom: 0.6rem;"><i class="bi bi-bus-front-fill" style="color: var(--gold-light);"></i> School bus transports students on resumption & closing days.</p>
+          <p><i class = "bi bi-info-circle" style="color: var(--gold-light);"></i> <strong>Notice:</strong> All students must bring the required items for the new academic year.</p>
+          <p><i class = "bi bi-exclamation-triangle" style="color: var(--gold-light);"></i> <strong>Reminder:</strong> Please ensure all items are in good condition.</p>
           <p><i class="bi bi-geo-alt-fill" style="color: var(--gold-light);"></i> <strong>Kickoff point:</strong> All Saints Catholic Church, Mbengwi.</p>
         </div>
       </div>
@@ -303,7 +306,7 @@
 <!-- JavaScript System Core Logic -->
 <script>
 /* ==========================================================================
-   SAJOCO PROSPECTUS – ENHANCED JAVASCRIPT SYSTEM
+   SJCCC PROSPECTUS – ENHANCED JAVASCRIPT SYSTEM
    ========================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -315,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const darkModeToggle = document.getElementById('darkModeToggle');
 
     // Check localStorage for saved theme preference
-    const savedTheme = localStorage.getItem('sajoco-theme');
+    const savedTheme = localStorage.getItem('sjccc-theme');
     if (savedTheme === 'dark') {
         body.classList.add('dark-mode');
     }
@@ -341,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
                 body.classList.toggle('dark-mode');
                 const currentTheme = body.classList.contains('dark-mode') ? 'dark' : 'light';
-                localStorage.setItem('sajoco-theme', currentTheme);
+                localStorage.setItem('sjccc-theme', currentTheme);
 
                 setTimeout(() => {
                     overlay.classList.remove('active');
@@ -357,7 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Listen for system theme changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        const hasManualPreference = localStorage.getItem('sajoco-theme');
+        const hasManualPreference = localStorage.getItem('sjccc-theme');
         if (!hasManualPreference) {
             if (e.matches) {
                 body.classList.add('dark-mode');
@@ -536,7 +539,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 7. INITIALIZATION LOG
     // ──────────────────────────────────────────────
     const currentTheme = body.classList.contains('dark-mode') ? 'Dark' : 'Light';
-    const initMessage = `SAJOCO Prospectus Initialized | Theme: ${currentTheme} | ${new Date().toLocaleTimeString()}`;
+    const initMessage = `SJCCC Prospectus Initialized | Theme: ${currentTheme} | ${new Date().toLocaleTimeString()}`;
     
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         console.log(`%c${initMessage}`, 'color: #C9A229; font-weight: bold;');

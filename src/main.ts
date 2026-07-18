@@ -21,7 +21,7 @@ class Preloader {
 class ThemeManager {
     private body: HTMLElement;
     private toggle: HTMLAnchorElement | null;
-    private readonly STORAGE_KEY = 'theme';
+    private readonly STORAGE_KEY = 'sjccc-theme';
     private readonly DARK_CLASS = 'dark-mode';
 
     constructor(toggleId: string) {
