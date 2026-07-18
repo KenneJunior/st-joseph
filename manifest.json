@@ -1,0 +1,87 @@
+{
+  "name": "SAJOCO - St. Joseph College Mbengwi",
+  "short_name": "SAJOCO",
+  "description": "Official Site for St. Joseph College Mbengwi. Step into a legacy of excellence through Catholic values, rigorous academics, and character formation.",
+  "start_url": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#07182E",
+  "theme_color": "#C9A229",
+  "scope": "/",
+  "id": "/",
+  "lang": "en",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/assets/icons/icon_96X96.svg",
+      "sizes": "96X96",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon_128X128.svg",
+      "sizes": "128X128",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/144X144.svg",
+      "sizes": "144X144",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/168X168.svg",
+      "sizes": "168X168",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/192X192.svg",
+      "sizes": "192X192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/512X512.svg",
+      "sizes": "512X512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshots/Home.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/assets/screenshots/inquiry.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/assets/screenshots/prospectus.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Prospectus",
+      "short_name": "Prospectus",
+      "description": "View official requirements and fees",
+      "url": "/prospectus",
+      "icons": [
+        {
+          "src": "/icon/shortcut/prospectus.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

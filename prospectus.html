@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>SAJOCO | Official Prospectus 2026/2027</title>
 
+  <link rel="icon" type="text/xml" href="/assets/icons/168X168.svg">
+
   <!-- Open Graph Meta Tags for Social & WhatsApp Sharing -->
   <meta property="og:title" content="SAJOCO Official Prospectus 2026/2027">
   <meta property="og:description" content="Step into a legacy of excellence! St. Joseph College Mbengwi official requirements, fees, and uniform guidelines for the 2026/2027 academic year.">
@@ -372,13 +374,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ──────────────────────────────────────────────
-    // 3. SCROLL REVEAL ANIMATIONS – MOBILE OPTIMIZED
+    // 3. SCROLL REVEAL ANIMATIONS
     // ──────────────────────────────────────────────
     const scrollElements = document.querySelectorAll('.reveal-on-scroll');
 
     if (scrollElements.length > 0) {
-        // Detect if we're on a mobile device
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
                          || window.innerWidth <= 768;
 
         const observerOptions = {
@@ -397,7 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     setTimeout(() => {
                         entry.target.classList.add('active');
                     }, delay);
-                    
+
                     // Stop observing once revealed
                     scrollObserver.unobserve(entry.target);
                 }
@@ -412,17 +413,6 @@ document.addEventListener("DOMContentLoaded", () => {
             scrollObserver.observe(el);
         });
 
-        // Fallback: Reveal all elements after 3 seconds if IntersectionObserver fails
-        // This handles edge cases on some mobile browsers
-        /*
-        setTimeout(() => {
-            scrollElements.forEach(el => {
-                if (!el.classList.contains('active')) {
-                    el.classList.add('active');
-                }
-            });
-        }, 3000);
-        */
     }
 
 
