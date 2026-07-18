@@ -1,7 +1,8 @@
 // ============================================
-// SJCCC Mbengwi - TypeScript Class Architecture
+// SJCCC Mbengwi -  Class Architecture
 // ============================================
 import './style.css'
+import './sw-register.ts'
 class Preloader {
     constructor(private element: HTMLElement) {
         this.init();

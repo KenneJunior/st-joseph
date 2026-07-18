@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 4001",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
@@ -12,5 +12,8 @@
     "@types/node": "^26.1.1",
     "typescript": "~6.0.2",
     "vite": "^8.0.12"
+  },
+  "dependencies": {
+    "vercel": "^56.3.1"
   }
 }

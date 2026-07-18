@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAJOCO - Offline</title>
+    <style>
+        :root {
+            --deep-blue: #07182E;
+            --gold: #C9A229;
+            --gold-light: #F3D779;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #0a1c38 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 500px;
+        }
+        .icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+        .cross {
+            color: var(--gold-light);
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        p {
+            opacity: 0.8;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .retry-btn {
+            background: var(--gold);
+            color: var(--deep-blue);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--gold);
+        }
+        .retry-btn:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(201, 162, 41, 0.3);
+        }
+        .motto {
+            font-style: italic;
+            color: var(--gold-light);
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <span class="cross">✟</span>
+    <h1>SAJOCO</h1>
+    <p>
+        You're currently offline. The prospectus content will be available
+        once you reconnect to the internet.
+    </p>
+    <button class="retry-btn" onclick="window.location.reload()">
+        Try Again
+    </button>
+    <p class="motto">
+        "Edificamus Regnum Dei – Let us build the Kingdom of God"
+    </p>
+</div>
+</body>
+</html>

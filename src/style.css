@@ -45,6 +45,9 @@
   /* Fonts */
   --font-heading: 'Playfair Display', Georgia, serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+
+  --titlebar-height: 40px;
+
 }
 
 /* ============================================
@@ -1808,3 +1811,93 @@ body.dark-mode #darkModeToggle .toggle-moon { display: none; }
     transition: var(--transition-smooth);
   }
   .contact-link:hover { color: var(--accent); padding-left: 5px; }
+  @media (display-mode: window-controls-overlay) {
+    /* Reserve space for the overlay title bar */
+    body {
+      padding-top: env(titlebar-area-height, 40px);
+    }
+
+    /* Custom title bar area */
+    .wco-titlebar {
+      position: fixed;
+      top: 0;
+      left: env(titlebar-area-x, 0);
+      width: env(titlebar-area-width, 100%);
+      height: env(titlebar-area-height, 40px);
+      background: var(--deep-blue, #07182E);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 env(titlebar-area-x, 16px);
+      z-index: 10000;
+      -webkit-app-region: drag; /* Makes the title bar draggable */
+      user-select: none;
+      border-bottom: 1px solid rgba(201, 162, 41, 0.3);
+    }
+
+    .wco-titlebar__logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: 'Cormorant Garamond', 'Georgia', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--gold-light, #F3D779);
+      letter-spacing: 0.5px;
+    }
+
+    .wco-titlebar__logo svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .wco-titlebar__actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      -webkit-app-region: no-drag; /* Buttons should be clickable */
+    }
+
+    .wco-titlebar__btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--white, #ffffff);
+      width: 32px;
+      height: 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      font-size: 0.8rem;
+    }
+
+    .wco-titlebar__btn:hover {
+      background: rgba(201, 162, 41, 0.15);
+      border-color: var(--gold, #C9A229);
+    }
+
+    .wco-titlebar__btn--close:hover {
+      background: rgba(199, 54, 54, 0.3);
+      border-color: #C73636;
+      color: #ff7b7b;
+    }
+
+    /* Adjust the main header to account for the overlay */
+    #mainHeader {
+      top: env(titlebar-area-height, 40px);
+    }
+
+    /* Move the floating PDF button up so it's not behind the overlay */
+    .download-action-container {
+      bottom: calc(35px + env(titlebar-area-height, 0px));
+    }
+  }
+
+  /* Fallback for standalone mode without overlay */
+  @media (display-mode: standalone) {
+    body {
+      padding-top: 0;
+    }
+  }
