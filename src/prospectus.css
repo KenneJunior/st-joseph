@@ -1,6 +1,5 @@
 /* ==========================================================================
-   SAJOCO OFFICIAL PROSPECTUS – PREMIUM STYLESHEET (2026/2027)
-   Fully Responsive, Mobile-Optimized & Print-Perfect
+   SAJOCO OFFICIAL PROSPECTUS
    ========================================================================== */
 
 /* ─── 1. DESIGN TOKENS & SYSTEM VARIABLES ─── */
@@ -53,12 +52,11 @@ body.dark-mode {
     --backdrop-blur: blur(16px);
     --glass-bg: rgba(22, 28, 36, 0.75);
 }
+══════════════════════════════════════════════════════════════════════ */
 
-/* ══════════════════════════════════════════════════════════════════════
-   PRINT / PDF STYLES - THEME-AWARE & COMPREHENSIVE
-   These styles activate when user triggers PDF download (window.print)
-   They respect the current theme (light or dark mode)
-   ══════════════════════════════════════════════════════════════════════ */
+/* ==========================================================================
+   PRINT / PDF STYLES
+   ========================================================================== */
 
 @media print {
     /* ─── Force Background Colors & Images to Print ─── */
@@ -76,15 +74,22 @@ body.dark-mode {
         padding: 0 !important;
         background: none !important;
         overflow: visible !important;
-        font-size: 10pt !important;
+        font-size: 8pt !important;
+        line-height: 1.25 !important;
     }
 
     body {
-        background-color: var(--bg-card) !important;
-        color: var(--text-main) !important;
+        background-color: var(--bg-card, #ffffff) !important;
+        color: var(--text-main, #1A1E2B) !important;
     }
 
-    /* ─── Container - Full Width, No Shadows ─── */
+    /* ─── Page Setup ─── */
+    @page {
+        margin: 5mm !important;
+        size: A4 portrait;
+    }
+
+    /* ─── Container ─── */
     .prospectus-container {
         max-width: 100% !important;
         width: 100% !important;
@@ -95,11 +100,11 @@ body.dark-mode {
         border-radius: 0 !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
-        background: var(--bg-card) !important;
+        background: var(--bg-card, #ffffff) !important;
         animation: none !important;
     }
 
-    /* ─── Hide All Interactive/Non-Printable Elements ─── */
+    /* ─── Hide Interactive Elements ─── */
     #mainHeader,
     .menu-toggle,
     #navMenu,
@@ -108,7 +113,8 @@ body.dark-mode {
     .stats-bar,
     .theme-transition-overlay,
     .nav-cta,
-    .nav-link {
+    .nav-link,
+    .wco-titlebar {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
@@ -119,87 +125,153 @@ body.dark-mode {
         pointer-events: none !important;
     }
 
-    /* ─── Institutional Header ─── */
+    /* ─── Institutional Header – Compact ─── */
     .main-header {
-        background: var(--deep-blue) !important;
-        color: var(--text-light) !important;
-        padding: 1.5rem 1rem !important;
-        border-bottom: 2px solid var(--gold) !important;
+        background: var(--deep-blue, #07182E) !important;
+        color: var(--text-light, #ffffff) !important;
+        padding: 5mm 4mm !important;
+        border-bottom: 1.5px solid var(--gold, #C9A229) !important;
+        text-align: center !important;
         page-break-after: avoid !important;
     }
 
     .header-cross {
-        color: var(--gold-light) !important;
-        font-size: 1.8rem !important;
+        color: var(--gold-light, #F3D779) !important;
+        font-size: 14pt !important;
+        margin-bottom: 1mm !important;
         animation: none !important;
         filter: none !important;
     }
 
     .header-title {
-        color: var(--text-light) !important;
-        font-size: 1.8rem !important;
+        color: var(--text-light, #ffffff) !important;
+        font-size: 15pt !important;
+        letter-spacing: 1px !important;
         text-shadow: none !important;
+        margin: 0 !important;
     }
 
     .header-subtitle {
-        color: var(--gold-light) !important;
-        font-size: 1rem !important;
+        color: var(--gold-light, #F3D779) !important;
+        font-size: 9pt !important;
+        letter-spacing: 2px !important;
+        margin: 1mm 0 !important;
     }
 
     .header-diocese {
         color: #d1c49c !important;
-        font-size: 0.8rem !important;
+        font-size: 7pt !important;
+        margin: 0 !important;
     }
 
     /* ─── Motto & Academic Banner ─── */
     .motto-bar {
-        background: var(--bg-card) !important;
-        color: var(--deep-blue) !important;
-        font-size: 0.85rem !important;
-        padding: 0.6rem !important;
-        border-bottom: 1px solid var(--border-soft) !important;
+        background: var(--bg-card, #ffffff) !important;
+        color: var(--deep-blue, #07182E) !important;
+        font-size: 7pt !important;
+        padding: 2mm 4mm !important;
+        border-bottom: 0.5px solid var(--border-soft) !important;
         page-break-after: avoid !important;
+        text-align: center !important;
     }
 
     body.dark-mode .motto-bar {
-        color: var(--gold-light) !important;
+        color: var(--gold-light, #F3D779) !important;
     }
 
     .academic-banner {
-        background: var(--deep-blue) !important;
-        color: var(--gold) !important;
-        font-size: 0.8rem !important;
-        padding: 0.6rem !important;
-        border-bottom: 1px solid var(--gold) !important;
+        background: var(--deep-blue, #07182E) !important;
+        color: var(--gold, #C9A229) !important;
+        font-size: 7pt !important;
+        padding: 2mm 4mm !important;
+        border-bottom: 1px solid var(--gold, #C9A229) !important;
+        text-align: center !important;
+        letter-spacing: 0.5px !important;
         page-break-after: avoid !important;
     }
 
-    /* ─── Grid System - Compact Print Layout ─── */
+    /* ─── Grid System – Reset to Block for Manual Pairing ─── */
     .prospectus-grid {
         display: block !important;
-        padding: 1rem !important;
-        gap: 0 !important;
+        padding: 3mm !important;
     }
 
-    /* ─── Section Cards - Print Optimized ─── */
+    /* ══════════════════════════════════════════════════════════
+       PAIRED CARD LAYOUTS – EXACTLY AS REQUESTED
+       ══════════════════════════════════════════════════════════ */
+
+    /* Each pair is wrapped in a row */
+    .prospectus-grid {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 2mm !important;
+    }
+
+    /* All cards take 50% width by default */
+    .section-card {
+        flex: 0 0 calc(50% - 1mm) !important;
+        max-width: calc(50% - 1mm) !important;
+    }
+
+    /* Welcome to SAJOCO – Full width (spans the whole page) */
+    .section-card:nth-child(1) {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* College Uniform – Full width */
+    .section-card:nth-child(2) {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* ─── PAIR 1: Compound Wear (left) + Shoes & Sports (right) ─── */
+    .section-card:nth-child(3),
+    .section-card:nth-child(4) {
+        flex: 0 0 calc(50% - 1mm) !important;
+        max-width: calc(50% - 1mm) !important;
+    }
+
+    /* Fees Table – Full width */
+    .section-card:nth-child(5) {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* ─── PAIR 2: Requirements (left) + School Rules (right) ─── */
+    .section-card:nth-child(6),
+    .section-card:nth-child(7) {
+        flex: 0 0 calc(50% - 1mm) !important;
+        max-width: calc(50% - 1mm) !important;
+    }
+
+    /* ─── PAIR 3: Departments (left) + Books & Stationery (right) ─── */
+    .section-card:nth-child(8),
+    .section-card:nth-child(9) {
+        flex: 0 0 calc(50% - 1mm) !important;
+        max-width: calc(50% - 1mm) !important;
+    }
+
+    /* ─── Section Card Base Styles ─── */
     .section-card {
         display: block !important;
-        width: 100% !important;
-        margin-bottom: 0.8rem !important;
-        padding: 0.8rem !important;
-        border: 1px solid var(--border-card) !important;
-        border-radius: 6px !important;
+        margin: 0 !important;
+        padding: 2.5mm 3mm !important;
+        border: 0.5px solid var(--border-card, rgba(0,0,0,0.1)) !important;
+        border-radius: 3px !important;
         box-shadow: none !important;
-        background: var(--bg-card) !important;
+        background: var(--bg-card, #ffffff) !important;
         page-break-inside: avoid !important;
+        break-inside: avoid !important;
         transform: none !important;
         opacity: 1 !important;
         transition: none !important;
         animation: none !important;
+        overflow: hidden !important;
     }
 
-    /* Remove hover effects in print */
-    .section-card::before {
+    .section-card::before,
+    .section-card::after {
         display: none !important;
     }
 
@@ -209,116 +281,138 @@ body.dark-mode {
         border-color: var(--border-card) !important;
     }
 
-    /* ─── Section Headers ─── */
+    /* ─── Section Headers – Tiny Pills ─── */
     .section-header {
         display: inline-flex !important;
-        font-size: 0.8rem !important;
-        padding: 0.4rem 0.8rem !important;
-        margin-bottom: 0.6rem !important;
-        border-radius: 20px !important;
-        background: var(--deep-blue) !important;
-        color: var(--text-light) !important;
-        border-bottom: 2px solid var(--gold) !important;
+        font-size: 7pt !important;
+        padding: 1.5mm 3mm !important;
+        margin-bottom: 2mm !important;
+        border-radius: 10px !important;
+        background: var(--deep-blue, #07182E) !important;
+        color: var(--text-light, #ffffff) !important;
+        border-bottom: 1px solid var(--gold, #C9A229) !important;
+        letter-spacing: 0.3px !important;
+        gap: 1.5mm !important;
     }
 
     .section-header.alt-header {
-        background: var(--royal-blue) !important;
+        background: var(--royal-blue, #0E2746) !important;
     }
 
     .section-header.danger-header {
-        background: var(--accent-red) !important;
+        background: var(--accent-red, #C73636) !important;
     }
 
-    /* ─── Typography in Print ─── */
+    .section-header .bi {
+        font-size: 6pt !important;
+    }
+
+    /* ─── Typography ─── */
     .section-card p {
-        font-size: 0.75rem !important;
-        line-height: 1.4 !important;
-        color: var(--text-muted) !important;
-        margin-bottom: 0.3rem !important;
+        font-size: 7pt !important;
+        line-height: 1.3 !important;
+        color: var(--text-muted, #5A5D66) !important;
+        margin-bottom: 1mm !important;
     }
 
     .section-card strong {
-        color: var(--text-main) !important;
+        color: var(--text-main, #1A1E2B) !important;
+        font-weight: 700 !important;
     }
 
-    /* ─── Uniform Split ─── */
+    /* ─── Uniform Split – Side by Side ─── */
     .uniform-split {
         display: flex !important;
         flex-direction: row !important;
-        gap: 0.8rem !important;
+        gap: 2mm !important;
     }
 
     .uniform-gender {
         flex: 1 !important;
-        padding: 0.6rem !important;
-        border: 1px dashed var(--border-soft) !important;
+        padding: 2mm !important;
+        border: 0.5px dashed var(--border-soft) !important;
+        border-radius: 3px !important;
         background: none !important;
     }
 
     .uniform-gender h4 {
-        font-size: 0.8rem !important;
-        margin-bottom: 0.4rem !important;
-        color: var(--royal-blue) !important;
+        font-size: 7pt !important;
+        margin-bottom: 1.5mm !important;
+        gap: 1mm !important;
+        color: var(--royal-blue, #0E2746) !important;
     }
 
     body.dark-mode .uniform-gender h4 {
-        color: var(--gold-light) !important;
+        color: var(--gold-light, #F3D779) !important;
     }
 
     /* ─── Icon Lists ─── */
     .icon-list {
         list-style: none !important;
         padding-left: 0 !important;
+        margin: 0 !important;
     }
 
     .icon-list li {
-        font-size: 0.7rem !important;
-        padding-left: 1rem !important;
-        margin-bottom: 0.2rem !important;
-        color: var(--text-muted) !important;
-        line-height: 1.3 !important;
+        font-size: 6.5pt !important;
+        padding-left: 3.5mm !important;
+        margin-bottom: 0.8mm !important;
+        color: var(--text-muted, #5A5D66) !important;
+        line-height: 1.2 !important;
+        position: relative !important;
     }
 
     .icon-list li::before {
         content: "•" !important;
         position: absolute !important;
-        left: 0 !important;
-        color: var(--gold) !important;
-        font-size: 0.7rem !important;
+        left: 0.5mm !important;
+        color: var(--gold, #C9A229) !important;
+        font-size: 6pt !important;
+        font-weight: bold !important;
     }
 
-    /* ─── Tables - Print Friendly ─── */
+    /* ─── Tables ─── */
     .table-responsive {
         overflow-x: visible !important;
-        border: 1px solid var(--border-soft) !important;
-        border-radius: 4px !important;
+        border: 0.5px solid var(--border-soft) !important;
+        border-radius: 2px !important;
+        margin: 0 !important;
     }
 
     .data-table {
         width: 100% !important;
-        font-size: 0.7rem !important;
+        font-size: 6.5pt !important;
         border-collapse: collapse !important;
         min-width: auto !important;
+        margin: 0 !important;
     }
 
     .data-table th {
-        background: var(--deep-blue) !important;
-        color: var(--text-light) !important;
-        padding: 0.4rem 0.6rem !important;
-        font-size: 0.7rem !important;
+        background: var(--deep-blue, #07182E) !important;
+        color: var(--text-light, #ffffff) !important;
+        padding: 1.5mm 2mm !important;
+        font-size: 6.5pt !important;
         white-space: normal !important;
+        letter-spacing: 0.2px !important;
+        line-height: 1.2 !important;
     }
 
     .data-table td {
-        padding: 0.3rem 0.6rem !important;
-        font-size: 0.68rem !important;
-        border-bottom: 1px solid var(--border-card) !important;
-        color: var(--text-main) !important;
+        padding: 1.2mm 2mm !important;
+        font-size: 6.5pt !important;
+        border-bottom: 0.5px solid var(--border-card) !important;
+        color: var(--text-main, #1A1E2B) !important;
         white-space: normal !important;
+        line-height: 1.2 !important;
+    }
+
+    .data-table td .bi {
+        font-size: 5pt !important;
+        margin-right: 1mm !important;
     }
 
     .data-table tr:nth-child(even) {
-        background: var(--bg-table-stripe) !important;
+        background: var(--bg-table-stripe, #FBF9F2) !important;
     }
 
     .data-table tr:hover {
@@ -327,37 +421,47 @@ body.dark-mode {
 
     /* ─── Alert Text ─── */
     .alert-text {
-        font-size: 0.65rem !important;
-        color: var(--accent-red) !important;
-        margin-top: 0.4rem !important;
+        font-size: 6pt !important;
+        color: var(--accent-red, #C73636) !important;
+        margin-top: 1.5mm !important;
+        gap: 1mm !important;
+        padding: 0 !important;
     }
 
     body.dark-mode .alert-text {
         color: #ff7b7b !important;
     }
 
-    /* ─── Footer - Print Optimized ─── */
+    .alert-text .bi {
+        font-size: 5pt !important;
+    }
+
+    /* ─── Footer ─── */
     .prospectus-footer {
-        background: var(--deep-blue) !important;
-        color: var(--text-light) !important;
-        padding: 1rem !important;
-        border-top: 2px solid var(--gold) !important;
+        background: var(--deep-blue, #07182E) !important;
+        color: var(--text-light, #ffffff) !important;
+        padding: 3mm 4mm !important;
+        border-top: 1.5px solid var(--gold, #C9A229) !important;
         page-break-before: auto !important;
     }
 
+    /* ─── PAIR 4: Contact Us (left) + Important Notice (right) ─── */
     .footer-top-grid {
         display: flex !important;
-        flex-direction: column !important;
-        gap: 0.8rem !important;
-        margin-bottom: 0.8rem !important;
+        flex-direction: row !important;
+        gap: 2mm !important;
+        margin-bottom: 2mm !important;
     }
 
     .footer-card {
-        padding: 0.8rem !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 6px !important;
+        flex: 0 0 calc(50% - 1mm) !important;
+        max-width: calc(50% - 1mm) !important;
+        padding: 2.5mm 3mm !important;
+        border: 0.5px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 3px !important;
         background: rgba(255, 255, 255, 0.03) !important;
         page-break-inside: avoid !important;
+        break-inside: avoid !important;
         transform: none !important;
     }
 
@@ -367,45 +471,64 @@ body.dark-mode {
     }
 
     .footer-card h3 {
-        font-size: 0.85rem !important;
-        color: var(--gold-light) !important;
-        margin-bottom: 0.5rem !important;
-        padding-bottom: 0.3rem !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        font-size: 7.5pt !important;
+        color: var(--gold-light, #F3D779) !important;
+        margin-bottom: 2mm !important;
+        padding-bottom: 1mm !important;
+        border-bottom: 0.5px solid rgba(255, 255, 255, 0.1) !important;
+        gap: 1.5mm !important;
+    }
+
+    .footer-card h3 .bi {
+        font-size: 6.5pt !important;
     }
 
     .footer-card p {
-        font-size: 0.7rem !important;
+        font-size: 6.5pt !important;
         color: #d1cfc4 !important;
-        margin-bottom: 0.3rem !important;
+        margin-bottom: 1mm !important;
+        line-height: 1.3 !important;
+    }
+
+    .footer-card div {
+        padding: 2mm !important;
+        border-radius: 2px !important;
     }
 
     /* ─── Contact Links ─── */
     .contact-link-list {
         list-style: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     .contact-link-list li {
-        margin-bottom: 0.3rem !important;
+        margin-bottom: 1mm !important;
     }
 
     .contact-link-list a {
-        font-size: 0.7rem !important;
+        font-size: 6.5pt !important;
         color: #d1cfc4 !important;
         text-decoration: none !important;
         pointer-events: none !important;
+        gap: 1.5mm !important;
+    }
+
+    .contact-link-list a .bi {
+        font-size: 5.5pt !important;
     }
 
     /* ─── Bottom Strip ─── */
     .bottom-strip {
-        font-size: 0.65rem !important;
-        color: var(--gold-light) !important;
-        padding-top: 0.6rem !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+        font-size: 6pt !important;
+        color: var(--gold-light, #F3D779) !important;
+        padding-top: 2mm !important;
+        border-top: 0.5px solid rgba(255, 255, 255, 0.1) !important;
         text-align: center !important;
+        letter-spacing: 0.5px !important;
     }
 
-    /* ─── Reveal on Scroll - Force Visible ─── */
+    /* ─── Force All Reveal-on-Scroll Visible ─── */
     .reveal-on-scroll {
         opacity: 1 !important;
         transform: none !important;
@@ -414,7 +537,7 @@ body.dark-mode {
 
     /* ─── Bootstrap Icons ─── */
     .bi {
-        font-size: 0.7rem !important;
+        font-size: 5.5pt !important;
         transition: none !important;
     }
 
@@ -427,10 +550,12 @@ body.dark-mode {
 
     .section-card {
         page-break-inside: avoid !important;
+        break-inside: avoid !important;
     }
 
     .footer-card {
         page-break-inside: avoid !important;
+        break-inside: avoid !important;
     }
 
     /* ─── Remove All Animations ─── */
@@ -441,35 +566,28 @@ body.dark-mode {
         transition: none !important;
     }
 
-    /* ─── Ensure Dark Mode Prints Correctly ─── */
+    /* ─── Dark Mode Print Fixes ─── */
     body.dark-mode .prospectus-container {
-        background: var(--bg-card) !important;
+        background: var(--bg-card, #161c24) !important;
     }
 
     body.dark-mode .section-card {
-        background: var(--bg-card) !important;
+        background: var(--bg-card, #161c24) !important;
         border-color: var(--border-card) !important;
     }
 
     body.dark-mode .motto-bar {
-        background: var(--bg-card) !important;
+        background: var(--bg-card, #161c24) !important;
     }
 
     body.dark-mode .data-table th {
-        background: var(--deep-blue) !important;
+        background: var(--deep-blue, #07182E) !important;
     }
 
     body.dark-mode .data-table tr:nth-child(even) {
-        background: var(--bg-table-stripe) !important;
-    }
-
-    /* ─── Page Margins ─── */
-    @page {
-        margin: 0.8cm;
-        size: A4 portrait;
+        background: var(--bg-table-stripe, #1c232d) !important;
     }
 }
-
 /* ══════════════════════════════════════════════════════════════════════
    SCREEN STYLES CONTINUE BELOW (unchanged from previous version)
    ══════════════════════════════════════════════════════════════════════ */
@@ -1165,7 +1283,7 @@ body.dark-mode .alert-text { color: #ff7b7b; }
 }
 
 /* Smooth theme transitions */
-body, .prospectus-container, .section-card, .motto-bar, .academic-banner, 
+body, .prospectus-container, .section-card, .motto-bar, .academic-banner,
 .main-header, .prospectus-footer, .footer-card, .data-table th, .data-table td,
 .stats-bar, .stat-item, .uniform-gender {
     transition: background-color 0.6s ease, 
