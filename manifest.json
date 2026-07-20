@@ -1,7 +1,7 @@
 {
-  "name": "SAJOCO - St. Joseph College Mbengwi",
-  "short_name": "SAJOCO",
-  "description": "Official Site for St. Joseph College Mbengwi. Step into a legacy of excellence through Catholic values, rigorous academics, and character formation.",
+  "name": "SJCCC - St. Joseph Catholic College Mbengwi",
+  "short_name": "SJCCC",
+  "description": "Official Site for St. Joseph Catholic College Mbengwi. Step into a legacy of excellence through Catholic values, rigorous academics, and character formation.",
   "start_url": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SAJOCO – SERVICE WORKER REGISTRATION (TypeScript)
+   SJCCC – SERVICE WORKER REGISTRATION (TypeScript)
    ========================================================================== */
 
 // Type declarations for the update banner elements
