@@ -59,11 +59,29 @@
 <!-- Skip to main content -->
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<!-- ==================== PRELOADER ==================== -->
+<!-- ============================================
+PRELOADER - LEFT TO RIGHT PILLAR REVEAL
+============================================ -->
 <div id="preloader">
-  <div class="preloader-inner">
-    <div class="preloader-cross"></div>
-    <p class="preloader-text" style="color:var(--accent-glow);font-family:var(--font-heading);letter-spacing:3px;">SJCCC MBENGWI</p>
+  <!-- Container for both halves -->
+  <div class="preloader-container">
+    <div class="preloader-top-half" id="preloaderTopHalf"></div>
+
+    <div class="preloader-bottom-half" id="preloaderBottomHalf"></div>
+  </div>
+
+  <div class="preloader-particles" id="preloaderParticles"></div>
+
+  <!-- Center content -->
+  <div class="preloader-content" id="preloaderContent">
+    <div class="preloader-logo">SJCCC</div>
+    <div class="preloader-title">St. Joseph's Catholic</div>
+    <div class="preloader-subtitle">Comprehensive College</div>
+    <div class="preloader-motto">"Edificamus Regnum Dei"</div>
+    <div class="preloader-progress">
+      <div class="preloader-progress-bar" id="preloaderProgressBar"></div>
+    </div>
+    <div class="preloader-percentage" id="preloaderPercentage">0%</div>
   </div>
 </div>
 
@@ -518,7 +536,7 @@
       <h2>Ready to Join Our Family?</h2>
       <p>Admissions are open. Let's work together to nurture a bright, purposeful, and fulfilling future for your
         child.</p>
-      <a href="#contact" class="btn btn-primary">Enquire Now</a>
+      <button id="enquire-btn" class="btn btn-primary">Enquire Now</button>
     </div>
   </section>
 </main>

@@ -4,17 +4,375 @@
 import './style.css'
 import './sw-register.ts'
 
+// ============================================
+// PILLAR PRELOADER WITH MULTIPLE ANIMATIONS
+// ============================================
 class Preloader {
-    constructor(private element: HTMLElement) {
-        this.init();
+    private preloader: HTMLElement;
+    private topHalf: HTMLElement | null;
+    private bottomHalf: HTMLElement | null;
+    private content: HTMLElement | null;
+    private progressBar: HTMLElement | null;
+    private percentageText: HTMLElement | null;
+    private particlesContainer: HTMLElement | null;
+
+    private topPillars: HTMLElement[] = [];
+    private bottomPillars: HTMLElement[] = [];
+    private pillarCount: number = 12;
+    private animatedCount: number = 0;
+    private totalPillars: number = 0;
+    private isAnimating: boolean = false;
+
+    private readonly STORAGE_KEY = 'lastPreloaderAnimation';
+
+    // Available animation types
+    private readonly ANIMATIONS = [
+        'Center',
+        'LeftToRight',
+        'RightToLeft',
+        'Checkerboard',
+        'EdgeInward',
+        'Wave',
+        'DoubleDoor'
+    ];
+
+    constructor() {
+        this.preloader = document.getElementById('preloader') as HTMLElement;
+        this.topHalf = document.getElementById('preloaderTopHalf');
+        this.bottomHalf = document.getElementById('preloaderBottomHalf');
+        this.content = document.getElementById('preloaderContent');
+        this.progressBar = document.getElementById('preloaderProgressBar');
+        this.percentageText = document.getElementById('preloaderPercentage');
+        this.particlesContainer = document.getElementById('preloaderParticles');
+
+        if (this.preloader) {
+            this.init();
+        }
     }
 
     private init(): void {
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                this.element.classList.add('fade-out');
-            }, 600);
+        this.adjustPillarCount();
+        this.createPillars();
+        this.createParticles();
+        this.startLoading();
+
+        window.addEventListener('resize', () => {
+            if (!this.isAnimating && !this.preloader.classList.contains('fade-out')) {
+                this.adjustPillarCount();
+                this.recreatePillars();
+            }
         });
+    }
+
+    private adjustPillarCount(): void {
+        const width = window.innerWidth;
+        if (width <= 480) this.pillarCount = 10;
+        else if (width <= 768) this.pillarCount = 14;
+        else if (width <= 1024) this.pillarCount = 18
+        else this.pillarCount = 24;
+    }
+
+    private createParticles(): void {
+        if (!this.particlesContainer) return;
+        for (let i = 0; i < 25; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'preloader-particle';
+            const size = Math.random() * 3 + 1.5;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${35 + Math.random() * 30}%`;
+            particle.style.animationDelay = `${Math.random() * 4}s`;
+            particle.style.animationDuration = `${3 + Math.random() * 5}s`;
+            this.particlesContainer.appendChild(particle);
+        }
+    }
+
+    private recreatePillars(): void {
+        if (!this.topHalf || !this.bottomHalf) return;
+        this.topHalf.innerHTML = '';
+        this.bottomHalf.innerHTML = '';
+        this.topPillars = [];
+        this.bottomPillars = [];
+        this.animatedCount = 0;
+        this.createPillars();
+    }
+
+    private createPillars(): void {
+        if (!this.topHalf || !this.bottomHalf) return;
+        this.totalPillars = this.pillarCount * 2;
+
+        for (let i = 0; i < this.pillarCount; i++) {
+            const pillar = document.createElement('div');
+            pillar.className = 'preloader-pillar';
+            pillar.setAttribute('data-index', String(i));
+            pillar.style.backgroundColor = 'var(--primary-dark)';
+            this.topHalf.appendChild(pillar);
+            this.topPillars.push(pillar);
+        }
+
+        for (let i = 0; i < this.pillarCount; i++) {
+            const pillar = document.createElement('div');
+            pillar.className = 'preloader-pillar';
+            pillar.setAttribute('data-index', String(i));
+            pillar.style.backgroundColor = 'var(--primary-dark)';
+            this.bottomHalf.appendChild(pillar);
+            this.bottomPillars.push(pillar);
+        }
+    }
+
+    private startLoading(): void {
+        let progress = 0;
+        const startTime = performance.now();
+        const minDuration = 1500;
+
+        const updateLoading = (): void => {
+            const elapsed = performance.now() - startTime;
+            if (progress < 90) {
+                progress += (Math.random() * 8 + 3) * (1 - progress / 100);
+            } else if (progress < 100) {
+                progress += 0.3;
+            }
+            progress = Math.min(progress, 100);
+            this.updateProgress(progress);
+
+            if (progress < 100) {
+                requestAnimationFrame(updateLoading);
+            } else {
+                const remainingTime = Math.max(0, minDuration - elapsed);
+                setTimeout(() => this.startPillarAnimation(), remainingTime + 200);
+            }
+        };
+
+        requestAnimationFrame(updateLoading);
+
+        window.addEventListener('load', () => {
+            if (progress < 100) {
+                progress = 100;
+                this.updateProgress(100);
+                setTimeout(() => {
+                    if (!this.isAnimating) this.startPillarAnimation();
+                }, 300);
+            }
+        });
+    }
+
+    private updateProgress(progress: number): void {
+        const rounded = Math.round(progress);
+        if (this.progressBar) this.progressBar.style.width = `${rounded}%`;
+        if (this.percentageText) this.percentageText.textContent = `${rounded}%`;
+    }
+
+    /**
+     * Cycles through all available animations in order
+     */
+    private animatePillar(): void {
+        const lastAnimation = localStorage.getItem(this.STORAGE_KEY);
+        let nextIndex = 0;
+
+        if (lastAnimation) {
+            const currentIndex = this.ANIMATIONS.indexOf(lastAnimation);
+            nextIndex = (currentIndex + 1) % this.ANIMATIONS.length;
+        }
+
+        const nextAnimation = this.ANIMATIONS[nextIndex];
+        localStorage.setItem(this.STORAGE_KEY, nextAnimation);
+
+        // Execute the selected animation
+        switch (nextAnimation) {
+            case 'Center':
+                this.pillarAnimationCenter();
+                break;
+            case 'LeftToRight':
+                this.pillarAnimationLeftToRight();
+                break;
+            case 'RightToLeft':
+                this.pillarAnimationRightToLeft();
+                break;
+            case 'Checkerboard':
+                this.pillarAnimationCheckerboard();
+                break;
+            case 'EdgeInward':
+                this.pillarAnimationEdgeInward();
+                break;
+            case 'Wave':
+                this.pillarAnimationWave();
+                break;
+            case 'DoubleDoor':
+                this.pillarAnimationDoubleDoor();
+                break;
+            default:
+                this.pillarAnimationCenter();
+        }
+    }
+
+    // ============================================
+    // ANIMATION 1: CENTER OUTWARD
+    // ============================================
+    private pillarAnimationCenter(): void {
+        const centerIndex = Math.floor(this.pillarCount / 2);
+        const sequence: number[] = [];
+        const visited = new Set<number>();
+
+        for (let offset = 0; offset <= centerIndex; offset++) {
+            const leftIndex = centerIndex - offset;
+            const rightIndex = centerIndex + offset;
+            if (leftIndex >= 0 && !visited.has(leftIndex)) {
+                visited.add(leftIndex);
+                sequence.push(leftIndex);
+            }
+            if (rightIndex < this.pillarCount && !visited.has(rightIndex)) {
+                visited.add(rightIndex);
+                sequence.push(rightIndex);
+            }
+        }
+
+        this.executeAnimation(sequence, 80);
+    }
+
+    // ============================================
+    // ANIMATION 2: LEFT TO RIGHT
+    // ============================================
+    private pillarAnimationLeftToRight(): void {
+        const sequence: number[] = [];
+        for (let i = 0; i < this.pillarCount; i++) {
+            sequence.push(i);
+        }
+        this.executeAnimation(sequence, 80);
+    }
+
+    // ============================================
+    // ANIMATION 3: RIGHT TO LEFT
+    // ============================================
+    private pillarAnimationRightToLeft(): void {
+        const sequence: number[] = [];
+        for (let i = this.pillarCount - 1; i >= 0; i--) {
+            sequence.push(i);
+        }
+        this.executeAnimation(sequence, 80);
+    }
+
+    // ============================================
+    // ANIMATION 4: CHECKERBOARD / ALTERNATING
+    // ============================================
+    private pillarAnimationCheckerboard(): void {
+        const sequence: number[] = [];
+
+        // First pass: even indices
+        for (let i = 0; i < this.pillarCount; i += 2) {
+            sequence.push(i);
+        }
+        // Second pass: odd indices
+        for (let i = 1; i < this.pillarCount; i += 2) {
+            sequence.push(i);
+        }
+
+        this.executeAnimation(sequence, 60);
+    }
+
+    // ============================================
+    // ANIMATION 5: EDGE INWARD (Both ends toward center)
+    // ============================================
+    private pillarAnimationEdgeInward(): void {
+        const sequence: number[] = [];
+        const visited = new Set<number>();
+
+        for (let offset = 0; offset < Math.ceil(this.pillarCount / 2); offset++) {
+            const leftIndex = offset;
+            const rightIndex = this.pillarCount - 1 - offset;
+
+            if (!visited.has(leftIndex)) {
+                visited.add(leftIndex);
+                sequence.push(leftIndex);
+            }
+            if (rightIndex !== leftIndex && !visited.has(rightIndex)) {
+                visited.add(rightIndex);
+                sequence.push(rightIndex);
+            }
+        }
+
+        this.executeAnimation(sequence, 70);
+    }
+
+    // ============================================
+    // ANIMATION 6: WAVE PATTERN
+    // ============================================
+    private pillarAnimationWave(): void {
+        const sequence: number[] = [];
+
+        // Create a wave pattern: 0, 2, 4, 1, 3, 5, 6, 8, 10, 7, 9, 11
+        const evenForward: number[] = [];
+        const oddForward: number[] = [];
+
+        for (let i = 0; i < this.pillarCount; i++) {
+            if (i % 2 === 0) evenForward.push(i);
+            else oddForward.push(i);
+        }
+
+        sequence.push(...evenForward, ...oddForward);
+        this.executeAnimation(sequence, 65);
+    }
+
+    // ============================================
+    // ANIMATION 7: DOUBLE DOOR (Center splits outward)
+    // ============================================
+    private pillarAnimationDoubleDoor(): void {
+        const sequence: number[] = [];
+        const centerIndex = Math.floor(this.pillarCount / 2);
+
+        // Start from center, move outward
+        for (let offset = 0; offset <= centerIndex; offset++) {
+            // Left side moving left
+            const leftDoor = centerIndex - offset;
+            if (leftDoor >= 0) sequence.push(leftDoor);
+
+            // Right side moving right
+            const rightDoor = centerIndex + 1 + offset;
+            if (rightDoor < this.pillarCount) sequence.push(rightDoor);
+        }
+
+        this.executeAnimation(sequence, 75);
+    }
+
+    // ============================================
+    // EXECUTE ANIMATION
+    // ============================================
+    private executeAnimation(sequence: number[], staggerDelay: number): void {
+        if (this.isAnimating) return;
+        this.isAnimating = true;
+
+        // Fade out center content first
+        if (this.content) {
+            this.content.classList.add('fade-out');
+        }
+
+        sequence.forEach((index, position) => {
+            setTimeout(() => {
+                if (this.topPillars[index]) {
+                    this.topPillars[index].classList.add('animate-out');
+                }
+                if (this.bottomPillars[index]) {
+                    this.bottomPillars[index].classList.add('animate-out');
+                }
+
+                this.animatedCount += 2;
+
+                if (this.animatedCount >= this.totalPillars) {
+                    setTimeout(() => this.onComplete(), 900);
+                }
+            }, position * staggerDelay);
+        });
+    }
+
+    private startPillarAnimation(): void {
+        this.animatePillar();
+    }
+
+    private onComplete(): void {
+        this.preloader.classList.add('fade-out');
+        setTimeout(() => {
+            this.preloader.style.display = 'none';
+        }, 1000);
     }
 }
 
@@ -650,6 +1008,7 @@ class EnquiryForm {
             this.submitBtn.textContent = 'Send Message';
         }
     }
+
 }
 
 // ============================================
@@ -662,8 +1021,8 @@ class App {
 
     private init(): void {
         // 1. Preloader
-        const preloaderEl = document.getElementById('preloader');
-        if (preloaderEl) new Preloader(preloaderEl);
+        new Preloader();
+
 
         // 2. Theme
         new ThemeManager('darkModeToggle');
@@ -701,7 +1060,7 @@ class App {
         new ScrollSpy('#navMenu a.nav-link');
 
         // 13. Enquiry modal
-        new EnquiryModal(['enquiryFab', 'pMan', 'getInTouchBtn'],
+        new EnquiryModal(['enquiryFab','enquire-btn', 'pMan', 'getInTouchBtn'],
             'enquiryModal',
             'modalClose');
 
