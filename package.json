@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite --port 5174",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "v-build": "vercel build",
+    "v-prod": "vercel --prod"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
