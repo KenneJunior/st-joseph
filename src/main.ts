@@ -1,8 +1,9 @@
 // ============================================
-// SJCCC Mbengwi -  Class Architecture
+// SJCCC Mbengwi - Class Architecture
 // ============================================
 import './style.css'
 import './sw-register.ts'
+
 class Preloader {
     constructor(private element: HTMLElement) {
         this.init();
@@ -76,6 +77,9 @@ class ThemeManager {
 
 // --------------------------------------------
 class HeaderScroll {
+    private ticking: boolean = false;
+    private lastScrollY: number = 0;
+
     constructor(
         private header: HTMLElement,
         private backToTopBtn: HTMLElement | null
@@ -92,10 +96,33 @@ class HeaderScroll {
     }
 
     private onScroll = (): void => {
-        const y = window.scrollY;
-        this.header.classList.toggle('scrolled', y > 60);
-        this.backToTopBtn?.classList.toggle('visible', y > 500);
+        this.lastScrollY = window.scrollY;
+
+        if (!this.ticking) {
+            window.requestAnimationFrame(() => {
+                // Progressive blur - add/remove scrolled class
+                this.header.classList.toggle('scrolled', this.lastScrollY > 60);
+
+                // Dynamic blur intensity based on scroll position
+                const blurIntensity = Math.min(25, 20 + (this.lastScrollY / 50));
+                this.header.style.setProperty('--blur-intensity', `${blurIntensity}px`);
+
+                // Back to top button visibility
+                this.backToTopBtn?.classList.toggle('visible', this.lastScrollY > 500);
+
+                this.ticking = false;
+            });
+            this.ticking = true;
+        }
+
+        // Update header height CSS variable for layout calculations
+        this.updateHeaderHeight();
     };
+
+    private updateHeaderHeight(): void {
+        const headerHeight = this.header.offsetHeight;
+        document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+    }
 }
 
 // --------------------------------------------
@@ -117,18 +144,29 @@ class MobileNavigation {
         this.menuToggle.addEventListener('click', () => this.toggleMenu());
         this.bindLinkClicks();
         this.bindOutsideClick();
+
+        // Update header height when menu toggles (for mobile layout changes)
+        this.menuToggle.addEventListener('click', () => {
+            setTimeout(() => this.updateHeaderHeight(), 350);
+        });
     }
 
     private toggleMenu(): void {
         const isActive = this.navMenu!.classList.toggle('active');
-        this.menuToggle!.textContent = isActive ? '✕' : '☰';
+        const icon = this.menuToggle!.querySelector('i');
+        if (icon) {
+            icon.className = isActive ? 'bi bi-x-lg' : 'bi bi-list';
+        }
         this.menuToggle!.setAttribute('aria-expanded', String(isActive));
     }
 
     private closeMenu(): void {
         this.navMenu?.classList.remove('active');
         if (this.menuToggle) {
-            this.menuToggle.textContent = '☰';
+            const icon = this.menuToggle.querySelector('i');
+            if (icon) {
+                icon.className = 'bi bi-list';
+            }
             this.menuToggle.setAttribute('aria-expanded', 'false');
         }
     }
@@ -150,6 +188,11 @@ class MobileNavigation {
                 this.closeMenu();
             }
         });
+    }
+
+    private updateHeaderHeight(): void {
+        const headerHeight = this.header?.offsetHeight || 80;
+        document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
     }
 }
 
@@ -479,22 +522,21 @@ class ScrollSpy {
 
 // --------------------------------------------
 class EnquiryModal {
-    private fab: HTMLButtonElement | null;
+    private fabElement: HTMLElement[];
     private modal: HTMLElement | null;
     private closeBtn: HTMLButtonElement | null;
-    private pMan: HTMLAnchorElement | null;
 
-    constructor(fabId: string, modalId: string, closeBtnId: string, pManId: string) {
-        this.fab = document.getElementById(fabId) as HTMLButtonElement | null;
-        this.pMan = document.getElementById(pManId) as HTMLAnchorElement | null;
+    constructor(fabIds: string[], modalId: string, closeBtnId: string) {
+        this.fabElement = fabIds.map((id) => document.getElementById(id)).filter((v): v is HTMLElement => !!v);
         this.modal = document.getElementById(modalId) as HTMLElement | null;
         this.closeBtn = document.getElementById(closeBtnId) as HTMLButtonElement | null;
         this.init();
     }
 
     private init(): void {
-        this.fab?.addEventListener('click', () => this.open());
-        this.pMan?.addEventListener('click', () => this.open());
+        this.fabElement?.forEach((fab) => {
+            fab.addEventListener('click', () => this.open());
+        });
         this.closeBtn?.addEventListener('click', () => this.close());
         this.modal?.addEventListener('click', (e: MouseEvent) => {
             if (e.target === this.modal) this.close();
@@ -517,13 +559,12 @@ class EnquiryModal {
         if (!this.modal) return;
         this.modal.setAttribute('hidden', '');
         document.body.style.overflow = '';
-        this.fab?.focus();
+        this.fabElement[0]?.focus();
     }
 }
 
 // --------------------------------------------
-// --------------------------------------------
-class EnquiryForm { // Fixed missing '{'
+class EnquiryForm {
     private readonly form: HTMLFormElement | null;
     private readonly status: HTMLElement | null;
     private readonly submitBtn: HTMLButtonElement | null;
@@ -551,7 +592,6 @@ class EnquiryForm { // Fixed missing '{'
         this.submitBtn.textContent = 'Processing…';
 
         // 1. ROUTE VIA WHATSAPP IF TOGGLE IS TRUE
-// 1. ROUTE VIA WHATSAPP IF TOGGLE IS TRUE
         if (this.whatsappToggle?.checked) {
             try {
                 const formData = new FormData(this.form);
@@ -611,6 +651,7 @@ class EnquiryForm { // Fixed missing '{'
         }
     }
 }
+
 // ============================================
 // APPLICATION BOOTSTRAP
 // ============================================
@@ -627,7 +668,7 @@ class App {
         // 2. Theme
         new ThemeManager('darkModeToggle');
 
-        // 3. Header scroll & back to top
+        // 3. Header scroll & back to top with progressive blur
         const headerEl = document.getElementById('mainHeader');
         const backToTopEl = document.getElementById('backToTop');
         if (headerEl) new HeaderScroll(headerEl, backToTopEl);
@@ -660,7 +701,9 @@ class App {
         new ScrollSpy('#navMenu a.nav-link');
 
         // 13. Enquiry modal
-        new EnquiryModal('enquiryFab', 'enquiryModal', 'modalClose', 'pMan');
+        new EnquiryModal(['enquiryFab', 'pMan', 'getInTouchBtn'],
+            'enquiryModal',
+            'modalClose');
 
         // 14. Enquiry form (Formspree)
         new EnquiryForm('enquiryForm', 'formStatus', 'submitBtn', 'whatsappRoutingToggle');
