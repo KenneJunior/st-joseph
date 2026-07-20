@@ -201,9 +201,11 @@ body.dark-mode {
 
     /* Each pair is wrapped in a row */
     .prospectus-grid {
+        padding: 3mm !important;
         display: flex !important;
         flex-wrap: wrap !important;
         gap: 2mm !important;
+        grid-template-columns: repeat(12, 1fr)!important;
     }
 
     /* All cards take 50% width by default */
@@ -212,29 +214,18 @@ body.dark-mode {
         max-width: calc(50% - 1mm) !important;
     }
 
-    /* Welcome to SJCCC – Full width (spans the whole page) */
-    .section-card:nth-child(1) {
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
-    }
-
-    /* College Uniform – Full width */
-    .section-card:nth-child(2) {
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
-    }
-
-    /* ─── PAIR 1: Compound Wear (left) + Shoes & Sports (right) ─── */
+    .section-card:nth-child(1),
+    .section-card:nth-child(2),
     .section-card:nth-child(3),
     .section-card:nth-child(4) {
-        flex: 0 0 calc(50% - 1mm) !important;
-        max-width: calc(50% - 1mm) !important;
+        flex: 0 0 calc(28% - 1mm) !important;
+        max-width: calc(28% - 1mm) !important;
     }
 
     /* Fees Table – Full width */
     .section-card:nth-child(5) {
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
+        flex: 0 0 70% !important;
+        max-width: 70% !important;
     }
 
     /* ─── PAIR 2: Requirements (left) + School Rules (right) ─── */
@@ -1297,7 +1288,7 @@ body, .prospectus-container, .section-card, .motto-bar, .academic-banner,
 
 /* Tablet Landscape & Smaller Desktops (max-width: 1024px) */
 @media (max-width: 1024px) {
-    
+
     .prospectus-grid {
         gap: 1.8rem;
         padding: 2rem;
