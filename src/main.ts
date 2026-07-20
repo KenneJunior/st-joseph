@@ -376,42 +376,113 @@ class Preloader {
     }
 }
 
-// --------------------------------------------
+// ============================================
+// THEME MANAGER WITH ANIMATED TRANSITIONS (FIXED)
+// ============================================
+
+type AnimationStyle =
+    | 'circle-center'
+    | 'circle-top-left'
+    | 'circle-top-right'
+    | 'rect-top-down'
+    | 'rect-bottom-up'
+    | 'rect-left-right'
+    | 'rect-right-left'
+    | 'blur';
+
 class ThemeManager {
     private body: HTMLElement;
     private toggle: HTMLAnchorElement | null;
+    private transitionOverlay: HTMLElement | null;
     private readonly STORAGE_KEY = 'sjccc-theme';
+    private readonly ANIM_STORAGE_KEY = 'sjccc-theme-animation';
     private readonly DARK_CLASS = 'dark-mode';
+    private isDark: boolean = false;
+    private isAnimating: boolean = false;
+
+    // Timing constants (in milliseconds) - Increased for smoother feel
+    private readonly EXPAND_DURATION = 800;   // Overlay expands (was 500)
+    private readonly THEME_SWITCH_DELAY = 650; // Switch theme just before fully expanded (was 400)
+    private readonly HOLD_DURATION = 150;     // Brief pause at full expansion (was 100)
+    private readonly SHRINK_DURATION = 600;   // Overlay shrinks back (was 400)
+    private readonly TOTAL_DURATION = 1600;   // Total animation time (was 1000)
+
+    private readonly animations: AnimationStyle[] = [
+        'circle-center',
+        'circle-top-left',
+        'circle-top-right',
+        'rect-top-down',
+        'rect-bottom-up',
+        'rect-left-right',
+        'rect-right-left',
+        'blur'
+    ];
+
+    private currentAnimation: AnimationStyle = 'circle-center';
 
     constructor(toggleId: string) {
         this.body = document.body;
         this.toggle = document.getElementById(toggleId) as HTMLAnchorElement | null;
+        this.transitionOverlay = document.getElementById('themeTransitionOverlay');
+
+        // Create overlay if it doesn't exist
+        if (!this.transitionOverlay) {
+            this.transitionOverlay = document.createElement('div');
+            this.transitionOverlay.id = 'themeTransitionOverlay';
+            this.transitionOverlay.className = 'theme-transition-overlay';
+            // Insert as first child so it's behind all content
+            document.body.insertBefore(this.transitionOverlay, document.body.firstChild);
+        }
+
         this.init();
     }
 
     private init(): void {
+        this.loadSavedAnimation();
         this.applyInitialTheme();
         this.bindToggle();
         this.listenForSystemChanges();
     }
 
+    private loadSavedAnimation(): void {
+        const saved = localStorage.getItem(this.ANIM_STORAGE_KEY);
+
+        if (saved && this.animations.includes(saved as AnimationStyle)) {
+            this.currentAnimation = saved as AnimationStyle;
+        } else {
+            this.currentAnimation = 'circle-center';
+            localStorage.setItem(this.ANIM_STORAGE_KEY, 'circle-center');
+        }
+    }
+
+    private cycleAnimation(): void {
+        const currentIndex = this.animations.indexOf(this.currentAnimation);
+        const nextIndex = (currentIndex + 1) % this.animations.length;
+        this.currentAnimation = this.animations[nextIndex];
+        localStorage.setItem(this.ANIM_STORAGE_KEY, this.currentAnimation);
+    }
+
     private applyInitialTheme(): void {
         const saved = localStorage.getItem(this.STORAGE_KEY);
-        if (saved) {
-            if (saved === 'dark') this.body.classList.add(this.DARK_CLASS);
+
+        if (saved === 'dark') {
+            this.applyTheme(true);
+        } else if (saved === 'light') {
+            this.applyTheme(false);
         } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            this.body.classList.add(this.DARK_CLASS);
+            this.applyTheme(true);
+        } else {
+            this.applyTheme(false);
         }
     }
 
     private bindToggle(): void {
         this.toggle?.addEventListener('click', (e: MouseEvent) => {
             e.preventDefault();
-            this.body.classList.toggle(this.DARK_CLASS);
-            localStorage.setItem(
-                this.STORAGE_KEY,
-                this.isDark() ? 'dark' : 'light'
-            );
+
+            if (!this.isAnimating) {
+                this.toggleTheme();
+            }
         });
     }
 
@@ -419,16 +490,174 @@ class ThemeManager {
         window.matchMedia('(prefers-color-scheme: dark)')
             .addEventListener('change', (e: MediaQueryListEvent) => {
                 if (!localStorage.getItem(this.STORAGE_KEY)) {
-                    if (e.matches) {
-                        this.body.classList.add(this.DARK_CLASS);
-                    } else {
-                        this.body.classList.remove(this.DARK_CLASS);
-                    }
+                    this.applyTheme(e.matches);
                 }
             });
     }
 
-    public isDark(): boolean {
+    /**
+     * Toggle theme with smooth, long animation:
+     * 1. Overlay expands to cover old theme (800ms) - smooth ease-out
+     * 2. Theme switches underneath while fully covered (at 650ms)
+     * 3. Brief hold at full expansion (150ms)
+     * 4. Overlay shrinks to reveal new theme (600ms) - smooth ease-in
+     */
+    public toggleTheme(): void {
+        if (this.isAnimating) return;
+
+        const goingDark = !this.isDark;
+        this.isAnimating = true;
+
+        // Step 1: Expand overlay to cover the current theme
+        this.expandOverlay(goingDark);
+
+        // Step 2: Switch the theme UNDER the overlay (before it shrinks)
+        setTimeout(() => {
+            this.applyTheme(goingDark);
+        }, this.THEME_SWITCH_DELAY);
+
+        // Step 3: Start shrinking overlay to reveal new theme
+        setTimeout(() => {
+            this.shrinkOverlay();
+        }, this.EXPAND_DURATION + this.HOLD_DURATION);
+
+        // Step 4: Clean up everything
+        setTimeout(() => {
+            this.cleanupOverlay();
+            this.cycleAnimation();
+            this.isAnimating = false;
+        }, this.TOTAL_DURATION);
+    }
+
+    /**
+     * Apply theme instantly (no animation)
+     */
+    private applyTheme(dark: boolean): void {
+        this.isDark = dark;
+
+        // Disable transitions temporarily to prevent flash
+        this.body.style.transition = 'none';
+
+        if (dark) {
+            this.body.classList.add(this.DARK_CLASS);
+        } else {
+            this.body.classList.remove(this.DARK_CLASS);
+        }
+
+        // Force reflow
+        void this.body.offsetWidth;
+
+        // Re-enable transitions after a tiny delay
+        setTimeout(() => {
+            this.body.style.transition = '';
+        }, 50);
+
+        localStorage.setItem(this.STORAGE_KEY, dark ? 'dark' : 'light');
+    }
+
+    /**
+     * Expand overlay from start position to full screen (smooth ease-out)
+     */
+    private expandOverlay(goingDark: boolean): void {
+        const overlay = this.transitionOverlay;
+        if (!overlay) return;
+
+        // The overlay shows the NEW theme color
+        const newBg = goingDark ? '#121a2a' : '#ffffff';
+
+        // Reset overlay to start position
+        overlay.style.transition = 'none';
+        overlay.style.clipPath = this.getStartClipPath();
+        overlay.style.background = newBg;
+        overlay.style.opacity = '1';
+        overlay.style.filter = 'none';
+        overlay.classList.add('animating');
+
+        // Force reflow
+        void overlay.offsetWidth;
+
+        // Smooth ease-out for expansion - starts fast, ends slow
+        const easing = 'cubic-bezier(0.25, 0.1, 0.25, 1.0)'; // Smooth deceleration
+        overlay.style.transition = `clip-path ${this.EXPAND_DURATION}ms ${easing}`;
+
+        requestAnimationFrame(() => {
+            overlay.style.clipPath = this.getFullScreenClipPath();
+
+            // Handle blur - subtle blur during expansion
+            if (this.currentAnimation === 'blur') {
+                overlay.style.transition = `clip-path ${this.EXPAND_DURATION}ms ${easing}, filter 0.6s ease`;
+                overlay.style.filter = 'blur(8px)';
+            }
+        });
+    }
+
+    /**
+     * Shrink overlay from full screen back to start position (smooth ease-in)
+     */
+    private shrinkOverlay(): void {
+        const overlay = this.transitionOverlay;
+        if (!overlay) return;
+
+        // Clear any blur before shrinking
+        if (this.currentAnimation === 'blur') {
+            overlay.style.filter = 'blur(0px)';
+        }
+
+        // Smooth ease-in for shrinking - starts slow, ends fast
+        const easing = 'cubic-bezier(0.55, 0.0, 0.45, 1.0)'; // Smooth acceleration
+        overlay.style.transition = `clip-path ${this.SHRINK_DURATION}ms ${easing}`;
+
+        requestAnimationFrame(() => {
+            overlay.style.clipPath = this.getStartClipPath();
+        });
+    }
+
+    /**
+     * Clean up overlay after animation completes
+     */
+    private cleanupOverlay(): void {
+        const overlay = this.transitionOverlay;
+        if (!overlay) return;
+
+        overlay.classList.remove('animating');
+        overlay.style.opacity = '0';
+        overlay.style.clipPath = 'none';
+        overlay.style.filter = 'none';
+        overlay.style.background = 'transparent';
+        overlay.style.transition = 'none';
+    }
+
+    private getStartClipPath(): string {
+        switch (this.currentAnimation) {
+            case 'circle-center':
+                return 'circle(0% at 50% 50%)';
+            case 'circle-top-left':
+                return 'circle(0% at 0% 0%)';
+            case 'circle-top-right':
+                return 'circle(0% at 100% 0%)';
+            case 'rect-top-down':
+                return 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)';
+            case 'rect-bottom-up':
+                return 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)';
+            case 'rect-left-right':
+                return 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)';
+            case 'rect-right-left':
+                return 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)';
+            case 'blur':
+                return 'circle(0% at 50% 50%)';
+            default:
+                return 'circle(0% at 50% 50%)';
+        }
+    }
+
+    private getFullScreenClipPath(): string {
+        if (this.currentAnimation.startsWith('rect-')) {
+            return 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)';
+        }
+        return 'circle(150% at 50% 50%)';
+    }
+
+    public isDarkMode(): boolean {
         return this.body.classList.contains(this.DARK_CLASS);
     }
 }
@@ -1025,7 +1254,7 @@ class App {
 
 
         // 2. Theme
-        new ThemeManager('darkModeToggle');
+        new ThemeManager('themeToggle');
 
         // 3. Header scroll & back to top with progressive blur
         const headerEl = document.getElementById('mainHeader');

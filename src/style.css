@@ -712,18 +712,88 @@ body.dark-mode #mainHeader.scrolled::before {
 }
 
 /* Dark mode toggle icons */
-#darkModeToggle .toggle-sun,
-#darkModeToggle .toggle-moon {
-  font-size: 1.1rem;
-  transition: opacity 0.2s ease;
+/* ============================================
+   THEME TOGGLE BUTTON - YIN YANG STYLE
+   ============================================ */
+.theme-toggle-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #000;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
-#darkModeToggle .toggle-sun { display: none; }
-#darkModeToggle .toggle-moon { display: inline; }
+body.dark-mode .theme-toggle-btn {
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
 
-body.dark-mode #darkModeToggle .toggle-sun { display: inline; }
-body.dark-mode #darkModeToggle .toggle-moon { display: none; }
+.theme-toggle-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
 
+.theme-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+.theme-toggle-btn svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Moon group rotation */
+.theme-toggle-moon {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+body.dark-mode .theme-toggle-moon {
+  transform: rotate(-180deg);
+}
+
+/* Outer ring rotation */
+.theme-toggle-ring {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+body.dark-mode .theme-toggle-ring {
+  transform: rotate(180deg);
+}
+
+/* ============================================
+   THEME TRANSITION OVERLAY
+   ============================================ */
+.theme-transition-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  clip-path: circle(0% at 50% 50%);
+  opacity: 0;
+  background: transparent;
+  transition: none;
+  /* Prevent any pixel snapping */
+  will-change: clip-path;
+  /* Smooth rendering */
+  -webkit-font-smoothing: antialiased;
+  backface-visibility: hidden;
+}
+
+.theme-transition-overlay.animating {
+  opacity: 1;
+}
 /* Mobile Menu Toggle */
 .menu-toggle {
   display: none;
@@ -767,6 +837,7 @@ body.dark-mode #darkModeToggle .toggle-moon { display: none; }
   padding: 0 32px;
   overflow: hidden;
   background: var(--primary-dark);
+  z-index: 1;
 }
 
 .hero-bg-layer {
@@ -955,6 +1026,7 @@ body.dark-mode #darkModeToggle .toggle-moon { display: none; }
 }
 
 .section-label {
+  position: relative;
   display: block;
   text-align: center;
   font-size: 0.8rem;
@@ -963,9 +1035,11 @@ body.dark-mode #darkModeToggle .toggle-moon { display: none; }
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 12px;
+  z-index: 1;
 }
 
 .section-title {
+  position: relative;
   text-align: center;
   margin-bottom: 16px;
   color: var(--primary);
@@ -974,6 +1048,7 @@ body.dark-mode #darkModeToggle .toggle-moon { display: none; }
   font-weight: 700;
   letter-spacing: -0.5px;
   line-height: 1.25;
+  z-index: 1;
 }
 
 body.dark-mode .section-title {
@@ -981,12 +1056,14 @@ body.dark-mode .section-title {
 }
 
 .section-subtitle {
+  position: relative;
   text-align: center;
   color: var(--text-muted);
   max-width: 600px;
   margin: 0 auto 56px auto;
   font-size: 1.05rem;
   line-height: 1.6;
+  z-index: 1;
 }
 
 .section-divider {
@@ -1221,6 +1298,7 @@ body.dark-mode .bg-image-section::before {
   position: relative;
   max-width: 900px;
   margin: 0 auto;
+  z-index: 1;
 }
 
 .carousel-container {
@@ -1424,6 +1502,7 @@ body.dark-mode .testimonial-author {
   border-radius: var(--radius-lg);
   box-shadow: var(--card-shadow);
   margin: 40px 0;
+  z-index: 1;
 }
 
 .map-container iframe {
@@ -1448,6 +1527,7 @@ body.dark-mode .testimonial-author {
   overflow: hidden;
   max-width: 1000px;
   margin: 0 auto;
+  z-index: 1;
 }
 
 .cta-banner::before {
@@ -1483,10 +1563,12 @@ body.dark-mode .testimonial-author {
    FOOTER
    ============================================ */
 footer {
+  position: relative;
   background: var(--surface-footer);
   color: #b0c4de;
   padding: 70px 32px 24px 32px;
   transition: background 0.4s;
+  z-index: 1;
 }
 
 .footer-content {
@@ -1651,6 +1733,7 @@ footer p {
   display: flex;
   flex-direction: column;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 1;
 }
 
 .pillar:hover {
