@@ -74,7 +74,9 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
 
   <!-- Center content -->
   <div class="preloader-content" id="preloaderContent">
-    <div class="preloader-logo">SJCCC</div>
+    <div >
+      <img class="preloader-logo" src="public/assets/icons/512X512.svg" alt="Saint Joseph's Catholic Comprehensive College"/>
+    </div>
     <div class="preloader-title">St. Joseph's Catholic</div>
     <div class="preloader-subtitle">Comprehensive College</div>
     <div class="preloader-motto">"Edificamus Regnum Dei"</div>
@@ -107,7 +109,7 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
       <a href="#contact" class="nav-link"><i class="bi bi-envelope"></i> Contact</a>
       <a href="/prospectus.html" class="nav-link"><i class="bi bi-file-earmark-pdf"></i> Prospectus</a>
       <a href="#" class="nav-cta theme-toggle-link" id="themeToggle" title="Switch light/dark mode" aria-label="Switch light/dark mode">
-        <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
+        <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 35px; height: 35px;">
           <g class="theme-toggle-moon">
             <path d="M120 67.5C149.25 67.5 172.5 90.75 172.5 120C172.5 149.25 149.25 172.5 120 172.5" fill="white"/>
             <path d="M120 67.5C90.75 67.5 67.5 90.75 67.5 120C67.5 149.25 90.75 172.5 120 172.5" fill="black"/>
@@ -600,30 +602,54 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
     <form action="https://formspree.io/f/xnjkgpgg" data-whatsapp-phone="237672829014" id="enquiryForm" method="POST"
             novalidate>
       <div class="form-group">
-        <label for="enqName">Your Name *</label>
-        <input type="text" id="enqName" name="name" required placeholder="e.g. John N.">
+        <label for="enqName">Your Name</label>
+        <input
+                type="text"
+                id="enqName"
+                name="enqName"
+                placeholder="Enter your full name"
+                required
+        />
+        <div class="typing-indicator">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
       </div>
 
       <div class="form-group">
-        <label for="enqEmail">Your Email *</label>
-        <input type="email" id="enqEmail" name="email" required placeholder="you@email.com">
+        <label for="enqEmail">Email Address</label>
+        <input
+                type="email"
+                id="enqEmail"
+                name="enqEmail"
+                placeholder="your@email.com"
+                required
+        />
+        <div class="typing-indicator">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
       </div>
 
-          <div class="form-group">
-        <label for="enqMessage">Message *</label>
-        <textarea id="enqMessage" name="message" rows="4" required placeholder="How can we help you?"></textarea>
-      </div>
-
-          <div class="form-group form-toggle">
-              <label class="switch-label" for="whatsappRoutingToggle">
-                <input id="whatsappRoutingToggle" name="sendViaWhatsApp" type="checkbox">
-                  <span class="toggle-text">Send instantly via WhatsApp instead of Email</span>
-              </label>
-          </div>
-
-      <button class="btn btn-primary" id="submitBtn" type="submit">Send Message</button>
-      <p class="form-note" id="formStatus" aria-live="polite"></p>
-    </form>
+      <div class="form-group">
+        <label for="enqMessage">Your Message</label>
+        <textarea
+                id="enqMessage"
+                name="enqMessage"
+                rows="4"
+                placeholder="Type your message here..."
+                maxlength="500"
+                required
+        ></textarea>
+        <div class="char-count">0/500</div>
+        <div class="typing-indicator">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      </div>    </form>
   </div>
 </div>
 <script type="module" src="/src/main.ts"></script>

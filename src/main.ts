@@ -5,7 +5,7 @@ import './style.css'
 import './sw-register.ts'
 
 // ============================================
-// PILLAR PRELOADER WITH MULTIPLE ANIMATIONS
+// PILLAR PRELOADER WITH MATH-DRIVEN ANIMATIONS
 // ============================================
 class Preloader {
     private preloader: HTMLElement;
@@ -33,7 +33,10 @@ class Preloader {
         'Checkerboard',
         'EdgeInward',
         'Wave',
-        'DoubleDoor'
+        'DoubleDoor',
+        'RandomDissolve',
+        'WhipAccelerate',
+        'Staircase'
     ];
 
     constructor() {
@@ -68,7 +71,7 @@ class Preloader {
         const width = window.innerWidth;
         if (width <= 480) this.pillarCount = 10;
         else if (width <= 768) this.pillarCount = 14;
-        else if (width <= 1024) this.pillarCount = 18
+        else if (width <= 1024) this.pillarCount = 18;
         else this.pillarCount = 24;
     }
 
@@ -163,9 +166,6 @@ class Preloader {
         if (this.percentageText) this.percentageText.textContent = `${rounded}%`;
     }
 
-    /**
-     * Cycles through all available animations in order
-     */
     private animatePillar(): void {
         const lastAnimation = localStorage.getItem(this.STORAGE_KEY);
         let nextIndex = 0;
@@ -178,175 +178,191 @@ class Preloader {
         const nextAnimation = this.ANIMATIONS[nextIndex];
         localStorage.setItem(this.STORAGE_KEY, nextAnimation);
 
-        // Execute the selected animation
         switch (nextAnimation) {
-            case 'Center':
-                this.pillarAnimationCenter();
-                break;
-            case 'LeftToRight':
-                this.pillarAnimationLeftToRight();
-                break;
-            case 'RightToLeft':
-                this.pillarAnimationRightToLeft();
-                break;
-            case 'Checkerboard':
-                this.pillarAnimationCheckerboard();
-                break;
-            case 'EdgeInward':
-                this.pillarAnimationEdgeInward();
-                break;
-            case 'Wave':
-                this.pillarAnimationWave();
-                break;
-            case 'DoubleDoor':
-                this.pillarAnimationDoubleDoor();
-                break;
-            default:
-                this.pillarAnimationCenter();
+            case 'Center': this.pillarAnimationCenter(); break;
+            case 'LeftToRight': this.pillarAnimationLeftToRight(); break;
+            case 'RightToLeft': this.pillarAnimationRightToLeft(); break;
+            case 'Checkerboard': this.pillarAnimationCheckerboard(); break;
+            case 'EdgeInward': this.pillarAnimationEdgeInward(); break;
+            case 'Wave': this.pillarAnimationWave(); break;
+            case 'DoubleDoor': this.pillarAnimationDoubleDoor(); break;
+            case 'RandomDissolve': this.pillarAnimationRandomDissolve(); break;
+            case 'WhipAccelerate': this.pillarAnimationWhipAccelerate(); break;
+            case 'Staircase': this.pillarAnimationStaircase(); break;
+            default: this.pillarAnimationCenter();
         }
     }
 
     // ============================================
-    // ANIMATION 1: CENTER OUTWARD
+    //  ANIMATION CALCULATIONS
     // ============================================
+
+    // 1. CENTER OUTWARD: Polynomial Radial Distance
     private pillarAnimationCenter(): void {
-        const centerIndex = Math.floor(this.pillarCount / 2);
-        const sequence: number[] = [];
-        const visited = new Set<number>();
+        const timings: {index: number, delay: number}[] = [];
+        const center = (this.pillarCount - 1) / 2;
+        const maxDuration = 800;
 
-        for (let offset = 0; offset <= centerIndex; offset++) {
-            const leftIndex = centerIndex - offset;
-            const rightIndex = centerIndex + offset;
-            if (leftIndex >= 0 && !visited.has(leftIndex)) {
-                visited.add(leftIndex);
-                sequence.push(leftIndex);
-            }
-            if (rightIndex < this.pillarCount && !visited.has(rightIndex)) {
-                visited.add(rightIndex);
-                sequence.push(rightIndex);
-            }
+        for (let i = 0; i < this.pillarCount; i++) {
+            // Normalized absolute distance from center [0, 1]
+            const x = Math.abs(i - center) / center;
+            // Apply polynomial easing (x^1.5) for a smooth spatial spread
+            const delay = Math.pow(x, 1.5) * maxDuration;
+            timings.push({ index: i, delay });
         }
-
-        this.executeAnimation(sequence, 80);
+        this.executeAnimation(timings);
     }
 
-    // ============================================
-    // ANIMATION 2: LEFT TO RIGHT
-    // ============================================
+    // 2. LEFT TO RIGHT: Linear
     private pillarAnimationLeftToRight(): void {
-        const sequence: number[] = [];
+        const timings: {index: number, delay: number}[] = [];
         for (let i = 0; i < this.pillarCount; i++) {
-            sequence.push(i);
+            timings.push({ index: i, delay: i * 60 });
         }
-        this.executeAnimation(sequence, 80);
+        this.executeAnimation(timings);
     }
 
-    // ============================================
-    // ANIMATION 3: RIGHT TO LEFT
-    // ============================================
+    // 3. RIGHT TO LEFT: Inverse Linear
     private pillarAnimationRightToLeft(): void {
-        const sequence: number[] = [];
-        for (let i = this.pillarCount - 1; i >= 0; i--) {
-            sequence.push(i);
+        const timings: {index: number, delay: number}[] = [];
+        for (let i = 0; i < this.pillarCount; i++) {
+            // Invert the index multiplier
+            timings.push({ index: i, delay: (this.pillarCount - 1 - i) * 60 });
         }
-        this.executeAnimation(sequence, 80);
+        this.executeAnimation(timings);
     }
 
-    // ============================================
-    // ANIMATION 4: CHECKERBOARD / ALTERNATING
-    // ============================================
+    // 4. CHECKERBOARD: Modulo Offset Matrix
     private pillarAnimationCheckerboard(): void {
-        const sequence: number[] = [];
-
-        // First pass: even indices
-        for (let i = 0; i < this.pillarCount; i += 2) {
-            sequence.push(i);
-        }
-        // Second pass: odd indices
-        for (let i = 1; i < this.pillarCount; i += 2) {
-            sequence.push(i);
-        }
-
-        this.executeAnimation(sequence, 60);
-    }
-
-    // ============================================
-    // ANIMATION 5: EDGE INWARD (Both ends toward center)
-    // ============================================
-    private pillarAnimationEdgeInward(): void {
-        const sequence: number[] = [];
-        const visited = new Set<number>();
-
-        for (let offset = 0; offset < Math.ceil(this.pillarCount / 2); offset++) {
-            const leftIndex = offset;
-            const rightIndex = this.pillarCount - 1 - offset;
-
-            if (!visited.has(leftIndex)) {
-                visited.add(leftIndex);
-                sequence.push(leftIndex);
-            }
-            if (rightIndex !== leftIndex && !visited.has(rightIndex)) {
-                visited.add(rightIndex);
-                sequence.push(rightIndex);
-            }
-        }
-
-        this.executeAnimation(sequence, 70);
-    }
-
-    // ============================================
-    // ANIMATION 6: WAVE PATTERN
-    // ============================================
-    private pillarAnimationWave(): void {
-        const sequence: number[] = [];
-
-        // Create a wave pattern: 0, 2, 4, 1, 3, 5, 6, 8, 10, 7, 9, 11
-        const evenForward: number[] = [];
-        const oddForward: number[] = [];
+        const timings: {index: number, delay: number}[] = [];
+        const staggerGroup = 400; // Delay between the two "boards"
+        const localStagger = 30;  // Tiny ripple within the board
 
         for (let i = 0; i < this.pillarCount; i++) {
-            if (i % 2 === 0) evenForward.push(i);
-            else oddForward.push(i);
+            // i % 2 separates them into 0 or 1 groups purely by math
+            const groupDelay = (i % 2) * staggerGroup;
+            const flowDelay = (i / this.pillarCount) * localStagger * this.pillarCount;
+            timings.push({ index: i, delay: groupDelay + flowDelay });
         }
-
-        sequence.push(...evenForward, ...oddForward);
-        this.executeAnimation(sequence, 65);
+        this.executeAnimation(timings);
     }
 
-    // ============================================
-    // ANIMATION 7: DOUBLE DOOR (Center splits outward)
-    // ============================================
+    // 5. EDGE INWARD: Inverse Radial Distance
+    private pillarAnimationEdgeInward(): void {
+        const timings: {index: number, delay: number}[] = [];
+        const center = (this.pillarCount - 1) / 2;
+        const maxDuration = 800;
+
+        for (let i = 0; i < this.pillarCount; i++) {
+            // Calculate distance, invert it so edges are 0 and center is 1
+            const x = 1 - (Math.abs(i - center) / center);
+            // x^2 easing creates a snapping effect at the center finish line
+            const delay = Math.pow(x, 2) * maxDuration;
+            timings.push({ index: i, delay });
+        }
+        this.executeAnimation(timings);
+    }
+
+    // 6. WAVE: Superimposed Trigonometry (Sine Wave)
+    private pillarAnimationWave(): void {
+        const timings: {index: number, delay: number}[] = [];
+        const cycles = 2; // Number of wave peaks
+
+        for (let i = 0; i < this.pillarCount; i++) {
+            const x = i / (this.pillarCount - 1); // Normalized [0,1]
+            // Standard cosine curve flipped to create peaks (0 to 1)
+            const waveAmplitude = (1 - Math.cos(x * cycles * 2 * Math.PI)) / 2;
+
+            // Combine the Sine wave delay (500ms amplitude) with a slight linear push (300ms)
+            const delay = (waveAmplitude * 500) + (x * 300);
+            timings.push({ index: i, delay });
+        }
+        this.executeAnimation(timings);
+    }
+
+    // 7. DOUBLE DOOR: Normalized Exponential Decay
     private pillarAnimationDoubleDoor(): void {
-        const sequence: number[] = [];
-        const centerIndex = Math.floor(this.pillarCount / 2);
+        const timings: {index: number, delay: number}[] = [];
+        const center = (this.pillarCount - 1) / 2;
+        const k = 3.5; // Exponential intensity curve
+        const maxDuration = 800;
 
-        // Start from center, move outward
-        for (let offset = 0; offset <= centerIndex; offset++) {
-            // Left side moving left
-            const leftDoor = centerIndex - offset;
-            if (leftDoor >= 0) sequence.push(leftDoor);
+        for (let i = 0; i < this.pillarCount; i++) {
+            const x = Math.abs(i - center) / center;
+            // Formula: (e^(kx) - 1) / (e^k - 1) guarantees output maps exactly 0 to 1
+            const exponentialFactor = (Math.exp(k * x) - 1) / (Math.exp(k) - 1);
+            const delay = exponentialFactor * maxDuration;
+            timings.push({ index: i, delay });
+        }
+        this.executeAnimation(timings);
+    }
 
-            // Right side moving right
-            const rightDoor = centerIndex + 1 + offset;
-            if (rightDoor < this.pillarCount) sequence.push(rightDoor);
+    // 8. RANDOM DISSOLVE: Pure Chaos
+    private pillarAnimationRandomDissolve(): void {
+        const timings: {index: number, delay: number}[] = [];
+        const maxDuration = 700;
+
+        for (let i = 0; i < this.pillarCount; i++) {
+            // Math.random() scatters the delays unpredictably between 0ms and 700ms
+            const delay = Math.random() * maxDuration;
+            timings.push({ index: i, delay });
         }
 
-        this.executeAnimation(sequence, 75);
+        this.executeAnimation(timings);
+    }
+
+    // 9. WHIP ACCELERATE: Circular Ease-Out (Decelerating time = Visual acceleration)
+    private pillarAnimationWhipAccelerate(): void {
+        const timings: {index: number, delay: number}[] = [];
+        const maxDuration = 1000;
+
+        for (let i = 0; i < this.pillarCount; i++) {
+            // Normalized position [0, 1]
+            const x = i / (this.pillarCount - 1);
+
+            // Circular ease-out formula: sqrt(1 - (1 - x)^2)
+            // This creates large time gaps at the start, and tiny time gaps at the end
+            const easeOutDelay = Math.sqrt(1 - Math.pow(1 - x, 2));
+            const delay = easeOutDelay * maxDuration;
+
+            timings.push({ index: i, delay });
+        }
+
+        this.executeAnimation(timings);
+    }
+
+    // 10. STAIRCASE: Discrete Step Function
+    private pillarAnimationStaircase(): void {
+        const timings: {index: number, delay: number}[] = [];
+        const blocks = 4; // How many distinct visual "chunks" to break the screen into
+        const delayBetweenBlocks = 200; // ms
+
+        for (let i = 0; i < this.pillarCount; i++) {
+            const x = i / (this.pillarCount - 1);
+
+            // Multiply by blocks and floor it to discretize continuous space into whole numbers (0, 1, 2, 3)
+            // Subtracting 0.001 ensures the final pillar stays in the last block
+            const currentBlock = Math.floor(x * (blocks - 0.001));
+
+            const delay = currentBlock * delayBetweenBlocks;
+            timings.push({ index: i, delay });
+        }
+
+        this.executeAnimation(timings);
     }
 
     // ============================================
-    // EXECUTE ANIMATION
+    // NEW EXECUTE ANIMATION ENGINE
     // ============================================
-    private executeAnimation(sequence: number[], staggerDelay: number): void {
+    private executeAnimation(timings: {index: number, delay: number}[]): void {
         if (this.isAnimating) return;
         this.isAnimating = true;
 
-        // Fade out center content first
         if (this.content) {
             this.content.classList.add('fade-out');
         }
 
-        sequence.forEach((index, position) => {
+        timings.forEach(({ index, delay }) => {
             setTimeout(() => {
                 if (this.topPillars[index]) {
                     this.topPillars[index].classList.add('animate-out');
@@ -358,9 +374,9 @@ class Preloader {
                 this.animatedCount += 2;
 
                 if (this.animatedCount >= this.totalPillars) {
-                    setTimeout(() => this.onComplete(), 900);
+                    setTimeout(() => this.onComplete(), 900); // 900ms allowance for CSS transform to finish
                 }
-            }, position * staggerDelay);
+            }, delay);
         });
     }
 
@@ -375,7 +391,6 @@ class Preloader {
         }, 1000);
     }
 }
-
 // ============================================
 // THEME MANAGER WITH ANIMATED TRANSITIONS (FIXED)
 // ============================================
@@ -1108,48 +1123,106 @@ class ScrollSpy {
 }
 
 // --------------------------------------------
+// --------------------------------------------
+// BOOK PAGE ENQUIRY MODAL
+// --------------------------------------------
 class EnquiryModal {
-    private fabElement: HTMLElement[];
+    private fabElements: HTMLElement[];
     private modal: HTMLElement | null;
     private closeBtn: HTMLButtonElement | null;
+    private isOpen: boolean = false;
 
     constructor(fabIds: string[], modalId: string, closeBtnId: string) {
-        this.fabElement = fabIds.map((id) => document.getElementById(id)).filter((v): v is HTMLElement => !!v);
+        this.fabElements = fabIds
+            .map((id) => document.getElementById(id))
+            .filter((v): v is HTMLElement => !!v);
         this.modal = document.getElementById(modalId) as HTMLElement | null;
         this.closeBtn = document.getElementById(closeBtnId) as HTMLButtonElement | null;
         this.init();
     }
 
     private init(): void {
-        this.fabElement?.forEach((fab) => {
+        // Bind all FAB buttons
+        this.fabElements.forEach((fab) => {
             fab.addEventListener('click', () => this.open());
         });
+
+        // Close button
         this.closeBtn?.addEventListener('click', () => this.close());
+
+        // Close on overlay click
         this.modal?.addEventListener('click', (e: MouseEvent) => {
-            if (e.target === this.modal) this.close();
-        });
-        document.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && this.modal && !this.modal.hasAttribute('hidden')) {
+            if (e.target === this.modal) {
                 this.close();
             }
         });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && this.isOpen) {
+                this.close();
+            }
+        });
+
+        // Prevent background scroll when modal is open
+        this.modal?.addEventListener('wheel', (e: WheelEvent) => {
+            const content = this.modal?.querySelector('.modal-content');
+            if (this.isOpen && content && !content.contains(e.target as Node)) {
+                e.preventDefault();
+            }
+        }, { passive: false });
     }
 
     private open(): void {
-        if (!this.modal) return;
+        if (!this.modal || this.isOpen) return;
+
+        this.isOpen = true;
+
+        // Show modal
         this.modal.removeAttribute('hidden');
+
+        // Lock body scroll
         document.body.style.overflow = 'hidden';
-        this.modal.querySelector<HTMLInputElement>('input')?.focus();
+        document.body.style.paddingRight = `${this.getScrollbarWidth()}px`;
+
+        // Focus the first input after the page flip animation starts
+        setTimeout(() => {
+            const firstInput = this.modal?.querySelector<HTMLInputElement>('input');
+            firstInput?.focus();
+        }, 400);
     }
 
     private close(): void {
-        if (!this.modal) return;
-        this.modal.setAttribute('hidden', '');
-        document.body.style.overflow = '';
-        this.fabElement[0]?.focus();
+        if (!this.modal || !this.isOpen) return;
+
+        this.isOpen = false;
+
+        // Add closing class for smooth reverse animation (optional)
+        const content = this.modal.querySelector('.modal-content');
+        content?.classList.add('closing');
+
+        // Wait for animation to finish, then hide
+        setTimeout(() => {
+            this.modal?.setAttribute('hidden', '');
+            content?.classList.remove('closing');
+
+            // Restore body scroll
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+
+            // Return focus to first FAB
+            this.fabElements[0]?.focus();
+        }, 500);
+    }
+
+    private getScrollbarWidth(): number {
+        return window.innerWidth - document.documentElement.clientWidth;
+    }
+
+    public isModalOpen(): boolean {
+        return this.isOpen;
     }
 }
-
 // --------------------------------------------
 class EnquiryForm {
     private readonly form: HTMLFormElement | null;
@@ -1177,16 +1250,16 @@ class EnquiryForm {
         this.status.className = 'form-note';
         this.submitBtn.disabled = true;
         this.submitBtn.textContent = 'Processing…';
+        const formData = new FormData(this.form);
+        const clientEmail = formData.get('enqEmail') as string || 'Not provided';
 
         // 1. ROUTE VIA WHATSAPP IF TOGGLE IS TRUE
         if (this.whatsappToggle?.checked) {
             try {
-                const formData = new FormData(this.form);
 
                 // Pull fields explicitly so the toggle button state doesn't leak into the message
-                const clientName = formData.get('name') as string || 'Not provided';
-                const clientEmail = formData.get('email') as string || 'Not provided';
-                const clientMessage = formData.get('message') as string || '';
+                const clientName = formData.get('enqName') as string || 'Not provided';
+                const clientMessage = formData.get('enqMessage') as string || '';
 
                 // Construct a beautifully formatted multi-line template
                 let textMessage = "✨ *SJCCC Mbengwi - New Website Enquiry* ✨\n\n";
@@ -1200,12 +1273,10 @@ class EnquiryForm {
 
                 window.open(whatsappUrl, '_blank');
 
-                this.status.textContent = '✅ Opening WhatsApp to send your message...';
-                this.status.className = 'form-note success';
+                this.statusMessage('✅ WhatsApp link generated! Please send your message in the new tab.', 'success');
                 this.form.reset();
             } catch (err) {
-                this.status.textContent = '⚠️ Could not generate WhatsApp link. Please try standard email.';
-                this.status.className = 'form-note error';
+                this.statusMessage('⚠️ Could not generate WhatsApp link. Please try standard email.', 'error');
             } finally {
                 this.submitBtn.disabled = false;
                 this.submitBtn.textContent = 'Send Message';
@@ -1214,30 +1285,140 @@ class EnquiryForm {
         }
         // 2. FALLBACK TO FORMSPREE IF TOGGLE IS FALSE
         try {
+            if(!clientEmail || !clientEmail.includes('@')) {
+                this.statusMessage('Please make sure you entered a valid email','error');
+                return
+            }
             const response = await fetch(this.form.action, {
                 method: 'POST',
                 headers: { Accept: 'application/json' },
-                body: new FormData(this.form),
+                body: formData,
             });
 
             if (response.ok) {
-                this.status.textContent =
-                    '✅ Thank you! Your message has been sent. We will reply within 48 hours.';
-                this.status.className = 'form-note success';
+                this.statusMessage('✅ Thank you! Your message has been sent. We will reply within 48 hours.', 'success');
                 this.form.reset();
             } else {
                 throw new Error(`Server responded with ${response.status}`);
             }
         } catch {
-            this.status.textContent =
-                '⚠️ Sorry, something went wrong. Please email us directly at info@sjcccmbengwi.org.';
-            this.status.className = 'form-note error';
+            this.statusMessage('⚠️ Sorry, something went wrong. Please email us directly at saintjosephcollege@gmail.com', 'error');
         } finally {
             this.submitBtn.disabled = false;
             this.submitBtn.textContent = 'Send Message';
         }
     }
 
+    private statusMessage(message: string, type: 'error' | 'success') {
+        if (!this.status) return;
+        this.status.textContent = message;
+        this.status.className = `form-note ${type}`;
+    }
+}
+
+// ============================================
+// SMOOTH TYPING EFFECT FOR INPUTS
+// ============================================
+class SmoothTypingEffect {
+    private inputs: NodeListOf<HTMLInputElement | HTMLTextAreaElement>;
+
+    constructor(selector: string) {
+        this.inputs = document.querySelectorAll(selector);
+        this.init();
+    }
+
+    private init(): void {
+        this.inputs.forEach((input) => {
+            input.classList.add('typewriter-input');
+
+            // Force hardware acceleration to prevent text blurring during scale
+            input.style.willChange = 'transform';
+
+            input.addEventListener('input', (e) => this.handleInput(e));
+            input.addEventListener('keydown', (e) => this.handleKeyDown(e as KeyboardEvent));
+            input.addEventListener('focus', () => this.handleFocus(input));
+            input.addEventListener('blur', () => this.handleBlur(input));
+
+            // Initialize char count on load
+            this.updateCharCount(input);
+        });
+    }
+
+    private handleInput(e: Event): void {
+        const input = e.target as HTMLInputElement | HTMLTextAreaElement;
+
+        // Instantly snap to larger scale
+        input.style.transition = 'none';
+        input.style.transform = 'scale(1.005)';
+
+        // Force a browser reflow so the 'none' transition is registered immediately
+        void input.offsetWidth;
+
+        // Bounce back smoothly
+        requestAnimationFrame(() => {
+            input.style.transition = 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            input.style.transform = 'scale(1)';
+        });
+
+        this.updateCharCount(input);
+    }
+
+    private handleKeyDown(e: KeyboardEvent): void {
+        const input = e.target as HTMLInputElement | HTMLTextAreaElement;
+
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+            // Instantly snap to smaller scale
+            input.style.transition = 'none';
+            input.style.transform = 'scale(0.995)';
+
+            // Force reflow
+            void input.offsetWidth;
+
+            // Bounce back smoothly
+            requestAnimationFrame(() => {
+                input.style.transition = 'transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                input.style.transform = 'scale(1)';
+            });
+        }
+    }
+
+    private handleFocus(input: HTMLInputElement | HTMLTextAreaElement): void {
+        const formGroup = input.closest('.form-group');
+        if (formGroup) {
+            const indicator = formGroup.querySelector('.typing-indicator') as HTMLElement;
+            if (indicator) {
+                indicator.classList.add('active');
+            }
+        }
+    }
+
+    private handleBlur(input: HTMLInputElement | HTMLTextAreaElement): void {
+        const formGroup = input.closest('.form-group');
+        if (formGroup) {
+            const indicator = formGroup.querySelector('.typing-indicator') as HTMLElement;
+            if (indicator) {
+                indicator.classList.remove('active');
+            }
+        }
+    }
+
+    private updateCharCount(input: HTMLInputElement | HTMLTextAreaElement): void {
+        const maxLength = input.getAttribute('maxlength');
+        if (!maxLength) return;
+
+        const formGroup = input.closest('.form-group');
+        const charCount = formGroup?.querySelector('.char-count');
+        if (!charCount) return;
+
+        const current = input.value.length;
+        const max = parseInt(maxLength, 10);
+
+        charCount.textContent = `${current}/${max}`;
+
+        // Use a clean class toggle rather than manual remove/add checks
+        charCount.classList.toggle('near-limit', current >= max * 0.8 && current < max);
+        charCount.classList.toggle('at-limit', current >= max);
+    }
 }
 
 // ============================================
@@ -1295,6 +1476,9 @@ class App {
 
         // 14. Enquiry form (Formspree)
         new EnquiryForm('enquiryForm', 'formStatus', 'submitBtn', 'whatsappRoutingToggle');
+
+        new SmoothTypingEffect('.form-group input, .form-group textarea');
+
     }
 }
 
