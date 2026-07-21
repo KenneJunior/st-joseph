@@ -600,30 +600,54 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
     <form action="https://formspree.io/f/xnjkgpgg" data-whatsapp-phone="237672829014" id="enquiryForm" method="POST"
             novalidate>
       <div class="form-group">
-        <label for="enqName">Your Name *</label>
-        <input type="text" id="enqName" name="name" required placeholder="e.g. John N.">
+        <label for="enqName">Your Name</label>
+        <input
+                type="text"
+                id="enqName"
+                name="enqName"
+                placeholder="Enter your full name"
+                required
+        />
+        <div class="typing-indicator">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
       </div>
 
       <div class="form-group">
-        <label for="enqEmail">Your Email *</label>
-        <input type="email" id="enqEmail" name="email" required placeholder="you@email.com">
+        <label for="enqEmail">Email Address</label>
+        <input
+                type="email"
+                id="enqEmail"
+                name="enqEmail"
+                placeholder="your@email.com"
+                required
+        />
+        <div class="typing-indicator">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
       </div>
 
-          <div class="form-group">
-        <label for="enqMessage">Message *</label>
-        <textarea id="enqMessage" name="message" rows="4" required placeholder="How can we help you?"></textarea>
-      </div>
-
-          <div class="form-group form-toggle">
-              <label class="switch-label" for="whatsappRoutingToggle">
-                <input id="whatsappRoutingToggle" name="sendViaWhatsApp" type="checkbox">
-                  <span class="toggle-text">Send instantly via WhatsApp instead of Email</span>
-              </label>
-          </div>
-
-      <button class="btn btn-primary" id="submitBtn" type="submit">Send Message</button>
-      <p class="form-note" id="formStatus" aria-live="polite"></p>
-    </form>
+      <div class="form-group">
+        <label for="enqMessage">Your Message</label>
+        <textarea
+                id="enqMessage"
+                name="enqMessage"
+                rows="4"
+                placeholder="Type your message here..."
+                maxlength="500"
+                required
+        ></textarea>
+        <div class="char-count">0/500</div>
+        <div class="typing-indicator">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      </div>    </form>
   </div>
 </div>
 <script type="module" src="/src/main.ts"></script>

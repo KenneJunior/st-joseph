@@ -157,6 +157,111 @@ main {
     transform: translateX(0);
   }
 }
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes ringPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.4;
+  }
+}
+@keyframes particleDrift {
+  0% {
+    opacity: 0;
+    transform: translateY(0) translateX(0) scale(0);
+  }
+  15% {
+    opacity: 0.5;
+  }
+  85% {
+    opacity: 0.15;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80px) translateX(20px) scale(1.8);
+  }
+}
+@keyframes formItemSlideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes charReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.8);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateY(-2px) scale(1.05);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+@keyframes charDelete {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.8);
+    filter: blur(4px);
+  }
+}
+@keyframes smoothCaretBlink {
+  0%, 100% {
+    border-right-color: var(--accent);
+    border-right-width: 2px;
+  }
+  50% {
+    border-right-color: transparent;
+    border-right-width: 2px;
+  }
+}
+@keyframes inputGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(200, 150, 62, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(200, 150, 62, 0.08), 0 0 20px rgba(200, 150, 62, 0.05);
+  }
+}
+@keyframes typingDotBounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+@keyframes charCountPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+
+
 
 /* ============================================
    PRELOADER
@@ -282,26 +387,6 @@ main {
   animation: ringPulse 3s ease-in-out infinite;
 }
 
-@keyframes logoFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes ringPulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.2;
-  }
-  50% {
-    transform: scale(1.15);
-    opacity: 0.4;
-  }
-}
-
 .preloader-title {
   color: #fff;
   font-family: var(--font-heading);
@@ -378,83 +463,9 @@ main {
   filter: blur(1px);
 }
 
-@keyframes particleDrift {
-  0% {
-    opacity: 0;
-    transform: translateY(0) translateX(0) scale(0);
-  }
-  15% {
-    opacity: 0.5;
-  }
-  85% {
-    opacity: 0.15;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-80px) translateX(20px) scale(1.8);
-  }
-}
 
-/* ============================================
-   RESPONSIVE PRELOADER
-   ============================================ */
-@media (max-width: 768px) {
-  .preloader-logo {
-    width: 75px;
-    height: 75px;
-    font-size: 1.6rem;
-    border-radius: 16px;
-  }
 
-  .preloader-logo::before {
-    inset: -7px;
-    border-radius: 22px;
-  }
 
-  .preloader-title {
-    font-size: 1.5rem;
-  }
-
-  .preloader-subtitle {
-    font-size: 0.7rem;
-    letter-spacing: 4px;
-  }
-
-  .preloader-progress {
-    width: 160px;
-  }
-}
-
-@media (max-width: 480px) {
-  .preloader-logo {
-    width: 60px;
-    height: 60px;
-    font-size: 1.3rem;
-    border-radius: 14px;
-  }
-
-  .preloader-logo::before {
-    inset: -6px;
-    border-radius: 18px;
-  }
-
-  .preloader-title {
-    font-size: 1.2rem;
-  }
-
-  .preloader-subtitle {
-    font-size: 0.65rem;
-    letter-spacing: 3px;
-  }
-
-  .preloader-motto {
-    font-size: 0.65rem;
-  }
-
-  .preloader-progress {
-    width: 140px;
-  }
-}
 /* ============================================
    HEADER & NAVIGATION
    ============================================ */
@@ -1965,10 +1976,17 @@ body.dark-mode .level__subjects li {
   display: inline;
 }
 
+/* ============================================
+   BOOK PAGE MODAL - ENQUIRY FORM
+   ============================================ */
+
+/* Modal Overlay - fades in */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -1976,44 +1994,196 @@ body.dark-mode .level__subjects li {
   padding: 20px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+  visibility 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Perspective for 3D book effect */
+  perspective: 1500px;
 }
 
 .modal-overlay:not([hidden]) {
   opacity: 1;
   visibility: visible;
-  backdrop-filter: blur(5px);
 }
 
+/* Modal Content - the book page */
 .modal-content {
+  position: relative;
   background: var(--surface-card);
   border-radius: var(--radius-lg);
-  padding: 32px 28px;
-  max-width: 480px;
+  padding: 36px 32px;
+  max-width: 520px;
   width: 100%;
   position: relative;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-  border: 1px solid var(--border-light);
+  box-shadow:
+          0 20px 60px rgba(0, 0, 0, 0.3),
+          0 0 0 1px var(--border-light);
   max-height: 90vh;
   overflow-y: auto;
+
+  /* Book page opening animation */
+  transform-origin: left center;
+  transform: rotateY(-90deg);
+  opacity: 0;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+  opacity 0.3s ease 0.1s;
+}
+.modal-content .page-fold {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(
+          135deg,
+          transparent 50%,
+          rgba(200, 150, 62, 0.08) 50%,
+          rgba(200, 150, 62, 0.12) 100%
+  );
+  border-radius: 0 var(--radius-lg) 0 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.5s;
 }
 
+.modal-overlay:not([hidden]) .page-fold {
+  opacity: 1;
+}
+
+/* When modal is open - page flips open */
+.modal-overlay:not([hidden]) .modal-content {
+  transform: rotateY(0deg);
+  opacity: 1;
+}
+
+.modal-content button[type="submit"],
+.modal-content .btn-primary {
+  width: 100%;
+  margin-top: 8px;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: formItemSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.55s forwards;
+}
+
+
+/* Book spine effect on the left edge */
+.modal-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(
+          to right,
+          rgba(200, 150, 62, 0.4) 0%,
+          rgba(200, 150, 62, 0.1) 50%,
+          transparent 100%
+  );
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  pointer-events: none;
+}
+
+/* Page shadow on the left side */
+.modal-content::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 100%;
+  background: linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0.08) 0%,
+          rgba(0, 0, 0, 0.03) 40%,
+          transparent 100%
+  );
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease 0.3s;
+}
+
+.modal-overlay:not([hidden]) .modal-content::after {
+  opacity: 1;
+}
+
+/* Close button */
 .modal-close {
   position: absolute;
-  top: 12px;
-  right: 16px;
-  background: none;
-  border: none;
-  font-size: 1.8rem;
+  top: 16px;
+  right: 20px;
+  background: var(--bg-off-white);
+  border: 1px solid var(--border-light);
+  font-size: 1.5rem;
   cursor: pointer;
   color: var(--text-muted);
-  transition: color 0.2s;
+  transition: all 0.3s ease;
   line-height: 1;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
 }
 
 .modal-close:hover {
   color: var(--text-body);
+  background: var(--border-light);
+  transform: rotate(90deg);
 }
+
+/* Form heading */
+.modal-content h2 {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  padding-right: 40px;
+}
+
+.modal-content .form-subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+  padding-right: 40px;
+}
+
+/* Staggered form group animations */
+.modal-overlay:not([hidden]) .form-group {
+  animation: formItemSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.modal-overlay:not([hidden]) .form-group:nth-child(1) { animation-delay: 0.3s; }
+.modal-overlay:not([hidden]) .form-group:nth-child(2) { animation-delay: 0.35s; }
+.modal-overlay:not([hidden]) .form-group:nth-child(3) { animation-delay: 0.4s; }
+.modal-overlay:not([hidden]) .form-group:nth-child(4) { animation-delay: 0.45s; }
+.modal-overlay:not([hidden]) .form-group:nth-child(5) { animation-delay: 0.5s; }
+
+
+/* Submit button */
+.modal-content .btn-primary {
+  width: 100%;
+  margin-top: 8px;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: formItemSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.55s forwards;
+}
+
+/* Page curl effect on hover */
+@media (hover: hover) {
+  .modal-content:hover {
+    box-shadow:
+            0 24px 70px rgba(0, 0, 0, 0.35),
+            -8px 0 20px rgba(0, 0, 0, 0.1),
+            0 0 0 1px var(--border-light);
+  }
+}
+
 
 /* ============================================
    FORMS
@@ -2045,6 +2215,14 @@ body.dark-mode .form-group label {
   background: var(--bg-white);
   color: var(--text-dark);
   transition: border 0.2s;
+  caret-color: var(--accent);
+  letter-spacing: 0.5px;
+}
+
+body.dark-mode .form-group input,
+body.dark-mode .form-group textarea {
+  background: var(--bg-white);
+  color: var(--text-dark);
 }
 
 .form-group input:focus,
@@ -2925,6 +3103,92 @@ a:focus-visible {
     width: 44px;
     height: 44px;
   }
+  .preloader-logo {
+    width: 75px;
+    height: 75px;
+    font-size: 1.6rem;
+    border-radius: 16px;
+  }
+
+  .preloader-logo::before {
+    inset: -7px;
+    border-radius: 22px;
+  }
+
+  .preloader-title {
+    font-size: 1.5rem;
+  }
+
+  .preloader-subtitle {
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+  }
+
+  .preloader-progress {
+    width: 160px;
+  }
+}
+
+/* ============================================
+   RESPONSIVE BOOK MODAL
+   ============================================ */
+@media (max-width: 600px) {
+  .modal-overlay{
+    perspective: 1000px;
+  }
+  .modal-content {
+    padding: 28px 20px;
+    border-radius: var(--radius-md);
+    transform-origin: bottom center;
+    transform: rotateX(-90deg);
+  }
+
+  .modal-overlay:not([hidden]) .modal-content {
+    transform: rotateX(0deg);
+  }
+
+  /* Change spine to bottom on mobile */
+  .modal-content::before {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(
+            to top,
+            rgba(200, 150, 62, 0.4) 0%,
+            rgba(200, 150, 62, 0.1) 50%,
+            transparent 100%
+    );
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+  }
+
+  .modal-content::after {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.08) 0%,
+            rgba(0, 0, 0, 0.03) 40%,
+            transparent 100%
+    );
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+  }
+
+  .modal-close {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    font-size: 1.3rem;
+  }
+
+  .modal-content h2 {
+    font-size: 1.3rem;
+  }
 }
 
 /* ---------- MAX 480px (Mobile Phones) ---------- */
@@ -3082,6 +3346,34 @@ a:focus-visible {
   .events-grid {
     grid-template-columns: 1fr;
     gap: 20px;
+  }
+  .preloader-logo {
+    width: 60px;
+    height: 60px;
+    font-size: 1.3rem;
+    border-radius: 14px;
+  }
+
+  .preloader-logo::before {
+    inset: -6px;
+    border-radius: 18px;
+  }
+
+  .preloader-title {
+    font-size: 1.2rem;
+  }
+
+  .preloader-subtitle {
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+  }
+
+  .preloader-motto {
+    font-size: 0.65rem;
+  }
+
+  .preloader-progress {
+    width: 140px;
   }
 }
 
@@ -3252,3 +3544,202 @@ a:focus-visible {
     padding-top: 0;
   }
 }
+/* ============================================
+   SMOOTH CARET INPUT ANIMATION
+   ============================================ */
+
+/* Apply to all input and textarea fields */
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: var(--bg-white);
+  color: var(--text-dark);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  /* Smooth caret */
+  caret-color: var(--accent);
+  caret-shape: bar;
+
+  /* Letter spacing for typewriter feel */
+  letter-spacing: 0.5px;
+
+  /* Smooth text appearance */
+  position: relative;
+}
+
+/* Focus state */
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(200, 150, 62, 0.15);
+}
+
+/* ============================================
+   TYPEWRITER CHARACTER REVEAL EFFECT
+   ============================================ */
+
+/* Container for the typewriter effect */
+.typewriter-input-wrapper {
+  position: relative;
+  display: block;
+}
+
+/* The actual input stays transparent, we show a visual layer on top */
+.typewriter-input-wrapper input.typewriter,
+.typewriter-input-wrapper textarea.typewriter {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+
+  /* Each character animates in */
+  animation: none;
+}
+
+/* Character reveal animation - applied via JS */
+.typewriter-char {
+  display: inline;
+  animation: charReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
+}
+
+.typewriter-char.deleting {
+  animation: charDelete 0.5s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+
+
+
+
+/* ============================================
+   SMOOTH CARET BLINK (Pure CSS)
+   ============================================ */
+
+/* Custom caret animation */
+
+
+/* Fancy caret effect using box-shadow */
+.form-group input:focus,
+.form-group textarea:focus {
+  animation: inputGlow 2s ease-in-out infinite;
+}
+
+
+/* ============================================
+   PLACEHOLDER ANIMATION
+   ============================================ */
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  transform: translateX(0);
+}
+
+.form-group input:focus::placeholder,
+.form-group textarea:focus::placeholder {
+  opacity: 0.3;
+  transform: translateX(8px);
+}
+
+/* ============================================
+   LABEL FLOAT ANIMATION (Optional)
+   ============================================ */
+
+.form-group {
+  position: relative;
+}
+
+.form-group label {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left top;
+}
+
+/* When input has value, scale label up slightly */
+.form-group input:not(:placeholder-shown) + label,
+.form-group textarea:not(:placeholder-shown) + label,
+.form-group input:focus + label,
+.form-group textarea:focus + label {
+  transform: translateY(-2px) scale(1.02);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ============================================
+   TYPING INDICATOR BELOW INPUT
+   ============================================ */
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 16px;
+  margin-top: 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.form-group input:focus ~ .typing-indicator,
+.form-group textarea:focus ~ .typing-indicator {
+  opacity: 1;
+}
+
+.typing-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: typingDotBounce 0.6s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.1s; }
+.typing-dot:nth-child(3) { animation-delay: 0.2s; }
+
+
+
+/* ============================================
+   CHARACTER COUNT WITH SMOOTH TRANSITION
+   ============================================ */
+
+.char-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: 4px;
+  transition: color 0.3s ease;
+  opacity: 0;
+}
+
+.form-group textarea:focus ~ .char-count {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.char-count.near-limit {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.char-count.at-limit {
+  color: #e94560;
+  animation: charCountPulse 0.5s ease-in-out;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus::placeholder,
+.form-group textarea:focus::placeholder {
+  opacity: 0.25;
+  transform: translateX(6px);
+}
+

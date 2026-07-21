@@ -1108,48 +1108,106 @@ class ScrollSpy {
 }
 
 // --------------------------------------------
+// --------------------------------------------
+// BOOK PAGE ENQUIRY MODAL
+// --------------------------------------------
 class EnquiryModal {
-    private fabElement: HTMLElement[];
+    private fabElements: HTMLElement[];
     private modal: HTMLElement | null;
     private closeBtn: HTMLButtonElement | null;
+    private isOpen: boolean = false;
 
     constructor(fabIds: string[], modalId: string, closeBtnId: string) {
-        this.fabElement = fabIds.map((id) => document.getElementById(id)).filter((v): v is HTMLElement => !!v);
+        this.fabElements = fabIds
+            .map((id) => document.getElementById(id))
+            .filter((v): v is HTMLElement => !!v);
         this.modal = document.getElementById(modalId) as HTMLElement | null;
         this.closeBtn = document.getElementById(closeBtnId) as HTMLButtonElement | null;
         this.init();
     }
 
     private init(): void {
-        this.fabElement?.forEach((fab) => {
+        // Bind all FAB buttons
+        this.fabElements.forEach((fab) => {
             fab.addEventListener('click', () => this.open());
         });
+
+        // Close button
         this.closeBtn?.addEventListener('click', () => this.close());
+
+        // Close on overlay click
         this.modal?.addEventListener('click', (e: MouseEvent) => {
-            if (e.target === this.modal) this.close();
-        });
-        document.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && this.modal && !this.modal.hasAttribute('hidden')) {
+            if (e.target === this.modal) {
                 this.close();
             }
         });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && this.isOpen) {
+                this.close();
+            }
+        });
+
+        // Prevent background scroll when modal is open
+        this.modal?.addEventListener('wheel', (e: WheelEvent) => {
+            const content = this.modal?.querySelector('.modal-content');
+            if (this.isOpen && content && !content.contains(e.target as Node)) {
+                e.preventDefault();
+            }
+        }, { passive: false });
     }
 
     private open(): void {
-        if (!this.modal) return;
+        if (!this.modal || this.isOpen) return;
+
+        this.isOpen = true;
+
+        // Show modal
         this.modal.removeAttribute('hidden');
+
+        // Lock body scroll
         document.body.style.overflow = 'hidden';
-        this.modal.querySelector<HTMLInputElement>('input')?.focus();
+        document.body.style.paddingRight = `${this.getScrollbarWidth()}px`;
+
+        // Focus the first input after the page flip animation starts
+        setTimeout(() => {
+            const firstInput = this.modal?.querySelector<HTMLInputElement>('input');
+            firstInput?.focus();
+        }, 400);
     }
 
     private close(): void {
-        if (!this.modal) return;
-        this.modal.setAttribute('hidden', '');
-        document.body.style.overflow = '';
-        this.fabElement[0]?.focus();
+        if (!this.modal || !this.isOpen) return;
+
+        this.isOpen = false;
+
+        // Add closing class for smooth reverse animation (optional)
+        const content = this.modal.querySelector('.modal-content');
+        content?.classList.add('closing');
+
+        // Wait for animation to finish, then hide
+        setTimeout(() => {
+            this.modal?.setAttribute('hidden', '');
+            content?.classList.remove('closing');
+
+            // Restore body scroll
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+
+            // Return focus to first FAB
+            this.fabElements[0]?.focus();
+        }, 500);
+    }
+
+    private getScrollbarWidth(): number {
+        return window.innerWidth - document.documentElement.clientWidth;
+    }
+
+    public isModalOpen(): boolean {
+        return this.isOpen;
     }
 }
-
 // --------------------------------------------
 class EnquiryForm {
     private readonly form: HTMLFormElement | null;
@@ -1177,16 +1235,16 @@ class EnquiryForm {
         this.status.className = 'form-note';
         this.submitBtn.disabled = true;
         this.submitBtn.textContent = 'Processing…';
+        const formData = new FormData(this.form);
+        const clientEmail = formData.get('enqEmail') as string || 'Not provided';
 
         // 1. ROUTE VIA WHATSAPP IF TOGGLE IS TRUE
         if (this.whatsappToggle?.checked) {
             try {
-                const formData = new FormData(this.form);
 
                 // Pull fields explicitly so the toggle button state doesn't leak into the message
-                const clientName = formData.get('name') as string || 'Not provided';
-                const clientEmail = formData.get('email') as string || 'Not provided';
-                const clientMessage = formData.get('message') as string || '';
+                const clientName = formData.get('enqName') as string || 'Not provided';
+                const clientMessage = formData.get('enqMessage') as string || '';
 
                 // Construct a beautifully formatted multi-line template
                 let textMessage = "✨ *SJCCC Mbengwi - New Website Enquiry* ✨\n\n";
@@ -1200,12 +1258,10 @@ class EnquiryForm {
 
                 window.open(whatsappUrl, '_blank');
 
-                this.status.textContent = '✅ Opening WhatsApp to send your message...';
-                this.status.className = 'form-note success';
+                this.statusMessage('✅ WhatsApp link generated! Please send your message in the new tab.', 'success');
                 this.form.reset();
             } catch (err) {
-                this.status.textContent = '⚠️ Could not generate WhatsApp link. Please try standard email.';
-                this.status.className = 'form-note error';
+                this.statusMessage('⚠️ Could not generate WhatsApp link. Please try standard email.', 'error');
             } finally {
                 this.submitBtn.disabled = false;
                 this.submitBtn.textContent = 'Send Message';
@@ -1214,32 +1270,141 @@ class EnquiryForm {
         }
         // 2. FALLBACK TO FORMSPREE IF TOGGLE IS FALSE
         try {
+            if(!clientEmail || !clientEmail.includes('@')) {
+                this.statusMessage('Please make sure you entered a valid email','error');
+                return
+            }
             const response = await fetch(this.form.action, {
                 method: 'POST',
                 headers: { Accept: 'application/json' },
-                body: new FormData(this.form),
+                body: formData,
             });
 
             if (response.ok) {
-                this.status.textContent =
-                    '✅ Thank you! Your message has been sent. We will reply within 48 hours.';
-                this.status.className = 'form-note success';
+                this.statusMessage('✅ Thank you! Your message has been sent. We will reply within 48 hours.', 'success');
                 this.form.reset();
             } else {
                 throw new Error(`Server responded with ${response.status}`);
             }
         } catch {
-            this.status.textContent =
-                '⚠️ Sorry, something went wrong. Please email us directly at info@sjcccmbengwi.org.';
-            this.status.className = 'form-note error';
+            this.statusMessage('⚠️ Sorry, something went wrong. Please email us directly at saintjosephcollege@gmail.com', 'error');
         } finally {
             this.submitBtn.disabled = false;
             this.submitBtn.textContent = 'Send Message';
         }
     }
 
+    private statusMessage(message: string, type: 'error' | 'success') {
+        if (!this.status) return;
+        this.status.textContent = message;
+        this.status.className = `form-note ${type}`;
+    }
 }
 
+// ============================================
+// SMOOTH TYPING EFFECT FOR INPUTS
+// ============================================
+// ============================================
+// SMOOTH TYPING EFFECT FOR INPUTS (FIXED)
+// ============================================
+class SmoothTypingEffect {
+    private inputs: NodeListOf<HTMLInputElement | HTMLTextAreaElement>;
+
+    constructor(selector: string) {
+        this.inputs = document.querySelectorAll(selector);
+        this.init();
+    }
+
+    private init(): void {
+        this.inputs.forEach((input) => {
+            // Add typewriter class for CSS targeting
+            input.classList.add('typewriter-input');
+
+            // Bind events directly - NO wrapping to avoid breaking form structure
+            input.addEventListener('input', (e) => this.handleInput(e));
+            input.addEventListener('keydown', (e) => this.handleKeyDown(e as KeyboardEvent));
+            input.addEventListener('focus', () => this.handleFocus(input));
+            input.addEventListener('blur', () => this.handleBlur(input));
+        });
+    }
+
+    private handleInput(e: Event): void {
+        const input = e.target as HTMLInputElement | HTMLTextAreaElement;
+
+        // Subtle pulse on type
+        input.style.transition = 'none';
+        input.style.transform = 'scale(1.005)';
+
+        requestAnimationFrame(() => {
+            input.style.transition = 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            input.style.transform = 'scale(1)';
+        });
+
+        // Update character count - look in the same form-group
+        this.updateCharCount(input);
+    }
+
+    private handleKeyDown(e: KeyboardEvent): void {
+        const input = e.target as HTMLInputElement | HTMLTextAreaElement;
+
+        // Subtle feedback on backspace/delete
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+            input.style.transform = 'scale(0.995)';
+
+            requestAnimationFrame(() => {
+                input.style.transition = 'transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                input.style.transform = 'scale(1)';
+            });
+        }
+    }
+
+    private handleFocus(input: HTMLInputElement | HTMLTextAreaElement): void {
+        // Find the form-group parent and show typing indicator
+        const formGroup = input.closest('.form-group');
+        if (formGroup) {
+            const indicator = formGroup.querySelector('.typing-indicator') as HTMLElement;
+            if (indicator) {
+                indicator.style.opacity = '1';
+                indicator.style.transition = 'opacity 0.3s ease';
+            }
+        }
+    }
+
+    private handleBlur(input: HTMLInputElement | HTMLTextAreaElement): void {
+        // Find the form-group parent and hide typing indicator
+        const formGroup = input.closest('.form-group');
+        if (formGroup) {
+            const indicator = formGroup.querySelector('.typing-indicator') as HTMLElement;
+            if (indicator) {
+                indicator.style.opacity = '0';
+            }
+        }
+    }
+
+    private updateCharCount(input: HTMLInputElement | HTMLTextAreaElement): void {
+        const maxLength = input.getAttribute('maxlength');
+        if (!maxLength) return;
+
+        // Look for char-count in the same form-group
+        const formGroup = input.closest('.form-group');
+        if (!formGroup) return;
+
+        const charCount = formGroup.querySelector('.char-count');
+        if (!charCount) return;
+
+        const current = input.value.length;
+        const max = parseInt(maxLength, 10);
+
+        charCount.textContent = `${current}/${max}`;
+        charCount.classList.remove('near-limit', 'at-limit');
+
+        if (current >= max) {
+            charCount.classList.add('at-limit');
+        } else if (current >= max * 0.8) {
+            charCount.classList.add('near-limit');
+        }
+    }
+}
 // ============================================
 // APPLICATION BOOTSTRAP
 // ============================================
@@ -1295,6 +1460,9 @@ class App {
 
         // 14. Enquiry form (Formspree)
         new EnquiryForm('enquiryForm', 'formStatus', 'submitBtn', 'whatsappRoutingToggle');
+
+        new SmoothTypingEffect('.form-group input, .form-group textarea');
+
     }
 }
 
