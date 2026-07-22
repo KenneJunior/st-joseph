@@ -1261,6 +1261,10 @@ class EnquiryForm {
                 const clientName = formData.get('enqName') as string || 'Not provided';
                 const clientMessage = formData.get('enqMessage') as string || '';
 
+                if(!clientName|| !clientMessage) {
+                    this.statusMessage('Please Your name and the message you want to send');
+                    return;
+                }
                 // Construct a beautifully formatted multi-line template
                 let textMessage = "✨ *SJCCC Mbengwi - New Website Enquiry* ✨\n\n";
                 textMessage += `👤 *Name:* ${clientName}\n`;
@@ -1284,14 +1288,20 @@ class EnquiryForm {
             return;
         }
         // 2. FALLBACK TO FORMSPREE IF TOGGLE IS FALSE
+        await this.SendEmail(clientEmail, formData);
+    }
+
+    private async SendEmail(clientEmail: string, formData: FormData) {
+        if (!this.status || !this.submitBtn || !this.form) return;
+
         try {
-            if(!clientEmail || !clientEmail.includes('@')) {
-                this.statusMessage('Please make sure you entered a valid email','error');
+            if (!clientEmail || !clientEmail.includes('@')) {
+                this.statusMessage('Please make sure you entered a valid email', 'error');
                 return
             }
             const response = await fetch(this.form.action, {
                 method: 'POST',
-                headers: { Accept: 'application/json' },
+                headers: {Accept: 'application/json'},
                 body: formData,
             });
 
@@ -1309,7 +1319,7 @@ class EnquiryForm {
         }
     }
 
-    private statusMessage(message: string, type: 'error' | 'success') {
+    private statusMessage(message: string, type: 'error' | 'success'="success") {
         if (!this.status) return;
         this.status.textContent = message;
         this.status.className = `form-note ${type}`;
