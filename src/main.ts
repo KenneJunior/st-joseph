@@ -3,6 +3,7 @@
 // ============================================
 import './style.css'
 import './sw-register.ts'
+import {inject} from "@vercel/analytics";
 
 // ============================================
 // PILLAR PRELOADER WITH MATH-DRIVEN ANIMATIONS
@@ -1488,7 +1489,7 @@ class App {
         new EnquiryForm('enquiryForm', 'formStatus', 'submitBtn', 'whatsappRoutingToggle');
 
         new SmoothTypingEffect('.form-group input, .form-group textarea');
-
+        inject();
     }
 }
 
