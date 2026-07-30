@@ -74,12 +74,43 @@
       "name": "Prospectus",
       "short_name": "Prospectus",
       "description": "View official requirements and fees",
-      "url": "/prospectus",
+      "url": "/prospectus.html",
       "icons": [
         {
-          "src": "/icon/shortcut/prospectus.png",
-          "sizes": "96x96",
-          "type": "image/png"
+          "src": "/assets/icons/icon_96X96.svg",
+          "sizes": "96X96",
+          "type": "image/svg+xml",
+          "purpose": "any"
+        },
+        {
+          "src": "/assets/icons/icon_128X128.svg",
+          "sizes": "128X128",
+          "type": "image/svg+xml",
+          "purpose": "any"
+        },
+        {
+          "src": "/assets/icons/144X144.svg",
+          "sizes": "144X144",
+          "type": "image/svg+xml",
+          "purpose": "any"
+        },
+        {
+          "src": "/assets/icons/168X168.svg",
+          "sizes": "168X168",
+          "type": "image/svg+xml",
+          "purpose": "any"
+        },
+        {
+          "src": "/assets/icons/192X192.svg",
+          "sizes": "192X192",
+          "type": "image/svg+xml",
+          "purpose": "any maskable"
+        },
+        {
+          "src": "/assets/icons/512X512.svg",
+          "sizes": "512X512",
+          "type": "image/svg+xml",
+          "purpose": "any maskable"
         }
       ]
     }

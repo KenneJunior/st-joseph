@@ -8,8 +8,20 @@ interface UpdateBannerElements {
     dismissBtn: HTMLButtonElement | null;
 }
 
+// ─── Config ───
+const SW_SCRIPT_PATH = '/sw.js';
+const BANNER_ID = 'sw-update-banner';
+const STYLE_ID = 'sw-update-banner-styles';
+const AUTO_DISMISS_MS = 10_000;
+
+const COLORS = {
+    deepBlue: '#07182E',
+    gold: '#C9A229',
+    goldLight: '#F3D779',
+} as const;
+
 /**
- * Register the service worker and handle lifecycle events
+ * Register the service worker and handle lifecycle events.
  */
 const registerServiceWorker = (): void => {
     if (!('serviceWorker' in navigator)) {
@@ -19,28 +31,35 @@ const registerServiceWorker = (): void => {
 
     window.addEventListener('load', (): void => {
         navigator.serviceWorker
-            .register('/sw.js')
+            .register(SW_SCRIPT_PATH)
             .then((registration: ServiceWorkerRegistration): void => {
                 console.log(
                     '%c✓ Service Worker Registered',
-                    'color: #C9A229; font-weight: bold;'
+                    `color: ${COLORS.gold}; font-weight: bold;`
                 );
                 console.log('Scope:', registration.scope);
 
-                // Listen for service worker updates
+                // A worker can already be sitting in `waiting` if it finished
+                // installing in a previous session and the page was never
+                // refreshed. Without this check, that update would never
+                // surface again until a *different* update comes along.
+                if (registration.waiting && navigator.serviceWorker.controller) {
+                    showUpdateNotification(registration);
+                }
+
                 handleServiceWorkerUpdates(registration);
+                startPeriodicUpdateChecks(registration);
             })
-            .catch((error: Error): void => {
+            .catch((error: unknown): void => {
                 console.error('Service Worker registration failed:', error);
             });
     });
 
-    // Handle controller change (new SW taking over)
     handleControllerChange();
 };
 
 /**
- * Listen for and handle service worker updates
+ * Listen for and handle service worker updates found during this session.
  */
 const handleServiceWorkerUpdates = (registration: ServiceWorkerRegistration): void => {
     registration.addEventListener('updatefound', (): void => {
@@ -52,172 +71,184 @@ const handleServiceWorkerUpdates = (registration: ServiceWorkerRegistration): vo
         }
 
         newWorker.addEventListener('statechange', (): void => {
-            if (
-                newWorker.state === 'installed' &&
-                navigator.serviceWorker.controller
-            ) {
+            // `controller` only exists once a worker has already taken
+            // control of the page, so this condition is what tells apart
+            // a genuine update from the very first install.
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                 console.log(
                     '%c🔄 New update available!',
-                    'color: #F3D779; font-weight: bold;'
+                    `color: ${COLORS.goldLight}; font-weight: bold;`
                 );
-                showUpdateNotification();
+                showUpdateNotification(registration);
             }
         });
     });
 };
 
 /**
- * Handle the controllerchange event (new SW activated)
+ * Reload the page once the new worker actually takes control. Guarded
+ * against firing more than once, since `controllerchange` can otherwise
+ * trigger multiple reloads.
  */
 const handleControllerChange = (): void => {
     let refreshing = false;
 
     navigator.serviceWorker.addEventListener('controllerchange', (): void => {
-        if (!refreshing) {
-            refreshing = true;
-            window.location.reload();
-        }
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
     });
 };
 
 /**
- * Create and display an update notification banner
+ * Ask the browser to check for a new worker. Browsers already do this on
+ * navigation, but tabs left open for a long time won't get that check —
+ * re-checking whenever the tab regains focus closes that gap.
  */
-const showUpdateNotification = (): void => {
-    const updateBanner = createUpdateBanner();
-    document.body.appendChild(updateBanner);
+const startPeriodicUpdateChecks = (registration: ServiceWorkerRegistration): void => {
+    document.addEventListener('visibilitychange', (): void => {
+        if (document.visibilityState !== 'visible') return;
 
-    const elements: UpdateBannerElements = {
-        updateBtn: document.getElementById('updateBtn') as HTMLButtonElement | null,
-        dismissBtn: document.getElementById('dismissBtn') as HTMLButtonElement | null,
-    };
-
-    attachBannerEventListeners(elements, updateBanner);
-
-    // Auto-dismiss after 10 seconds
-    setTimeout((): void => {
-        if (updateBanner.parentNode) {
-            updateBanner.remove();
-        }
-    }, 10000);
+        registration.update().catch((error: unknown): void => {
+            console.warn('Service worker update check failed:', error);
+        });
+    });
 };
 
 /**
- * Create the update notification banner DOM element
+ * Create and display an update notification banner. No-ops if a banner is
+ * already showing, so rapid update/visibility events can't stack duplicate
+ * banners on top of each other.
+ */
+const showUpdateNotification = (registration: ServiceWorkerRegistration): void => {
+    if (document.getElementById(BANNER_ID)) {
+        return;
+    }
+
+    const banner = createUpdateBanner();
+    document.body.appendChild(banner);
+
+    const elements: UpdateBannerElements = {
+        updateBtn: banner.querySelector<HTMLButtonElement>('#updateBtn'),
+        dismissBtn: banner.querySelector<HTMLButtonElement>('#dismissBtn'),
+    };
+
+    attachBannerEventListeners(elements, banner, registration);
+
+    window.setTimeout((): void => {
+        banner.remove();
+    }, AUTO_DISMISS_MS);
+};
+
+/**
+ * Create the update notification banner DOM element.
  */
 const createUpdateBanner = (): HTMLDivElement => {
-    const updateBanner = document.createElement('div');
+    const banner = document.createElement('div');
+    banner.id = BANNER_ID;
+    banner.setAttribute('role', 'status');
+    banner.setAttribute('aria-live', 'polite');
 
-    updateBanner.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--deep-blue, #07182E);
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 50px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        z-index: 10000;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        font-family: 'Inter', sans-serif;
-        font-size: 0.9rem;
-        border: 2px solid #C9A229;
-        animation: slideUp 0.4s ease;
+    banner.innerHTML = `
+        <span>🔄 New version available!</span>
+        <button id="updateBtn" class="sw-banner-btn sw-banner-btn--primary" type="button">Refresh</button>
+        <button id="dismissBtn" class="sw-banner-btn sw-banner-btn--ghost" type="button">Later</button>
     `;
 
-    updateBanner.innerHTML = `
-        <span>🔄 New version available!</span>
-        <button id="updateBtn" style="
-            background: #C9A229;
-            color: #07182E;
+    return banner;
+};
+
+/**
+ * Attach click handlers to the banner buttons.
+ */
+const attachBannerEventListeners = (
+    elements: UpdateBannerElements,
+    banner: HTMLDivElement,
+    registration: ServiceWorkerRegistration
+): void => {
+    elements.updateBtn?.addEventListener('click', (): void => {
+        // Tell the *waiting* worker to activate — not the current
+        // controller, which is the outgoing worker. The reload itself
+        // happens in the `controllerchange` handler once the new worker
+        // is actually in control, so we don't race ahead of it here.
+        registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
+        banner.remove();
+    });
+
+    elements.dismissBtn?.addEventListener('click', (): void => {
+        banner.remove();
+    });
+};
+
+/**
+ * Inject the banner's styles once per page load. Hover/focus states live in
+ * CSS now rather than JS, so keyboard users get the same affordance mouse
+ * users do.
+ */
+const injectBannerStyles = (): void => {
+    if (document.getElementById(STYLE_ID)) {
+        return;
+    }
+
+    const styleSheet = document.createElement('style');
+    styleSheet.id = STYLE_ID;
+    styleSheet.textContent = `
+        #${BANNER_ID} {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--deep-blue, ${COLORS.deepBlue});
+            color: #ffffff;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            border: 2px solid ${COLORS.gold};
+            animation: sw-banner-slide-up 0.4s ease;
+        }
+
+        .sw-banner-btn {
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 25px;
             cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+            transition: background-color 0.2s ease, color 0.2s ease,
+                        transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .sw-banner-btn--primary {
+            background: ${COLORS.gold};
+            color: ${COLORS.deepBlue};
             font-weight: 700;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-        ">Refresh</button>
-        <button id="dismissBtn" style="
+        }
+
+        .sw-banner-btn--primary:hover,
+        .sw-banner-btn--primary:focus-visible {
+            background: ${COLORS.goldLight};
+            transform: translateY(-2px);
+        }
+
+        .sw-banner-btn--ghost {
             background: transparent;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-        ">Later</button>
-    `;
-
-    return updateBanner;
-};
-
-/**
- * Attach click event listeners to the banner buttons
- */
-const attachBannerEventListeners = (
-    elements: UpdateBannerElements,
-    banner: HTMLDivElement
-): void => {
-    // Refresh button – activate new SW and reload
-    elements.updateBtn?.addEventListener('click', (): void => {
-        banner.remove();
-
-        if (navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage({
-                type: 'SKIP_WAITING',
-            });
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        window.location.reload();
-    });
-
-    // Dismiss button – just remove the banner
-    elements.dismissBtn?.addEventListener('click', (): void => {
-        banner.remove();
-    });
-
-    // Hover effects for buttons
-    elements.updateBtn?.addEventListener('mouseenter', (): void => {
-        if (elements.updateBtn) {
-            elements.updateBtn.style.background = '#F3D779';
-            elements.updateBtn.style.transform = 'translateY(-2px)';
+        .sw-banner-btn--ghost:hover,
+        .sw-banner-btn--ghost:focus-visible {
+            border-color: ${COLORS.gold};
+            color: ${COLORS.goldLight};
         }
-    });
 
-    elements.updateBtn?.addEventListener('mouseleave', (): void => {
-        if (elements.updateBtn) {
-            elements.updateBtn.style.background = '#C9A229';
-            elements.updateBtn.style.transform = 'translateY(0)';
-        }
-    });
-
-    elements.dismissBtn?.addEventListener('mouseenter', (): void => {
-        if (elements.dismissBtn) {
-            elements.dismissBtn.style.borderColor = '#C9A229';
-            elements.dismissBtn.style.color = '#F3D779';
-        }
-    });
-
-    elements.dismissBtn?.addEventListener('mouseleave', (): void => {
-        if (elements.dismissBtn) {
-            elements.dismissBtn.style.borderColor = 'rgba(255,255,255,0.3)';
-            elements.dismissBtn.style.color = 'white';
-        }
-    });
-};
-
-/**
- * Inject the slide-up animation keyframes into the document
- */
-const injectAnimationStyles = (): void => {
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = `
-        @keyframes slideUp {
+        @keyframes sw-banner-slide-up {
             from {
                 opacity: 0;
                 transform: translateX(-50%) translateY(20px);
@@ -227,10 +258,16 @@ const injectAnimationStyles = (): void => {
                 transform: translateX(-50%) translateY(0);
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            #${BANNER_ID} {
+                animation: none;
+            }
+        }
     `;
     document.head.appendChild(styleSheet);
 };
 
 // ─── Initialize ───
-injectAnimationStyles();
+injectBannerStyles();
 registerServiceWorker();

@@ -707,7 +707,7 @@ class HeaderScroll {
                 this.header.classList.toggle('scrolled', this.lastScrollY > 60);
 
                 // Dynamic blur intensity based on scroll position
-                const blurIntensity = Math.min(25, 20 + (this.lastScrollY / 50));
+                const blurIntensity = Math.min(15, 5 + (this.lastScrollY / 500));
                 this.header.style.setProperty('--blur-intensity', `${blurIntensity}px`);
 
                 // Back to top button visibility
@@ -775,9 +775,9 @@ class MobileNavigation {
     }
 
     private bindLinkClicks(): void {
-        this.navMenu?.querySelectorAll<HTMLAnchorElement>('a:not(#darkModeToggle)')
+        this.navMenu?.querySelectorAll<HTMLAnchorElement>('a:not(#themeToggle)')
             .forEach((link) => {
-                link.addEventListener('click', () => this.closeMenu());
+               link.addEventListener('click', () => this.closeMenu());
             });
     }
 

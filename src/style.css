@@ -24,7 +24,7 @@
   --glass-border: rgba(255,255,255,0.18);
   --card-shadow: 0 4px 24px rgba(0,0,0,0.06);
   --card-shadow-hover: 0 16px 48px rgba(0,0,0,0.12);
-  --overlay-dark: rgba(6,20,43,0.85);
+  --overlay-dark: rgba(6,20,43,0);
 
   /* Borders & radius */
   --border-light: rgba(0,0,0,0.06);
@@ -46,7 +46,7 @@
   /* Progressive Blur Variables */
   --header-height: 80px;
   --blur-extension: 120px;
-  --blur-intensity: 20px;
+  --blur-intensity: 10px;
   --bar-height: 0px;
 }
 
@@ -73,7 +73,7 @@ body.dark-mode {
   --glass-border: rgba(255,255,255,0.10);
   --card-shadow: 0 4px 24px rgba(0,0,0,0.3);
   --card-shadow-hover: 0 16px 48px rgba(0,0,0,0.45);
-  --overlay-dark: rgba(2,12,26,0.9);
+  --overlay-dark: rgba(2,12,26,0.2);
   --border-light: rgba(255,255,255,0.08);
   --bar-height: 0px;
 }
@@ -113,7 +113,6 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
 main {
-  padding-top: calc(var(--header-height, 80px) + var(--bar-height));
   transition: padding-top 0.35s ease;
 }
 
@@ -866,8 +865,8 @@ body.dark-mode .theme-toggle-ring {
 .hero-bg-img {
   position: absolute;
   inset: 0;
-  background: url('/assets/Students.jpeg') no-repeat center center/cover;
-  opacity: 0.3;
+  background: url('/assets/stJoseph.jpg') no-repeat center/cover;
+  opacity: 1;
   transform: scale(1.05);
   animation: heroSlowZoom 20s ease-in-out infinite alternate;
 }
@@ -1021,6 +1020,11 @@ body.dark-mode .theme-toggle-ring {
   background: rgba(255,255,255,0.1);
   border-color: #fff;
   transform: translateY(-3px);
+}
+
+#getInTouchBtn{
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
 }
 
 /* ============================================
