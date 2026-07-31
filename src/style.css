@@ -2986,6 +2986,7 @@ a:focus-visible {
 }
 
 @media (max-width: 768px) {
+
   #navMenu {
     width: 340px;
     padding: 90px 28px 36px 28px;
@@ -3202,6 +3203,13 @@ a:focus-visible {
 
 /* ---------- MAX 480px (Mobile Phones) ---------- */
 @media (max-width: 480px) {
+
+  body{
+    zoom: 0.5;
+  }
+  .hero-section{
+    min-height: 200vh;
+  }
   .header-inner {
     padding: 0 14px;
   }
@@ -3250,13 +3258,13 @@ a:focus-visible {
   }
 
   .carousel-container {
-    height: 280px;
+    height: calc(280px * 2);
   }
 
   .carousel-btn {
-    width: 34px;
-    height: 34px;
-    font-size: 0.9rem;
+    width: calc(34px * 2);
+    height: calc(34px * 2);
+    font-size: calc(0.9rem * 2);
   }
 
   .carousel-btn.prev { left: 4px; }
@@ -3288,7 +3296,6 @@ a:focus-visible {
   }
 
   .footer-content {
-    grid-template-columns: 1fr;
     gap: 28px;
   }
 
@@ -3351,7 +3358,6 @@ a:focus-visible {
   }
 
   .events-grid {
-    grid-template-columns: 1fr;
     gap: 20px;
   }
   .preloader-logo {

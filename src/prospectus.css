@@ -627,7 +627,7 @@ body {
 
 /* ─── 3. MASTER CONTAINER – GLASS MORPHISM EFFECT ─── */
 .prospectus-container {
-    max-width: 1280px;
+    max-width: 2560px;
     width: 100%;
     background: var(--bg-container);
     backdrop-filter: var(--backdrop-blur);
@@ -1332,6 +1332,9 @@ body, .prospectus-container, .section-card, .motto-bar, .academic-banner,
 
 /* Tablet Portrait (max-width: 768px) */
 @media (max-width: 768px) {
+    body{
+        zoom: 0.5;
+    }
     /* Navigation */
     #mainHeader {
         padding: 0.7rem 1.2rem;
@@ -1447,7 +1450,7 @@ body, .prospectus-container, .section-card, .motto-bar, .academic-banner,
         gap: 1.2rem;
     }
 
-    .col-4, .col-5, .col-3, .col-6, .col-7, .col-8 {
+    .col-4, .col-5, .col-3, .col-7, .col-8 {
         grid-column: span 6;
     }
 
@@ -1576,14 +1579,17 @@ body, .prospectus-container, .section-card, .motto-bar, .academic-banner,
 
 /* Mobile Phones - Small (max-width: 480px) */
 @media (max-width: 480px) {
+
     body {
         padding: 0;
+        zoom: 0.5;
     }
     
     .prospectus-container {
         border-radius: 0;
         border: none;
     }
+
 
     /* Navigation */
     #mainHeader {
