@@ -1100,7 +1100,7 @@ body.dark-mode .section-title {
    ============================================ */
 .stats-section {
   position: relative;
-  background: url('/assets/Students.jpeg') no-repeat fixed center center;
+  background: url('/assets/Students.jpeg') repeat fixed center center;
   z-index: 1;
 }
 
