@@ -1,7 +1,6 @@
 // ============================================
 // SJCCC Mbengwi - Class Architecture
 // ============================================
-import './style.css'
 import './sw-register.ts'
 import {inject} from "@vercel/analytics";
 
@@ -1313,7 +1312,7 @@ class EnquiryForm {
                 throw new Error(`Server responded with ${response.status}`);
             }
         } catch {
-            this.statusMessage('⚠️ Sorry, something went wrong. Please email us directly at saintjosephcollege@gmail.com', 'error');
+            this.statusMessage('⚠️ Sorry, something went wrong. Please email us directly at stjosephcollegembengwi@gmail.com', 'error');
         } finally {
             this.submitBtn.disabled = false;
             this.submitBtn.textContent = 'Send Message';

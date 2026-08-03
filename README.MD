@@ -5,10 +5,10 @@
 
 "Edificamus Regnum Dei — Let us build the Kingdom of God"
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=flat-square&logo=vercel)](https://saintjosephcolledge.vercel.app)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=flat-square&logo=vercel)](https://saintjosephcollege.vercel.app)
 [![TypeScript 5.x](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
-[![Status: Live](https://img.shields.io/badge/Status-Live-success?style=flat-square)](https://saintjosephcolledge.vercel.app)
+[![Status: Live](https://img.shields.io/badge/Status-Live-success?style=flat-square)](https://saintjosephcollege.vercel.app)
 </div>
 
 ---
@@ -38,7 +38,7 @@ The official digital presence of **St. Joseph's Catholic Comprehensive College (
 
 This platform serves as the school's digital gateway, providing prospective students, parents, alumni, and the broader community with comprehensive information about academic programmes, campus life, admissions, and institutional values.
 
-* **Live Production URL:** [saintjosephcolledge.vercel.app](https://saintjosephcolledge.vercel.app)
+* **Live Production URL:** [saintjosephcollege.vercel.app](https://saintjosephcollege.vercel.app)
 
 ---
 
@@ -331,10 +331,10 @@ Tel: <a href="tel:+237683758002">+237 683 758 002</a><br>
 WhatsApp: <a href="https://wa.me/237672829014">+237 672 829 014</a><br><br>
 
 ✉️ <strong>Email</strong><br>
-<a href="mailto:saintjosephcollege@gmail.com">mailto:saintjosephcollege@gmail.com</a><br><br>
+<a href="mailto:stjosephcollegembengwi@gmail.com">mailto:stjosephcollegembengwi@gmail.com</a><br><br>
 
 🌐 <strong>Website</strong><br>
-<a href="https://saintjosephcolledge.vercel.app">saintjosephcolledge.vercel.app</a><br><br>
+<a href="https://saintjosephcollege.vercel.app">saintjosephcollege.vercel.app</a><br><br>
 
 📋 <strong>Enquire Online</strong><br>
 Use the contact form for admissions enquiries, school visits, or general information.<br><br>

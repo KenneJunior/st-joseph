@@ -899,7 +899,7 @@ body.dark-mode .theme-toggle-ring {
 .hero-content {
   position: relative;
   z-index: 3;
-  max-width: 850px;
+  max-width: 880px;
 }
 
 .hero-badge {
@@ -3074,17 +3074,18 @@ a:focus-visible {
   }
 
   .logo-text {
-    font-size: 1.2rem;
+    margin-top: 30px;
+    font-size: 2.5rem;
   }
 
   .logo-text small {
-    font-size: 0.7rem;
+    font-size: 1.5rem;
   }
 
   .logo-motto {
     white-space: normal;
-    font-size: 0.6rem;
-    max-width: 200px;
+    font-size: 1.2rem;
+    max-width: 600px;
   }
 
   .logo-icon {
@@ -3110,8 +3111,8 @@ a:focus-visible {
   }
 
   .menu-toggle {
-    width: 44px;
-    height: 44px;
+    width: 88px;
+    height: 88px;
   }
   .preloader-logo {
     width: 150px;
@@ -3163,7 +3164,7 @@ a:focus-visible {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 4px;
+    height: 70px;
     background: linear-gradient(
             to top,
             rgba(200, 150, 62, 0.4) 0%,
@@ -3178,7 +3179,7 @@ a:focus-visible {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 30px;
+    height: 1px;
     background: linear-gradient(
             to top,
             rgba(0, 0, 0, 0.08) 0%,
@@ -3186,18 +3187,6 @@ a:focus-visible {
             transparent 100%
     );
     border-radius: 0 0 var(--radius-md) var(--radius-md);
-  }
-
-  .modal-close {
-    top: 12px;
-    right: 12px;
-    width: 36px;
-    height: 36px;
-    font-size: 1.3rem;
-  }
-
-  .modal-content h2 {
-    font-size: 1.3rem;
   }
 }
 
@@ -3233,242 +3222,53 @@ a:focus-visible {
   }
 
   .menu-toggle {
-    width: 42px;
-    height: 42px;
+    width: 60px;
+    height: 60px;
+    margin-right: 10px;
     border-radius: 12px;
-    font-size: 1.3rem;
+    font-size: 2.3rem;
   }
 
   .hero-content h1 {
-    font-size: 1.6rem;
+    font-size: 2.2rem;
   }
 
   .hero-subtitle {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
   }
 
   .hero-badge {
-    font-size: 0.7rem;
+    font-size: 1.2rem;
     padding: 6px 14px;
     letter-spacing: 1px;
+  }
+
+  .btn{
+    font-size: 1.5rem;
   }
 
   .hero-buttons {
     gap: 12px;
   }
 
-  .carousel-container {
-    height: calc(280px * 2);
-  }
+    .carousel-container {
+        height: 300px;
+    }
 
-  .carousel-btn {
-    width: calc(34px * 2);
-    height: calc(34px * 2);
-    font-size: calc(0.9rem * 2);
-  }
+    .stats-row {
+        grid-template-columns:1fr 1fr;
+        gap: 12px;
+    }
 
-  .carousel-btn.prev { left: 4px; }
-  .carousel-btn.next { right: 4px; }
+    .stat-number {
+        font-size: 2rem;
+    }
 
-  .carousel-caption {
-    padding: 14px 18px;
-    font-size: 0.9rem;
-  }
-
-  .grid-container {
-    gap: 20px;
-  }
-
-  .card {
-    padding: 28px 24px;
-  }
-
-  .stats-row {
-    gap: 12px;
-  }
-
-  .stat-card {
-    padding: 24px 16px;
-  }
-
-  .stat-number {
-    font-size: 2rem;
-  }
-
-  .footer-content {
-    gap: 28px;
-  }
-
-  .logo-container {
-    gap: 8px;
-  }
-
-  .logo-text {
-    font-size: 1rem;
-  }
-
-  .logo-text small {
-    font-size: 0.65rem;
-    letter-spacing: 1px;
-  }
-
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 0.75rem;
-    border-radius: 6px;
-  }
-
-  .logo-motto {
-    font-size: 0.55rem;
-    max-width: 150px;
-    white-space: normal;
-  }
-
-  .level__subjects {
-    grid-template-columns: 1fr;
-  }
-
-  .fab-label {
-    display: none;
-  }
-
-  .enquiry-fab {
-    padding: 14px;
-    border-radius: 50%;
-    bottom: 80px;
-  }
-
-  .section-padding {
-    padding: 40px 16px;
-  }
-
-  .btn {
-    padding: 12px 24px;
-    font-size: 0.85rem;
-  }
-
-  .section-title {
-    font-size: 1.6rem;
-  }
-
-  .section-subtitle {
-    font-size: 0.9rem;
-    margin-bottom: 36px;
-  }
-
-  .events-grid {
-    gap: 20px;
-  }
-  .preloader-logo {
-    width: 100px;
-    height: 100px;
-    font-size: 1.5rem;
-    border-radius: 14px;
-  }
-
-  .preloader-logo::before {
-    inset: -10px;
-    border-radius: 18px;
-  }
-
-  .preloader-title {
-    font-size: 1.2rem;
-  }
-
-  .preloader-subtitle {
-    font-size: 0.85rem;
-    letter-spacing: 3px;
-  }
-
-  .preloader-motto {
-    font-size: 0.65rem;
-  }
-
-  .preloader-progress {
-    width: 140px;
-  }
+    .stat-label {
+        font-size: 0.95rem;
+    }
 }
 
-/* ---------- MAX 360px (Very Small Phones) ---------- */
-@media (max-width: 360px) {
-  .header-inner {
-    padding: 0 10px;
-  }
-
-  .logo-text {
-    font-size: 0.9rem;
-  }
-
-  .logo-text small {
-    font-size: 0.6rem;
-  }
-
-  .logo-icon {
-    width: 32px;
-    height: 32px;
-    font-size: 0.7rem;
-  }
-
-  .logo-motto {
-    display: none;
-  }
-
-  .menu-toggle {
-    width: 38px;
-    height: 38px;
-  }
-
-  #navMenu {
-    padding: 80px 16px 24px 16px;
-  }
-
-  #navMenu a {
-    padding: 12px 16px;
-    font-size: 0.9rem;
-  }
-
-  .hero-content h1 {
-    font-size: 1.4rem;
-  }
-
-  .hero-subtitle {
-    font-size: 0.85rem;
-  }
-}
-
-/* ============================================
-   HEIGHT-BASED RESPONSIVE (Short Screens)
-   ============================================ */
-@media (max-height: 700px) and (max-width: 860px) {
-  #navMenu {
-    padding-top: 80px;
-    padding-bottom: 20px;
-    gap: 4px;
-  }
-
-  #navMenu a {
-    padding: 12px 20px;
-    font-size: 0.95rem;
-  }
-
-  #navMenu a.nav-cta {
-    padding: 14px 20px;
-    margin-top: 8px;
-  }
-}
-
-@media (max-height: 550px) and (max-width: 860px) {
-  #navMenu {
-    padding-top: 70px;
-    gap: 2px;
-  }
-
-  #navMenu a {
-    padding: 10px 16px;
-    font-size: 0.9rem;
-  }
-}
 /* ============================================
    WINDOW CONTROLS OVERLAY (PWA)
    ============================================ */
