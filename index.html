@@ -51,8 +51,9 @@
 
   <!-- Bootstrap Icons (free, no account needed) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link href="src/css/scrollEffect.css" rel="stylesheet">
 
-  <link href="src/style.css" rel="stylesheet">
+  <link href="src/css/style.css" rel="stylesheet">
 </head>
 <body>
 
@@ -125,7 +126,7 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
 <aside id="announcementBar" class="announcement-bar" aria-label="Important announcement">
   <div class="announcement-bar__inner">
     <p class="announcement-bar__text">
-      <i class="bi bi-megaphone-fill"></i> <strong>Form One Interviews </strong> – Saturday, 30th May 2026 at 9:00 AM
+      <i class="bi bi-megaphone-fill"></i> <strong>Form One Interviews </strong> – Tuesday, 4th August 2026 at 9:00 AM
       <a href="#contact" class="announcement-bar__link"> Enquire now →</a>
     </p>
     <button class="announcement-bar__close" id="announcementClose" aria-label="Close announcement">
@@ -137,29 +138,51 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
 <main id="main-content">
 
   <!-- ==================== HERO SECTION ==================== -->
-  <section id="hero" class="hero-section">
-    <div class="hero-bg-layer">
-      <div class="hero-bg-img"></div>
-      <div class="hero-overlay"></div>
-      <div class="hero-particles" id="heroParticles"></div>
-    </div>
-    <div class="hero-content">
-      <span class="hero-badge">Edificamus Regnum Dei – Let us build the Kingdom of God</span>
-      <h1>Nurturing <span class="gold-accent">Minds & Hands</span> for a Bright Future</h1>
-      <p class="hero-subtitle">
-        A premier Catholic institution offers holistic education through rigorous academics, industrial technical
-        training, and vocational skills' development </p>
-      <div class="hero-buttons">
-        <a class="btn btn-primary" href="/prospectus.html"><i class="bi bi-file-earmark-pdf"></i> View Student Prospectus</a>
-        <button id="getInTouchBtn" class="btn btn-outline"><i class="bi bi-envelope"></i> Get In Touch</button>
+  <!-- ==================== NEW HERO SECTION (3D ENGINE) ==================== -->
+  <section id="heroSection" class="hero-section">
+    <!-- We keep your existing background layer inside the sticky container -->
+    <div class="sticky-container">
+
+      <!-- BACKGROUND LAYER (From your original code) -->
+      <div class="hero-bg-layer">
+        <div class="hero-bg-img"></div> <!-- Your background image -->
+        <div class="hero-overlay"></div>
+        <canvas id="dustCanvas"></canvas> <!-- For the Engine Particles -->
       </div>
-    </div>
-    <div class="hero-scroll-indicator">
-      <span></span>
+
+      <!-- STATIC HEADER -->
+      <div class="school-header">
+        <h1 class="school-name">
+          St. Joseph's <span class="gold-shimmer">Catholic</span><br>Comprehensive College Mbengwi
+        </h1>
+        <span class="hero-badge">Edificamus Regnum Dei – Let us build the Kingdom of God</span>
+      </div>
+
+      <!-- THE 3D MESSAGE ENGINE WRAPPER -->
+      <div class="scroll-message-wrapper" id="messageContainer" data-dir="down">
+        <!-- TypeScript will inject the 3D slides here -->
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="hero-scroll-indicator">
+        <span></span>
+      </div>
     </div>
   </section>
 
-  <!-- ==================== STATS SECTION ==================== -->
+  <!-- Screen Reader Announcer -->
+  <div id="a11y-announcer" class="sr-only" aria-live="polite" style="position:fixed; width:1px; height:1px; overflow:hidden;"></div>
+
+  <!-- Floating HUD (Add this right before the </body> tag) -->
+  <nav class="scroll-progress-hud" id="scrollProgress" aria-label="Message navigation">
+    <div class="hud-counter" id="hudCounter">01 / 07</div>
+    <div class="progress-track-container">
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <!-- TypeScript injects dots here -->
+    </div>
+  </nav>  <!-- ==================== STATS SECTION ==================== -->
   <section id="about" class="stats-section section-padding" style="color:#fff;">
     <div class="content">
       <span class="section-label" style="color:var(--accent-glow);">Our Environment</span>
@@ -348,7 +371,7 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
       </article>
 
       <!-- Event Card 2 -->
-      <article class="event-card reveal reveal-delay-1">
+      <article class="event-card d-none reveal reveal-delay-1">
         <div class="event-card__date">
           <span class="event-date__day">21</span>
           <span class="event-date__month">Aug</span>
@@ -557,9 +580,9 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
     <div>
       <h3>Contact Us</h3>
       <p><i class="bi bi-geo-alt-fill"></i> Mbengwi, Momo Division,<br>&nbsp;&nbsp;&nbsp;North-West Region, Cameroon</p>
-        <p><a class="contact-link" href="https://wa.me/237672829014" ><i class="bi bi-whatsapp"></i> +237 672 829 014</a></p>
-        <p><a class="contact-link" href="tel:+237683758002" target="_blank" rel="noopener noreferrer"><i class="bi bi-telephone-fill"></i> +237 683 758 002</a></p>
-        <p><a class="contact-link" href="mailto:stjosephcollegembengwi@gmail.com" target="_blank" rel="noopener noreferrer"><i class="bi bi-envelope"></i> stjosephcollegembengwi@gmail.com</a></p>
+      <p><a class="contact-link" href="https://wa.me/237682760271" ><i class="bi bi-whatsapp"></i> +237 682 760 271</a></p>
+      <p><a class="contact-link" href="tel:+237682760271" target="_blank" rel="noopener noreferrer"><i class="bi bi-telephone-fill"></i> +237 682 760 271</a></p>
+      <p><a class="contact-link" href="mailto:stjosephcollegembengwi@gmail.com" target="_blank" rel="noopener noreferrer"><i class="bi bi-envelope"></i> stjosephcollegembengwi@gmail.com</a></p>
       <div class="d-none footer-social">
         <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
         <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
@@ -598,12 +621,12 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
 <div class="modal-overlay" id="enquiryModal" role="dialog" aria-modal="true" aria-labelledby="enquiryTitle" hidden>
   <div class="modal-content">
     <button aria-label="Close enquiry form" class="modal-close" id="modalClose">
-          <i class="bi bi-x-lg"></i>
-      </button>
+      <i class="bi bi-x-lg"></i>
+    </button>
     <h2 id="enquiryTitle">Send Us an Enquiry</h2>
 
     <form action="https://formspree.io/f/xnjkgpgg" data-whatsapp-phone="237672829014" id="enquiryForm" method="POST"
-            novalidate>
+          novalidate>
       <div class="form-group">
         <label for="enqName">Your Name</label>
         <input
@@ -662,7 +685,7 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
       <button class="btn btn-primary" id="submitBtn" type="submit">Send Message</button>
       <p class="form-note" id="formStatus" aria-live="polite"></p>
     </form>
-</div>
+  </div>
 </div>
 <script type="module" src="/src/main.ts"></script>
 </body>

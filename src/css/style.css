@@ -117,161 +117,6 @@ main {
 }
 
 /* ============================================
-   ANIMATIONS & KEYFRAMES
-   ============================================ */
-@keyframes preloaderPulse {
-  0%,100% { transform: scale(0.9); opacity: 0.7; }
-  50% { transform: scale(1.1); opacity: 1; }
-}
-
-@keyframes heroSlowZoom {
-  0% { transform: scale(1.05); }
-  100% { transform: scale(1.15); }
-}
-
-@keyframes floatUp {
-  0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 0.6; }
-  100% { transform: translateY(-100vh) translateX(40px) scale(0.3); opacity: 0; }
-}
-
-@keyframes bounceDown {
-  0%,100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(12px); }
-}
-
-@keyframes scrollDot {
-  0%,100% { top: 10px; opacity: 1; }
-  50% { top: 28px; opacity: 0.3; }
-}
-
-@keyframes menuItemIn {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-@keyframes logoFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes ringPulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.2;
-  }
-  50% {
-    transform: scale(1.15);
-    opacity: 0.4;
-  }
-}
-@keyframes particleDrift {
-  0% {
-    opacity: 0;
-    transform: translateY(0) translateX(0) scale(0);
-  }
-  15% {
-    opacity: 0.5;
-  }
-  85% {
-    opacity: 0.15;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-80px) translateX(20px) scale(1.8);
-  }
-}
-@keyframes formItemSlideIn {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-@keyframes charReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(8px) scale(0.8);
-    filter: blur(4px);
-  }
-  60% {
-    opacity: 0.8;
-    transform: translateY(-2px) scale(1.05);
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0px);
-  }
-}
-@keyframes charDelete {
-  0% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.8);
-    filter: blur(4px);
-  }
-}
-@keyframes smoothCaretBlink {
-  0%, 100% {
-    border-right-color: var(--accent);
-    border-right-width: 2px;
-  }
-  50% {
-    border-right-color: transparent;
-    border-right-width: 2px;
-  }
-}
-@keyframes inputGlow {
-  0%, 100% {
-    box-shadow: 0 0 0 3px rgba(200, 150, 62, 0.15);
-  }
-  50% {
-    box-shadow: 0 0 0 5px rgba(200, 150, 62, 0.08), 0 0 20px rgba(200, 150, 62, 0.05);
-  }
-}
-@keyframes typingDotBounce {
-  0%, 100% {
-    transform: translateY(0);
-    opacity: 0.4;
-  }
-  50% {
-    transform: translateY(-6px);
-    opacity: 1;
-  }
-}
-
-@keyframes typingPulse {
-  0% { transform: translateY(-50%) scale(0.8); opacity: 0.5; }
-  100% { transform: translateY(-50%) scale(1.2); opacity: 1; }
-}
-
-@keyframes limitShake {
-  10%, 90% { transform: translate3d(-1px, 0, 0); }
-  20%, 80% { transform: translate3d(2px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-2px, 0, 0); }
-  40%, 60% { transform: translate3d(2px, 0, 0); }
-}
-
-
-/* ============================================
-   PRELOADER
-   ============================================ */
-/* ============================================
    LEFT TO RIGHT PILLAR PRELOADER
    ============================================ */
 #preloader {
@@ -479,7 +324,7 @@ main {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 1000 !important;
   height: var(--header-height);
   display: flex;
   align-items: center;
@@ -844,17 +689,12 @@ body.dark-mode .theme-toggle-ring {
 /* ============================================
    HERO SECTION
    ============================================ */
-.hero-section {
-  min-height: 100vh;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 0 32px;
-  overflow: hidden;
+#heroSection.hero-section {
+  min-height: 600vh; /* Engine height */
+  display: block;    /* Remove flex from parent */
+  overflow: visible; /* CRITICAL: Sticky won't work if this is 'hidden' */
+  padding: 0;        /* Reset padding */
   background: var(--primary-dark);
-  z-index: 1;
 }
 
 .hero-bg-layer {
@@ -862,15 +702,20 @@ body.dark-mode .theme-toggle-ring {
   inset: 0;
   z-index: 0;
 }
+.sticky-container .hero-bg-layer {
+  z-index: 0;
+}
 
 .hero-bg-img {
   position: absolute;
   inset: 0;
-  background: url('/assets/stJoseph.jpg') no-repeat center/cover;
+  background: url('/assets/stJoseph.jpg') center/cover;
   opacity: 1;
   transform: scale(1.05);
   animation: heroSlowZoom 20s ease-in-out infinite alternate;
+  z-index: -1;
 }
+
 
 .hero-overlay {
   position: absolute;
@@ -3082,9 +2927,9 @@ a:focus-visible {
   }
 
   .logo-icon {
-    width: 42px;
-    height: 42px;
-    font-size: 0.85rem;
+    width: 75px;
+    height: 75px;
+    font-size: 1.3rem;
   }
 
   .event-card {
@@ -3347,6 +3192,159 @@ a:focus-visible {
     padding-top: 0;
   }
 }
+
+/* ============================================
+   ANIMATIONS & KEYFRAMES
+   ============================================ */
+@keyframes preloaderPulse {
+  0%,100% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes heroSlowZoom {
+  0% { transform: scale(1.05); }
+  100% { transform: scale(1.15); }
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 0.6; }
+  100% { transform: translateY(-100vh) translateX(40px) scale(0.3); opacity: 0; }
+}
+
+@keyframes bounceDown {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(12px); }
+}
+
+@keyframes scrollDot {
+  0%,100% { top: 10px; opacity: 1; }
+  50% { top: 28px; opacity: 0.3; }
+}
+
+@keyframes menuItemIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes ringPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.4;
+  }
+}
+@keyframes particleDrift {
+  0% {
+    opacity: 0;
+    transform: translateY(0) translateX(0) scale(0);
+  }
+  15% {
+    opacity: 0.5;
+  }
+  85% {
+    opacity: 0.15;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80px) translateX(20px) scale(1.8);
+  }
+}
+@keyframes formItemSlideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes charReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.8);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateY(-2px) scale(1.05);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+@keyframes charDelete {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.8);
+    filter: blur(4px);
+  }
+}
+@keyframes smoothCaretBlink {
+  0%, 100% {
+    border-right-color: var(--accent);
+    border-right-width: 2px;
+  }
+  50% {
+    border-right-color: transparent;
+    border-right-width: 2px;
+  }
+}
+@keyframes inputGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(200, 150, 62, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(200, 150, 62, 0.08), 0 0 20px rgba(200, 150, 62, 0.05);
+  }
+}
+@keyframes typingDotBounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+@keyframes typingPulse {
+  0% { transform: translateY(-50%) scale(0.8); opacity: 0.5; }
+  100% { transform: translateY(-50%) scale(1.2); opacity: 1; }
+}
+
+@keyframes limitShake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-2px, 0, 0); }
+  40%, 60% { transform: translate3d(2px, 0, 0); }
+}
+
+
 /* ============================================
    SMOOTH CARET INPUT ANIMATION
    ============================================ */

@@ -1,0 +1,238 @@
+/* =========================================
+   1. CORE ENGINE VARIABLES
+   ========================================= */
+:root {
+    --ease-cinematic: cubic-bezier(0.25, 1, 0.35, 1);
+    --gold-light: #fbe3a1;
+    --gold-mid: #d4a853;
+    --bg-overlay: rgba(5, 7, 10, 0.4); /* Subtle darkening for readability */
+}
+
+/* =========================================
+   2. LAYOUT (Background-Aware)
+   ========================================= */
+.hero-section {
+    min-height: 900vh; /* This creates the scroll length */
+    background: #05070a; /* Fallback color */
+    display: block;
+    overflow: visible;
+    position: relative;
+}
+
+.sticky-container {
+    position: sticky;
+    top: 0;
+    height: 200vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-bg-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.school-header {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    margin-bottom: 5vh;
+}
+
+.school-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 5vw, 5rem);
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.gold-shimmer {
+    background: linear-gradient(120deg, #d4a853 0%, #fbe3a1 25%, #8c6a21 50%, #fbe3a1 75%, #d4a853 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 8s linear infinite;
+}
+
+@keyframes shimmer { to { background-position: 200% center; } }
+
+/* =========================================
+   3. 3D TRANSFORMATION ENGINE
+   ========================================= */
+.scroll-message-wrapper {
+    position: relative;
+    perspective: 2000px;
+    z-index: 10;
+    width: 100%;
+    max-width: 900px;
+    display: grid;
+    place-items: center;
+    /* Injected by TS */
+    transform:
+            skewY(var(--velocity-skew, 0deg))
+            rotateX(var(--velocity-pitch, 0deg))
+            translateZ(var(--inertial-z, 0px));
+    will-change: transform;
+}
+/* =========================================
+   4. WORD-LEVEL STAGGER PHYSICS
+   ========================================= */
+.word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s var(--ease-cinematic);
+    transition-delay: calc(var(--word-index) * 0.04s);
+}
+
+.message-face {
+    grid-area: 1 / 1;
+    font-family: var(--font-heading); /* Using your Playfair Display */
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-light);
+    line-height: 1.2;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    opacity: 0;
+    filter: blur(15px);
+    transform-origin: 50% 120%;
+    transition: opacity 0.8s, filter 0.8s, transform 1.2s var(--ease-cinematic);
+}
+
+/* --- State: ACTIVE --- */
+.message-face.active {
+    opacity: 1;
+    filter: blur(0px);
+    transform: rotateX(0deg) translateY(0);
+}
+
+.message-highlight .word {
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+/* --- State: EXITS (Directional) --- */
+.message-face.exit-up {
+    opacity: 0;
+    filter: blur(10px);
+    transform: rotateX(35deg) translateY(-150px) translateZ(-300px);
+}
+
+.message-face.exit-down {
+    opacity: 0;
+    filter: blur(10px);
+    transform: rotateX(-35deg) translateY(150px) translateZ(-300px);
+}
+
+/* =========================================
+   4. WORD-LEVEL STAGGER PHYSICS
+   ========================================= */
+
+
+/* Logic for "Falling in" from Top/Bottom based on scroll direction */
+.scroll-message-wrapper[data-dir="down"] .message-face:not(.active) .word {
+    transform: translateY(40px) rotateX(-20deg);
+}
+.scroll-message-wrapper[data-dir="up"] .message-face:not(.active) .word {
+    transform: translateY(-40px) rotateX(20deg);
+}
+
+.message-face.active .word {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Highlight Styling */
+.message-highlight .word {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fef4d8 0%, #d4a853 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* =========================================
+   5. HUD / PROGRESS BAR
+   ========================================= */
+.scroll-progress-hud {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    padding: 12px 28px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease;
+}
+
+.scroll-progress-hud.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.hud-counter {
+    color: var(--accent-glow);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.progress-track-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.progress-track {
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 2px;
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-50%);
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gold-mid);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.progress-dot {
+    width: 8px;
+    height: 8px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.progress-dot.active {
+    background: var(--accent);
+    transform: scale(1.8);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.progress-dot.passed {
+    background: var(--gold-mid);
+}

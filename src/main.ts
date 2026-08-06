@@ -3,18 +3,19 @@
 // ============================================
 import './sw-register.ts'
 import {inject} from "@vercel/analytics";
+import {ScrollEngine} from "./scrollEngine.ts";
 
 // ============================================
 // PILLAR PRELOADER WITH MATH-DRIVEN ANIMATIONS
 // ============================================
 class Preloader {
-    private preloader: HTMLElement;
-    private topHalf: HTMLElement | null;
-    private bottomHalf: HTMLElement | null;
-    private content: HTMLElement | null;
-    private progressBar: HTMLElement | null;
-    private percentageText: HTMLElement | null;
-    private particlesContainer: HTMLElement | null;
+    private readonly preloader: HTMLElement;
+    private readonly topHalf: HTMLElement | null;
+    private readonly bottomHalf: HTMLElement | null;
+    private readonly content: HTMLElement | null;
+    private readonly progressBar: HTMLElement | null;
+    private readonly percentageText: HTMLElement | null;
+    private readonly particlesContainer: HTMLElement | null;
 
     private topPillars: HTMLElement[] = [];
     private bottomPillars: HTMLElement[] = [];
@@ -799,56 +800,128 @@ class MobileNavigation {
 }
 
 // --------------------------------------------
-class AnnouncementBar {
-    private bar: HTMLElement | null;
-    private closeBtn: HTMLButtonElement | null;
-    private readonly STORAGE_KEY = 'announcementDismissed';
+export interface AnnouncementBarOptions {
+    barSelector: string;
+    closeBtnSelector: string;
+    headerSelector?: string;
+    storageKey?: string;
+    /**
+     * Number of days before the bar shows up again.
+     * Use decimals for shorter times (e.g., 0.5 for 12 hours)
+     */
+    dismissForDays?: number;
+}
 
-    constructor(barId: string, closeBtnId: string) {
-        this.bar = document.getElementById(barId) as HTMLElement | null;
-        this.closeBtn = document.getElementById(closeBtnId) as HTMLButtonElement | null;
+export class AnnouncementBar {
+    private readonly bar: HTMLElement | null;
+    private readonly closeBtn: HTMLButtonElement | null;
+    private readonly header: HTMLElement | null;
+    private readonly storageKey: string;
+    private readonly dismissDurationMs: number;
+
+    private resizeObserver: ResizeObserver | null = null;
+    private rAFId: number | null = null;
+
+    private readonly boundUpdateLayout = this.updateLayout.bind(this);
+    private readonly boundDismiss = this.dismiss.bind(this);
+
+    constructor(options: AnnouncementBarOptions) {
+        this.bar = document.querySelector(options.barSelector);
+        this.closeBtn = document.querySelector(options.closeBtnSelector);
+        this.header = options.headerSelector ? document.querySelector(options.headerSelector) : null;
+
+        this.storageKey = options.storageKey ?? 'announcement_dismissed';
+
+        // Convert days to milliseconds (Default: 30 days if not provided)
+        const days = options.dismissForDays ?? 30;
+        this.dismissDurationMs = days * 24 * 60 * 60 * 1000;
+
+        if (!this.bar) return;
+
         this.init();
     }
 
     private init(): void {
-        this.observeSizeChanges();
-        this.updateLayout();
-        window.addEventListener('load', () => this.updateLayout());
-        window.addEventListener('resize', () => this.updateLayout());
+        const isDismissed = this.checkIfDismissed();
 
-        if (!this.closeBtn || !this.bar) return;
-
-        if (localStorage.getItem(this.STORAGE_KEY) === 'true') {
-            this.bar.classList.add('dismissed');
-            this.updateLayout();
+        if (isDismissed) {
+            this.hideBar();
+        } else {
+            this.closeBtn?.addEventListener('click', this.boundDismiss);
         }
 
-        this.closeBtn.addEventListener('click', () => this.dismiss());
+        this.observeSizeChanges();
+        this.scheduleLayoutUpdate();
+        window.addEventListener('load', this.boundUpdateLayout);
+    }
+
+    /**
+     * Checks localStorage to see if the timer has expired.
+     */
+    private checkIfDismissed(): boolean {
+        const hiddenUntilStr = localStorage.getItem(this.storageKey);
+
+        if (!hiddenUntilStr) return false;
+
+        const hiddenUntil = parseInt(hiddenUntilStr, 10);
+
+        // If the current time is less than the expiration time, keep it hidden
+        if (!isNaN(hiddenUntil) && Date.now() < hiddenUntil) {
+            return true;
+        }
+
+        // Timer expired! Clean up localStorage so the bar shows again
+        localStorage.removeItem(this.storageKey);
+        return false;
     }
 
     private dismiss(): void {
-        this.bar?.classList.add('dismissed');
-        localStorage.setItem(this.STORAGE_KEY, 'true');
-        this.updateLayout();
+        if (!this.bar) return;
+
+        this.hideBar();
+
+        // Calculate the exact date/time it should come back
+        const hiddenUntil = Date.now() + this.dismissDurationMs;
+        localStorage.setItem(this.storageKey, hiddenUntil.toString());
+
+        this.scheduleLayoutUpdate();
+        this.closeBtn?.removeEventListener('click', this.boundDismiss);
+    }
+
+    private hideBar(): void {
+        this.bar!.classList.add('dismissed');
+        this.bar!.setAttribute('aria-hidden', 'true');
+    }
+
+    private scheduleLayoutUpdate(): void {
+        if (this.rAFId) cancelAnimationFrame(this.rAFId);
+        this.rAFId = requestAnimationFrame(() => this.boundUpdateLayout());
     }
 
     private updateLayout(): void {
         const root = document.documentElement;
-        const header = document.getElementById('mainHeader') as HTMLElement | null;
-        if (header) {
-            root.style.setProperty('--header-height', `${header.offsetHeight}px`);
+
+        const headerHeight = this.header?.offsetHeight ?? 0;
+        const isDismissed = this.bar?.classList.contains('dismissed');
+        const barHeight = isDismissed || !this.bar ? 0 : this.bar.offsetHeight;
+
+        if (this.header) {
+            root.style.setProperty('--header-height', `${headerHeight}px`);
         }
-        if (this.bar && !this.bar.classList.contains('dismissed')) {
-            root.style.setProperty('--bar-height', `${this.bar.offsetHeight}px`);
-        } else {
-            root.style.setProperty('--bar-height', '0px');
-        }
+        root.style.setProperty('--bar-height', `${barHeight}px`);
     }
 
     private observeSizeChanges(): void {
-        const header = document.getElementById('mainHeader') as HTMLElement | null;
-        if (header) new ResizeObserver(() => this.updateLayout()).observe(header);
-        if (this.bar) new ResizeObserver(() => this.updateLayout()).observe(this.bar);
+        this.resizeObserver = new ResizeObserver(() => this.scheduleLayoutUpdate());
+        if (this.header) this.resizeObserver.observe(this.header);
+        if (this.bar) this.resizeObserver.observe(this.bar);
+    }
+
+    public destroy(): void {
+        this.resizeObserver?.disconnect();
+        window.removeEventListener('load', this.boundUpdateLayout);
+        this.closeBtn?.removeEventListener('click', this.boundDismiss);
+        if (this.rAFId) cancelAnimationFrame(this.rAFId);
     }
 }
 
@@ -1456,7 +1529,13 @@ class App {
         new MobileNavigation('menuToggle', 'navMenu', 'mainHeader');
 
         // 5. Announcement bar
-        new AnnouncementBar('announcementBar', 'announcementClose');
+        new AnnouncementBar({
+            barSelector: '#announcementBar',
+            closeBtnSelector: '#announcementClose',
+            storageKey:'Interview_announcement_dismissed',
+            headerSelector:'#mainHeader',
+            dismissForDays:3
+        });
 
         // 6. Carousel
         new Carousel('.carousel-slide', 'carouselDots', 'prevBtn', 'nextBtn', '.carousel-container');
@@ -1471,7 +1550,7 @@ class App {
         new SmoothScroll('mainHeader');
 
         // 10. Hero particles
-        new HeroParticles('heroParticles', 40);
+        new HeroParticles('heroParticles', 60);
 
         // 11. Academic toggles
         new AcademicLevelToggles('.level__toggle');
@@ -1488,6 +1567,30 @@ class App {
         new EnquiryForm('enquiryForm', 'formStatus', 'submitBtn', 'whatsappRoutingToggle');
 
         new SmoothTypingEffect('.form-group input, .form-group textarea');
+
+        const messages = [
+            'Nurturing <span class="message-highlight">MINDS</span> & <span class="message-highlight">HANDS</span><br>for a better future',
+            'Where <span class="message-highlight">FAITH</span> meets<br><span class="message-highlight">EXCELLENCE</span> in education',
+            'Rigorous <span class="message-highlight">ACADEMICS</span><br>& industrial training',
+            'Building <span class="message-highlight">CHARACTER</span><br>since 1963',
+            'Empowering students to<br><span class="message-highlight">LEAD</span> & <span class="message-highlight">SERVE</span>',
+            'A community of<br><span class="message-highlight">DISCIPLINE</span> & integrity',
+            'Your journey to<br><span class="message-highlight">SUCCESS</span> starts here'
+        ];
+        const engine = new ScrollEngine({
+            heroId: 'heroSection',
+            containerId: 'messageContainer',
+            navId: 'scrollProgress',
+            fillId: 'progressFill',
+            counterId: 'hudCounter',
+            a11yId: 'a11y-announcer',
+            canvasId: 'dustCanvas', // Connects to the canvas in the background
+            messages: messages,
+            tension: 0.18,
+            friction: 0.75
+        });
+
+        engine.init();
         inject();
     }
 }
