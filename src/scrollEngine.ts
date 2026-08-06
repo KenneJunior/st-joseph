@@ -1,9 +1,3 @@
-/**
- * =========================================================================
- * PREMIUM 3D SCROLL ENGINE (TypeScript)
- * Object-Oriented Architecture for robust production use.
- * =========================================================================
- */
 
 // =========================================
 // 1. TYPES & INTERFACES
@@ -157,7 +151,7 @@ export class ScrollEngine {
     private config: Required<Pick<ScrollEngineConfig, 'tension' | 'friction' | 'maxSkew' | 'maxZPush'>> & ScrollEngineConfig;
     private state: ScrollState;
     // @ts-ignore
-    private particleSystem?: ParticleSystem; // Fixed: Declared missing property
+    private particleSystem?: ParticleSystem;
 
     private refs: {
         hero: HTMLElement;
@@ -179,7 +173,6 @@ export class ScrollEngine {
 
         this.renderLoop = this.renderLoop.bind(this);
 
-        // Fixed: Ensure refs are populated before calling init()
         this.refs = {
             hero: this.getEl(config.heroId),
             container: this.getEl(config.containerId),
@@ -199,7 +192,7 @@ export class ScrollEngine {
             lastTime: performance.now(),
             scrollDir: 'down',
             isSnapping: false,
-            snapTimer: null
+            snapTimer: null,
         };
     }
 
@@ -210,11 +203,11 @@ export class ScrollEngine {
     }
     private getGeometry() {
         const heroTopAbs = this.refs.hero.offsetTop;
-        const wh = window.innerHeight;
+        const wh = window.innerHeight * 1.5;
         const totalScrollable = this.refs.hero.offsetHeight - wh;
-        const startBuffer = wh * 0.5;
+        const startBuffer = wh * 0.2 ;
         const endBuffer = wh * 1.5;
-        const exitBuffer = wh * 0.125; // was a flat 100px; now scales like the rest
+        const exitBuffer = wh * 0.125;
         const activeDistance = Math.max(1, totalScrollable - startBuffer - endBuffer);
         return { heroTopAbs, totalScrollable, startBuffer, endBuffer, exitBuffer, activeDistance };
     }
@@ -276,11 +269,8 @@ export class ScrollEngine {
         const normalizedVelocity = this.state.velocity * 0.012;
         const boundedCurve = Math.tanh(normalizedVelocity);
 
-        // Skew on Y-axis
         const skewAngle = boundedCurve * this.config.maxSkew;
-
-        // NEW: Pitch on X-axis (Leaning into the scroll)
-        const pitchAngle = boundedCurve * 4; // Caps at 4 degrees of physical lean
+        const pitchAngle = boundedCurve * 4;
 
         const speed = Math.abs(this.state.velocity);
         const depthCurve = 1 - Math.exp(-speed * 0.04);
@@ -306,7 +296,7 @@ export class ScrollEngine {
             const adjustedScroll = scrolledInHero - startBuffer;
             const progress = Math.max(0, Math.min(0.999, adjustedScroll / activeDistance));
 
-            this.refs.fill.style.transform = `scaleY(${progress})`;
+            this.refs.fill.style.transform = `scaleX(${progress})`;
 
             const rawIdx = Math.floor(progress * this.config.messages.length);
             const idx = Math.min(this.config.messages.length - 1, Math.max(0, rawIdx));
@@ -355,6 +345,7 @@ export class ScrollEngine {
 
         setTimeout(() => { this.state.isSnapping = false; }, 800);
     }
+
     private setupSnapListeners(): void {
         const interruptEvents = ['wheel', 'touchmove', 'keydown', 'mousedown'];
         interruptEvents.forEach(evt => {
@@ -368,7 +359,6 @@ export class ScrollEngine {
         }, { passive: true });
     }
 
-    // Fixed: Converted to Arrow Function to preserve 'this' context when called by setTimeout
     private triggerElasticSnap = (): void => {
         const { heroTopAbs, totalScrollable, startBuffer, endBuffer, activeDistance } = this.getGeometry();
         const scrolledInHero = window.scrollY - heroTopAbs;
@@ -388,4 +378,3 @@ export class ScrollEngine {
         }
     }
 }
-

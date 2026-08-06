@@ -138,42 +138,36 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
 <main id="main-content">
 
   <!-- ==================== HERO SECTION ==================== -->
-  <!-- ==================== NEW HERO SECTION (3D ENGINE) ==================== -->
   <section id="heroSection" class="hero-section">
-    <!-- We keep your existing background layer inside the sticky container -->
     <div class="sticky-container">
-
-      <!-- BACKGROUND LAYER (From your original code) -->
       <div class="hero-bg-layer">
-        <div class="hero-bg-img"></div> <!-- Your background image -->
+        <div class="hero-bg-img"></div>
         <div class="hero-overlay"></div>
-        <canvas id="dustCanvas"></canvas> <!-- For the Engine Particles -->
+        <canvas id="dustCanvas"></canvas>
+        <div class="hero-particles" id="heroParticles"></div>
       </div>
 
-      <!-- STATIC HEADER -->
       <div class="school-header">
         <h1 class="school-name">
           St. Joseph's <span class="gold-shimmer">Catholic</span><br>Comprehensive College Mbengwi
         </h1>
         <span class="hero-badge">Edificamus Regnum Dei – Let us build the Kingdom of God</span>
       </div>
-
-      <!-- THE 3D MESSAGE ENGINE WRAPPER -->
       <div class="scroll-message-wrapper" id="messageContainer" data-dir="down">
-        <!-- TypeScript will inject the 3D slides here -->
+      </div>
+      <div class="hero-buttons">
+        <a class="btn btn-primary" href="/prospectus.html"><i class="bi bi-file-earmark-pdf"></i> View Student Prospectus</a>
+        <button id="getInTouchBtn" class="btn btn-outline"><i class="bi bi-envelope"></i> Get In Touch</button>
       </div>
 
-      <!-- Scroll Indicator -->
       <div class="hero-scroll-indicator">
         <span></span>
       </div>
     </div>
   </section>
 
-  <!-- Screen Reader Announcer -->
   <div id="a11y-announcer" class="sr-only" aria-live="polite" style="position:fixed; width:1px; height:1px; overflow:hidden;"></div>
 
-  <!-- Floating HUD (Add this right before the </body> tag) -->
   <nav class="scroll-progress-hud" id="scrollProgress" aria-label="Message navigation">
     <div class="hud-counter" id="hudCounter">01 / 07</div>
     <div class="progress-track-container">
