@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
+    "pwa-asset-generator": "^8.1.5",
     "vercel": "^56.3.1"
   }
 }

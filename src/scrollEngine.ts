@@ -5,11 +5,11 @@
 
 interface ScrollEngineConfig {
     messages: string[];
-    tension?: number;         // Spring stiffness (default 0.12)
-    friction?: number;        // Damping/Air resistance (default 0.8)
-    maxSkew?: number;         // Asymptotic limit for skew (default 12)
-    maxZPush?: number;        // Max pixels pushed into Z-space (default -200)
-    canvasId?: string;        // Optional particle canvas
+    scrollResponse?: number;  // seconds to settle the visual-lag spring (default 0.18)
+    snapResponse?: number;    // seconds to settle the slide-snap spring (default 0.4)
+    maxSkew?: number;         // degrees, asymptotic skew limit (default 12)
+    maxZPush?: number;        // px, asymptotic Z-push limit (default -800)
+    canvasId?: string;
     heroId: string;
     containerId: string;
     navId: string;
@@ -22,13 +22,16 @@ interface ScrollState {
     currentIndex: number;
     faces: HTMLElement[];
     dots: HTMLElement[];
-    targetScroll: number;
     currentScroll: number;
-    velocity: number;
+    scrollVelocity: number;
+    pitchAngle: number;
+    pitchVelocity: number;
     lastTime: number;
     scrollDir: 'up' | 'down';
     isSnapping: boolean;
-    snapTimer: number | null;
+    snapTarget: number;
+    snapVelocity: number;
+    idleTimer: number | null;
 }
 
 interface Particle {
@@ -36,12 +39,60 @@ interface Particle {
     y: number;
     radius: number;
     alpha: number;
-    speedY: number;
     speedX: number;
+    speedY: number;
 }
 
 // =========================================
-// 2. TEXT SPLITTER UTILITY
+// 2. SHARED PHYSICS PRIMITIVES
+// =========================================
+
+/**
+ * ω such that a critically damped spring settles to ~2% of its initial
+ * error after `responseTime` seconds (4 time-constants; e^-4 ≈ 0.018).
+ */
+function omegaFromResponseTime(responseTimeSeconds: number): number {
+    return 4 / Math.max(responseTimeSeconds, 0.001);
+}
+
+/**
+ * Exact closed-form step of a critically damped harmonic oscillator
+ * (damping ratio ζ = 1) with natural frequency ω, tracking `target`:
+ *
+ *   ẍ = -ω²(x - target) - 2ω·ẋ
+ *
+ * The characteristic equation r² + 2ωr + ω² = (r+ω)² = 0 has a repeated
+ * root r = -ω, so with y = x - target the general solution is
+ * y(t) = (C1 + C2·t)e^(-ωt). Matching y(0) = y0 and y'(0) = v0 gives
+ * C1 = y0, C2 = v0 + ωy0, and therefore:
+ *
+ *   y(t) = (y0 + (v0 + ωy0)·t)·e^(-ωt)
+ *   v(t) = (v0 - ω(v0 + ωy0)·t)·e^(-ωt)
+ *
+ * (v(t) = y'(t), differentiate and simplify; check: y(0)=y0, v(0)=v0, and
+ * substituting both back into the ODE above satisfies it identically for
+ * all t.) This is exact for any t ≥ 0 — no discretization error, no
+ * instability at large dt.
+ */
+function springStep(x: number, v: number, target: number, omega: number, dt: number): [number, number] {
+    const y0 = x - target;
+    const expTerm = Math.exp(-omega * dt);
+    const temp = v + omega * y0;
+    const y = (y0 + temp * dt) * expTerm;
+    const newV = (v - omega * temp * dt) * expTerm;
+    return [target + y, newV];
+}
+
+/** Box–Muller transform: one standard-normal sample from two uniform ones. */
+function gaussianRandom(): number {
+    let u = 0, v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+// =========================================
+// 3. TEXT SPLITTER UTILITY (unchanged)
 // =========================================
 
 class TextSplitter {
@@ -80,56 +131,55 @@ class TextSplitter {
 }
 
 // =========================================
-// 3. PARTICLE SYSTEM
+// 4. PARTICLE SYSTEM — Stokes drag + Brownian jitter
 // =========================================
+
+const STOKES_BASE_DRIFT = -8;      // px/s, terminal speed as r -> 0
+const STOKES_TERMINAL_COEFF = -3;  // px/s, additional terminal speed at r = 1
+const STOKES_RELAX_TIME = 0.1;     // s, relaxation time constant at r = 1
+
+// Ornstein-Uhlenbeck jitter: dv = -λ(v - mean)dt + σ√dt · N(0,1) — Brownian
+// motion with a restoring force, so velocity wanders but stays bounded,
+// unlike an unweighted random walk.
+const OU_LAMBDA = 0.6;
+const OU_SIGMA = 3.5;
 
 class ParticleSystem {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D | null;
     private particles: Particle[] = [];
-    private width: number = 0;
-    private height: number = 0;
-
-    constructor(canvas: HTMLCanvasElement) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-        this.init();
-    }
-
-    private init(): void {
+    private width = 0;
+    private height = 0;
+    private lastTime = 0;
+    private readonly animate = (time: number): void => {
         if (!this.ctx) return;
-        this.resize();
-        window.addEventListener('resize', this.resize.bind(this), { passive: true });
+        if (this.lastTime === 0) this.lastTime = time;
+        let dt = (time - this.lastTime) / 1000;
+        this.lastTime = time;
+        // Clamped for visual sanity on a huge gap, not for stability — the
+        // exponential decay below is exact for any dt.
+        dt = Math.min(dt, 0.1);
 
-        this.particles = Array.from({ length: 45 }, () => this.createParticle());
-        this.animate();
-    }
-
-    private createParticle(): Particle {
-        return {
-            x: Math.random() * this.width,
-            y: Math.random() * this.height,
-            radius: Math.random() * 1.5 + 0.5,
-            alpha: Math.random() * 0.4 + 0.1,
-            speedY: -(Math.random() * 0.3 + 0.1),
-            speedX: (Math.random() - 0.5) * 0.2
-        };
-    }
-
-    private resize(): void {
-        this.width = this.canvas.width = window.innerWidth;
-        this.height = this.canvas.height = window.innerHeight*2;
-    }
-
-    private animate = (): void => {
-        if (!this.ctx) return;
         this.ctx.clearRect(0, 0, this.width, this.height);
 
         this.particles.forEach(p => {
-            p.y += p.speedY;
-            p.x += p.speedX;
+            // Vertical: exact relaxation toward Stokes terminal velocity.
+            // dv/dt = -k(v - vTerm)  =>  v(t) = vTerm + (v0-vTerm)e^(-kt).
+            const vTerm = this.terminalVelocity(p.radius);
+            const k = this.dragRate(p.radius);
+            const decay = Math.exp(-k * dt);
+            p.speedY = vTerm + (p.speedY - vTerm) * decay;
+
+            // Both axes: mean-reverting Brownian jitter on top of the drift.
+            const sqrtDt = Math.sqrt(dt);
+            p.speedX += -OU_LAMBDA * p.speedX * dt + OU_SIGMA * sqrtDt * gaussianRandom();
+            p.speedY += OU_SIGMA * 0.4 * sqrtDt * gaussianRandom();
+
+            p.x += p.speedX * dt;
+            p.y += p.speedY * dt;
 
             if (p.y < 0) p.y = this.height;
+            if (p.y > this.height) p.y = 0;
             if (p.x < 0) p.x = this.width;
             if (p.x > this.width) p.x = 0;
 
@@ -141,15 +191,63 @@ class ParticleSystem {
 
         requestAnimationFrame(this.animate);
     };
+
+    constructor(canvas: HTMLCanvasElement) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.init();
+    }
+
+    private terminalVelocity(r: number): number {
+        return STOKES_BASE_DRIFT + STOKES_TERMINAL_COEFF * r * r;
+    }
+
+    private dragRate(r: number): number {
+        return 1 / (STOKES_RELAX_TIME * r * r);
+    }
+
+    private init(): void {
+        if (!this.ctx) return;
+        this.resize();
+        window.addEventListener('resize', this.resize.bind(this), { passive: true });
+        this.particles = Array.from({ length: 45 }, () => this.createParticle());
+        requestAnimationFrame(this.animate);
+    }
+
+    private createParticle(): Particle {
+        const radius = Math.random() * 1.5 + 0.5;
+        return {
+            x: Math.random() * this.width,
+            y: Math.random() * this.height,
+            radius,
+            alpha: Math.random() * 0.4 + 0.1,
+            speedX: 0,
+            speedY: this.terminalVelocity(radius)
+        };
+    }
+
+    private resize(): void {
+        this.width = this.canvas.width = window.innerWidth;
+        this.height = this.canvas.height = window.innerHeight * 2;
+    }
 }
 
 // =========================================
-// 4. CORE SCROLL ENGINE
+// 5. CORE SCROLL ENGINE
 // =========================================
 
+const FIXED_DT = 1 / 120;        // physics step, seconds — above any common display refresh
+const MAX_FRAME_TIME = 0.25;     // seconds — clamp huge gaps (tab switch) against a spiral of death
+const SNAP_POSITION_EPSILON = 0.5; // px
+const SNAP_VELOCITY_EPSILON = 1;   // px/s
+
 export class ScrollEngine {
-    private config: Required<Pick<ScrollEngineConfig, 'tension' | 'friction' | 'maxSkew' | 'maxZPush'>> & ScrollEngineConfig;
+    private config: Required<Pick<ScrollEngineConfig, 'scrollResponse' | 'snapResponse' | 'maxSkew' | 'maxZPush'>> & ScrollEngineConfig;
+    private readonly scrollOmega: number;
+    private readonly snapOmega: number;
+    private readonly pitchOmega: number; // deliberately slower than scrollOmega
     private state: ScrollState;
+    private accumulator = 0;
     // @ts-ignore
     private particleSystem?: ParticleSystem;
 
@@ -164,12 +262,16 @@ export class ScrollEngine {
 
     constructor(config: ScrollEngineConfig) {
         this.config = {
-            tension: 0.12,
-            friction: 0.82,
+            scrollResponse: 0.18,
+            snapResponse: 0.4,
             maxSkew: 12,
             maxZPush: -800,
             ...config
         };
+
+        this.scrollOmega = omegaFromResponseTime(this.config.scrollResponse);
+        this.snapOmega = omegaFromResponseTime(this.config.snapResponse);
+        this.pitchOmega = omegaFromResponseTime(this.config.scrollResponse * 1.8);
 
         this.renderLoop = this.renderLoop.bind(this);
 
@@ -186,13 +288,16 @@ export class ScrollEngine {
             currentIndex: -1,
             faces: [],
             dots: [],
-            targetScroll: window.scrollY,
             currentScroll: window.scrollY,
-            velocity: 0,
-            lastTime: performance.now(),
+            scrollVelocity: 0,
+            pitchAngle: 0,
+            pitchVelocity: 0,
+            lastTime: 0,
             scrollDir: 'down',
             isSnapping: false,
-            snapTimer: null,
+            snapTarget: 0,
+            snapVelocity: 0,
+            idleTimer: null,
         };
     }
 
@@ -201,11 +306,12 @@ export class ScrollEngine {
         if (!el) throw new Error(`[ScrollEngine] Missing required DOM element: #${id}`);
         return el as T;
     }
+
     private getGeometry() {
         const heroTopAbs = this.refs.hero.offsetTop;
         const wh = window.innerHeight * 1.5;
         const totalScrollable = this.refs.hero.offsetHeight - wh;
-        const startBuffer = wh * 0.2 ;
+        const startBuffer = wh * 0.2;
         const endBuffer = wh * 1.5;
         const exitBuffer = wh * 0.125;
         const activeDistance = Math.max(1, totalScrollable - startBuffer - endBuffer);
@@ -242,51 +348,81 @@ export class ScrollEngine {
     }
 
     private renderLoop(time: number): void {
-        let dt = (time - this.state.lastTime) / (1000 / 60);
+        if (this.state.lastTime === 0) this.state.lastTime = time;
+        let frameTime = (time - this.state.lastTime) / 1000;
         this.state.lastTime = time;
+        if (frameTime > MAX_FRAME_TIME) frameTime = MAX_FRAME_TIME;
 
-        if (dt > 2.5) dt = 2.5;
-        if (dt < 0.1) dt = 1.0;
+        // Fixed-timestep accumulator: physics always advances in FIXED_DT
+        // slices, however often (or rarely) this callback actually fires —
+        // deterministic behavior independent of 60/90/120/144Hz displays.
+        this.accumulator += frameTime;
+        while (this.accumulator >= FIXED_DT) {
+            this.stepPhysics(FIXED_DT);
+            this.accumulator -= FIXED_DT;
+        }
 
-        this.state.targetScroll = window.scrollY;
+        this.applyVisualTransforms();
+        this.updateSlideTracking();
 
-        const delta = this.state.targetScroll - this.state.currentScroll;
-        const springForce = delta * this.config.tension;
-        const dampingForce = -this.state.velocity * this.config.friction;
-        const acceleration = springForce + dampingForce;
+        requestAnimationFrame(this.renderLoop);
+    }
 
-        this.state.velocity += (acceleration * dt);
-        this.state.currentScroll += (this.state.velocity * dt);
+    private stepPhysics(dt: number): void {
+        if (this.state.isSnapping) {
+            this.stepSnap(dt);
+            this.state.currentScroll = window.scrollY;
+            this.state.scrollVelocity = this.state.snapVelocity;
+        } else {
+            const [x, v] = springStep(this.state.currentScroll, this.state.scrollVelocity, window.scrollY, this.scrollOmega, dt);
+            this.state.currentScroll = x;
+            this.state.scrollVelocity = v;
+        }
 
-        if (Math.abs(this.state.velocity) > 0.5) {
-            const newDir = this.state.velocity >= 0 ? 'down' : 'up';
+        if (Math.abs(this.state.scrollVelocity) > 0.5) {
+            const newDir = this.state.scrollVelocity >= 0 ? 'down' : 'up';
             if (this.state.scrollDir !== newDir) {
                 this.state.scrollDir = newDir;
                 this.refs.container.dataset.dir = newDir;
             }
         }
 
-        const normalizedVelocity = this.state.velocity * 0.012;
-        const boundedCurve = Math.tanh(normalizedVelocity);
+        // Pitch chases the same tanh-bounded target as skew (see
+        // applyVisualTransforms) but through its own spring, so it visibly
+        // lags rather than tracking skew's curve at a different scale.
+        const pitchTarget = Math.tanh(this.state.scrollVelocity * 0.0002) * 4;
+        const [pitch, pitchV] = springStep(this.state.pitchAngle, this.state.pitchVelocity, pitchTarget, this.pitchOmega, dt);
+        this.state.pitchAngle = pitch;
+        this.state.pitchVelocity = pitchV;
+    }
 
-        const skewAngle = boundedCurve * this.config.maxSkew;
-        const pitchAngle = boundedCurve * 4;
+    private stepSnap(dt: number): void {
+        const [y, v] = springStep(window.scrollY, this.state.snapVelocity, this.state.snapTarget, this.snapOmega, dt);
+        window.scrollTo({ top: y, behavior: 'auto' });
+        this.state.snapVelocity = v;
 
-        const speed = Math.abs(this.state.velocity);
-        const depthCurve = 1 - Math.exp(-speed * 0.04);
+        const settled = Math.abs(y - this.state.snapTarget) < SNAP_POSITION_EPSILON
+            && Math.abs(v) < SNAP_VELOCITY_EPSILON;
+        if (settled) this.state.isSnapping = false;
+    }
+
+    private applyVisualTransforms(): void {
+        // velocity is now px/s (was px/frame pre-refactor) — coefficients
+        // below are the old ones divided by ~60 to land on the same curve.
+        const skewAngle = Math.tanh(this.state.scrollVelocity * 0.0002) * this.config.maxSkew;
+
+        const speed = Math.abs(this.state.scrollVelocity);
+        const depthCurve = 1 - Math.exp(-speed * 0.00067); // exponential saturation, asymptotic as speed -> ∞
         const zPush = depthCurve * this.config.maxZPush;
         const scale = 1 - (depthCurve * 0.08);
 
         this.refs.container.style.setProperty('--velocity-skew', `${skewAngle.toFixed(3)}deg`);
-        this.refs.container.style.setProperty('--velocity-pitch', `${pitchAngle.toFixed(3)}deg`);
+        this.refs.container.style.setProperty('--velocity-pitch', `${this.state.pitchAngle.toFixed(3)}deg`);
         this.refs.container.style.setProperty('--inertial-z', `${zPush.toFixed(2)}px`);
         this.refs.container.style.setProperty('--inertial-scale', scale.toFixed(4));
-
-        this.updatePhysics();
-        requestAnimationFrame(this.renderLoop);
     }
 
-    private updatePhysics(): void {
+    private updateSlideTracking(): void {
         const { heroTopAbs, totalScrollable, startBuffer, exitBuffer, activeDistance } = this.getGeometry();
         const scrolledInHero = this.state.currentScroll - heroTopAbs;
 
@@ -310,6 +446,7 @@ export class ScrollEngine {
             this.refs.container.style.setProperty('--velocity-pitch', `0deg`);
         }
     }
+
     private renderActiveSlide(newIdx: number): void {
         this.state.faces.forEach((face, i) => {
             if (i === newIdx) {
@@ -333,17 +470,18 @@ export class ScrollEngine {
         this.state.currentIndex = newIdx;
     }
 
+    private beginSnap(targetY: number): void {
+        this.state.isSnapping = true;
+        this.state.snapTarget = targetY;
+        this.state.snapVelocity = this.state.scrollVelocity; // inherit momentum for continuity
+    }
+
     public scrollToSlide(idx: number): void {
         const { heroTopAbs, startBuffer, activeDistance } = this.getGeometry();
-
         const targetY = heroTopAbs + startBuffer +
             (activeDistance * (idx / this.config.messages.length)) +
             (activeDistance / this.config.messages.length / 2);
-
-        this.state.isSnapping = true;
-        window.scrollTo({ top: targetY, behavior: 'smooth' });
-
-        setTimeout(() => { this.state.isSnapping = false; }, 800);
+        this.beginSnap(targetY);
     }
 
     private setupSnapListeners(): void {
@@ -354,8 +492,11 @@ export class ScrollEngine {
 
         window.addEventListener('scroll', () => {
             if (this.state.isSnapping) return;
-            if (this.state.snapTimer !== null) window.clearTimeout(this.state.snapTimer);
-            this.state.snapTimer = window.setTimeout(this.triggerElasticSnap, 250);
+            if (this.state.idleTimer !== null) window.clearTimeout(this.state.idleTimer);
+            // 250ms debounce for "has scrolling gone quiet" — a UX decision
+            // about *when* to snap, not a stand-in for the snap animation
+            // itself (that part is the exact spring in stepSnap()).
+            this.state.idleTimer = window.setTimeout(this.triggerElasticSnap, 250);
         }, { passive: true });
     }
 
@@ -370,11 +511,9 @@ export class ScrollEngine {
                     (activeDistance / this.config.messages.length / 2);
 
                 if (Math.abs(window.scrollY - targetY) > 10) {
-                    this.state.isSnapping = true;
-                    window.scrollTo({ top: targetY, behavior: 'smooth' });
-                    setTimeout(() => { this.state.isSnapping = false; }, 800);
+                    this.beginSnap(targetY);
                 }
             }
         }
-    }
+    };
 }

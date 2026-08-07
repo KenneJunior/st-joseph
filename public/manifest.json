@@ -4,14 +4,45 @@
   "description": "Official Site for St. Joseph Catholic College Mbengwi. Step into a legacy of excellence through Catholic values, rigorous academics, and character formation.",
   "start_url": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
   "background_color": "#07182E",
   "theme_color": "#C9A229",
   "scope": "/",
   "id": "/",
   "lang": "en",
-  "categories": ["education", "productivity"],
+  "categories": [
+    "education",
+    "productivity"
+  ],
   "icons": [
+    {
+      "src": "public/assets/icons/Apple/manifest-icon-192.maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "public/assets/icons/Apple/manifest-icon-192.maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "public/assets/icons/Apple/manifest-icon-512.maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "public/assets/icons/Apple/manifest-icon-512.maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
     {
       "src": "/assets/icons/icon_96X96.svg",
       "sizes": "96X96",
@@ -52,19 +83,17 @@
   "screenshots": [
     {
       "src": "/assets/screenshots/Home.png",
-      "sizes": "1200x630",
-      "type": "image/png",
-      "form_factor": "wide"
+      "sizes": "562x946",
+      "type": "image/png"
     },
     {
-      "src": "/assets/screenshots/inquiry.png",
-      "sizes": "1200x630",
-      "type": "image/png",
-      "form_factor": "wide"
+      "src": "/assets/screenshots/inquiry-form.png",
+      "sizes": "957x945",
+      "type": "image/png"
     },
     {
       "src": "/assets/screenshots/prospectus.png",
-      "sizes": "1200x630",
+      "sizes": "815x942",
       "type": "image/png",
       "form_factor": "wide"
     }
@@ -111,6 +140,30 @@
           "sizes": "512X512",
           "type": "image/svg+xml",
           "purpose": "any maskable"
+        },
+        {
+          "src": "public/assets/icons/Apple/manifest-icon-192.maskable.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "public/assets/icons/Apple/manifest-icon-192.maskable.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        },
+        {
+          "src": "public/assets/icons/Apple/manifest-icon-512.maskable.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "public/assets/icons/Apple/manifest-icon-512.maskable.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
         }
       ]
     }
