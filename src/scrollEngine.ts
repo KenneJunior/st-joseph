@@ -151,6 +151,38 @@ class ParticleSystem {
     private width = 0;
     private height = 0;
     private lastTime = 0;
+    private updateParticlePhysics(p: Particle, dt: number): void {
+        // Vertical: exact relaxation toward Stokes terminal velocity.
+        // dv/dt = -k(v - vTerm)  =>  v(t) = vTerm + (v0-vTerm)e^(-kt).
+        const vTerm = this.terminalVelocity(p.radius);
+        const k = this.dragRate(p.radius);
+        const decay = Math.exp(-k * dt);
+        p.speedY = vTerm + (p.speedY - vTerm) * decay;
+
+        // Both axes: mean-reverting Brownian jitter on top of the drift.
+        const sqrtDt = Math.sqrt(dt);
+        p.speedX += -OU_LAMBDA * p.speedX * dt + OU_SIGMA * sqrtDt * gaussianRandom();
+        p.speedY += OU_SIGMA * 0.4 * sqrtDt * gaussianRandom();
+
+        p.x += p.speedX * dt;
+        p.y += p.speedY * dt;
+    }
+
+    private wrapParticlePosition(p: Particle): void {
+        if (p.y < 0) p.y = this.height;
+        if (p.y > this.height) p.y = 0;
+        if (p.x < 0) p.x = this.width;
+        if (p.x > this.width) p.x = 0;
+    }
+
+    private drawParticle(p: Particle): void {
+        if (!this.ctx) return;
+        this.ctx.beginPath();
+        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        this.ctx.fillStyle = `rgba(212, 168, 83, ${p.alpha})`;
+        this.ctx.fill();
+    }
+
     private readonly animate = (time: number): void => {
         if (!this.ctx) return;
         if (this.lastTime === 0) this.lastTime = time;
@@ -163,30 +195,9 @@ class ParticleSystem {
         this.ctx.clearRect(0, 0, this.width, this.height);
 
         this.particles.forEach(p => {
-            // Vertical: exact relaxation toward Stokes terminal velocity.
-            // dv/dt = -k(v - vTerm)  =>  v(t) = vTerm + (v0-vTerm)e^(-kt).
-            const vTerm = this.terminalVelocity(p.radius);
-            const k = this.dragRate(p.radius);
-            const decay = Math.exp(-k * dt);
-            p.speedY = vTerm + (p.speedY - vTerm) * decay;
-
-            // Both axes: mean-reverting Brownian jitter on top of the drift.
-            const sqrtDt = Math.sqrt(dt);
-            p.speedX += -OU_LAMBDA * p.speedX * dt + OU_SIGMA * sqrtDt * gaussianRandom();
-            p.speedY += OU_SIGMA * 0.4 * sqrtDt * gaussianRandom();
-
-            p.x += p.speedX * dt;
-            p.y += p.speedY * dt;
-
-            if (p.y < 0) p.y = this.height;
-            if (p.y > this.height) p.y = 0;
-            if (p.x < 0) p.x = this.width;
-            if (p.x > this.width) p.x = 0;
-
-            this.ctx!.beginPath();
-            this.ctx!.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            this.ctx!.fillStyle = `rgba(212, 168, 83, ${p.alpha})`;
-            this.ctx!.fill();
+            this.updateParticlePhysics(p, dt);
+            this.wrapParticlePosition(p);
+            this.drawParticle(p);
         });
 
         requestAnimationFrame(this.animate);
@@ -299,6 +310,7 @@ export class ScrollEngine {
             snapVelocity: 0,
             idleTimer: null,
         };
+        this.init();
     }
 
     private getEl<T extends HTMLElement>(id: string): T {

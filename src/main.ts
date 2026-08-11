@@ -4,6 +4,7 @@
 import './sw-register.ts'
 import {inject} from "@vercel/analytics";
 import {ScrollEngine} from "./scrollEngine.ts";
+import {PwaInstallPrompt} from "./PwaInstallPrompt.ts";
 
 // ============================================
 // PILLAR PRELOADER WITH MATH-DRIVEN ANIMATIONS
@@ -1577,7 +1578,7 @@ class App {
             'A community of<br><span class="message-highlight">DISCIPLINE</span> & integrity',
             'Your journey to<br><span class="message-highlight">SUCCESS</span> starts here'
         ];
-        const engine = new ScrollEngine({
+         new ScrollEngine({
             heroId: 'heroSection',
             containerId: 'messageContainer',
             navId: 'scrollProgress',
@@ -1586,11 +1587,21 @@ class App {
             a11yId: 'a11y-announcer',
             canvasId: 'dustCanvas', // Connects to the canvas in the background
             messages: messages,
-            tension: 0.18,
-            friction: 0.75
+            scrollResponse: 0.1,
+            snapResponse: 0.1,
         });
+         new PwaInstallPrompt({
+            title: 'Install SJCCC Mbengwi App',
+            message: 'Add this app to your home screen for quick access and a better experience.',
+            confirmText: 'Yes, Install',
+            cancelText: 'Not now',
+            type: 'info',
+            delay: 5000,
+            afterInteraction: true,
+            storageKey: 'pwa-install-prompt',
+            dismissDays: 7,
+        })
 
-        engine.init();
         inject();
     }
 }

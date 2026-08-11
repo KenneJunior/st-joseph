@@ -94,6 +94,23 @@
     {
       "src": "/assets/screenshots/prospectus.png",
       "sizes": "815x942",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/screenshots/Home.png",
+      "sizes": "562x946",
+      "type": "image/png",
+        "form_factor": "wide"
+    },
+    {
+      "src": "/assets/screenshots/prospectus.png",
+      "sizes": "815x942",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/assets/screenshots/inquiry-form.png",
+      "sizes": "957x945",
       "type": "image/png",
       "form_factor": "wide"
     }

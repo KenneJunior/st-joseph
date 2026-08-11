@@ -94,7 +94,23 @@
     <link rel="apple-touch-startup-image" href="public/assets/icons/Apple/apple-splash-dark-1136-640.jpg" media="(prefers-color-scheme: dark) and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
   </head>
   <body>
-
+  <div class="wco-titlebar" id="wcoTitlebar">
+    <div class="wco-titlebar__logo">
+      <!-- Small SJCCC icon -->
+      <svg width="20" height="20" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="200" rx="45" fill="#07182E"/>
+        <circle cx="100" cy="100" r="68" stroke="#C9A229" stroke-width="2"/>
+        <path d="M100 65L100 120" stroke="#C9A229" stroke-width="4" stroke-linecap="round"/>
+        <path d="M80 85Q100 80 120 85" stroke="#C9A229" stroke-width="4" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span>SJCCC Home</span>
+    </div>
+    <div class="wco-titlebar__actions">
+      <button class="wco-titlebar__btn" id="wcoDarkModeToggle" title="Toggle theme">
+        <i class="bi bi-circle-half"></i>
+      </button>
+    </div>
+  </div>
     <!-- Skip to main content -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
@@ -185,8 +201,8 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
           <div class="school-header">
             <h1 class="school-name">
               St. Joseph's <span class="gold-shimmer">Catholic</span><br>Comprehensive College Mbengwi
-            </h1>
-            <span class="hero-badge">Edificamus Regnum Dei – Let us build the Kingdom of God</span>
+            </h1>            <span class="hero-badge">Edificamus Regnum Dei – Let us build the Kingdom of God</span>
+
           </div>
           <div class="scroll-message-wrapper" id="messageContainer" data-dir="down">
           </div>
@@ -668,5 +684,49 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
+  <script>
+    (function() {
+      const wcoTitlebar = document.getElementById('wcoTitlebar');
+      if (!wcoTitlebar) return;
+
+      // Check if Window Controls Overlay API is supported
+      if ('windowControlsOverlay' in navigator) {
+        const wco = navigator.windowControlsOverlay;
+
+        // Apply initial state
+        if (wco.visible) {
+          document.body.classList.add('wco-active');
+          document.getElementById('themeToggle').classList.add('d-none');
+        }
+
+        // Listen for geometry changes
+        wco.addEventListener('geometrychange', (event) => {
+          if (event.titlebarAreaRect) {
+            document.body.classList.add('wco-active');
+          } else {
+            document.body.classList.remove('wco-active');
+          }
+        });
+
+        // Also listen with media query as fallback
+        const mq = window.matchMedia('(display-mode: window-controls-overlay)');
+        const handleChange = (e) => {
+          document.body.classList.toggle('wco-active', e.matches);
+        };
+        mq.addEventListener('change', handleChange);
+        handleChange(mq);
+
+        // Theme toggle inside WCO titlebar
+        const wcoThemeBtn = document.getElementById('wcoDarkModeToggle');
+        if (wcoThemeBtn) {
+          wcoThemeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('sjccc-theme', theme);
+          });
+        }
+      }
+    })();
+  </script>
   </body>
 </html>
