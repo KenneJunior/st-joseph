@@ -114,9 +114,7 @@
     <!-- Skip to main content -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <!-- ============================================
-PRELOADER - LEFT TO RIGHT PILLAR REVEAL
-============================================ -->
+        <!-- =================== PRELOADER ========================== -->
     <div id="preloader">
 
       <!-- Container for both halves -->
@@ -133,7 +131,7 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
         </div>
         <div class="preloader-title">St. Joseph's Catholic</div>
         <div class="preloader-subtitle">Comprehensive College</div>
-        <div class="preloader-motto">"Edificamus Regnum Dei"</div>
+        <div class="preloader-motto">"Edificamus Regnum Dei – Let us build the Kingdom of God"</div>
         <div class="preloader-progress">
           <div class="preloader-progress-bar" id="preloaderProgressBar"></div>
         </div>
@@ -154,7 +152,7 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
           <i class="bi bi-list"></i>
         </button>
         <nav id="navMenu">
-          <a href="#hero" class="nav-link"><i class="bi bi-house"></i> Home</a>
+          <a href="#heroSection" class="nav-link"><i class="bi bi-house"></i> Home</a>
           <a href="#about" class="nav-link"><i class="bi bi-info-circle"></i> About</a>
           <a href="#academics" class="nav-link"><i class="bi bi-book"></i> Academics</a>
           <a href="#news-events" class="nav-link"><i class="bi bi-newspaper"></i> News</a>
@@ -181,13 +179,14 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
         <p class="announcement-bar__text">
           <i class="bi bi-megaphone-fill"></i> <strong>Form One Interviews </strong> – Tuesday, 4th August 2026 at 9:00 AM
           <a href="#contact" class="announcement-bar__link"> Enquire now →</a>
+          <a href="#contact" class="announcement-bar__link"> Enquire now →</a>
         </p>
         <button class="announcement-bar__close" id="announcementClose" aria-label="Close announcement">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
     </aside>
-    <main id="main-content">
+    <main id="main-content" class="">
 
       <!-- ==================== HERO SECTION ==================== -->
       <section id="heroSection" class="hero-section">
@@ -226,7 +225,8 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
           <!-- TypeScript injects dots here -->
         </div>
       </nav>
- <!-- ==================== STATS SECTION ==================== -->
+
+      <!-- ==================== STATS SECTION ==================== -->
       <section id="about" class="stats-section section-padding" style="color:#fff;">
         <div class="content">
           <span class="section-label" style="color:var(--accent-glow);">Our Environment</span>
@@ -524,6 +524,16 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
                 teamwork.
               </div>
             </div>
+
+            <!-- Slide 5: Students -->
+            <div class="carousel-slide">
+              <img alt="Students in chapel setting" class="carousel-image" loading="lazy" src="/assets/Students-in-class.jpeg">
+              <div class="carousel-overlay"></div>
+              <div class="carousel-caption">
+                A glimpse into our vibrant student life, where learning extends beyond the classroom and into meaningful
+                experiences.
+              </div>
+            </div>
             <button class="carousel-btn prev" id="prevBtn" aria-label="Previous slide">
               <i class="bi bi-chevron-left"></i>
             </button>
@@ -586,8 +596,7 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
       <section class="section-padding">
         <div class="cta-banner reveal">
           <h2>Ready to Join Our Family?</h2>
-          <p>Admissions are open. Let's work together to nurture a bright, purposeful, and fulfilling future for your
-            child.</p>
+          <p>Admissions are open. We're committed to developing confident, thoughtful learners prepared for meaningful futures.</p>
           <button id="enquire-btn" class="btn btn-primary">Enquire Now</button>
         </div>
       </section>
@@ -617,7 +626,7 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
         </div>
         <div>
           <h3>Quick Links</h3>
-          <p><a href="#hero" style="color:#b0c4de;text-decoration:none;"><i class="bi bi-arrow-right-short"></i> Home</a></p>
+          <p><a href="#heroSection" style="color:#b0c4de;text-decoration:none;"><i class="bi bi-arrow-right-short"></i> Home</a></p>
           <p><a href="#academics" style="color:#b0c4de;text-decoration:none;"><i class="bi bi-arrow-right-short"></i> Programs</a></p>
           <p><a href="#news-events" style="color:#b0c4de;text-decoration:none;"><i class="bi bi-arrow-right-short"></i> News &amp; Events</a></p>
           <p><a href="#campus" style="color:#b0c4de;text-decoration:none;"><i class="bi bi-arrow-right-short"></i> Campus Life</a></p>
@@ -674,7 +683,7 @@ PRELOADER - LEFT TO RIGHT PILLAR REVEAL
           </div>
           <div class="form-group form-toggle">
             <label class="switch-label" for="whatsappRoutingToggle">
-              <input id="whatsappRoutingToggle" name="sendViaWhatsApp" type="checkbox">
+              <input id="whatsappRoutingToggle" name="sendViaWhatsApp" checked type="checkbox">
               <span class="toggle-text">Send instantly via WhatsApp instead of Email</span>
             </label>
           </div>

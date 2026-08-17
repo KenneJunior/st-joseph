@@ -129,7 +129,7 @@ class Preloader {
     private startLoading(): void {
         let progress = 0;
         const startTime = performance.now();
-        const minDuration = 1500;
+        const minDuration = 3000;
 
         const updateLoading = (): void => {
             const elapsed = performance.now() - startTime;
@@ -376,7 +376,7 @@ class Preloader {
                 this.animatedCount += 2;
 
                 if (this.animatedCount >= this.totalPillars) {
-                    setTimeout(() => this.onComplete(), 900); // 900ms allowance for CSS transform to finish
+                    setTimeout(() => this.onComplete(), 9000); //
                 }
             }, delay);
         });
@@ -417,12 +417,12 @@ class ThemeManager {
     private isDark: boolean = false;
     private isAnimating: boolean = false;
 
-    // Timing constants (in milliseconds) - Increased for smoother feel
-    private readonly EXPAND_DURATION = 800;   // Overlay expands (was 500)
-    private readonly THEME_SWITCH_DELAY = 650; // Switch theme just before fully expanded (was 400)
-    private readonly HOLD_DURATION = 150;     // Brief pause at full expansion (was 100)
-    private readonly SHRINK_DURATION = 600;   // Overlay shrinks back (was 400)
-    private readonly TOTAL_DURATION = 1600;   // Total animation time (was 1000)
+    // Timing constants (in milliseconds)
+    private readonly EXPAND_DURATION = 800;
+    private readonly THEME_SWITCH_DELAY = 650;
+    private readonly HOLD_DURATION = 150;
+    private readonly SHRINK_DURATION = 600;
+    private readonly TOTAL_DURATION = 1600;
 
     private readonly animations: AnimationStyle[] = [
         'circle-center',
@@ -1208,7 +1208,7 @@ class EnquiryModal {
 
     constructor(fabIds: string[], modalId: string, closeBtnId: string) {
         this.fabElements = fabIds
-            .map((id) => document.getElementById(id))
+            .map((id) => document.querySelector(id))
             .filter((v): v is HTMLElement => !!v);
         this.modal = document.getElementById(modalId) as HTMLElement | null;
         this.closeBtn = document.getElementById(closeBtnId) as HTMLButtonElement | null;
@@ -1336,7 +1336,8 @@ class EnquiryForm {
                 const clientMessage = formData.get('enqMessage') as string || '';
 
                 if(!clientName|| !clientMessage) {
-                    this.statusMessage('Please Your name and the message you want to send');
+                    this.statusMessage('Please  Enter Your name and the message you want to send','error');
+
                     return;
                 }
                 // Construct a beautifully formatted multi-line template
@@ -1560,7 +1561,8 @@ class App {
         new ScrollSpy('#navMenu a.nav-link');
 
         // 13. Enquiry modal
-        new EnquiryModal(['enquiryFab','enquire-btn', 'pMan', 'getInTouchBtn'],
+        new EnquiryModal(
+            ['#enquiryFab','#enquire-btn', '#pMan','.announcement-bar__link', '#getInTouchBtn'],
             'enquiryModal',
             'modalClose');
 

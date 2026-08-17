@@ -2203,10 +2203,10 @@ body.dark-mode .form-group input#whatsappRoutingToggle:checked {
    ============================================ */
 .announcement-bar {
   position: fixed;
-  top: var(--header-height, 80px);
+  top: calc(var(--header-height) + 45px);
   left: 0;
   width: 100%;
-  z-index: 9999;
+  z-index: 999;
   background: var(--accent);
   color: var(--primary-dark);
   font-size: 0.95rem;
@@ -2851,6 +2851,9 @@ a:focus-visible {
     padding: 60px 20px;
   }
 
+  #preloader{
+   zoom:1.2
+  }
 
   .carousel-btn {
     width: 38px;

@@ -75,6 +75,7 @@ body.dark-mode {
         overflow: visible !important;
         font-size: 8pt !important;
         line-height: 1.25 !important;
+        zoom: 0.8 !important;
     }
 
     body {
@@ -218,28 +219,28 @@ body.dark-mode {
     .section-card:nth-child(2),
     .section-card:nth-child(3),
     .section-card:nth-child(4) {
-        flex: 0 0 calc(29% - 1mm) !important;
-        max-width: calc(29% - 1mm) !important;
+        flex: 0 0 calc(32% - 1mm) !important;
+        max-width: calc(35% - 1mm) !important;
     }
 
     /* college uniform Table – Full width */
     .section-card:nth-child(5) {
-        flex: 0 0 70% !important;
+        flex: 0 0 65% !important;
         max-width: 70% !important;
     }
 
     /* ─── PAIR 2: Requirements (left) + School Rules (right) ─── */
-    .section-card:nth-child(6){
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
+    .section-card:nth-child(6),
+    .section-card:nth-child(7) {
+        flex: 0 0 calc(50% - 1mm) !important;
+        max-width: calc(50% - 1mm) !important;
     }
 
     /* ─── PAIR 3: Departments (left) + Books & Stationery (right) ─── */
-    .section-card:nth-child(7),
     .section-card:nth-child(8),
     .section-card:nth-child(9) {
-        flex: 0 0 calc(29% - 1mm) !important;
-        max-width: calc(29% - 1mm) !important;
+        flex: 0 0 calc(50% - 1mm) !important;
+        max-width: calc(50% - 1mm) !important;
     }
 
     /* ─── Section Card Base Styles ─── */
