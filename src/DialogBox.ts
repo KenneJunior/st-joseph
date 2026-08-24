@@ -1,33 +1,59 @@
 /* ==========================================================================
-   ConfirmDialog v3 —  Promise‑based Modal · TypeScript
+   ConfirmDialog · TypeScript
    ========================================================================== */
 
 // ─── Type definitions ──────────────────────────────────────────────────────
 
+/**
+ * Supported dialog severity levels and visual themes.
+ */
 export type DialogType = 'danger' | 'warning' | 'info' | 'success';
 
+/**
+ * Options for configuring an individual `ConfirmDialog` instance display.
+ */
 export interface DialogOptions {
+    /** The main title heading displayed at the top of the dialog. */
     title?: string;
+    /** Primary body message or description. */
     message?: string;
+    /** Optional secondary code/monospace or diagnostic details block. */
     detail?: string;
+    /** Visual theme type influencing accent colors and icons. */
     type?: DialogType;
+    /** Label text for the primary action button. Defaults to 'Confirm'. */
     confirmText?: string;
+    /** Label text for the secondary/dismiss action button. Defaults to 'Cancel'. */
     cancelText?: string;
+    /** Whether to display the cancel button. Defaults to `true`. */
     showCancel?: boolean;
-    showClose?: boolean;                 // show a close (X) button in the top-right
-    persist?: boolean;                   // prevent backdrop/Escape from closing
-    timeoutMs?: number;                  // auto‑resolve after N ms
-    timeoutConfirm?: boolean;            // true = auto‑confirm, false = auto‑cancel
-    loading?: boolean;                   // show a spinner on the confirm button
-    beforeClose?: (result: boolean) => boolean | Promise<boolean>; // cancelable close
+    /** Whether to show a close (X) button in the top-right corner. Defaults to `false`. */
+    showClose?: boolean;
+    /** Prevent backdrop clicks and the `Escape` key from closing the dialog. */
+    persist?: boolean;
+    /** Auto-resolve time limit in milliseconds. */
+    timeoutMs?: number;
+    /** Resolution state on timeout expiry: `true` to auto-confirm, `false` to auto-cancel. */
+    timeoutConfirm?: boolean;
+    /** Displays a visual loading spinner on the confirm button and disables interactions. */
+    loading?: boolean;
+    /** Pre-close hook allowing cancellation or async verification. Return `false` to abort closing. */
+    beforeClose?: (result: boolean) => boolean | Promise<boolean>;
+    /** Lifecycle hook executed when the dialog entrance animation completes. */
     onOpen?: () => void;
-    onClose?: (result: boolean) => void; // after animation
-    onConfirm?: () => void;              // shorthand, legacy
-    onCancel?: () => void;               // shorthand, legacy
-    // Custom render hooks (advanced)
+    /** Lifecycle hook executed after the exit animation completes. */
+    onClose?: (result: boolean) => void;
+    /** Legacy callback executed upon user confirmation. */
+    onConfirm?: () => void;
+    /** Legacy callback executed upon user cancellation. */
+    onCancel?: () => void;
+    /** Custom render interceptor for advanced template modification. */
     render?: (defaultTemplate: string) => string;
 }
 
+/**
+ * Internal configuration mapping visual tokens per dialog type.
+ */
 interface TypeConfig {
     accent: string;
     accentFocus: string;
@@ -37,15 +63,27 @@ interface TypeConfig {
     stripColor: string;
 }
 
-interface GlobalOptions {
+/**
+ * Global default options applied across all dialogs managed by an instance.
+ */
+export interface GlobalOptions {
+    /** Default title when none is provided in `DialogOptions`. */
     defaultTitle?: string;
+    /** Default message when none is provided in `DialogOptions`. */
     defaultMessage?: string;
+    /** Default confirm button label. */
     defaultConfirmText?: string;
+    /** Default cancel button label. */
     defaultCancelText?: string;
+    /** Default dialog theme type. */
     defaultType?: DialogType;
+    /** Base `z-index` depth for overlay rendering. */
     zIndex?: number;
+    /** Animation transition duration in milliseconds. */
     transitionDuration?: number;
+    /** Applies CSS backdrop blur filter to the backdrop overlay. */
     blurBackdrop?: boolean;
+    /** Font family cascade override for the modal instance. */
     fontFamily?: string;
 }
 
@@ -388,6 +426,10 @@ const DIALOG_CSS =`/* ==========================================================
 .cd-btn:active {
     transform: scale(0.96) !important;
 }`;
+
+/**
+ * Injects required stylesheet into document head if not already present.
+ */
 function injectStyle(id: string, css: string): void {
     if (document.getElementById(id)) return;
     const el = document.createElement('style');
@@ -396,7 +438,7 @@ function injectStyle(id: string, css: string): void {
     document.head.appendChild(el);
 }
 
-// ─── Type config ───────────────────────────────────────────────────────────
+// ─── Theme Configurations ───────────────────────────────────────────────
 
 const TYPE_MAP: Record<DialogType, TypeConfig> = {
     danger: {
@@ -423,6 +465,9 @@ const TYPE_MAP: Record<DialogType, TypeConfig> = {
 
 // ─── ConfirmDialog class ───────────────────────────────────────────────────
 
+/**
+ * A Promise-based, glassmorphism modal dialog controller built with zero external runtime dependencies.
+ */
 export class ConfirmDialog {
     // ── Configuration ────────────────────────────────────────────────────────
     #cfg: Required<GlobalOptions>;
@@ -474,8 +519,14 @@ export class ConfirmDialog {
 
     // ── Public API ────────────────────────────────────────────────────────────
 
-    /** Show the dialog and return a Promise<boolean>.  Overwrites a previous open dialog. */
-    show(options: DialogOptions = {}): Promise<boolean> {
+/**
+     * Displays the dialog with the provided options and returns a `Promise<boolean>`.
+     * Resolves to `true` when confirmed, or `false` when cancelled or dismissed.
+     * Overwrites any active open dialog from this instance.
+     *
+     * @param options Specific configuration options for this invocation.
+     */
+        show(options: DialogOptions = {}): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             // If already open, resolve previous as false
             if (this.#isOpen && this.#resolve) this.#resolve(false);
@@ -505,9 +556,11 @@ export class ConfirmDialog {
         });
     }
 
-    /**
-     * Programmatically update title, message, detail, or timeout while the dialog is open.
-     * Returns false if the dialog isn't open.
+/**
+     * Programmatically updates properties of an active dialog without closing it.
+     *
+     * @param partial Properties to update (`title`, `message`, `detail`, `timeoutMs`, `loading`).
+     * @returns `true` if the dialog was successfully updated, `false` if the dialog was not open.
      */
     update(partial: Partial<Pick<DialogOptions, 'title'|'message'|'detail'|'timeoutMs'|'loading'>>): boolean {
         if (!this.#isOpen || !this.#card || !this.#lastOpts) return false;
@@ -525,11 +578,16 @@ export class ConfirmDialog {
         return true;
     }
 
-    /** Resolve the dialog with a result. Plays exit animation. */
-    async close(result: boolean = false): Promise<void> {
+/**
+     * Closes the open dialog with a specified result and executes closing transitions and callbacks.
+     *
+     * @param result Resolution result (`true` for confirmed, `false` for cancelled). Defaults to `false`.
+     */
+        async close(result: boolean = true): Promise<void> {
         if (!this.#isOpen) return;
 
         const opts = this.#lastOpts;
+        this.#lastOpts = opts;
         // Allow beforeClose to cancel
         if (opts?.beforeClose) {
             const allow = await opts.beforeClose(result);
@@ -559,8 +617,10 @@ export class ConfirmDialog {
         }, this.#cfg.transitionDuration);
     }
 
-    /** Destroy the dialog immediately, rejecting any pending promise. */
-    destroy(): void {
+/**
+     * Immediately removes the dialog from the DOM and rejects any pending Promise.
+     */
+        destroy(): void {
         this.#clearTimeouts();
         this.#cleanupEvents();
         this.#reject?.(new Error('ConfirmDialog destroyed'));
@@ -574,12 +634,20 @@ export class ConfirmDialog {
         this.#isOpen = false;
     }
 
+    /**
+     * Indicates whether the dialog is currently open and visible.
+     */
     get isOpen(): boolean {
         return this.#isOpen;
     }
 
     // ── Static helpers ───────────────────────────────────────────────────────
 
+    /**
+     * Static shorthand helper to display a simple alert (information dialog with no cancel button).
+     *
+     * @param messageOrOptions String message or detailed options object.
+     */
     static async alert(messageOrOptions: string | DialogOptions = {}): Promise<void> {
         const opts = typeof messageOrOptions === 'string'
             ? {message: messageOrOptions}
@@ -720,7 +788,7 @@ export class ConfirmDialog {
         this.#progressBar = this.#card.querySelector('#cd-progress');
         this.#confirmBtn = this.#card.querySelector('[data-action="confirm"]');
         this.#closeBtn = this.#card.querySelector('[data-action="close"]');
-
+        
         if (opts.loading) this.#setLoading(true);
         else this.#setLoading(false);
     }
@@ -755,7 +823,7 @@ export class ConfirmDialog {
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && !opts.persist) {
-                e.preventDefault();
+                e.stopPropagation();
                 this.close(false);
             }
         }, { signal });
@@ -782,7 +850,7 @@ export class ConfirmDialog {
     readonly #onCardClick = (e: MouseEvent): void => {
         const action = (e.target as HTMLElement).closest<HTMLElement>('[data-action]');
         if (!action) return;
-        e.preventDefault();
+        e.stopPropagation();
         switch (action.dataset.action) {
             case 'confirm': this.close(true); break;
             case 'cancel': this.close(false); break;
@@ -921,6 +989,11 @@ interface MergedDialogOptions extends Required<Omit<DialogOptions, 'detail'|'tim
 
 let instance: ConfirmDialog | null = null;
 
+/**
+ * Retrieves or initializes the shared global `ConfirmDialog` singleton instance.
+ *
+ * @param options Global options to reconfigure the singleton instance.
+ */
 export function getConfirmDialog(options?: GlobalOptions): ConfirmDialog {
     if (options) {
         instance?.destroy();
@@ -930,11 +1003,22 @@ export function getConfirmDialog(options?: GlobalOptions): ConfirmDialog {
     return instance;
 }
 
+/**
+ * Displays a confirmation dialog using the shared singleton instance.
+ *
+ * @param messageOrOptions Message string or full `DialogOptions`.
+ * @returns Promise resolving to `true` on confirm, `false` on cancel/dismiss.
+ */
 export async function confirm(messageOrOptions: string | DialogOptions = {}): Promise<boolean> {
     const opts = typeof messageOrOptions === 'string' ? { message: messageOrOptions } : messageOrOptions;
     return getConfirmDialog().show(opts);
 }
 
+/**
+ * Displays an informational alert dialog with an "OK" button using the singleton instance.
+ *
+ * @param messageOrOptions Message string or full `DialogOptions`.
+ */
 export async function alert(messageOrOptions: string | DialogOptions = {}): Promise<void> {
     return ConfirmDialog.alert(messageOrOptions);
 }

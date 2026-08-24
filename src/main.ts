@@ -1603,7 +1603,6 @@ class App {
             dismissDays: 7,
              dialogOptions:{
                 timeoutMs:10000,
-                timeoutConfirm: false,
                 loading: true,
              }
         })
