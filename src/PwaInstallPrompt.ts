@@ -49,11 +49,11 @@ export class PwaInstallPrompt {
         };
 
         this.#confirmDialog = getConfirmDialog();  // reuse singleton or create new? Use singleton.
-    this.init();
+      this.init();
     }
 
     /** Start listening for the install prompt and schedule display. */
-    init(): void {
+   async init(): Promise<void> {
         // Do nothing if already installed (standalone)
         if (window.matchMedia('(display-mode: standalone)').matches) {
             return;
@@ -65,12 +65,12 @@ export class PwaInstallPrompt {
         }
 
         // Capture the beforeinstallprompt event
-        window.addEventListener('beforeinstallprompt', (e: Event) => {
+        window.addEventListener('beforeinstallprompt', async (e: Event) => {
             e.preventDefault();                          // block the default mini‑infobar
             this.#deferredPrompt = e;
 
             // Schedule the custom dialog
-            this.#schedulePrompt();
+           await this.#schedulePrompt();
         });
 
         // Also handle appinstalled event to clear any stored dismissal
@@ -78,12 +78,23 @@ export class PwaInstallPrompt {
             this.#clearDismissal();
             console.log('PWA installed successfully');
         });
-
         // Optional: interaction detection
         if (this.#options.afterInteraction) {
             this.#listenForInteraction();
         } else {
             this.#interactionDetected = true;           // skip interaction check
+        }
+
+        await this.HandleManualTrigger(); // Set up manual trigger button if present
+    }
+
+    async HandleManualTrigger(): Promise<void> {
+        const installAppButton = <HTMLAnchorElement> document.getElementById('installApp');
+        if (installAppButton) {
+            installAppButton.addEventListener('click',async (event: MouseEvent) => {
+                event.preventDefault();
+                await this.trigger();
+            }, true);
         }
     }
 
@@ -95,18 +106,18 @@ export class PwaInstallPrompt {
 
     // ── Private ──────────────────────────────────────────────────────────────
 
-    #schedulePrompt(): void {
+    async #schedulePrompt(): Promise<void> {
         if (this.#dialogShown || !this.#deferredPrompt) return;
 
-        const tryShow = () => {
+        const tryShow = async () => {
             if (this.#options.afterInteraction && !this.#interactionDetected) return;
-            this.#showInstallDialog();
+            await this.#showInstallDialog();
         };
 
         if (this.#options.delay > 0) {
             setTimeout(tryShow, this.#options.delay);
         } else {
-            tryShow();
+            await tryShow();
         }
     }
 
@@ -121,7 +132,7 @@ export class PwaInstallPrompt {
             cancelText: this.#options.cancelText,
             showCancel: true,
             type: this.#options.type,
-            persist: true, // prevent accidental backdrop close
+            persist: false, // prevent accidental backdrop close
             ...this.#options.dialogOptions,
         });
 
@@ -167,10 +178,23 @@ export class PwaInstallPrompt {
 
     #recordDismissal(): void {
         try {
-            localStorage.setItem(this.#options.storageKey, JSON.stringify({ ts: Date.now() }));
+            localStorage.setItem(this.#options.storageKey, JSON.stringify({
+                ts: Date.now() ,
+                day: this.#formatDate(new Date()),
+                time: new Date().toLocaleTimeString(),
+
+            }));
         } catch (e) {
             console.warn('Unable to write to localStorage', e);
         }
+    }
+
+    #formatDate(date: Date): string {
+        return new Intl.DateTimeFormat(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+        }).format(date);
     }
 
     #clearDismissal(): void {
@@ -184,13 +208,12 @@ export class PwaInstallPrompt {
     // ── Interaction detection ────────────────────────────────────────────────
 
     #listenForInteraction(): void {
-        const mark = () => {
+        const mark = async () => {
             if (!this.#interactionDetected) {
                 this.#interactionDetected = true;
                 this.#removeInteractionListeners();
-                // If we already have the deferred prompt waiting, try showing it now
                 if (this.#deferredPrompt) {
-                    this.#schedulePrompt();
+                    await this.#schedulePrompt();
                 }
             }
         };

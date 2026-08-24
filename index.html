@@ -106,13 +106,13 @@
       <span>SJCCC Home</span>
     </div>
     <div class="wco-titlebar__actions">
-      <button class="wco-titlebar__btn" id="wcoDarkModeToggle" title="Toggle theme">
+      <button class="wco-titlebar__btn" id="wcoDarkModeToggle" title="Toggle theme" toolDescription="Toggle the website between light and dark mode for more comfortable reading.">
         <i class="bi bi-circle-half"></i>
       </button>
     </div>
   </div>
     <!-- Skip to main content -->
-    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <a href="#main-content" class="skip-link" toolDescription="Jump directly to the main content and skip the header and navigation.">Skip to main content</a>
 
         <!-- =================== PRELOADER ========================== -->
     <div id="preloader">
@@ -148,19 +148,20 @@
             <em class="logo-motto">"Edificamus Regnum Dei – Let us build the Kingdom of God"</em>
       </span>
         </div>
-        <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation" toolDescription="Open or close the mobile navigation menu so visitors can access page sections easily.">
           <i class="bi bi-list"></i>
         </button>
         <nav id="navMenu">
-          <a href="#heroSection" class="nav-link"><i class="bi bi-house"></i> Home</a>
-          <a href="#about" class="nav-link"><i class="bi bi-info-circle"></i> About</a>
-          <a href="#academics" class="nav-link"><i class="bi bi-book"></i> Academics</a>
-          <a href="#news-events" class="nav-link"><i class="bi bi-newspaper"></i> News</a>
-          <a href="#campus" class="nav-link"><i class="bi bi-geo-alt"></i> Campus Life</a>
-          <a class="nav-link d-none" href="#testimonials"><i class="bi bi-quote"></i> Testimonials</a>
-          <a href="#contact" class="nav-link"><i class="bi bi-envelope"></i> Contact</a>
-          <a href="/prospectus.html" class="nav-link"><i class="bi bi-file-earmark-pdf"></i> Prospectus</a>
-          <a href="#" class="nav-cta theme-toggle-link" id="themeToggle" title="Switch light/dark mode" aria-label="Switch light/dark mode">
+          <a href="#heroSection" class="nav-link" toolDescription="Go to the main home section of the school website."><i class="bi bi-house"></i> Home</a>
+          <a href="#about" class="nav-link" toolDescription="View the school overview and community information section."><i class="bi bi-info-circle"></i> About</a>
+          <a href="#academics" class="nav-link" toolDescription="Open the academic and technical programmes offered by the school."><i class="bi bi-book"></i> Academics</a>
+          <a href="#news-events" class="nav-link" toolDescription="Browse the latest news, updates, and school events."><i class="bi bi-newspaper"></i> News</a>
+          <a href="#campus" class="nav-link" toolDescription="Explore campus life, activities, and the learning environment."><i class="bi bi-geo-alt"></i> Campus Life</a>
+          <a class="nav-link d-none" href="#testimonials" toolDescription="Read parent and student testimonials about the school community."><i class="bi bi-quote"></i> Testimonials</a>
+          <a href="#contact" class="nav-link" toolDescription="Go to the contact section to speak with the school or ask for admission information."><i class="bi bi-envelope"></i> Contact</a>
+          <a href="/prospectus.html" class="nav-link" toolDescription="Open the student prospectus for detailed school information and programme details."><i class="bi bi-file-earmark-pdf"></i> Prospectus</a>
+          <a href="#" class="nav-link" id="installApp" toolDescription="install the the site as an app on your device."><i class="bi bi-phone"></i> Install App</a>
+          <a href="#" class="nav-cta theme-toggle-link" id="themeToggle" title="Switch light/dark mode" aria-label="Switch light/dark mode" toolDescription="Switch the website between light and dark theme.">
             <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 35px; height: 35px;">
               <g class="theme-toggle-moon">
                 <path d="M120 67.5C149.25 67.5 172.5 90.75 172.5 120C172.5 149.25 149.25 172.5 120 172.5" fill="white"></path>
@@ -178,10 +179,10 @@
       <div class="announcement-bar__inner">
         <p class="announcement-bar__text">
           <i class="bi bi-megaphone-fill"></i> <strong>Form One Interviews </strong> – Tuesday, 4th August 2026 at 9:00 AM
-          <a href="#contact" class="announcement-bar__link"> Enquire now →</a>
-          <a href="#contact" class="announcement-bar__link"> Enquire now →</a>
+          <a href="#contact" class="announcement-bar__link" toolDescription="Go to the contact section to enquire about the Form One interview and admissions process."> Enquire now →</a>
+          <a href="#contact" class="announcement-bar__link" toolDescription="Go to the contact section to enquire about the Form One interview and admissions process."> Enquire now →</a>
         </p>
-        <button class="announcement-bar__close" id="announcementClose" aria-label="Close announcement">
+        <button class="announcement-bar__close" id="announcementClose" aria-label="Close announcement" toolDescription="Dismiss this important announcement banner from the page.">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
@@ -206,8 +207,8 @@
           <div class="scroll-message-wrapper" id="messageContainer" data-dir="down">
           </div>
           <div class="hero-buttons">
-            <a class="btn btn-primary" href="/prospectus.html"><i class="bi bi-file-earmark-pdf"></i> View Student Prospectus</a>
-            <button id="getInTouchBtn" class="btn btn-outline"><i class="bi bi-envelope"></i> Get In Touch</button>
+            <a class="btn btn-primary" href="/prospectus.html" toolDescription="Open the student prospectus to learn about the school, admissions, and programmes."><i class="bi bi-file-earmark-pdf"></i> View Student Prospectus</a>
+            <button id="getInTouchBtn" class="btn btn-outline" toolDescription="Open the contact section to ask a question or start the admission enquiry process."><i class="bi bi-envelope"></i> Get In Touch</button>
           </div>
           <div class="hero-scroll-indicator">
             <span></span>
@@ -477,7 +478,7 @@
             Because we are a small school, nobody gets lost in the crowd. Our dedicated teachers work patiently and closely
             with every student, ensuring that each child finds their unique path to success and self-confidence.
           </p>
-          <a class="btn btn-outline" href="#contact" style="color:#fff;border-color:#fff;">Learn More About Our Approach</a>
+          <a class="btn btn-outline" href="#contact" style="color:#fff;border-color:#fff;" toolDescription="Move to the contact section to learn more about the school's learning approach and enrolment process.">Learn More About Our Approach</a>
         </div>
       </section>
 
@@ -534,10 +535,10 @@
                 experiences.
               </div>
             </div>
-            <button class="carousel-btn prev" id="prevBtn" aria-label="Previous slide">
+            <button class="carousel-btn prev" id="prevBtn" aria-label="Previous slide" toolDescription="Show the previous campus image in the carousel.">
               <i class="bi bi-chevron-left"></i>
             </button>
-            <button class="carousel-btn next" id="nextBtn" aria-label="Next slide">
+            <button class="carousel-btn next" id="nextBtn" aria-label="Next slide" toolDescription="Show the next campus image in the carousel.">
               <i class="bi bi-chevron-right"></i>
             </button>
           </div>
@@ -637,10 +638,10 @@
     </footer>
 
     <!-- ==================== BACK TO TOP ==================== -->
-    <button id="backToTop" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button>
+    <button id="backToTop" aria-label="Back to top" toolDescription="Return to the top of the page for easier navigation."><i class="bi bi-arrow-up"></i></button>
 
     <!-- Sticky Enquiry Button -->
-    <button class="enquiry-fab" id="enquiryFab" aria-label="Open enquiry form" title="Send us a message">
+    <button class="enquiry-fab" id="enquiryFab" aria-label="Open enquiry form" title="Send us a message" toolDescription="Open the enquiry form so visitors can send a message or ask about admissions.">
       <i class="bi bi-chat-dots-fill fab-icon"></i>
       <span class="fab-label">Enquire</span>
     </button>
@@ -648,7 +649,7 @@
     <!-- Enquiry Modal -->
     <div class="modal-overlay" id="enquiryModal" role="dialog" aria-modal="true" aria-labelledby="enquiryTitle" hidden="">
       <div class="modal-content">
-        <button aria-label="Close enquiry form" class="modal-close" id="modalClose">
+        <button aria-label="Close enquiry form" class="modal-close" id="modalClose" toolDescription="Close the enquiry form and return to the page.">
           <i class="bi bi-x-lg"></i>
         </button>
         <h2 id="enquiryTitle">Send Us an Enquiry</h2>
@@ -687,7 +688,7 @@
               <span class="toggle-text">Send instantly via WhatsApp instead of Email</span>
             </label>
           </div>
-          <button class="btn btn-primary" id="submitBtn" type="submit">Send Message</button>
+          <button class="btn btn-primary" id="submitBtn" type="submit" toolDescription="Send the enquiry message to the school for a response.">Send Message</button>
           <p class="form-note" id="formStatus" aria-live="polite"></p>
         </form>
       </div>

@@ -52,426 +52,342 @@ interface GlobalOptions {
 // ─── CSS helpers ───────────────────────────────────────────────────────────
 
 const STYLE_ID = 'cd-styles';
-const DIALOG_CSS = `/* ==========================================================================
-   ConfirmDialog — Premium Modern Stylesheet
+const DIALOG_CSS =`/* ==========================================================================
+   ConfirmDialog — Ultra-Premium Liquid Glass Edition
    ========================================================================== */
 
-/* ─── Layout ─────────────────────────────────── */
+:root {
+    --cd-accent: #6366f1;
+    --cd-accent-glow: #8b5cf6;
+    --cd-accent-light: #a5b4fc;
+    --cd-surface-glass: rgba(255, 255, 255, 0.03);
+    --cd-border-glass: rgba(255, 255, 255, 0.08);
+    --cd-text-main: #ffffff;
+    --cd-text-muted: #9ca3af;
+    --cd-font: "Inter", system-ui, sans-serif;
+    --cd-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15); /* Bouncy physics */
+}
+
+/* ─── 3D Overlay & Ambient Environment ──────────────── */
 .cd-overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: var(--cd-z, 9999);
-  background: rgba(0, 0, 0, 0);
-  backdrop-filter: blur(0px);
-  -webkit-backdrop-filter: blur(0px);
-  transition: 
-    background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    backdrop-filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 9999;
+    background: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.4), rgba(0, 0, 0, 0.9));
+    perspective: 1200px; /* The secret sauce for the 3D entrance */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    overflow: hidden;
 }
 
 .cd-overlay.cd-visible {
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+    opacity: 1;
 }
 
-/* Optional blur class (can be toggled via JS) */
-.cd-overlay.cd-blur.cd-visible {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+/* Floating orb of light behind the modal */
+.cd-ambient-light {
+    position: absolute;
+    width: 60vw;
+    height: 60vw;
+    max-width: 600px;
+    max-height: 600px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.1) 40%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(60px);
+    animation: cd-breathe 8s ease-in-out infinite alternate;
+    pointer-events: none;
 }
 
-/* ─── Card ────────────────────────────────────── */
+@keyframes cd-breathe {
+    0% { transform: scale(0.8) translate(10%, -10%); }
+    100% { transform: scale(1.2) translate(-10%, 10%); }
+}
+
+/* ─── The Card (Liquid Glass Body) ──────────────────── */
 .cd-card {
-  --cd-card-bg: #ffffff;
-  --cd-card-border: rgba(0,0,0,0.06);
-  --cd-card-text: #111827;
-  --cd-card-muted: #6b7280;
-  --cd-card-surface: #f9fafb;
-  --cd-card-hover: #f3f4f6;
-  --cd-cancel-text: #374151;
-  
-  background: var(--cd-card-bg);
-  border: 1px solid var(--cd-card-border);
-  border-radius: 20px;
-  width: min(460px, 100%);
-  box-shadow:
-    0 1px 2px rgba(0,0,0,0.04),
-    0 8px 24px rgba(0,0,0,0.08),
-    0 24px 56px rgba(0,0,0,0.12);
-  transform: scale(0.9) translateY(20px);
-  opacity: 0;
-  transition:
-    transform 0.4s cubic-bezier(0.34, 1.3, 0.64, 1),
-    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: var(--cd-font, "Inter", system-ui, -apple-system, sans-serif);
-  overflow: hidden;
-  color: var(--cd-card-text);
-  position: relative;
-}
-
-/* subtle inner glow border on the card itself */
-.cd-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: radial-gradient(circle at 30% 0%, var(--cd-accent, #6366f1) 0%, transparent 80%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
+    width: min(460px, 100%);
+    position: relative;
+    border-radius: 24px;
+    background: var(--cd-surface-glass);
+    box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 0 20px rgba(255, 255, 255, 0.02);
+    font-family: var(--cd-font);
+    color: var(--cd-text-main);
+    backdrop-filter: blur(15px) saturate(180%);
+    /* 3D Entrance Setup */
+    transform-style: preserve-3d;
+    transform: rotateX(25deg) rotateY(-10deg) translateY(60px) scale(0.85);
+    opacity: 0;
+    transition:
+        transform 0.8s var(--cd-spring),
+    opacity 0.6s ease;
 }
 
 .cd-card.cd-visible {
-  transform: scale(1) translateY(0);
-  opacity: 1;
-  box-shadow:
-    0 4px 8px rgba(0,0,0,0.06),
-    0 12px 32px rgba(0,0,0,0.12),
-    0 32px 64px rgba(0,0,0,0.18);
+    transform: rotateX(0deg) rotateY(0deg) translateY(0) scale(1);
+    opacity: 1;
 }
 
-.cd-card.cd-visible::before {
-  opacity: 1;
+/* Animated conic border glow */
+@property --cd-glow-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
 }
 
-/* ─── Icon strip ──────────────────────────────── */
-.cd-strip {
-  height: 5px;
-  width: 100%;
-  background: var(--cd-accent, #6366f1);
-  transition: height 0.3s ease;
+.cd-card-glow {
+    position: absolute;
+    inset: -2px;
+    border-radius: 26px;
+    padding: 2px;
+    background: conic-gradient(
+        from var(--cd-glow-angle),
+        transparent 0%,
+        var(--cd-accent) 20%,
+        var(--cd-accent-glow) 40%,
+        transparent 50%,
+        transparent 100%
+    );
+    z-index: -1;
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: cd-angle-spin 4s linear infinite;
+    opacity: 0;
+    transition: opacity 1s ease 0.5s;
 }
 
-/* ─── Body ────────────────────────────────────── */
+.cd-card.cd-visible .cd-card-glow {
+    opacity: 1;
+}
+
+@keyframes cd-angle-spin {
+    from { --cd-glow-angle: 0deg; }
+    to   { --cd-glow-angle: 360deg; }
+}
+
+/* Wrapper to enforce border-radius hiding the internal bleeds */
+.cd-content-wrapper {
+    position: relative;
+    background: rgba(15, 23, 42, 0.65); /* Deep dark base */
+    border-radius: 24px;
+    border: 1px solid var(--cd-border-glass);
+    overflow: hidden;
+    z-index: 1;
+}
+
+.cd-blur{
+    backdrop-filter: blur(5px) saturate(180%);
+    -webkit-backdrop-filter: blur(5px) saturate(180%);
+    }
+
+/* ─── Icon & Header ─────────────────────────────────── */
+.cd-strips {
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg, var(--cd-accent), var(--cd-accent-glow), var(--cd-accent));
+    background-size: 200% 100%;
+    animation: cd-gradient-pan 3s ease infinite;
+}
+
 .cd-body {
-  padding: 28px 28px 0;
+    padding: 32px 32px 0;
 }
 
 .cd-icon-wrap {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
 }
 
 .cd-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-  background: var(--cd-accent-bg, rgba(99,102,241,0.12));
-  color: var(--cd-accent, #6366f1);
-  transition: transform 0.3s cubic-bezier(0.34, 1.3, 0.64, 1);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.1));
+    box-shadow:
+    0 8px 16px rgba(0,0,0,0.2),
+        inset 0 2px 4px rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.05);
+
+    /* Liquid float animation */
+    animation: cd-float 3s ease-in-out infinite;
 }
 
-.cd-card.cd-visible .cd-icon {
-  animation: cd-icon-pop 0.4s cubic-bezier(0.34, 1.3, 0.64, 1) 0.1s both;
+@keyframes cd-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
 }
 
-@keyframes cd-icon-pop {
-  0% { transform: scale(0.8); opacity: 0.6; }
-  60% { transform: scale(1.1); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
+/* Gradient Sheen Text */
 .cd-title {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.4;
-  color: var(--cd-card-text);
-  opacity: 0;
-  transform: translateY(6px);
-  transition: 
-    opacity 0.35s ease 0.15s,
-    transform 0.35s cubic-bezier(0.34, 1.3, 0.64, 1) 0.15s;
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.5s var(--cd-spring) 0.2s;
 }
 
 .cd-card.cd-visible .cd-title {
-  opacity: 1;
-  transform: translateY(0);
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .cd-message {
-  margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.65;
-  color: var(--cd-card-muted);
-  padding: 0;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: 
-    opacity 0.35s ease 0.25s,
-    transform 0.35s cubic-bezier(0.34, 1.3, 0.64, 1) 0.25s;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--cd-text-muted);
+    margin: 0;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s var(--cd-spring) 0.3s;
 }
 
 .cd-card.cd-visible .cd-message {
-  opacity: 1;
-  transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .cd-detail {
-  margin: 10px 0 0;
-  font-size: 0.85rem;
-  line-height: 1.6;
-  color: var(--cd-card-muted);
-  background: var(--cd-card-surface);
-  border-radius: 12px;
-  padding: 12px 14px;
-  border-left: 3px solid var(--cd-accent, #6366f1);
-  opacity: 0;
-  transform: translateY(8px);
-  transition: 
-    opacity 0.35s ease 0.35s,
-    transform 0.35s cubic-bezier(0.34, 1.3, 0.64, 1) 0.35s;
+    margin: 16px 0 0;
+    font-size: 0.8rem;
+    font-family: ui-monospace, monospace;
+    color: var(--cd-accent-light);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s var(--cd-spring) 0.4s;
 }
 
 .cd-card.cd-visible .cd-detail {
-  opacity: 1;
-  transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
 }
 
-/* ─── Progress bar (timeout) ──────────────────── */
+/* ─── Progress Bar (Glowing Track) ──────────────────── */
 .cd-progress-wrap {
-  padding: 18px 28px 0;
+    padding: 24px 32px 0;
 }
 
 .cd-progress-track {
-  height: 4px;
-  background: var(--cd-card-surface);
-  border-radius: 99px;
-  overflow: hidden;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 99px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+    overflow: hidden;
 }
 
 .cd-progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--cd-accent, #6366f1), var(--cd-accent-light, #818cf8));
-  border-radius: 99px;
-  width: 100%;
-  transition: width var(--cd-timeout-duration, 3s) linear;
-  position: relative;
+    height: 100%;
+    background: linear-gradient(90deg, var(--cd-accent), var(--cd-accent-glow), #d8b4fe);
+    background-size: 200% 100%;
+    border-radius: 99px;
+    width: 100%;
+    box-shadow: 0 0 10px var(--cd-accent);
+    animation: cd-gradient-pan 2s linear infinite;
+    transition: width 0.1s linear; 
 }
 
-/* subtle shimmer on the progress bar */
-.cd-progress-bar::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255,255,255,0.4) 50%,
-    transparent 100%
-  );
-  animation: cd-shimmer 2s infinite;
+@keyframes cd-gradient-pan {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
 }
 
-@keyframes cd-shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(200%); }
-}
-
-/* ─── Actions ─────────────────────────────────── */
+/* ─── Magnetic Buttons ──────────────────────────────── */
 .cd-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  padding: 20px 28px 24px;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 24px 32px 32px;
 }
 
 .cd-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 22px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  white-space: nowrap;
-  transition: 
-    background 0.2s ease,
-    transform 0.2s cubic-bezier(0.34, 1.3, 0.64, 1),
-    box-shadow 0.2s ease,
-    opacity 0.2s ease;
-  outline: none;
-  position: relative;
-  overflow: hidden;
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
 }
 
-.cd-btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.cd-btn:active::after {
-  opacity: 1;
-}
-
-.cd-btn:focus-visible {
-  box-shadow: 0 0 0 3px var(--cd-accent-focus, rgba(99,102,241,0.35));
-}
-
-.cd-btn:active {
-  transform: scale(0.94);
-}
-
-/* Cancel button */
 .cd-btn-cancel {
-  background: var(--cd-card-surface);
-  color: var(--cd-cancel-text);
-  border: 1px solid rgba(0,0,0,0.06);
+    background: transparent;
+    color: var(--cd-text-muted);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .cd-btn-cancel:hover {
-  background: var(--cd-card-hover);
-  border-color: rgba(0,0,0,0.1);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    background: rgba(255,255,255,0.05);
+    color: var(--cd-text-main);
+    border-color: rgba(255,255,255,0.2);
 }
 
-/* Confirm button */
 .cd-btn-confirm {
-  background: var(--cd-accent, #6366f1);
-  color: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-  font-weight: 600;
+    background: linear-gradient(135deg, var(--cd-accent), var(--cd-accent-glow));
+    color: #fff;
+    border: none;
+    box-shadow:
+    0 4px 12px rgba(99, 102, 241, 0.3),
+        inset 0 1px 1px rgba(255,255,255,0.3);
+}
+
+/* The hover glow effect */
+.cd-btn-confirm::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--cd-accent-glow), #d8b4fe);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.cd-btn-confirm span {
+    position: relative;
+    z-index: 1; /* Keeps text above the hover background */
 }
 
 .cd-btn-confirm:hover {
-  filter: brightness(1.08);
-  box-shadow: 0 4px 14px rgba(99,102,241,0.3);
-  transform: translateY(-2px);
-}
-
-.cd-btn-confirm[disabled] {
-  opacity: 0.55;
-  cursor: not-allowed;
-  filter: none;
-  transform: none;
-  box-shadow: none;
-}
-
-/* ─── Dark mode auto (prefers-color-scheme) ────────────────── */
-@media (prefers-color-scheme: dark) {
-  .cd-card {
-    --cd-card-bg: #1c1c1e;
-    --cd-card-border: rgba(255,255,255,0.06);
-    --cd-card-text: #f1f5f9;
-    --cd-card-muted: #8e8e93;
-    --cd-card-surface: #2c2c2e;
-    --cd-card-hover: #3a3a3c;
-    --cd-cancel-text: #d1d5db;
+    transform: translateY(-2px) scale(1.02);
     box-shadow:
-      0 1px 2px rgba(0,0,0,0.2),
-      0 8px 24px rgba(0,0,0,0.4),
-      0 24px 56px rgba(0,0,0,0.5);
-  }
-  .cd-card.cd-visible {
-    box-shadow:
-      0 4px 8px rgba(0,0,0,0.3),
-      0 12px 32px rgba(0,0,0,0.5),
-      0 32px 64px rgba(0,0,0,0.6);
-  }
-  .cd-overlay.cd-visible {
-    background: rgba(0, 0, 0, 0.75);
-  }
-  .cd-btn-cancel {
-    border-color: rgba(255,255,255,0.1);
-  }
+    0 10px 20px rgba(99, 102, 241, 0.5),
+        inset 0 1px 1px rgba(255,255,255,0.4);
 }
 
-/* ─── Explicit theme classes ──────────────────── */
-[data-theme="dark"] .cd-card {
-  --cd-card-bg: #1c1c1e;
-  --cd-card-border: rgba(255,255,255,0.06);
-  --cd-card-text: #f1f5f9;
-  --cd-card-muted: #8e8e93;
-  --cd-card-surface: #2c2c2e;
-  --cd-card-hover: #3a3a3c;
-  --cd-cancel-text: #d1d5db;
-  box-shadow:
-    0 1px 2px rgba(0,0,0,0.2),
-    0 8px 24px rgba(0,0,0,0.4),
-    0 24px 56px rgba(0,0,0,0.5);
-}
-[data-theme="dark"] .cd-card.cd-visible {
-  box-shadow:
-    0 4px 8px rgba(0,0,0,0.3),
-    0 12px 32px rgba(0,0,0,0.5),
-    0 32px 64px rgba(0,0,0,0.6);
-}
-[data-theme="dark"] .cd-overlay.cd-visible {
-  background: rgba(0, 0, 0, 0.75);
-}
-[data-theme="dark"] .cd-btn-cancel {
-  border-color: rgba(255,255,255,0.1);
+.cd-btn-confirm:hover::before {
+    opacity: 1;
 }
 
-[data-theme="light"] .cd-card {
-  --cd-card-bg: #ffffff;
-  --cd-card-border: rgba(0,0,0,0.06);
-  --cd-card-text: #111827;
-  --cd-card-muted: #6b7280;
-  --cd-card-surface: #f9fafb;
-  --cd-card-hover: #f3f4f6;
-  --cd-cancel-text: #374151;
-  box-shadow:
-    0 1px 2px rgba(0,0,0,0.04),
-    0 8px 24px rgba(0,0,0,0.08),
-    0 24px 56px rgba(0,0,0,0.12);
-}
-[data-theme="light"] .cd-card.cd-visible {
-  box-shadow:
-    0 4px 8px rgba(0,0,0,0.06),
-    0 12px 32px rgba(0,0,0,0.12),
-    0 32px 64px rgba(0,0,0,0.18);
-}
-[data-theme="light"] .cd-overlay.cd-visible {
-  background: rgba(0, 0, 0, 0.6);
-}
-
-/* ─── Accessibility: Reduced motion ─────────────── */
-@media (prefers-reduced-motion: reduce) {
-  .cd-card,
-  .cd-overlay,
-  .cd-title,
-  .cd-message,
-  .cd-detail,
-  .cd-icon {
-    transition-duration: 0.001ms !important;
-    animation-duration: 0.001ms !important;
-  }
+.cd-btn:active {
+    transform: scale(0.96) !important;
 }`;
-
 function injectStyle(id: string, css: string): void {
     if (document.getElementById(id)) return;
     const el = document.createElement('style');
@@ -486,22 +402,22 @@ const TYPE_MAP: Record<DialogType, TypeConfig> = {
     danger: {
         accent: '#ef4444', accentFocus: 'rgba(239,68,68,0.35)',
         iconBg: 'rgba(239,68,68,0.12)', iconColor: '#ef4444',
-        icon: '🗑️', stripColor: '#ef4444',
+        icon: 'bi bi-bug', stripColor: '#ef4444',
     },
     warning: {
         accent: '#f59e0b', accentFocus: 'rgba(245,158,11,0.35)',
         iconBg: 'rgba(245,158,11,0.12)', iconColor: '#f59e0b',
-        icon: '⚠️', stripColor: '#f59e0b',
+        icon: 'bi bi-exclamation-triangle', stripColor: '#f59e0b',
     },
     info: {
         accent: '#6366f1', accentFocus: 'rgba(99,102,241,0.35)',
         iconBg: 'rgba(99,102,241,0.12)', iconColor: '#6366f1',
-        icon: 'ℹ️', stripColor: '#6366f1',
+        icon: 'bi bi-info-circle', stripColor: '#6366f1',
     },
     success: {
         accent: '#10b981', accentFocus: 'rgba(16,185,129,0.35)',
         iconBg: 'rgba(16,185,129,0.12)', iconColor: '#10b981',
-        icon: '✅', stripColor: '#10b981',
+        icon: 'bi bi-check-circle', stripColor: '#10b981',
     },
 };
 
@@ -664,11 +580,11 @@ export class ConfirmDialog {
 
     // ── Static helpers ───────────────────────────────────────────────────────
 
-    static alert(messageOrOptions: string | DialogOptions = {}): Promise<void> {
+    static async alert(messageOrOptions: string | DialogOptions = {}): Promise<void> {
         const opts = typeof messageOrOptions === 'string'
-            ? { message: messageOrOptions }
+            ? {message: messageOrOptions}
             : messageOrOptions;
-        return getConfirmDialog().show({ ...opts, showCancel: false, confirmText: 'OK', type: 'info' }).then(() => {});
+        await getConfirmDialog().show({...opts, showCancel: false, confirmText: 'OK', type: 'info'});
     }
 
     // ── Private: Options merging ─────────────────────────────────────────────
@@ -728,6 +644,11 @@ export class ConfirmDialog {
             this.#overlay.style.setProperty('--cd-font', this.#cfg.fontFamily);
         }
 
+        // Ambient light orb
+        const ambient = document.createElement('div');
+        ambient.className = 'cd-ambient-light';
+        this.#overlay.appendChild(ambient);
+
         // Card
         this.#card = document.createElement('div');
         this.#card.className = 'cd-card';
@@ -761,28 +682,31 @@ export class ConfirmDialog {
 
         const cancelHtml = opts.showCancel
             ? `<button class="cd-btn cd-btn-cancel" data-action="cancel" aria-label="${this.#escape(opts.cancelText)}">
-           ${this.#escape(opts.cancelText)}
-         </button>`
+             ${this.#escape(opts.cancelText)}
+           </button>`
             : '';
 
         let template = `
-      <div class="cd-strip" style="background:${opts.stripColor};"></div>
-      ${closeBtnHtml}
-      <div class="cd-body">
-        <div class="cd-icon-wrap">
-          <div class="cd-icon" style="background:${opts.iconBg};color:${opts.iconColor};" aria-hidden="true">${opts.icon}</div>
-          <h3 class="cd-title" id="cd-title">${this.#escape(opts.title)}</h3>
+      <div class="cd-card-glow"></div>
+      <div class="cd-content-wrapper">
+        <div class="cd-strip"></div>
+        ${closeBtnHtml}
+        <div class="cd-body">
+          <div class="cd-icon-wrap">
+            <i class="cd-icon ${opts.icon}" style="background:${opts.iconBg};color:${opts.iconColor};" aria-hidden="true"></i>
+            <h3 class="cd-title" id="cd-title">${this.#escape(opts.title)}</h3>
+          </div>
+          <p class="cd-message" id="cd-message">${this.#escape(opts.message)}</p>
+          ${detailHtml}
         </div>
-        <p class="cd-message" id="cd-message">${this.#escape(opts.message)}</p>
-        ${detailHtml}
-      </div>
-      ${progressHtml}
-      <div class="cd-actions">
-        ${cancelHtml}
-        <button class="cd-btn cd-btn-confirm" data-action="confirm" aria-label="${this.#escape(opts.confirmText)}">
-          <span class="cd-btn-text">${this.#escape(opts.confirmText)}</span>
-          <span class="cd-btn-spinner" aria-hidden="true"></span>
-        </button>
+        ${progressHtml}
+        <div class="cd-actions">
+          ${cancelHtml}
+          <button class="cd-btn cd-btn-confirm" data-action="confirm" aria-label="${this.#escape(opts.confirmText)}">
+            <span class="cd-btn-text">${this.#escape(opts.confirmText)}</span>
+            <span class="cd-btn-spinner" aria-hidden="true"></span>
+          </button>
+        </div>
       </div>
     `;
 
@@ -800,7 +724,6 @@ export class ConfirmDialog {
         if (opts.loading) this.#setLoading(true);
         else this.#setLoading(false);
     }
-
     // ── Private: Animations ──────────────────────────────────────────────────
 
     #open(opts: MergedDialogOptions): void {
@@ -891,14 +814,17 @@ export class ConfirmDialog {
     }
 
     #startCountdown(opts: MergedDialogOptions): void {
-        this.#clearTimeouts();
-        const step = 50; // update every 50ms for smooth animation
-        this.#timeoutId = setInterval(() => {
+        if (this.#timeoutId !== null) {
+            clearInterval(this.#timeoutId);
+            this.#timeoutId = null;
+        }        const step = 50; // update every 50ms
+        this.#timeoutId = setInterval(async () => {
             if (this.#remainingMs === null) return;
             this.#remainingMs -= step;
             if (this.#remainingMs <= 0) {
+                this.#setProgress(0);
                 this.#clearTimeouts();
-                this.close(opts.timeoutConfirm);
+                await this.close(opts.timeoutConfirm);
                 return;
             }
             this.#setProgress((this.#remainingMs / opts.timeoutMs!) * 100);

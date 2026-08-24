@@ -2203,7 +2203,7 @@ body.dark-mode .form-group input#whatsappRoutingToggle:checked {
    ============================================ */
 .announcement-bar {
   position: fixed;
-  top: calc(var(--header-height) + 45px);
+  top:calc(var(--header-height) + var(--blur-extension));
   left: 0;
   width: 100%;
   z-index: 999;

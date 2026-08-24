@@ -129,7 +129,7 @@ class Preloader {
     private startLoading(): void {
         let progress = 0;
         const startTime = performance.now();
-        const minDuration = 3000;
+        const minDuration = 2000;
 
         const updateLoading = (): void => {
             const elapsed = performance.now() - startTime;
@@ -376,7 +376,7 @@ class Preloader {
                 this.animatedCount += 2;
 
                 if (this.animatedCount >= this.totalPillars) {
-                    setTimeout(() => this.onComplete(), 9000); //
+                    setTimeout(() => this.onComplete(), 600); //
                 }
             }, delay);
         });
@@ -1558,7 +1558,7 @@ class App {
         new AcademicLevelToggles('.level__toggle');
 
         // 12. Scroll spy
-        new ScrollSpy('#navMenu a.nav-link');
+        new ScrollSpy('#navMenu a.nav-link:not(#installApp)');
 
         // 13. Enquiry modal
         new EnquiryModal(
@@ -1598,10 +1598,14 @@ class App {
             confirmText: 'Yes, Install',
             cancelText: 'Not now',
             type: 'info',
-            delay: 5000,
             afterInteraction: true,
             storageKey: 'pwa-install-prompt',
             dismissDays: 7,
+             dialogOptions:{
+                timeoutMs:10000,
+                timeoutConfirm: false,
+                loading: true,
+             }
         })
 
         inject();
