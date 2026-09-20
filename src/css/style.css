@@ -440,8 +440,7 @@ body.dark-mode #mainHeader.scrolled::before {
 .header-inner {
   position: relative;
   z-index: 2;
-  max-width: 1280px;
-  margin: 0 auto;
+  margin: 0 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -476,6 +475,22 @@ body.dark-mode #mainHeader.scrolled::before {
 
 .logo-icon:hover {
   transform: rotate(-5deg) scale(1.05);
+}
+
+.nav-icon{
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    transition: transform 0.3s ease;
+}
+.nav-icon:hover {
+    transform: scale(1.05);
+
 }
 
 .logo-text {
@@ -534,6 +549,27 @@ body.dark-mode #mainHeader.scrolled::before {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-1px);
+}
+.nav-link {
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+  color:inherit;
+  text-decoration:none;
+}
+.nav-text {
+  display:inline-block;
+  max-width:0;
+  opacity:1;
+  overflow:hidden;
+  white-space:nowrap;
+  will-change: max-width, margin;
+  transition: max-width 1s ease, margin .8s ease;
+  margin-left:0;
+}
+.nav-link:hover .nav-text, .nav-link:focus .nav-text {
+  max-width:200px;
+  margin-left:6px;
 }
 
 #navMenu a.nav-link.active {
@@ -1855,7 +1891,6 @@ body.dark-mode .level__subjects li {
   /* Perspective for 3D book effect */
   perspective: 1500px;
 }
-
 .modal-overlay:not([hidden]) {
   opacity: 1;
   visibility: visible;
@@ -2128,6 +2163,7 @@ body.dark-mode .form-group.form-toggle {
   align-items: center;
   gap: 14px;
   cursor: pointer;
+  -webkit-user-select: none;
   user-select: none;
   width: 100%;
   margin-bottom: 0;
@@ -2539,7 +2575,8 @@ a:focus-visible {
 
 @media (max-width: 1200px) {
   .header-inner {
-    padding: 0 24px;
+    padding: 5px;
+    margin: 0 6px;
   }
 
   #navMenu {
@@ -2547,7 +2584,7 @@ a:focus-visible {
   }
 
   #navMenu a {
-    padding: 8px 12px;
+    padding: 4px 6px;
     font-size: 0.82rem;
   }
 
@@ -2569,33 +2606,18 @@ a:focus-visible {
     height: 52px;
     font-size: 1rem;
   }
+
+  .nav-icon {
+    font-size: 1.3rem;
+  }
 }
 
 /* ---------- MAX 1024px (Tablets & Small Laptops) ---------- */
 @media (max-width: 1024px) {
-  .menu-toggle{
-    display: flex;
-  }
 
-  #navMenu {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 380px;
-    max-width: 85vw;
-    height: 87vh;
-    height: 87dvh;
-    background: rgba(10, 31, 63, 0.2);
-    backdrop-filter: blur(40px) saturate(180%);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
-    padding: 100px 32px 40px 32px;
-    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
-    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    gap: 8px;
-    z-index: 999;
-    border-left: 1px solid rgba(200, 150, 62, 0.15);
+  .header-inner {
+    margin: 0 4px;
+    padding:0 5px
   }
 
   .logo-text {
@@ -2618,6 +2640,15 @@ a:focus-visible {
 
   .carousel-container {
     height: 500px;
+  }
+
+  .nav-icon {
+    font-size: 1.1rem;
+  }
+  
+    #navMenu a {
+    padding: 3px 5px;
+    font-size: 0.82rem;
   }
 
   .stats-row {
@@ -2735,6 +2766,35 @@ a:focus-visible {
 
   #navMenu a:hover::before {
     left: 100%;
+  }
+
+    .menu-toggle{
+    display: flex;
+  }
+
+  #navMenu {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 380px;
+    max-width: 85vw;
+    height: 87vh;
+    height: 87dvh;
+    background: rgba(10, 31, 63, 0.2);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    padding: 100px 32px 40px 32px;
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 8px;
+    z-index: 999;
+    border-left: 1px solid rgba(200, 150, 62, 0.15);
+  }
+  
+  .nav-text{
+    max-width: 100%;
   }
 
   #navMenu a:hover {
