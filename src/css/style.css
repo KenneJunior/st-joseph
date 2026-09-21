@@ -2463,6 +2463,16 @@ body.dark-mode .event-card__download:hover {
   font-style: italic;
 }
 
+#dustCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
 /* News Background Image Section */
 .bg-image-news {
   position: relative;
@@ -2625,7 +2635,7 @@ a:focus-visible {
   }
 
   .logo-text small {
-    font-size: 0.75rem;
+    font-size: 0.76rem;
   }
 
   .logo-icon {
