@@ -43,6 +43,21 @@ interface Particle {
     speedY: number;
 }
 
+interface ParticleConfig {
+    count: number;
+    colorRGB: string; // Format: 'R, G, B'
+    /** px/s, terminal speed as r -> 0**/
+    stokesBaseDrift: number;
+    /**   px/s, additional terminal speed at r = 1*/
+    stokesTerminalCoeff: number;
+    /** Stokes, relaxation time constant at r = 1 */
+    stokesRelaxTime: number;
+    /** // Ornstein-Uhlenbeck jitter: dv = -λ(v - mean)dt + σ√dt · N(0,1) — Brownian motion with a restoring force, so velocity wanders but stays bounded, unlike an unweighted random walk. */
+    ouLambda: number;
+    ouSigma: number;
+    heightMultiplier: number; 
+}
+
 // =========================================
 // 2. SHARED PHYSICS PRIMITIVES
 // =========================================
@@ -92,7 +107,7 @@ function gaussianRandom(): number {
 }
 
 // =========================================
-// 3. TEXT SPLITTER UTILITY (unchanged)
+// 3. TEXT SPLITTER UTILITY 
 // =========================================
 
 class TextSplitter {
@@ -134,16 +149,6 @@ class TextSplitter {
 // 4. PARTICLE SYSTEM — Stokes drag + Brownian jitter
 // =========================================
 
-const STOKES_BASE_DRIFT = -8;      // px/s, terminal speed as r -> 0
-const STOKES_TERMINAL_COEFF = -3;  // px/s, additional terminal speed at r = 1
-const STOKES_RELAX_TIME = 0.1;     // s, relaxation time constant at r = 1
-
-// Ornstein-Uhlenbeck jitter: dv = -λ(v - mean)dt + σ√dt · N(0,1) — Brownian
-// motion with a restoring force, so velocity wanders but stays bounded,
-// unlike an unweighted random walk.
-const OU_LAMBDA = 0.6;
-const OU_SIGMA = 3.5;
-
 class ParticleSystem {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D | null;
@@ -151,6 +156,69 @@ class ParticleSystem {
     private width = 0;
     private height = 0;
     private lastTime = 0;
+    private config: ParticleConfig;
+
+    private animationFrameId: number = 0;
+    private readonly boundResize: () => void;
+    isPlaying: boolean = true;
+
+    constructor(canvas: HTMLCanvasElement, partialConfig: Partial<ParticleConfig> = {}) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        
+        // Default configuration
+        this.config = {
+            count:80,
+            colorRGB: '212, 168, 83',
+            stokesBaseDrift: 20,
+            stokesTerminalCoeff: 10,
+            stokesRelaxTime: 0.2,
+            ouLambda: 1.5,
+            ouSigma: 25,
+            heightMultiplier: 2, 
+            ...partialConfig
+        };
+
+        this.boundResize = this.resize.bind(this);
+        this.init();
+    }
+
+    private init(): void {
+        if (!this.ctx) return;
+        this.resize();
+        window.addEventListener('resize', this.resize.bind(this), { passive: true });
+        this.particles = Array.from({ length: this.config.count }, () => this.createParticle());
+        this.animationFrameId = requestAnimationFrame(this.animate);
+    }
+
+    // --- Lifecycle & Playback Methods ---
+
+    public play(): void {
+        if (!this.isPlaying || this.animationFrameId === 0) {
+            this.isPlaying = true;
+            this.lastTime = 0; // Reset to prevent massive dt jump on resume
+            this.animationFrameId = requestAnimationFrame(this.animate);
+        }
+    }
+
+    public pause(): void {
+        this.isPlaying = false;
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = 0;
+    }
+
+    public destroy(): void {
+        this.pause();
+        window.removeEventListener('resize', this.boundResize);
+        this.particles = [];
+        this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+
+    private terminalVelocity(r: number): number {
+        return this.config.stokesBaseDrift + this.config.stokesTerminalCoeff * r * r;
+    }
+
     private updateParticlePhysics(p: Particle, dt: number): void {
         // Vertical: exact relaxation toward Stokes terminal velocity.
         // dv/dt = -k(v - vTerm)  =>  v(t) = vTerm + (v0-vTerm)e^(-kt).
@@ -161,8 +229,8 @@ class ParticleSystem {
 
         // Both axes: mean-reverting Brownian jitter on top of the drift.
         const sqrtDt = Math.sqrt(dt);
-        p.speedX += -OU_LAMBDA * p.speedX * dt + OU_SIGMA * sqrtDt * gaussianRandom();
-        p.speedY += OU_SIGMA * 0.4 * sqrtDt * gaussianRandom();
+        p.speedX += -this.config.ouLambda * p.speedX * dt + this.config.ouSigma * sqrtDt * gaussianRandom();
+        p.speedY += this.config.ouSigma * 0.4 * sqrtDt * gaussianRandom();
 
         p.x += p.speedX * dt;
         p.y += p.speedY * dt;
@@ -179,12 +247,13 @@ class ParticleSystem {
         if (!this.ctx) return;
         this.ctx.beginPath();
         this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        this.ctx.fillStyle = `rgba(212, 168, 83, ${p.alpha})`;
+        this.ctx.fillStyle = `rgba(${this.config.colorRGB}, ${p.alpha})`;
         this.ctx.fill();
     }
 
     private readonly animate = (time: number): void => {
-        if (!this.ctx) return;
+        if (!this.ctx || !this.isPlaying) return;
+
         if (this.lastTime === 0) this.lastTime = time;
         let dt = (time - this.lastTime) / 1000;
         this.lastTime = time;
@@ -200,29 +269,11 @@ class ParticleSystem {
             this.drawParticle(p);
         });
 
-        requestAnimationFrame(this.animate);
+        this.animationFrameId = requestAnimationFrame(this.animate);
     };
 
-    constructor(canvas: HTMLCanvasElement) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-        this.init();
-    }
-
-    private terminalVelocity(r: number): number {
-        return STOKES_BASE_DRIFT + STOKES_TERMINAL_COEFF * r * r;
-    }
-
     private dragRate(r: number): number {
-        return 1 / (STOKES_RELAX_TIME * r * r);
-    }
-
-    private init(): void {
-        if (!this.ctx) return;
-        this.resize();
-        window.addEventListener('resize', this.resize.bind(this), { passive: true });
-        this.particles = Array.from({ length: 45 }, () => this.createParticle());
-        requestAnimationFrame(this.animate);
+        return 1 / (this.config.stokesRelaxTime * r * r);
     }
 
     private createParticle(): Particle {
@@ -237,9 +288,25 @@ class ParticleSystem {
         };
     }
 
-    private resize(): void {
-        this.width = this.canvas.width = window.innerWidth;
-        this.height = this.canvas.height = window.innerHeight * 2;
+private resize(): void {
+        if (!this.ctx) return;
+        
+        const pixelRatio = window.devicePixelRatio || 1;
+        
+        // Logical layout dimensions
+        this.width = window.innerWidth;
+        this.height = window.innerHeight * this.config.heightMultiplier;
+
+        // Actual internal canvas resolution
+        this.canvas.width = this.width * pixelRatio;
+        this.canvas.height = this.height * pixelRatio;
+        
+        // CSS display size
+        this.canvas.style.width = `${this.width}px`;
+        this.canvas.style.height = `${this.height}px`;
+
+        // Scale context to match pixel ratio
+        this.ctx.scale(pixelRatio, pixelRatio);
     }
 }
 
@@ -259,8 +326,6 @@ export class ScrollEngine {
     private readonly pitchOmega: number; // deliberately slower than scrollOmega
     private state: ScrollState;
     private accumulator = 0;
-    // @ts-ignore
-    private particleSystem?: ParticleSystem;
 
     private refs: {
         hero: HTMLElement;
@@ -349,9 +414,9 @@ export class ScrollEngine {
         });
 
         if (this.config.canvasId) {
-            const canvasEl = document.getElementById(this.config.canvasId) as HTMLCanvasElement | null;
+            const canvasEl = this.getEl(this.config.canvasId) as HTMLCanvasElement;
             if (canvasEl) {
-                this.particleSystem = new ParticleSystem(canvasEl);
+                new ParticleSystem(canvasEl);
             }
         }
 
@@ -364,10 +429,6 @@ export class ScrollEngine {
         let frameTime = (time - this.state.lastTime) / 1000;
         this.state.lastTime = time;
         if (frameTime > MAX_FRAME_TIME) frameTime = MAX_FRAME_TIME;
-
-        // Fixed-timestep accumulator: physics always advances in FIXED_DT
-        // slices, however often (or rarely) this callback actually fires —
-        // deterministic behavior independent of 60/90/120/144Hz displays.
         this.accumulator += frameTime;
         while (this.accumulator >= FIXED_DT) {
             this.stepPhysics(FIXED_DT);
