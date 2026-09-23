@@ -14,7 +14,6 @@
 ---
 
 ## Table of Contents
-
 1. [Overview](#overview)
 2. [About the Institution](#about-the-institution)
 3. [Academic Programmes](#academic-programmes)
@@ -48,11 +47,9 @@ This platform serves as the school's digital gateway, providing prospective stud
 Founded on Catholic educational principles, SJCCC Mbengwi is committed to nurturing well-rounded individuals through a tripartite educational model that balances academic rigour with spiritual formation and practical skill development.
 
 ### Leadership
-
 Under the visionary guidance of Principal **Rev. Fr. Joseph Gael Kenne**, the institution has consistently maintained academic excellence, achieving a remarkable **98% GCE pass rate** in the 2025 examination session.
 
 ### Core Values
-
 * **Faith** — Rooted in Catholic tradition and spiritual formation
 * **Excellence** — Uncompromising commitment to academic distinction
 * **Integrity** — Building character through moral and ethical education
@@ -65,15 +62,11 @@ Under the visionary guidance of Principal **Rev. Fr. Joseph Gael Kenne**, the in
 SJCCC offers three distinct educational pathways, each designed to cater to diverse student aptitudes and career aspirations:
 
 ### 📚 General Education
-
 A comprehensive academic curriculum preparing students for the GCE Ordinary Level and GCE Advanced Level examinations. This pathway provides a strong foundation for university education across the sciences, arts, and humanities.
-
 * **Subjects include:** Mathematics, English Language, French, Physics, Chemistry, Biology, Economics, Geography, History, Literature, Religious Studies, and Citizenship.
 
 ### 🔧 Technical Education
-
 A hands-on, skills-based programme spanning Forms 1–3, equipping students with practical competencies for direct employment or progression to specialised technical institutions.
-
 * **Workshop areas include:** Woodwork, Metalwork, Technical Drawing, Building Construction, Electrical Installation, and Auto Mechanics.
 
 ---
@@ -81,35 +74,29 @@ A hands-on, skills-based programme spanning Forms 1–3, equipping students with
 ## Feature Showcase
 
 ### 🎨 Theming & Personalisation
-
 * **Adaptive Light/Dark Mode:** Persistent theme toggle with system preference detection via `window.matchMedia('(prefers-color-scheme: dark)')`. User choice is preserved in `localStorage` and survives across sessions.
 * **Animated Transitions:** Theme switches employ `clip-path` and `backdrop-filter` animations for a polished, cinema-grade visual experience.
 
 ### 🧭 Navigation & Layout
-
 * **Progressive Blur Header:** A fixed navigation bar with a dynamic `backdrop-filter: blur()` that intensifies based on scroll position, providing a frosted-glass effect without obscuring page content.
 * **Responsive Mobile Menu:** An off-canvas slide-in panel with staggered entrance animations, backdrop overlay, and gold-accented interactive states.
 * **Active Section Tracking:** `IntersectionObserver`-powered ScrollSpy highlights the current navigation link as users scroll through page sections.
 
 ### 📊 Data Visualisation
-
 * **Animated Statistics:** Key metrics (enrollment numbers, pass rates, teaching staff) count up from zero using an eased `requestAnimationFrame` animation triggered on scroll into view.
 * **Academic Pathway Cards:** Expandable/collapsible subject listings with smooth `max-height` transitions.
 
 ### 📸 Media & Content
-
 * **Campus Carousel:** Touch-enabled, auto-advancing image gallery with dot indicators, hover-to-pause behaviour, and swipe gesture support.
 * **Hero Particles:** Procedurally generated floating particles in the hero section background, adding depth and visual intrigue.
 * **Scroll-Triggered Reveals:** Content sections fade and slide into view as they enter the viewport, creating an engaging narrative flow.
 
 ### 📬 Communication
-
 * **Enquiry Modal:** A floating action button opens a book-style animated modal with staggered form field entrance, keyboard accessibility (`Escape` to close), and focus management.
 * **Contact Form:** Formspree-powered submission with loading, success, and error states. Includes a WhatsApp routing toggle for direct messaging.
 * **Announcement Bar:** Dismissible notification banner with persistent dismissal state and dynamic layout offset calculation via `ResizeObserver`.
 
 ### ♿ Accessibility
-
 * **Skip Navigation Link:** A hidden link appears on focus for keyboard users to bypass navigation.
 * **Semantic HTML:** Proper heading hierarchy, ARIA attributes, and landmark regions.
 * **Focus Management:** Visible focus indicators, logical tab order, and focus restoration when modals close.
@@ -122,7 +109,6 @@ A hands-on, skills-based programme spanning Forms 1–3, equipping students with
 The site is architected as a **zero-dependency, class-based TypeScript application** operating directly on the DOM. There are no frameworks, no virtual DOM, and no build-step abstractions — just meticulously crafted vanilla code that leverages modern browser APIs.
 
 ### Design Principles
-
 1. **Single Responsibility:** Each class owns exactly one behavioural concern.
 2. **Constructor Injection:** Dependencies (element IDs, selectors) are passed via constructors, enabling centralised wiring in `App.init()`.
 3. **DOM-Driven State:** State lives in the DOM (`classList`, `data-*` attributes, CSS custom properties), not in JavaScript objects.
@@ -130,7 +116,6 @@ The site is architected as a **zero-dependency, class-based TypeScript applicati
 5. **Event Delegation:** Where appropriate, events are handled at parent levels to minimise listener count.
 
 ### Key Web APIs Employed
-
 | API | Usage |
 | :--- | :--- |
 | **IntersectionObserver** | ScrollSpy, ScrollReveal, CounterAnimation triggers |
@@ -167,27 +152,21 @@ The site is architected as a **zero-dependency, class-based TypeScript applicati
 ## Design Philosophy
 
 ### Visual Identity
-
 The design language draws from the institution's Catholic heritage and Cameroonian context:
-
 * **Deep Navy (`#06142b`)** — Stability, tradition, and academic gravitas
 * **Burnished Gold (`#c8963e`)** — Excellence, divine light, and institutional prestige
 * **Playfair Display** — Elegant serif for headings, evoking scholarly tradition
 * **Inter** — Clean, modern sans-serif for body text, ensuring readability
 
 ### Responsive Strategy
-
 The layout adapts across four breakpoint tiers:
-
 * **Desktop (1025px+)** — Full horizontal navigation, multi-column grids
 * **Tablet Landscape (769px–1024px)** — Compact navigation, reduced carousel height
 * **Tablet Portrait (481px–768px)** — Off-canvas mobile menu, stacked layouts
 * **Mobile (<481px)** — Full-width components, optimised touch targets
 
 ### Animation Philosophy
-
 Animations are purposeful, not decorative:
-
 * Entrance animations guide attention to new content
 * Micro-interactions (hover states, button presses) provide tactile feedback
 * Transition effects (theme switching, modal opening) create spatial understanding
@@ -198,14 +177,12 @@ Animations are purposeful, not decorative:
 ## Performance & Accessibility
 
 ### Performance Targets
-
 * **First Contentful Paint:** <1.5s on 3G
 * **Largest Contentful Paint:** <2.5s
 * **Cumulative Layout Shift:** <0.1
 * **Total Blocking Time:** <200ms
 
 ### Accessibility Compliance
-
 * WCAG 2.1 Level AA conformance
 * Keyboard-navigable interactive elements
 * Screen reader-friendly semantic structure
@@ -237,13 +214,11 @@ sjccc-mbengwi/
 ## Local Develeopment
 
 ### Prerequisites
-
 * **Node.js** (v18.x or later)
 * **npm** (v9.x or later)
 * **Vercel CLI** (optional, for local deployment testing)
 
 ### Installation
-
 ```bash
 npm install
 # Clone the repository
@@ -276,7 +251,6 @@ python3 -m http.server 8080
 ```
 
 ### Deployment workflow
-
 ```bash
 # Watch mode for automatic recompilation
 tsc main.ts --target ES2020 --module ESNext --outDir dist/ --watch
@@ -286,19 +260,16 @@ npx serve .
 ```
 
 ### Deployment Pipeline
-
 The project is deployed via **Vercel**, which automatically builds and serves the application upon commits
     to the `main` branch. The deployment process includes:
 
 ### Build Configuration
-
 * **Framework Preset:** None (Static Site)
 * Build Command: `tsc main.ts --target ES2020 --module ESNext --outDir dist/`
 * Output Directory: `dist/`
 * install commands: `npm install -g typescript`
 
 ### Environment Variables
-
 | Variable | Purpose |
 | :--- | :--- |
 | `FORMSPREE_ENDPOINT` | Form submission endpoint URL |
@@ -325,7 +296,6 @@ The project is deployed via **Vercel**, which automatically builds and serves th
 Contributions that align with the project's design philosophy are welcome.
 
 ### Guidelines
-
 1. **Respect the architecture** — New features should be self-contained classes.
 2. **No framework dependencies** — All code must be vanilla TypeScript/JavaScript.
 3. **Test across breakpoints** — Ensure responsive behaviour at all defined breakpoints.
@@ -333,7 +303,6 @@ Contributions that align with the project's design philosophy are welcome.
 5. **Document your code** — JSDoc comments on public methods.
 
 ### Pull Request Process
-
 1. Fork the repository and create a feature branch.
 2. Implement your changes with appropriate tests.
 3. Ensure the site builds and functions correctly.
@@ -346,7 +315,6 @@ Contributions that align with the project's design philosophy are welcome.
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for full terms.
 
 ### Image Credits
-
 * Campus photography: © SJCCC Mbengwi Media Team
 * Background imagery: Licensed from Unsplash
 

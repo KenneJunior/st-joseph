@@ -1587,7 +1587,7 @@ class App {
             fillId: 'progressFill',
             counterId: 'hudCounter',
             a11yId: 'a11y-announcer',
-            canvasId: 'dustCanvas', 
+            canvasId: 'dustCanvas', // Connects to the canvas in the background
             messages: messages,
             scrollResponse: 0.1,
             snapResponse: 0.1,
