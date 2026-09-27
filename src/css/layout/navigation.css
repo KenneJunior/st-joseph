@@ -1,0 +1,162 @@
+/* Desktop Navigation - Icon-First with Reveal on Hover & Active */
+#navMenu {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 0 0 25px 25px;
+  flex-shrink: 0;
+}
+
+#navMenu a {
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 8px 10px;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.1px;
+  position: relative;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  min-width: 40px;
+  box-sizing: border-box;
+}
+
+#navMenu a:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+/* Icons are always shown as the base icon button */
+#navMenu .nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s ease;
+}
+
+/* Nav text is collapsed by default on desktop, revealed only on hover or when active */
+#navMenu .nav-text {
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  pointer-events: none;
+  margin-left: 0;
+  transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s ease,
+              margin 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reveal text when hovered, focused, or when section is active */
+#navMenu a.nav-link:hover .nav-text,
+#navMenu a.nav-link:focus-visible .nav-text,
+#navMenu a.nav-link.active .nav-text {
+  max-width: 140px;
+  opacity: 1;
+  margin-left: 7px;
+  pointer-events: auto;
+}
+
+#navMenu a.nav-link:hover .nav-icon,
+#navMenu a.nav-link:focus-visible .nav-icon,
+#navMenu a.nav-link.active .nav-icon {
+  transform: scale(1.08);
+  color: #ffffff;
+}
+
+#navMenu a.nav-link.active {
+  color: #ffffff;
+  background: rgba(200, 150, 62, 0.24);
+  border: 1px solid rgba(200, 150, 62, 0.4);
+  font-weight: 600;
+  box-shadow: 0 4px 18px rgba(200, 150, 62, 0.28);
+  padding: 8px 14px;
+}
+
+#navMenu a.nav-link:hover {
+  padding: 8px 14px;
+}
+
+#navMenu a.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(200, 150, 62, 0.6);
+}
+
+#navMenu a.nav-cta {
+  background: var(--gold-gradient);
+  color: var(--primary-dark);
+  font-weight: 700;
+  padding: 6px 12px;
+  margin-left: 4px;
+  box-shadow: 0 4px 18px rgba(200, 150, 62, 0.4);
+  border-radius: 10px;
+  transition: var(--transition-smooth);
+}
+
+#navMenu a.nav-cta:hover {
+  box-shadow: 0 6px 25px rgba(200, 150, 62, 0.6);
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #d4a85a 0%, #f0d28b 50%, #d4a85a 100%);
+}
+
+#themeToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  vertical-align: middle;
+  padding: 8px;
+  min-width: 40px;
+  min-height: 40px;
+  margin-left: 4px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  transition: transform var(--duration-fast, 200ms) var(--ease-standard),
+              box-shadow var(--duration-fast, 200ms) var(--ease-standard),
+              background var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+#themeToggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(200, 150, 62, 0.6);
+  background: linear-gradient(135deg, #d4a85a 0%, #f0d28b 50%, #d4a85a 100%);
+}
+
+#themeToggle:active {
+  transform: translateY(0) scale(0.96);
+}
+
+#themeToggle svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+  flex-shrink: 0;
+}

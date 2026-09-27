@@ -1,0 +1,362 @@
+/* ==========================================================================
+   ConfirmDialog — Ultra-Premium Liquid Glass Edition
+   ========================================================================== */
+
+:root {
+    --cd-accent: #c9a229;
+    --cd-accent-glow: #d4a85a;
+    --cd-accent-light: #f3d779;
+    --cd-surface-glass: rgba(7, 24, 46, 0.45);
+    --cd-border-glass: rgba(201, 162, 41, 0.25);
+    --cd-text-main: #ffffff;
+    --cd-text-muted: #d1cfc4;
+    --cd-font: "Inter", system-ui, sans-serif;
+    --cd-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15); /* Bouncy physics */
+}
+
+/* ─── 3D Overlay & Ambient Environment ──────────────── */
+.cd-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: var(--z-dialog, 6000);
+    background: radial-gradient(circle at 50% 50%, rgba(7, 24, 46, 0.6), rgba(2, 12, 26, 0.95));
+    perspective: 1200px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    overflow: hidden;
+}
+
+.cd-overlay.cd-visible {
+    opacity: 1;
+}
+
+/* Floating orb of light behind the modal */
+.cd-ambient-light {
+    position: absolute;
+    width: 60vw;
+    height: 60vw;
+    max-width: 600px;
+    max-height: 600px;
+    background: radial-gradient(circle, rgba(201, 162, 41, 0.18) 0%, rgba(212, 168, 90, 0.08) 40%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(60px);
+    animation: cd-breathe 8s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes cd-breathe {
+    0% { transform: scale(0.8) translate(10%, -10%); }
+    100% { transform: scale(1.2) translate(-10%, 10%); }
+}
+
+/* ─── The Card (Liquid Glass Body) ──────────────────── */
+.cd-card {
+    width: min(460px, 100%);
+    position: relative;
+    border-radius: 24px;
+    background: var(--cd-surface-glass);
+    box-shadow:
+        0 40px 80px -20px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 0 20px rgba(255, 255, 255, 0.02);
+    font-family: var(--cd-font);
+    color: var(--cd-text-main);
+    backdrop-filter: blur(15px) saturate(180%);
+    transform-style: preserve-3d;
+    transform: rotateX(25deg) rotateY(-10deg) translateY(60px) scale(0.85);
+    opacity: 0;
+    transition:
+        transform 0.8s var(--cd-spring),
+        opacity 0.6s ease;
+}
+
+.cd-card.cd-visible {
+    transform: rotateX(0deg) rotateY(0deg) translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* Animated conic border glow */
+@property --cd-glow-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.cd-card-glow {
+    position: absolute;
+    inset: -2px;
+    border-radius: 26px;
+    padding: 2px;
+    background: conic-gradient(
+        from var(--cd-glow-angle),
+        transparent 0%,
+        var(--cd-accent) 20%,
+        var(--cd-accent-glow) 40%,
+        transparent 50%,
+        transparent 100%
+    );
+    z-index: -1;
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: cd-angle-spin 4s linear infinite;
+    opacity: 0;
+    transition: opacity 1s ease 0.5s;
+}
+
+.cd-card.cd-visible .cd-card-glow {
+    opacity: 1;
+}
+
+@keyframes cd-angle-spin {
+    from { --cd-glow-angle: 0deg; }
+    to   { --cd-glow-angle: 360deg; }
+}
+
+/* Wrapper to enforce border-radius hiding the internal bleeds */
+.cd-content-wrapper {
+    position: relative;
+    background: rgba(7, 24, 46, 0.88);
+    border-radius: 24px;
+    border: 1px solid var(--cd-border-glass);
+    overflow: hidden;
+    z-index: 1;
+}
+
+.cd-blur {
+    backdrop-filter: blur(5px) saturate(180%);
+    -webkit-backdrop-filter: blur(5px) saturate(180%);
+}
+
+/* ─── Icon & Header ─────────────────────────────────── */
+.cd-strips {
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg, var(--cd-accent), var(--cd-accent-glow), var(--cd-accent));
+    background-size: 200% 100%;
+    animation: cd-gradient-pan 3s ease infinite;
+}
+
+.cd-body {
+    padding: 32px 32px 0;
+}
+
+.cd-icon-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.cd-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: linear-gradient(135deg, rgba(201, 162, 41, 0.2), rgba(212, 168, 90, 0.1));
+    box-shadow:
+        0 8px 16px rgba(0,0,0,0.2),
+        inset 0 2px 4px rgba(255,255,255,0.1);
+    border: 1px solid rgba(201, 162, 41, 0.2);
+    animation: cd-float 3s ease-in-out infinite;
+}
+
+@keyframes cd-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+/* Gradient Sheen Text */
+.cd-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #ffffff 0%, #f3d779 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.5s var(--cd-spring) 0.2s;
+}
+
+.cd-card.cd-visible .cd-title {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.cd-message {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--cd-text-muted);
+    margin: 0;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s var(--cd-spring) 0.3s;
+}
+
+.cd-card.cd-visible .cd-message {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.cd-detail {
+    margin: 16px 0 0;
+    font-size: 0.8rem;
+    font-family: ui-monospace, monospace;
+    color: var(--cd-accent-light);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s var(--cd-spring) 0.4s;
+}
+
+.cd-card.cd-visible .cd-detail {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ─── Progress Bar (Glowing Track) ──────────────────── */
+.cd-progress-wrap {
+    padding: 24px 32px 0;
+}
+
+.cd-progress-track {
+    height: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 99px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+.cd-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cd-accent), var(--cd-accent-glow), #fbe3a1);
+    background-size: 200% 100%;
+    border-radius: 99px;
+    width: 100%;
+    box-shadow: 0 0 10px var(--cd-accent);
+    animation: cd-gradient-pan 2s linear infinite;
+    transition: width 0.1s linear; 
+}
+
+@keyframes cd-gradient-pan {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+
+/* ─── Magnetic Buttons ──────────────────────────────── */
+.cd-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 24px 32px 32px;
+}
+
+.cd-btn {
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+}
+
+.cd-btn-cancel {
+    background: transparent;
+    color: var(--cd-text-muted);
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.cd-btn-cancel:hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--cd-text-main);
+    border-color: rgba(201, 162, 41, 0.4);
+}
+
+.cd-btn-confirm {
+    background: linear-gradient(135deg, var(--cd-accent), var(--cd-accent-glow));
+    color: #07182e;
+    font-weight: 700;
+    border: none;
+    box-shadow:
+        0 4px 12px rgba(201, 162, 41, 0.35),
+        inset 0 1px 1px rgba(255,255,255,0.3);
+}
+
+.cd-btn-confirm::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--cd-accent-glow), #fbe3a1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.cd-btn-confirm span {
+    position: relative;
+    z-index: 1;
+}
+
+.cd-btn-confirm:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow:
+        0 10px 20px rgba(201, 162, 41, 0.5),
+        inset 0 1px 1px rgba(255,255,255,0.4);
+}
+
+.cd-btn-confirm:hover::before {
+    opacity: 1;
+}
+
+.cd-btn:active {
+    transform: scale(0.96) !important;
+}
+
+/* ─── Reduced Motion ───────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .cd-card {
+        transform: none !important;
+        opacity: 1 !important;
+        transition: opacity 0.1s ease !important;
+    }
+
+    .cd-title,
+    .cd-message,
+    .cd-detail {
+        transform: none !important;
+        opacity: 1 !important;
+        transition: none !important;
+    }
+
+    .cd-ambient-light,
+    .cd-card-glow,
+    .cd-strips,
+    .cd-icon,
+    .cd-progress-bar {
+        animation: none !important;
+    }
+
+    .cd-btn-confirm:hover {
+        transform: none !important;
+    }
+}

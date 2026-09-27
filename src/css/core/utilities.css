@@ -1,0 +1,14 @@
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.d-none {
+  display: none !important;
+}
+
+.stat-icon i,
+.pillar__icon i,
+.fab-icon i,
+.footer-social i {
+  font-size: inherit;
+  vertical-align: middle;
+}

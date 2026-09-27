@@ -1,0 +1,195 @@
+/* ==========================================================================
+   WINDOW CONTROLS OVERLAY – CUSTOM TITLEBAR
+   ========================================================================== */
+
+/* Hide the WCO titlebar by default */
+.wco-titlebar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: env(titlebar-area-height, 40px);
+  background: var(--deep-blue, #07182E);
+  color: #fff;
+  z-index: var(--z-header, 1000);
+  -webkit-app-region: drag;            /* Make titlebar draggable */
+  user-select: none;
+  padding: 0 16px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(201, 162, 41, 0.4);
+  box-sizing: border-box;
+}
+
+/* Show titlebar when WCO is active */
+body.wco-active .wco-titlebar {
+  display: flex;
+}
+
+/* Logo area (draggable by default, inherited) */
+.wco-titlebar__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--gold-light, #F3D779);
+}
+
+/* Interactive elements – explicitly NOT draggable */
+.wco-titlebar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  -webkit-app-region: no-drag;        /* Allow click events */
+  app-region: no-drag;
+}
+
+.wco-titlebar__btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 32px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  -webkit-app-region: no-drag;        /* Double ensure clickability */
+  app-region: no-drag;
+}
+
+.wco-titlebar__btn:hover {
+  background: rgba(201, 162, 41, 0.2);
+  border-color: var(--gold);
+}
+
+/* ─── Adjust body padding when WCO is active ─── */
+body.wco-active {
+  /* Top padding = titlebar height so content isn't obscured */
+  padding-top: env(titlebar-area-height, 40px);
+}
+
+/* Move the main sticky header below the titlebar */
+body.wco-active #mainHeader {
+  top: env(titlebar-area-height, 40px) !important;
+}
+
+/* Adjust fixed floating PDF button so it doesn’t overlap OS controls */
+body.wco-active .download-action-container {
+  bottom: calc(35px + env(titlebar-area-height, 0px));
+}
+
+/* ─── Ensure existing interactive elements inside #mainHeader are NOT draggable ─── */
+#menuToggle,
+#darkModeToggle,
+.nav-link,
+.nav-cta {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+/* Make the entire #mainHeader draggable when WCO is active (optional) */
+body.wco-active #mainHeader {
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+/* But the nav buttons inside must remain clickable */
+body.wco-active #mainHeader button,
+body.wco-active #mainHeader a {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+/* ============================================
+   WINDOW CONTROLS OVERLAY (PWA)
+   ============================================ */
+@media (display-mode: window-controls-overlay) {
+  body {
+    padding-top: env(titlebar-area-height, 40px);
+  }
+
+  .wco-titlebar {
+    position: fixed;
+    top: 0;
+    left: env(titlebar-area-x, 0);
+    width: env(titlebar-area-width, 100%);
+    height: env(titlebar-area-height, 40px);
+    background: var(--deep-blue, #07182E);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 env(titlebar-area-x, 16px);
+    z-index: var(--z-wco, 10000);
+    -webkit-app-region: drag;
+    user-select: none;
+    border-bottom: 1px solid rgba(201, 162, 41, 0.3);
+  }
+
+  .wco-titlebar__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Cormorant Garamond', 'Georgia', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gold-light, #F3D779);
+    letter-spacing: 0.5px;
+  }
+
+  .wco-titlebar__logo svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .wco-titlebar__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    -webkit-app-region: no-drag;
+  }
+
+  .wco-titlebar__btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--bg-white, #ffffff);
+    width: 32px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 0.8rem;
+  }
+
+  .wco-titlebar__btn:hover {
+    background: rgba(201, 162, 41, 0.15);
+    border-color: var(--gold, #C9A229);
+  }
+
+  .wco-titlebar__btn--close:hover {
+    background: rgba(199, 54, 54, 0.3);
+    border-color: #C73636;
+    color: #ff7b7b;
+  }
+
+  #mainHeader {
+    top: env(titlebar-area-height, 40px);
+  }
+
+  .download-action-container {
+    bottom: calc(35px + env(titlebar-area-height, 0px));
+  }
+}
+
+@media (display-mode: standalone) {
+  body {
+    padding-top: 0;
+  }
+}

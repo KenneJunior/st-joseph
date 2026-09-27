@@ -1,0 +1,42 @@
+.section-label {
+  position: relative;
+  display: block;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+  z-index: 1;
+}
+
+.section-title {
+  position: relative;
+  text-align: center;
+  margin-bottom: 16px;
+  color: var(--primary);
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+  text-wrap: balance;
+  z-index: 1;
+}
+
+body.dark-mode .section-title {
+  color: var(--text-light);
+}
+
+.section-subtitle {
+  position: relative;
+  text-align: center;
+  color: var(--text-muted);
+  max-width: 620px;
+  margin: 0 auto 48px auto;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  text-wrap: balance;
+  z-index: 1;
+}

@@ -13,7 +13,8 @@
    2. LAYOUT (Background-Aware)
    ========================================= */
 .hero-section {
-    height: 600vh;
+    min-height: 600vh;
+    height: auto;
     background: #05070a; /* Fallback color */
     display: block;
     overflow: visible;
@@ -47,15 +48,35 @@
     max-width: 900px;
 }
 
+@keyframes heroFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .school-name {
     font-family: var(--font-heading), serif;
-    font-size: clamp(4rem, 5vw, 5rem);
+    font-size: clamp(3.2rem, 5vw, 4.6rem);
     font-weight: 700;
     color: #ffffff;
     text-shadow: 0 10px 30px rgba(0,0,0,0.5);
     line-height: 1.2;
     margin-top: 0;
     margin-bottom: 1rem;
+    animation: heroFadeInUp 0.8s var(--ease-cinematic) 0.15s both;
+}
+
+.hero-badge {
+    animation: heroFadeInUp 0.8s var(--ease-cinematic) 0.3s both;
+}
+
+.hero-buttons {
+    animation: heroFadeInUp 0.8s var(--ease-cinematic) 0.45s both;
 }
 
 .gold-shimmer {
@@ -160,7 +181,7 @@
 
 /* Highlight Styling */
 .message-highlight .word {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: var(--font-body, 'Inter', sans-serif);
     font-weight: 800;
     background: linear-gradient(135deg, #fef4d8 0%, #d4a853 100%);
     -webkit-background-clip: text;
@@ -249,4 +270,37 @@
 
 .progress-dot.passed {
     background: var(--gold-mid);
+}
+
+/* =========================================
+   6. REDUCED MOTION OVERRIDES
+   ========================================= */
+@media (prefers-reduced-motion: reduce) {
+    .scroll-message-wrapper {
+        transform: none !important;
+        will-change: auto !important;
+    }
+
+    .word {
+        transform: none !important;
+        transition: opacity 0.15s ease !important;
+        transition-delay: 0s !important;
+    }
+
+    .gold-shimmer {
+        animation: none !important;
+    }
+
+    .progress-fill,
+    .progress-dot {
+        transition: none !important;
+    }
+
+    .school-name,
+    .hero-badge,
+    .hero-buttons {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
 }

@@ -1,14 +1,16 @@
-/* ==========================================================================
-   SJCCC – SERVICE WORKER REGISTRATION (TypeScript)
-   ========================================================================== */
+/**
+ * ============================================================================
+ * SJCCC – Service Worker Service
+ * Handles registration, update banner notifications, controller reload logic,
+ * and visibility-change update checks
+ * ============================================================================
+ */
 
-// Type declarations for the update banner elements
 interface UpdateBannerElements {
     updateBtn: HTMLButtonElement | null;
     dismissBtn: HTMLButtonElement | null;
 }
 
-// ─── Config ───
 const SW_SCRIPT_PATH = '/sw.js';
 const BANNER_ID = 'sw-update-banner';
 const STYLE_ID = 'sw-update-banner-styles';
@@ -23,7 +25,7 @@ const COLORS = {
 /**
  * Register the service worker and handle lifecycle events.
  */
-const registerServiceWorker = (): void => {
+export const registerServiceWorker = (): void => {
     if (!('serviceWorker' in navigator)) {
         console.warn('Service Worker not supported in this browser');
         return;
@@ -39,10 +41,6 @@ const registerServiceWorker = (): void => {
                 );
                 console.log('Scope:', registration.scope);
 
-                // A worker can already be sitting in `waiting` if it finished
-                // installing in a previous session and the page was never
-                // refreshed. Without this check, that update would never
-                // surface again until a *different* update comes along.
                 if (registration.waiting && navigator.serviceWorker.controller) {
                     showUpdateNotification(registration);
                 }
@@ -71,9 +69,6 @@ const handleServiceWorkerUpdates = (registration: ServiceWorkerRegistration): vo
         }
 
         newWorker.addEventListener('statechange', (): void => {
-            // `controller` only exists once a worker has already taken
-            // control of the page, so this condition is what tells apart
-            // a genuine update from the very first install.
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                 console.log(
                     '%c🔄 New update available!',
@@ -86,9 +81,7 @@ const handleServiceWorkerUpdates = (registration: ServiceWorkerRegistration): vo
 };
 
 /**
- * Reload the page once the new worker actually takes control. Guarded
- * against firing more than once, since `controllerchange` can otherwise
- * trigger multiple reloads.
+ * Reload the page once the new worker actually takes control.
  */
 const handleControllerChange = (): void => {
     let refreshing = false;
@@ -101,9 +94,7 @@ const handleControllerChange = (): void => {
 };
 
 /**
- * Ask the browser to check for a new worker. Browsers already do this on
- * navigation, but tabs left open for a long time won't get that check —
- * re-checking whenever the tab regains focus closes that gap.
+ * Ask the browser to check for a new worker when tab regains visibility.
  */
 const startPeriodicUpdateChecks = (registration: ServiceWorkerRegistration): void => {
     document.addEventListener('visibilitychange', (): void => {
@@ -116,9 +107,7 @@ const startPeriodicUpdateChecks = (registration: ServiceWorkerRegistration): voi
 };
 
 /**
- * Create and display an update notification banner. No-ops if a banner is
- * already showing, so rapid update/visibility events can't stack duplicate
- * banners on top of each other.
+ * Create and display an update notification banner.
  */
 const showUpdateNotification = (registration: ServiceWorkerRegistration): void => {
     if (document.getElementById(BANNER_ID)) {
@@ -140,9 +129,6 @@ const showUpdateNotification = (registration: ServiceWorkerRegistration): void =
     }, AUTO_DISMISS_MS);
 };
 
-/**
- * Create the update notification banner DOM element.
- */
 const createUpdateBanner = (): HTMLDivElement => {
     const banner = document.createElement('div');
     banner.id = BANNER_ID;
@@ -158,19 +144,12 @@ const createUpdateBanner = (): HTMLDivElement => {
     return banner;
 };
 
-/**
- * Attach click handlers to the banner buttons.
- */
 const attachBannerEventListeners = (
     elements: UpdateBannerElements,
     banner: HTMLDivElement,
     registration: ServiceWorkerRegistration
 ): void => {
     elements.updateBtn?.addEventListener('click', (): void => {
-        // Tell the *waiting* worker to activate — not the current
-        // controller, which is the outgoing worker. The reload itself
-        // happens in the `controllerchange` handler once the new worker
-        // is actually in control, so we don't race ahead of it here.
         registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
         banner.remove();
     });
@@ -180,12 +159,7 @@ const attachBannerEventListeners = (
     });
 };
 
-/**
- * Inject the banner's styles once per page load. Hover/focus states live in
- * CSS now rather than JS, so keyboard users get the same affordance mouse
- * users do.
- */
-const injectBannerStyles = (): void => {
+export const injectBannerStyles = (): void => {
     if (document.getElementById(STYLE_ID)) {
         return;
     }
@@ -268,6 +242,7 @@ const injectBannerStyles = (): void => {
     document.head.appendChild(styleSheet);
 };
 
-// ─── Initialize ───
-injectBannerStyles();
-registerServiceWorker();
+export const initServiceWorker = (): void => {
+    injectBannerStyles();
+    registerServiceWorker();
+};

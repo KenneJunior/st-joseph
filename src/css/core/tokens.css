@@ -1,0 +1,138 @@
+:root {
+  /* ============================================================
+     SJCCC BRAND DESIGN SYSTEM TOKENS
+     ============================================================ */
+  --sj-navy-950: #020c1a;
+  --sj-navy-900: #07182e;
+  --sj-navy-800: #0a1f3f;
+  --sj-navy-700: #0f2d5c;
+  --sj-navy-600: #1a3f6e;
+
+  --sj-gold-600: #8c6a21;
+  --sj-gold-500: #c9a229;
+  --sj-gold-400: #d4a85a;
+  --sj-gold-300: #f3d779;
+  --sj-gold-200: #fbe3a1;
+
+  /* Semantic Colors */
+  --color-brand-primary: var(--sj-navy-800);
+  --color-brand-deep: var(--sj-navy-900);
+  --color-brand-accent: var(--sj-gold-500);
+  --color-brand-accent-soft: var(--sj-gold-400);
+  --color-brand-accent-bright: var(--sj-gold-300);
+
+  --color-text-primary: #07182e;
+  --color-text-secondary: #4a4a5e;
+  --color-text-muted: #6b7280;
+  --color-text-on-dark: #ffffff;
+
+  --color-border-subtle: rgba(7, 24, 46, 0.08);
+  --color-border-brand: rgba(201, 162, 41, 0.35);
+
+  /* Spacing Scale (4px base) */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.50rem;  /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1.00rem;  /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.50rem;  /* 24px */
+  --space-8: 2.00rem;  /* 32px */
+  --space-10: 2.50rem; /* 40px */
+  --space-12: 3.00rem; /* 48px */
+  --space-16: 4.00rem; /* 64px */
+  --space-24: 6.00rem; /* 96px */
+
+  /* Typography Scale */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --font-size-3xl: 2.5rem;
+  --font-size-hero: clamp(2.5rem, 5vw, 4.5rem);
+
+  /* Radii Scale */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 9999px;
+  --radius-full: 50%;
+
+  /* Elevation Scale */
+  --shadow-low: 0 2px 8px -1px rgba(7, 24, 46, 0.08);
+  --shadow-mid: 0 8px 24px -4px rgba(7, 24, 46, 0.12);
+  --shadow-high: 0 20px 48px -8px rgba(7, 24, 46, 0.18);
+  --shadow-modal: 0 32px 72px -12px rgba(0, 0, 0, 0.45);
+  --shadow-gold: 0 8px 24px -4px rgba(201, 162, 41, 0.35);
+
+  /* Motion Tokens */
+  --duration-fast: 200ms;
+  --duration-normal: 350ms;
+  --duration-slow: 600ms;
+  --duration-scenic: 1200ms;
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-cinematic: cubic-bezier(0.25, 1, 0.35, 1);
+
+  /* Semantic Stacking Z-Index */
+  --z-base: 0;
+  --z-transition: 0;
+  --z-raised: 10;
+  --z-header: 1000;
+  --z-hud: 2000;
+  --z-drawer: 3000;
+  --z-banner: 4000;
+  --z-modal: 5000;
+  --z-dialog: 6000;
+  --z-preloader: 8000;
+  --z-wco: 10000;
+
+  /* Backward-compatible Core Palette Aliases */
+  --primary: var(--sj-navy-800);
+  --primary-light: var(--sj-navy-700);
+  --primary-dark: var(--sj-navy-950);
+  --accent: var(--sj-gold-500);
+  --accent-light: var(--sj-gold-400);
+  --accent-glow: var(--sj-gold-300);
+  --gold-gradient: linear-gradient(135deg, var(--sj-gold-500) 0%, var(--sj-gold-300) 50%, var(--sj-gold-500) 100%);
+
+  /* Text & surface */
+  --text-dark: #1a1a2e;
+  --text-body: #4a4a5e;
+  --text-light: #ffffff;
+  --text-muted: #7a7a96;
+  --bg-white: #ffffff;
+  --bg-off-white: #f8f9fc;
+  --bg-cream: #faf7f2;
+  --surface-card: #ffffff;
+  --surface-footer: #050e1c;
+
+  /* Glass & shadows */
+  --glass-bg: rgba(255,255,255,0.08);
+  --glass-border: rgba(255,255,255,0.18);
+  --card-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  --card-shadow-hover: 0 16px 48px rgba(0,0,0,0.12);
+  --overlay-dark: rgba(6,20,43,0);
+
+  /* Borders */
+  --border-light: rgba(0,0,0,0.06);
+
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Fonts */
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+
+  /* Progressive Blur Variables */
+  --header-height: 80px;
+  --blur-extension: 120px;
+  --blur-intensity: 10px;
+  --bar-height: 0px;
+}

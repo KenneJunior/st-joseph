@@ -1,8 +1,13 @@
-/* ==========================================================================
-   PwaInstallPrompt — Fixed for User Activation, Event Swallowing, and Async Flow
-   ========================================================================== */
+/**
+ * ============================================================================
+ * SJCCC – PWA Install Prompt Controller
+ * Handles deferred browser install prompts, user interaction detection,
+ * persistence cooldowns in localStorage, and glass confirm dialog integration
+ * ============================================================================
+ */
 
-import { ConfirmDialog, getConfirmDialog, type DialogOptions } from './DialogBox.ts';
+import { ConfirmDialog, getConfirmDialog, type DialogOptions } from '../../ui/dialog/ConfirmDialog.ts';
+import { STORAGE_KEYS } from '../../core/storage/storageKeys.ts';
 
 export interface PwaPromptOptions {
     /** Dialog title */
@@ -44,12 +49,12 @@ export class PwaInstallPrompt {
             type: options.type ?? 'info',
             delay: options.delay ?? 3000,
             afterInteraction: options.afterInteraction ?? true,
-            storageKey: options.storageKey ?? 'pwa-install-prompt',
+            storageKey: options.storageKey ?? STORAGE_KEYS.PWA_PROMPT,
             dismissDays: options.dismissDays ?? 7,
             dialogOptions: options.dialogOptions ?? {},
         };
 
-        this.#confirmDialog = getConfirmDialog(); 
+        this.#confirmDialog = getConfirmDialog();
         this.init();
     }
 
@@ -66,7 +71,7 @@ export class PwaInstallPrompt {
 
         // Capture the beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', async (e: Event) => {
-            e.preventDefault(); 
+            e.preventDefault();
             this.#deferredPrompt = e;
             await this.#schedulePrompt();
         });
@@ -80,7 +85,7 @@ export class PwaInstallPrompt {
         if (this.#options.afterInteraction) {
             this.#listenForInteraction();
         } else {
-            this.#interactionDetected = true; 
+            this.#interactionDetected = true;
         }
 
         await this.HandleManualTrigger();
@@ -104,8 +109,6 @@ export class PwaInstallPrompt {
         }
         await this.#showInstallDialog();
     }
-
-    // ── Private ──────────────────────────────────────────────────────────────
 
     async #schedulePrompt(): Promise<void> {
         if (this.#dialogShown || !this.#deferredPrompt) return;
@@ -133,9 +136,9 @@ export class PwaInstallPrompt {
             cancelText: this.#options.cancelText,
             showCancel: true,
             type: this.#options.type,
-            persist: false, 
-            
-            // 1. Bypass DialogBox.ts 'click' prevention by using 'pointerdown' directly
+            persist: false,
+
+            // Bypass click prevention by using pointerdown directly
             onOpen: () => {
                 const confirmBtn = document.querySelector<HTMLButtonElement>('.cd-btn-confirm');
                 if (!confirmBtn) return;
@@ -143,7 +146,7 @@ export class PwaInstallPrompt {
                 confirmBtn.addEventListener('pointerdown', () => {
                     if (this.#deferredPrompt) {
                         try {
-                            this.#deferredPrompt.prompt(); // Synchronous browser trigger
+                            this.#deferredPrompt.prompt();
                         } catch (err) {
                             console.error('Failed to trigger native PWA prompt:', err);
                         }
@@ -151,38 +154,36 @@ export class PwaInstallPrompt {
                 }, { capture: true, once: true });
             },
 
-            // 2. Synchronous true return prevents the custom modal from freezing
+            // Synchronous true return prevents custom modal from freezing
             beforeClose: (isConfirm) => {
                 if (isConfirm) {
-                    this.#handleInstallResult(); // Fire and forget (do not await)
+                    this.#handleInstallResult();
                 } else {
                     this.#recordDismissal();
                 }
-                return true; // Force dialog to close immediately
+                return true;
             },
             ...this.#options.dialogOptions,
         });
 
-        this.#dialogShown = false; 
+        this.#dialogShown = false;
     }
 
-    // 3. Handle the async browser response in the background safely
     async #handleInstallResult(): Promise<void> {
         const promptEvent = this.#deferredPrompt;
-        this.#deferredPrompt = null; // Instantly invalidate
+        this.#deferredPrompt = null;
 
         if (!promptEvent) return;
 
         try {
-            // Wait for user choice, or timeout after 10s if the browser hangs
             const choice = await Promise.race([
                 promptEvent.userChoice,
-                new Promise<{ outcome: string }>((res) => setTimeout(() => res({ outcome: 'dismissed' }), 10000))
+                new Promise<{ outcome: string }>((res) => setTimeout(() => res({ outcome: 'dismissed' }), 10000)),
             ]);
 
             if (choice?.outcome === 'accepted') {
                 console.log('User accepted the install prompt');
-                this.#clearDismissal(); 
+                this.#clearDismissal();
             } else {
                 console.log('User dismissed the native install prompt');
                 this.#recordDismissal();
@@ -192,8 +193,6 @@ export class PwaInstallPrompt {
             this.#recordDismissal();
         }
     }
-
-    // ── LocalStorage helpers ────────────────────────────────────────────────
 
     #isDismissedRecently(): boolean {
         try {
@@ -227,8 +226,6 @@ export class PwaInstallPrompt {
             console.warn('Unable to clear localStorage', e);
         }
     }
-
-    // ── Interaction detection ────────────────────────────────────────────────
 
     #listenForInteraction(): void {
         const mark = async () => {

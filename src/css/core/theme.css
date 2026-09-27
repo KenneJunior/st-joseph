@@ -1,0 +1,32 @@
+/* ============================================
+   DARK THEME OVERRIDES
+   ============================================ */
+body.dark-mode {
+  --primary: #0d2b52;
+  --primary-light: #1a3f6e;
+  --primary-dark: #020c1a;
+  --accent: #d4a85a;
+  --accent-glow: #f0d28b;
+  --gold-gradient: linear-gradient(135deg, #d4a85a 0%, #f0d28b 50%, #d4a85a 100%);
+  --color-brand-primary: #0d2b52;
+  --color-brand-accent: #d4a85a;
+  --color-brand-accent-soft: #f0d28b;
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-border-brand: rgba(212, 168, 90, 0.40);
+  --text-dark: #e0e0f0;
+  --text-body: #c0c0d4;
+  --text-light: #ffffff;
+  --text-muted: #9090aa;
+  --bg-white: #121a2a;
+  --bg-off-white: #182236;
+  --bg-cream: #1a2538;
+  --surface-card: #1a2538;
+  --surface-footer: #020914;
+  --glass-bg: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.10);
+  --card-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --card-shadow-hover: 0 16px 48px rgba(0,0,0,0.45);
+  --overlay-dark: rgba(2,12,26,0.2);
+  --border-light: rgba(255,255,255,0.08);
+  --bar-height: 0px;
+}

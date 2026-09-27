@@ -3,18 +3,20 @@ import { resolve } from 'path';
 
 export default defineConfig({
     root: './',
-    server:{
-      allowedHosts: ['sjccc.loca.lt']
+    server: {
+        host: '0.0.0.0',
+        port: 3000,
+        allowedHosts: true
     },
     build: {
         outDir: 'dist',
         emptyOutDir: true,
         target: 'esnext',
         cssMinify: false,
-        rolldownOptions: {
+        rollupOptions: {
             input: {
-                main: resolve(__dirname, 'index.html'),
-                prospectus: resolve(__dirname, 'prospectus.html')
+                main: resolve(import.meta.dirname, 'index.html'),
+                prospectus: resolve(import.meta.dirname, 'prospectus.html')
             }
         }
     },

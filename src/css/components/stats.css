@@ -1,0 +1,117 @@
+/* ============================================
+   STATS SECTION
+   ============================================ */
+.stats-section {
+  position: relative;
+  background: url('/assets/Students.jpeg')  fixed center center;
+  z-index: 1;
+}
+
+.stats-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 31, 63, 0.4);
+  z-index: 0;
+}
+
+body.dark-mode .stats-section::before {
+  background: rgba(2,12,26,0.9);
+}
+
+.stats-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 32px 20px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--card-shadow);
+  transition: transform var(--duration-fast, 200ms) var(--ease-standard),
+              box-shadow var(--duration-fast, 200ms) var(--ease-standard),
+              border-color var(--duration-fast, 200ms) var(--ease-standard);
+  position: relative;
+  overflow: hidden;
+}
+
+body.dark-mode .stat-card {
+  background: rgba(26,37,56,0.9);
+  color: var(--text-light);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: var(--gold-gradient);
+  border-radius: 0 0 3px 3px;
+  transition: width var(--duration-normal, 350ms) var(--ease-standard);
+}
+
+.stat-card:hover::before {
+  width: 120px;
+}
+
+.stat-card:hover {
+  border-color: var(--color-border-brand, rgba(201, 162, 41, 0.4));
+  box-shadow: 0 12px 32px -4px rgba(7, 24, 46, 0.12), 0 0 16px rgba(201, 162, 41, 0.15);
+  transform: translateY(-2px);
+}
+
+body.dark-mode .stat-card:hover {
+  border-color: rgba(212, 168, 90, 0.5);
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.45), 0 0 20px rgba(201, 162, 41, 0.25);
+}
+
+.stat-number {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 8px;
+}
+
+body.dark-mode .stat-number {
+  color: var(--accent-glow);
+}
+
+.stat-label {
+  font-size: 1.4rem;
+  color: var(--text-dark);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.stat-icon {
+  color: var(--accent);
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  opacity: 0.85;
+}
+
+.stat-context {
+  font-size: 1.25rem;
+  color: var(--text-dark);
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+}

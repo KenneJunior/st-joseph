@@ -1,0 +1,71 @@
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  border: none;
+  transition: transform var(--duration-fast, 200ms) var(--ease-standard),
+              box-shadow var(--duration-fast, 200ms) var(--ease-standard),
+              background var(--duration-fast, 200ms) var(--ease-standard),
+              border-color var(--duration-fast, 200ms) var(--ease-standard);
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-body);
+}
+
+.btn i {
+  display: inline-block;
+  font-size: 1.05rem;
+  transition: transform var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.btn:hover i {
+  transform: translateX(3px);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-primary {
+  background: var(--gold-gradient);
+  color: var(--primary-dark);
+  font-weight: 700;
+  box-shadow: 0 8px 28px rgba(200,150,62,0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(200,150,62,0.55);
+}
+
+.btn-outline {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: var(--accent);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 16px rgba(201, 162, 41, 0.2);
+}
+
+#getInTouchBtn{
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}

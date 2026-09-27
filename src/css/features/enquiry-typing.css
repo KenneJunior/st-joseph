@@ -1,0 +1,208 @@
+/* ============================================
+   SMOOTH CARET INPUT ANIMATION
+   ============================================ */
+
+/* Apply to all input and textarea fields */
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: var(--bg-white);
+  color: var(--text-dark);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  /* Smooth caret */
+  caret-color: var(--accent);
+  caret-shape: bar;
+
+  /* Letter spacing for typewriter feel */
+  letter-spacing: 0.5px;
+
+  /* Smooth text appearance */
+  position: relative;
+}
+
+/* Focus state */
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(200, 150, 62, 0.15);
+}
+
+/* ============================================
+   TYPEWRITER CHARACTER REVEAL EFFECT
+   ============================================ */
+
+.typewriter-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-white);
+  transform-origin: center center; /* Ensures the scale happens from the middle */
+}
+/* Container for the typewriter effect */
+.typewriter-input-wrapper {
+  position: relative;
+  display: block;
+}
+
+/* The actual input stays transparent, we show a visual layer on top */
+.typewriter-input-wrapper input.typewriter,
+.typewriter-input-wrapper textarea.typewriter {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+
+  /* Each character animates in */
+  animation: none;
+}
+
+/* Character reveal animation - applied via JS */
+.typewriter-char {
+  display: inline;
+  animation: charReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
+}
+
+.typewriter-char.deleting {
+  animation: charDelete 0.5s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+
+
+
+
+/* ============================================
+   SMOOTH CARET BLINK (Pure CSS)
+   ============================================ */
+
+/* Custom caret animation */
+
+
+/* Fancy caret effect using box-shadow */
+.form-group input:focus,
+.form-group textarea:focus {
+  animation: inputGlow 2s ease-in-out infinite;
+}
+
+
+/* ============================================
+   PLACEHOLDER ANIMATION
+   ============================================ */
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  transform: translateX(0);
+}
+
+.form-group input:focus::placeholder,
+.form-group textarea:focus::placeholder {
+  opacity: 0.3;
+  transform: translateX(8px);
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left top;
+}
+
+/* When input has value, scale label up slightly */
+.form-group input:not(:placeholder-shown) + label,
+.form-group textarea:not(:placeholder-shown) + label,
+.form-group input:focus + label,
+.form-group textarea:focus + label {
+  transform: translateY(-2px) scale(1.02);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ============================================
+   TYPING INDICATOR BELOW INPUT
+   ============================================ */
+
+.typing-indicator {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.typing-indicator.active {
+  opacity: 1;
+  animation: typingPulse 1s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.typing-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: typingDotBounce 0.6s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.1s; }
+.typing-dot:nth-child(3) { animation-delay: 0.2s; }
+
+
+
+/* ============================================
+   CHARACTER COUNT WITH SMOOTH TRANSITION
+   ============================================ */
+
+.char-count {
+  position: absolute;
+  bottom: -20px;
+  right: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: color 0.3s ease;
+}
+
+.form-group textarea:focus ~ .char-count {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.char-count.near-limit {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.char-count.at-limit {
+  color: #e94560;
+  font-weight: 800;
+  animation: limitShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus::placeholder,
+.form-group textarea:focus::placeholder {
+  opacity: 0.25;
+  transform: translateX(6px);
+}
