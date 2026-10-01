@@ -858,6 +858,11 @@ export class VirtualCampusMap {
 
     private populateZoneData(zone: CampusZone): void {
         if (this.detailImage) {
+            this.detailImage.onerror = () => {
+                if (this.detailImage && !this.detailImage.src.endsWith('/assets/Error-Image.jpeg')) {
+                    this.detailImage.src = '/assets/Error-Image.jpeg';
+                }
+            };
             this.detailImage.src = zone.imageSrc;
             this.detailImage.alt = zone.imageAlt;
         }

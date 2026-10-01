@@ -1,24 +1,514 @@
 /* ============================================
-   GOOGLE MAP
+   CAMPUS LOCATION & MAP EMBED (Premium Facade Redesign)
    ============================================ */
-.map-container {
+
+.location-section {
   position: relative;
-  width: 100%;
-  padding-bottom: 56.25%;
-  height: 0;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--card-shadow);
-  margin: 40px 0;
-  z-index: 1;
+  background: var(--surface-ground, #f8f9fa);
+  padding: 80px 20px;
 }
 
-.map-container iframe {
+@media (max-width: 768px) {
+  .location-section {
+    padding: 50px 16px;
+  }
+}
+
+.location-container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.location-header {
+  margin-bottom: 36px;
+}
+
+.location-header .section-subtitle {
+  max-width: 680px;
+  margin: 12px auto 0;
+  color: var(--text-muted, #64748b);
+  font-size: 0.96rem;
+  line-height: 1.6;
+}
+
+/* Master Location Card */
+.location-card {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 32px;
+  background: var(--surface-card, #ffffff);
+  border-radius: var(--radius-lg, 16px);
+  border: 1px solid var(--border-light, rgba(0, 0, 0, 0.08));
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.07);
+  padding: 24px;
+  align-items: stretch;
+  transition: border-color var(--duration-fast, 200ms) ease;
+}
+
+@media (max-width: 1024px) {
+  .location-card {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .location-card {
+    padding: 14px;
+    border-radius: var(--radius-md, 12px);
+  }
+}
+
+/* Left / Visual Map Facade Wrapper */
+.location-map-wrapper {
+  position: relative;
+  border-radius: var(--radius-md, 12px);
+  overflow: hidden;
+  min-height: 380px;
+  background: #07182E;
+  border: 1px solid rgba(201, 162, 41, 0.25);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.35);
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  .location-map-wrapper {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .location-map-wrapper {
+    min-height: 280px;
+  }
+}
+
+/* Topographic & Road Art Facade */
+.location-facade {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.location-facade__art {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.location-topo-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.location-facade__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .location-facade__overlay {
+    padding: 14px;
+  }
+}
+
+/* Pulsing Campus Pin Marker */
+.location-pin-wrap {
+  position: relative;
+  align-self: center;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.location-pin-pulse {
+  position: absolute;
+  top: 12px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(201, 162, 41, 0.4);
+  transform: translateY(-50%);
+  animation: pinPulse 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: none;
+}
+
+@keyframes pinPulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.location-pin-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold, #C9A229) 0%, #e0b83b 100%);
+  color: #07182E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 16px rgba(243, 215, 121, 0.45);
+  position: relative;
+  z-index: 2;
+}
+
+.location-pin-card {
+  margin-top: 8px;
+  background: rgba(7, 24, 46, 0.92);
+  border: 1px solid rgba(201, 162, 41, 0.45);
+  border-radius: 8px;
+  padding: 4px 12px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  z-index: 2;
+}
+
+.location-pin-name {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+}
+
+.location-pin-coord {
+  display: block;
+  font-size: 0.70rem;
+  color: var(--gold-light, #F3D779);
+  font-family: monospace;
+}
+
+/* Distance Pill Badge */
+.location-facade__badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(4, 16, 33, 0.88);
+  border: 1px solid rgba(201, 162, 41, 0.3);
+  color: #f1f5f9;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 50px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.location-facade__badge i {
+  color: var(--gold-light, #F3D779);
+}
+
+@media (max-width: 480px) {
+  .location-facade__badge {
+    top: 10px;
+    left: 10px;
+    font-size: 0.68rem;
+    padding: 3px 8px;
+  }
+}
+
+/* Activation Trigger Container */
+.location-facade__cta-overlay {
+  align-self: center;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  z-index: 2;
+}
+
+.location-activate-btn {
+  background: linear-gradient(135deg, var(--gold, #C9A229) 0%, #d4a92c 100%);
+  color: #07182E;
+  border: none;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 10px 20px;
+  border-radius: 50px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  transition: all var(--duration-fast, 200ms) ease;
+}
+
+.location-activate-btn:hover {
+  background: linear-gradient(135deg, #dfb436 0%, #e2b93d 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(201, 162, 41, 0.4);
+}
+
+.location-facade__hint {
+  font-size: 0.70rem;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.2px;
+}
+
+/* Dynamic Live Iframe Container */
+.location-iframe-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  background: #07182E;
+}
+
+.location-iframe-container iframe {
   width: 100%;
   height: 100%;
   border: 0;
-  border-radius: inherit;
+  display: block;
+}
+
+.location-iframe-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 10;
+  background: rgba(7, 24, 46, 0.92);
+  color: var(--gold-light, #F3D779);
+  border: 1px solid rgba(201, 162, 41, 0.5);
+  border-radius: 50px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  min-height: 38px;
+  transition: all var(--duration-fast, 200ms) ease;
+}
+
+.location-iframe-close-btn:hover {
+  background: linear-gradient(135deg, var(--gold, #C9A229) 0%, #e0b83b 100%);
+  color: #07182E;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(201, 162, 41, 0.4);
+}
+
+/* Right / Location Info Panel */
+.location-info-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 4px;
+}
+
+.location-kicker {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--gold, #C9A229);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.location-college-name {
+  font-family: var(--font-heading, 'Cormorant Garamond', Georgia, serif);
+  font-size: 1.42rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--primary, #07182E);
+  margin: 6px 0 4px;
+}
+
+.location-motto-quote {
+  font-family: var(--font-heading, 'Cormorant Garamond', Georgia, serif);
+  font-style: italic;
+  font-size: 0.94rem;
+  color: var(--text-muted, #64748b);
+  margin: 0 0 18px 0;
+}
+
+/* Metadata List */
+.location-meta-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.location-meta-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.location-meta-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(201, 162, 41, 0.12);
+  color: var(--gold, #C9A229);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.location-meta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--text-body, #334155);
+}
+
+.location-meta-text strong {
+  font-size: 0.85rem;
+  color: var(--primary, #07182E);
+}
+
+.location-meta-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted, #64748b);
+}
+
+/* Action Toolbar */
+.location-actions-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light, rgba(0, 0, 0, 0.08));
+}
+
+@media (max-width: 480px) {
+  .location-actions-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.location-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  min-height: 44px;
+  box-sizing: border-box;
+  transition: all var(--duration-fast, 200ms) ease;
+}
+
+.location-action-btn.btn-ghost {
+  background: transparent;
+  color: var(--primary, #07182E);
+  border: 1px solid transparent;
+}
+
+.location-action-btn.btn-ghost:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--gold, #C9A229);
+}
+
+/* Dark Mode Theme Overrides */
+html.dark-mode .location-section,
+body.dark-mode .location-section {
+  background: #040d1a;
+}
+
+html.dark-mode .location-card,
+body.dark-mode .location-card {
+  background: rgba(9, 23, 44, 0.95);
+  border-color: rgba(201, 162, 41, 0.28);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+}
+
+html.dark-mode .location-college-name,
+body.dark-mode .location-college-name {
+  color: #ffffff;
+}
+
+html.dark-mode .location-meta-text strong,
+body.dark-mode .location-meta-text strong {
+  color: #f1f5f9;
+}
+
+html.dark-mode .location-meta-text,
+body.dark-mode .location-meta-text {
+  color: #cbd5e1;
+}
+
+html.dark-mode .location-meta-sub,
+body.dark-mode .location-meta-sub,
+html.dark-mode .location-motto-quote,
+body.dark-mode .location-motto-quote {
+  color: #94a3b8;
+}
+
+html.dark-mode .location-actions-toolbar,
+body.dark-mode .location-actions-toolbar {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+html.dark-mode .location-action-btn.btn-ghost,
+body.dark-mode .location-action-btn.btn-ghost {
+  color: var(--gold-light, #F3D779);
+}
+
+html.dark-mode .location-action-btn.btn-ghost:hover,
+body.dark-mode .location-action-btn.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .location-pin-pulse {
+    animation: none !important;
+    display: none !important;
+  }
 }
