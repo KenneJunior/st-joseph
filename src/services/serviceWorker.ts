@@ -246,3 +246,128 @@ export const initServiceWorker = (): void => {
     injectBannerStyles();
     registerServiceWorker();
 };
+
+export interface CacheAvailabilityReport {
+    isCached: boolean;
+    sections: {
+        academics: boolean;
+        faq: boolean;
+        prospectus: boolean;
+        campusMap: boolean;
+    };
+    details?: {
+        cacheVersion?: string;
+        htmlCached?: boolean;
+        academicsMediaCached?: boolean;
+        prospectusCached?: boolean;
+    };
+}
+
+/**
+ * Checks cache availability for key sections (Academics, FAQ, Prospectus, etc.)
+ * by communicating with the active Service Worker via MessageChannel, with
+ * transparent fallback to direct CacheStorage inspection.
+ */
+export async function checkCacheAvailability(): Promise<CacheAvailabilityReport> {
+    if (typeof window === 'undefined') {
+        return {
+            isCached: false,
+            sections: { academics: false, faq: false, prospectus: false, campusMap: false },
+        };
+    }
+
+    // 1. Try querying the active Service Worker controller
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        try {
+            const report = await new Promise<CacheAvailabilityReport>((resolve) => {
+                const channel = new MessageChannel();
+                const timeoutId = setTimeout(() => {
+                    resolve(fallbackCacheCheck());
+                }, 800);
+
+                channel.port1.onmessage = (event) => {
+                    clearTimeout(timeoutId);
+                    if (event.data && event.data.type === 'CACHE_AVAILABILITY_RESPONSE') {
+                        resolve(event.data.status);
+                    } else {
+                        resolve(fallbackCacheCheck());
+                    }
+                };
+
+                navigator.serviceWorker.controller?.postMessage(
+                    { type: 'CHECK_CACHE_AVAILABILITY' },
+                    [channel.port2]
+                );
+            });
+
+            if (report) return report;
+        } catch {
+            // Fall through to fallback check
+        }
+    }
+
+    return fallbackCacheCheck();
+}
+
+/**
+ * Direct CacheStorage API check when the Service Worker controller is not yet controlling the client
+ */
+export async function fallbackCacheCheck(): Promise<CacheAvailabilityReport> {
+    if (typeof window === 'undefined' || !('caches' in window)) {
+        const isDocPresent = typeof document !== 'undefined' && document.getElementById('academics') !== null;
+        return {
+            isCached: isDocPresent,
+            sections: {
+                academics: isDocPresent,
+                faq: isDocPresent && document.getElementById('faq') !== null,
+                prospectus: false,
+                campusMap: isDocPresent && document.getElementById('campusMapSection') !== null,
+            },
+        };
+    }
+
+    try {
+        const cacheKeys = await window.caches.keys();
+        let htmlCached = false;
+        let prospectusCached = false;
+
+        for (const cacheName of cacheKeys) {
+            const cache = await window.caches.open(cacheName);
+            const rootMatch = (await cache.match('/')) || (await cache.match('/index.html'));
+            if (rootMatch) htmlCached = true;
+
+            const prosMatch = await cache.match('/prospectus.html');
+            if (prosMatch) prospectusCached = true;
+
+            if (htmlCached && prospectusCached) break;
+        }
+
+        const isDocAvailable = htmlCached || (typeof document !== 'undefined' && document.getElementById('academics') !== null);
+
+        return {
+            isCached: isDocAvailable,
+            sections: {
+                academics: isDocAvailable,
+                faq: isDocAvailable && (typeof document !== 'undefined' && (document.getElementById('faq') !== null || htmlCached)),
+                prospectus: prospectusCached,
+                campusMap: isDocAvailable && (typeof document !== 'undefined' && (document.getElementById('campusMapSection') !== null || htmlCached)),
+            },
+            details: {
+                htmlCached,
+                prospectusCached,
+            },
+        };
+    } catch {
+        const isDocPresent = typeof document !== 'undefined' && document.getElementById('academics') !== null;
+        return {
+            isCached: isDocPresent,
+            sections: {
+                academics: isDocPresent,
+                faq: isDocPresent,
+                prospectus: false,
+                campusMap: isDocPresent,
+            },
+        };
+    }
+}
+
