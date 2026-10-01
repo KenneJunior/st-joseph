@@ -6,6 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>SJCCC | Official Prospectus 2026/2027</title>
 
+  <!-- Theme Preference Initialization (Immediately restores saved theme on page reload without flash) -->
+  <script>
+    (function () {
+      try {
+        var storageKey = 'sjccc-theme';
+        var savedTheme = localStorage.getItem(storageKey) || localStorage.getItem('theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+        if (isDark) {
+          document.documentElement.classList.add('dark-mode');
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark-mode');
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- Updated MIME type for SVG vector icons -->
   <link rel="icon" type="image/svg+xml" href="/assets/icons/168X168.svg">
   <meta
@@ -61,6 +80,11 @@
 </head>
 
 <body class="theme-transition">
+  <script>
+    if (document.documentElement.classList.contains('dark-mode')) {
+      document.body.classList.add('dark-mode');
+    }
+  </script>
   <!-- Sticky Navigation Header -->
   <header id="mainHeader" class="glass-header backdrop-blur">
     <div class="header-inner">

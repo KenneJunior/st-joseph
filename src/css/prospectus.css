@@ -62,6 +62,7 @@
 }
 
 /* Dark Theme – Deep, Immersive, & Luxurious */
+html.dark-mode,
 body.dark-mode {
     --bg-main: linear-gradient(165deg, #0a0f16 0%, #111820 100%);
     --bg-container: rgba(13, 17, 23, 0.9);
@@ -1370,9 +1371,6 @@ body, .prospectus-container, .section-card, .motto-bar, .academic-banner,
 
 /* Tablet Portrait (max-width: 768px) */
 @media (max-width: 768px) {
-    body{
-        zoom: 0.5;
-    }
     /* Navigation */
     #mainHeader {
         padding: 0.7rem 1.2rem;
@@ -1383,26 +1381,30 @@ body, .prospectus-container, .section-card, .motto-bar, .academic-banner,
     }
     
     .logo-icon {
-        font-size: 1.8rem;
+        font-size: 1.1rem;
         padding: 0.4rem 0.6rem;
         border-radius: 8px;
     }
     
     .logo-text {
-        font-size: 2rem;
+        font-size: clamp(1.02rem, 0.90rem + 0.45vw, 1.20rem);
     }
     
     .logo-text small {
-        font-size: 1.3rem;
+        font-size: clamp(0.65rem, 0.58rem + 0.22vw, 0.74rem);
     }
     
     .logo-motto {
-        font-size: 1.1rem;
+        font-size: clamp(0.56rem, 0.48rem + 0.22vw, 0.70rem);
     }
     
     .menu-toggle { 
-        display: block; 
-        font-size: 4rem;
+        display: flex; 
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        min-width: 44px;
+        min-height: 44px;
     }
     
     #navMenu {
@@ -1424,42 +1426,42 @@ body, .prospectus-container, .section-card, .motto-bar, .academic-banner,
     }
     
     .nav-link {
-        font-size: 2rem;
+        font-size: 1.05rem;
     }
 
     /* Header */
     .main-header {
-        padding: 2rem 1.5rem;
+        padding: 1.5rem 1.2rem;
     }
     
     .header-cross {
-        font-size: 3.5rem;
+        font-size: 2.2rem;
     }
     
     .header-title {
-        font-size: 2.5rem;
-        letter-spacing: 1px;
+        font-size: 1.6rem;
+        letter-spacing: 0.5px;
     }
     
     .header-subtitle {
-        font-size: 1.5rem;
-        letter-spacing: 1.5px;
+        font-size: 1rem;
+        letter-spacing: 1px;
     }
     
     .header-diocese {
-        font-size: 1.5rem;
+        font-size: 0.95rem;
     }
 
     /* Motto & Banner */
     .motto-bar {
-        font-size: 1.5rem;
-        padding: 0.8rem;
+        font-size: 0.95rem;
+        padding: 0.7rem;
     }
     
     .academic-banner {
-        font-size: 1.5rem;
-        padding: 0.8rem;
-        letter-spacing: 0.8px;
+        font-size: 0.95rem;
+        padding: 0.7rem;
+        letter-spacing: 0.5px;
     }
 
     /* Stats Bar */
@@ -1620,7 +1622,6 @@ body, .prospectus-container, .section-card, .motto-bar, .academic-banner,
 
     body {
         padding: 0;
-        zoom: 0.5;
     }
     
     .prospectus-container {
@@ -1635,55 +1636,59 @@ body, .prospectus-container, .section-card, .motto-bar, .academic-banner,
     }
     
     .logo-icon {
-        font-size: 1.2rem;
+        font-size: 1rem;
         padding: 0.3rem 0.5rem;
         border-radius: 6px;
     }
     
     .logo-text {
-        font-size: 1.5rem;
+        font-size: clamp(0.92rem, 0.82rem + 0.45vw, 1.04rem);
     }
     
     .logo-text small {
-        font-size: 1rem;
+        font-size: clamp(0.60rem, 0.54rem + 0.22vw, 0.68rem);
     }
     
     .logo-motto {
-        display: none;
+        display: block;
+        font-size: clamp(0.50rem, 0.44rem + 0.20vw, 0.60rem);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     /* Header */
     .main-header {
-        padding: 1.5rem 1rem;
+        padding: 1.2rem 0.8rem;
     }
     
     .header-cross {
-        font-size: 2.3rem;
+        font-size: 1.8rem;
         margin-bottom: 0.3rem;
     }
     
     .header-title {
-        font-size: 2rem;
+        font-size: 1.35rem;
         letter-spacing: 0.5px;
     }
     
     .header-subtitle {
-        font-size: 1.2rem;
-        letter-spacing: 1px;
+        font-size: 0.88rem;
+        letter-spacing: 0.8px;
     }
     
     .header-diocese {
-        font-size: 1rem;
+        font-size: 0.82rem;
     }
 
     /* Motto & Banner */
     .motto-bar {
-        font-size: 1rem;
+        font-size: 0.82rem;
         padding: 0.6rem;
     }
     
     .academic-banner {
-        font-size: 1rem;
+        font-size: 0.82rem;
         padding: 0.6rem;
         letter-spacing: 0.5px;
     }
