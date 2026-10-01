@@ -29,6 +29,13 @@ export class ScrollSpy {
                     if (entry.isIntersecting && target._navLink) {
                         this.navLinks.forEach((l) => l.classList.remove('active'));
                         target._navLink.classList.add('active');
+
+                        // Also sync active state with mobile bottom bar
+                        const href = target._navLink.getAttribute('href');
+                        const bottomLinks = document.querySelectorAll<HTMLAnchorElement>('#mobileBottomBar a.mobile-bottom-item');
+                        bottomLinks.forEach((bLink) => {
+                            bLink.classList.toggle('active', bLink.getAttribute('href') === href);
+                        });
                     }
                 });
             },
