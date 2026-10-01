@@ -466,6 +466,70 @@
     text-align: center;
   }
 
+  /* Active state for bottom dock items */
+  .mobile-bottom-item.active,
+  .mobile-bottom-item[aria-current="location"] {
+    color: var(--accent, #c9a229) !important;
+    background: rgba(201, 162, 41, 0.12);
+  }
+
+  .mobile-bottom-item.active i,
+  .mobile-bottom-item[aria-current="location"] i {
+    transform: scale(1.12);
+    color: var(--accent, #c9a229);
+  }
+
+  .mobile-bottom-item.active .mobile-bottom-label,
+  .mobile-bottom-item[aria-current="location"] .mobile-bottom-label {
+    font-weight: 700;
+    color: var(--accent, #c9a229);
+  }
+
+  .mobile-bottom-item.active::after,
+  .mobile-bottom-item[aria-current="location"]::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 3px;
+    background: var(--accent, #c9a229);
+    border-radius: 3px;
+    box-shadow: 0 0 8px rgba(201, 162, 41, 0.6);
+  }
+
+  /* Dark mode active bottom dock items */
+  html.dark-mode .mobile-bottom-item.active,
+  body.dark-mode .mobile-bottom-item.active,
+  html.dark-mode .mobile-bottom-item[aria-current="location"],
+  body.dark-mode .mobile-bottom-item[aria-current="location"] {
+    color: var(--accent-glow, #fbe3a1) !important;
+    background: rgba(201, 162, 41, 0.16);
+  }
+
+  html.dark-mode .mobile-bottom-item.active i,
+  body.dark-mode .mobile-bottom-item.active i,
+  html.dark-mode .mobile-bottom-item[aria-current="location"] i,
+  body.dark-mode .mobile-bottom-item[aria-current="location"] i {
+    color: var(--accent-glow, #fbe3a1);
+  }
+
+  html.dark-mode .mobile-bottom-item.active .mobile-bottom-label,
+  body.dark-mode .mobile-bottom-item.active .mobile-bottom-label,
+  html.dark-mode .mobile-bottom-item[aria-current="location"] .mobile-bottom-label,
+  body.dark-mode .mobile-bottom-item[aria-current="location"] .mobile-bottom-label {
+    color: var(--accent-glow, #fbe3a1);
+  }
+
+  html.dark-mode .mobile-bottom-item.active::after,
+  body.dark-mode .mobile-bottom-item.active::after,
+  html.dark-mode .mobile-bottom-item[aria-current="location"]::after,
+  body.dark-mode .mobile-bottom-item[aria-current="location"]::after {
+    background: var(--accent-glow, #fbe3a1);
+    box-shadow: 0 0 10px rgba(251, 227, 161, 0.8);
+  }
+
   /* Theme Toggle Icon & Name Switching in Dock Bar */
   .mobile-bottom-item--theme .theme-icon-light {
     display: inline-block;
@@ -684,34 +748,34 @@
 
 /* ============================================================
    RESPONSIVE CAPACITY FOR MOBILE BOTTOM BAR ITEMS (320px - 768px)
-   DOM Order: 1.Theme 2.Home 3.Academics 4.Results 5.Map 6.Dates 7.Menu
+   Canonical Order: 1.Theme 2.Home 3.Academics 4.Dates 5.Results 6.Map 7.Menu
    ============================================================ */
 
-/* < 360px: 4 items -> Theme, Home, Results, Menu */
+/* < 360px: 4 items -> Theme, Home, Academics, Menu */
 @media (max-width: 359px) {
-  .mobile-bottom-item--academics,
-  .mobile-bottom-item--map,
-  .mobile-bottom-item--dates {
+  .mobile-bottom-item--dates,
+  .mobile-bottom-item--results,
+  .mobile-bottom-item--map {
     display: none !important;
   }
 }
 
-/* 360px - 413px: 5 items -> Theme, Home, Academics, Results, Menu */
+/* 360px - 413px: 5 items -> Theme, Home, Academics, Dates, Menu */
 @media (min-width: 360px) and (max-width: 413px) {
-  .mobile-bottom-item--map,
-  .mobile-bottom-item--dates {
+  .mobile-bottom-item--results,
+  .mobile-bottom-item--map {
     display: none !important;
   }
 }
 
-/* 414px - 599px: 6 items -> Theme, Home, Academics, Results, Map, Menu */
+/* 414px - 599px: 6 items -> Theme, Home, Academics, Dates, Results, Menu */
 @media (min-width: 414px) and (max-width: 599px) {
-  .mobile-bottom-item--dates {
+  .mobile-bottom-item--map {
     display: none !important;
   }
 }
 
-/* 600px - 768px: 7 items -> Theme, Home, Academics, Results, Map, Dates, Menu */
+/* 600px - 768px: All 7 items -> Theme, Home, Academics, Dates, Results, Map, Menu */
 @media (min-width: 600px) and (max-width: 768px) {
   .mobile-bottom-item {
     display: flex;

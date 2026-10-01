@@ -10,6 +10,8 @@
  * ============================================================================
  */
 
+import { ScrollSpy } from './ScrollSpy.ts';
+
 export interface MobileNavigationOptions {
     menuToggleId?: string;
     bottomMenuToggleId?: string;
@@ -144,20 +146,40 @@ export class MobileNavigation {
         bottomLinks.forEach((link) => {
             link.addEventListener('click', () => {
                 this.closeMenu();
-                bottomLinks.forEach((l) => l.classList.remove('active'));
-                link.classList.add('active');
+                const target = link.getAttribute('data-nav-target') || link.getAttribute('href')?.replace(/^#/, '');
+                if (target) {
+                    if (ScrollSpy.instance) {
+                        ScrollSpy.instance.lockActiveTarget(target);
+                    } else {
+                        bottomLinks.forEach((l) => {
+                            l.classList.remove('active');
+                            l.removeAttribute('aria-current');
+                        });
+                        link.classList.add('active');
+                        link.setAttribute('aria-current', 'location');
+                    }
+                }
             });
         });
     }
 
     public syncActiveBottomTab(targetHref: string | null): void {
         if (!this.bottomBar || !targetHref) return;
+        const cleanTarget = targetHref.replace(/^#/, '');
+        if (ScrollSpy.instance) {
+            ScrollSpy.instance.lockActiveTarget(cleanTarget);
+            return;
+        }
+
         const bottomLinks = this.bottomBar.querySelectorAll<HTMLAnchorElement>('a.mobile-bottom-item');
         bottomLinks.forEach((link) => {
-            if (link.getAttribute('href') === targetHref) {
+            const isMatch = link.getAttribute('href') === targetHref || link.getAttribute('data-nav-target') === cleanTarget;
+            if (isMatch) {
                 link.classList.add('active');
+                link.setAttribute('aria-current', 'location');
             } else {
                 link.classList.remove('active');
+                link.removeAttribute('aria-current');
             }
         });
     }

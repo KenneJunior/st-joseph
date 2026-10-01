@@ -5,6 +5,8 @@
  * ============================================================================
  */
 
+import { ScrollSpy } from '../navigation/ScrollSpy.ts';
+
 export class SmoothScroll {
     private header: HTMLElement | null = null;
 
@@ -29,6 +31,10 @@ export class SmoothScroll {
         e.preventDefault();
         const headerHeight = this.header ? this.header.offsetHeight + 16 : 80;
         const top = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+
+        // Prevent highlight jitter while scrolling smoothly to target
+        ScrollSpy.instance?.lockActiveTarget(targetId.replace(/^#/, ''));
+
         window.scrollTo({ top, behavior: 'smooth' });
     }
 }
