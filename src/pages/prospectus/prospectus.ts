@@ -10,6 +10,8 @@ import { PROSPECTUS_SELECTORS } from '../../core/config/selectors.ts';
 import { ThemeManager } from '../../core/theme/ThemeManager.ts';
 import { MobileNavigation } from '../../ui/navigation/MobileNavigation.ts';
 import { OfflineIndicator } from '../../features/offline/OfflineIndicator.ts';
+import { LiquidGlassAdapter } from '../../ui/effects/LiquidGlassAdapter.ts';
+import { CardSplitter } from '../../ui/utils/CardSplitter.ts';
 import { COLLEGE_PROFILE } from '../../data/collegeProfile.ts';
 import { TUITION_FEES } from '../../data/tuitionFees.ts';
 import { TECHNICAL_DEPARTMENTS } from '../../data/academicPrograms.ts';
@@ -83,7 +85,14 @@ export class ProspectusApp {
         // 4. Offline connectivity status indicator with Service Worker cache validation
         new OfflineIndicator();
 
-        // 5. Development logger
+        // 5. External LiquidGlass integration (Targeted focal surfaces: Floating PDF button & Motto Bar)
+        const liquidGlass = new LiquidGlassAdapter();
+        liquidGlass.initProspectusSurfaces();
+
+        // 6. Interactive card splitters & visual feedback boundaries
+        new CardSplitter();
+
+        // 7. Development logger
         new InitLogger();
     }
 }

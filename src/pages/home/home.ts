@@ -33,6 +33,8 @@ import { EnquiryForm } from '../../features/enquiry/EnquiryForm.ts';
 import { SmoothTypingEffect } from '../../features/enquiry/SmoothTypingEffect.ts';
 import { PwaInstallPrompt } from '../../features/pwa/PwaInstallPrompt.ts';
 import { OfflineIndicator } from '../../features/offline/OfflineIndicator.ts';
+import { LiquidGlassAdapter } from '../../ui/effects/LiquidGlassAdapter.ts';
+import { CardSplitter } from '../../ui/utils/CardSplitter.ts';
 
 export class HomeApp {
     constructor() {
@@ -140,7 +142,10 @@ export class HomeApp {
             rootMargin: '0px 0px -40px 0px',
         });
 
-        // 9. Smooth scroll
+        // 9. Scroll spy & Active Section Tracker (Synchronizes Desktop Nav & Mobile Bottom Dock)
+        new ScrollSpy(HOME_SELECTORS.navLinks);
+
+        // 10. Smooth scroll
         new SmoothScroll(HOME_SELECTORS.mainHeader, HOME_SELECTORS.smoothScrollLinks);
 
         // 10. Hero particles
@@ -159,10 +164,7 @@ export class HomeApp {
         // 14. Campus Location & Google Map Interactive Facade
         new LocationMapFacade();
 
-        // 15. Scroll spy
-        new ScrollSpy(HOME_SELECTORS.navLinks);
-
-        // 16. FAQ Accordion & Filtering
+        // 15. FAQ Accordion & Filtering
         renderFaqItems(document.getElementById('faqAccordion'));
         new FaqSection();
 
@@ -234,6 +236,13 @@ export class HomeApp {
 
         // 19. Offline connectivity status indicator with Service Worker cache validation
         new OfflineIndicator();
+
+        // 20. External LiquidGlass integration (Targeted focal surfaces: FAB, Back to Top, Hero CTA)
+        const liquidGlass = new LiquidGlassAdapter();
+        liquidGlass.initHomepageSurfaces();
+
+        // 21. Interactive card splitters & visual feedback boundaries
+        new CardSplitter();
     }
 
     /**
