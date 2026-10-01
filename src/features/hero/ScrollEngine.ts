@@ -8,7 +8,7 @@
 
 import { omegaFromResponseTime, springStep } from '../../core/physics/spring.ts';
 import { TextSplitter } from '../../ui/utils/TextSplitter.ts';
-import { ParticleSystem } from './ParticleSystem.ts';
+import { ParticleSystem, type ParticleSystemConfig } from './ParticleSystem.ts';
 
 export interface ScrollEngineConfig {
     messages: string[];
@@ -17,6 +17,7 @@ export interface ScrollEngineConfig {
     maxSkew?: number;         // degrees, asymptotic skew limit (default 12)
     maxZPush?: number;        // px, asymptotic Z-push limit (default -800)
     canvasId?: string;
+    dustConfig?: Partial<ParticleSystemConfig>;
     heroId: string;
     containerId: string;
     navId: string;
@@ -126,11 +127,10 @@ export class ScrollEngine {
     private getGeometry() {
         const heroTopAbs = this.refs.hero.offsetTop;
         const vh = window.visualViewport?.height ?? window.innerHeight;
-        const wh = vh * 1.5;
-        const totalScrollable = this.refs.hero.offsetHeight - wh;
-        const startBuffer = wh * 0.2;
-        const endBuffer = wh * 1.5;
-        const exitBuffer = wh * 0.125;
+        const totalScrollable = Math.max(1, this.refs.hero.offsetHeight - vh);
+        const startBuffer = Math.min(vh * 0.25, totalScrollable * 0.08);
+        const endBuffer = Math.min(vh * 0.35, totalScrollable * 0.10);
+        const exitBuffer = vh * 0.15;
         const activeDistance = Math.max(1, totalScrollable - startBuffer - endBuffer);
         return { heroTopAbs, totalScrollable, startBuffer, endBuffer, exitBuffer, activeDistance };
     }
@@ -156,7 +156,7 @@ export class ScrollEngine {
         if (this.config.canvasId) {
             const canvasEl = document.getElementById(this.config.canvasId) as HTMLCanvasElement | null;
             if (canvasEl) {
-                this.particleSystem = new ParticleSystem(canvasEl);
+                this.particleSystem = new ParticleSystem(canvasEl, this.config.dustConfig);
             }
         }
 
@@ -190,28 +190,12 @@ export class ScrollEngine {
         const vh = window.visualViewport?.height ?? window.innerHeight;
         if (!vh || vh <= 0) return;
 
-        // 1. Geometry overhead from existing progress formula
-        // In getGeometry():
-        //   wh = vh * 1.5
-        //   totalScrollable = hero.offsetHeight - wh
-        //   startBuffer = wh * 0.2
-        //   endBuffer = wh * 1.5
-        //   activeDistance = totalScrollable - startBuffer - endBuffer = hero.offsetHeight - (wh * 2.7)
-        const wh = vh * 1.5;
-        const overhead = wh * 2.7;
-
-        // 2. Determine number of transitions
         const transitions = Math.max(this.config.messages.length - 1, 0);
 
-        // 3. Derive original 600vh baseline pacing
-        // In legacy design: heroHeight = 600vh (6 * vh)
-        // legacyActiveDistance = 6 * vh - overhead = 1.95 * vh
-        // baselineStep = legacyActiveDistance / transitions (approx 0.325 * vh for 6 transitions)
-        const legacyHeroHeight = 6 * vh;
-        const legacyActiveDistance = Math.max(0, legacyHeroHeight - overhead);
-        const baselineStep = transitions > 0 ? legacyActiveDistance / transitions : 0;
+        // Derive baseline step per transition: ~0.45 * vh per message transition
+        const baselineStep = Math.max(250, vh * 0.45);
 
-        // 4. Measure rendered un-transformed layout height of message faces
+        // Measure rendered un-transformed layout height of message faces
         let maxMessageHeight = 0;
         for (const face of this.state.faces) {
             // offsetHeight and scrollHeight give un-transformed layout dimensions
@@ -221,13 +205,12 @@ export class ScrollEngine {
             }
         }
 
-        // 5. Determine required step distance:
-        // Use baselineStep (preserving original 600vh pacing) unless content demand exceeds it
         const verticalSafetyBuffer = 40;
         const contentDemand = maxMessageHeight + verticalSafetyBuffer;
         const requiredStep = Math.max(baselineStep, contentDemand);
 
-        // 6. Calculate adaptive hero height
+        // Overhead: 1 vh for the sticky container pinning + entry and exit buffers (~0.6 vh)
+        const overhead = vh * 1.6;
         const requiredActiveDistance = transitions * requiredStep;
         const adaptiveHeight = Math.round(requiredActiveDistance + overhead);
 
@@ -297,18 +280,50 @@ export class ScrollEngine {
     }
 
     /**
+     * Measures the cumulative height of all sticky obstacles pinned at the top
+     * of the viewport (such as the main navigation header and announcement bar).
+     */
+    private getStickyHeaderHeight(): number {
+        let stickyBottom = 0;
+        const headerEl = document.getElementById('mainHeader');
+        if (headerEl) {
+            const headerRect = headerEl.getBoundingClientRect();
+            if (headerRect.bottom > 0) {
+                stickyBottom = Math.max(stickyBottom, headerRect.bottom);
+            }
+        }
+
+        const announcementEl = document.getElementById('announcementBar');
+        if (announcementEl && !announcementEl.classList.contains('dismissed')) {
+            const annRect = announcementEl.getBoundingClientRect();
+            if (annRect.bottom > 0) {
+                stickyBottom = Math.max(stickyBottom, annRect.bottom);
+            }
+        }
+
+        return stickyBottom > 0 ? stickyBottom : 80;
+    }
+
+    /**
      * Determines whether the kinetic message container is positioned
      * within the viewport's visual center engagement zone, applying hysteresis
      * to prevent boundary flickering.
      *
      * The engagement decision is strictly based on exact geometry:
-     * element.getBoundingClientRect() relative to the visual center.
+     * element.getBoundingClientRect() relative to the current viewport center
+     * (accounting for the sticky header height).
+     *
+     * The activation zone adaptively scales with viewport height (especially
+     * on short-laptop configurations) and verifies that the message content
+     * is clearly visible between the sticky header and the viewport fold before
+     * engaging, ensuring the user is never trapped by slide snapping before
+     * they can see the message content.
      */
     private updateEngagement(): void {
         const vh = window.visualViewport?.height ?? window.innerHeight;
         if (!vh || vh <= 0) return;
 
-        const { heroTopAbs, totalScrollable, exitBuffer } = this.getGeometry();
+        const { heroTopAbs, totalScrollable, exitBuffer, startBuffer } = this.getGeometry();
         const scrolledInHero = window.scrollY - heroTopAbs;
         const inHeroBounds = scrolledInHero >= 0 && scrolledInHero <= totalScrollable + exitBuffer;
 
@@ -319,26 +334,55 @@ export class ScrollEngine {
             return;
         }
 
-        const headerEl = document.getElementById('mainHeader');
-        const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 80;
-        const visualCenter = headerHeight + (vh - headerHeight) / 2;
+        const stickyHeaderHeight = this.getStickyHeaderHeight();
+        const visibleViewportHeight = Math.max(1, vh - stickyHeaderHeight);
+        const visualCenter = stickyHeaderHeight + visibleViewportHeight / 2;
 
         const rect = this.refs.container.getBoundingClientRect();
+        if (rect.height <= 0 || rect.width <= 0) {
+            if (this.heroScrollEngaged) {
+                this.heroScrollEngaged = false;
+            }
+            return;
+        }
+
         const targetCenter = rect.top + rect.height / 2;
         const distanceFromCenter = Math.abs(targetCenter - visualCenter);
 
-        // Hysteresis thresholds:
-        // Engage: distance <= 18% viewport height
-        // Disengage: distance >= 28% viewport height
-        const engageTolerance = vh * 0.18;
-        const disengageTolerance = vh * 0.28;
+        // Content visibility verification:
+        // Message container must be positioned within the visible viewport bounds
+        // (not occluded behind the sticky header or pushed below the fold)
+        const isContentVisible = rect.top >= (stickyHeaderHeight - 24) && rect.bottom <= (vh + 24);
+
+        // Adaptive engagement zone scaling based on unobstructed viewport height:
+        // On short-laptop configurations (visible height <= 600px), use a tailored tolerance
+        // (+-30% of visible height) to ensure comfortable centering before engaging.
+        // On larger displays, scale up to +-38% of visible height.
+        let engageRatio = 0.38;
+        let disengageRatio = 0.52;
+
+        if (visibleViewportHeight <= 600) {
+            engageRatio = 0.30;
+            disengageRatio = 0.45;
+        } else if (visibleViewportHeight <= 800) {
+            const t = (visibleViewportHeight - 600) / 200;
+            engageRatio = 0.30 + 0.08 * t;
+            disengageRatio = 0.45 + 0.07 * t;
+        }
+
+        const engageTolerance = visibleViewportHeight * engageRatio;
+        const disengageTolerance = visibleViewportHeight * disengageRatio;
+
+        // Anti-trapping protection:
+        // The user must not be trapped by slide snapping at scrollY = 0 before entering the carousel area
+        const hasScrolledIntoEngagementZone = scrolledInHero >= (startBuffer * 0.15);
 
         if (!this.heroScrollEngaged) {
-            if (distanceFromCenter <= engageTolerance) {
+            if (hasScrolledIntoEngagementZone && isContentVisible && distanceFromCenter <= engageTolerance) {
                 this.heroScrollEngaged = true;
             }
         } else {
-            if (distanceFromCenter >= disengageTolerance) {
+            if (distanceFromCenter >= disengageTolerance || !isContentVisible || scrolledInHero < 0) {
                 this.heroScrollEngaged = false;
             }
         }
@@ -451,10 +495,9 @@ export class ScrollEngine {
     private updateSlideTracking(): void {
         const { heroTopAbs, totalScrollable, startBuffer, exitBuffer, activeDistance } = this.getGeometry();
         const scrolledInHero = this.state.currentScroll - heroTopAbs;
+        const inHero = scrolledInHero >= 0 && scrolledInHero <= totalScrollable + exitBuffer;
 
-        if (this.heroScrollEngaged && scrolledInHero >= 0 && scrolledInHero <= totalScrollable + exitBuffer) {
-            this.refs.nav.classList.add('visible');
-
+        if (inHero) {
             const adjustedScroll = scrolledInHero - startBuffer;
             const progress = Math.max(0, Math.min(0.999, adjustedScroll / activeDistance));
 
@@ -465,6 +508,12 @@ export class ScrollEngine {
 
             if (idx !== this.state.currentIndex) {
                 this.renderActiveSlide(idx);
+            }
+
+            if (this.heroScrollEngaged) {
+                this.refs.nav.classList.add('visible');
+            } else {
+                this.refs.nav.classList.remove('visible');
             }
         } else {
             this.refs.nav.classList.remove('visible');
@@ -517,6 +566,10 @@ export class ScrollEngine {
         return this.heroScrollEngaged;
     }
 
+    public getParticleSystem(): ParticleSystem | undefined {
+        return this.particleSystem;
+    }
+
     private setupSnapListeners(): void {
         const interruptEvents = ['wheel', 'touchmove', 'keydown', 'mousedown'];
         const onInterrupt = () => {
@@ -547,7 +600,7 @@ export class ScrollEngine {
         const { heroTopAbs, totalScrollable, startBuffer, endBuffer, activeDistance } = this.getGeometry();
         const scrolledInHero = window.scrollY - heroTopAbs;
 
-        if (scrolledInHero > startBuffer && scrolledInHero < totalScrollable - endBuffer) {
+        if (scrolledInHero >= startBuffer && scrolledInHero <= totalScrollable - endBuffer) {
             if (this.state.currentIndex >= 0 && this.state.currentIndex < this.config.messages.length) {
                 const targetY =
                     heroTopAbs +
@@ -555,7 +608,7 @@ export class ScrollEngine {
                     activeDistance * (this.state.currentIndex / this.config.messages.length) +
                     activeDistance / this.config.messages.length / 2;
 
-                if (Math.abs(window.scrollY - targetY) > 10) {
+                if (Math.abs(window.scrollY - targetY) > 15) {
                     this.beginSnap(targetY);
                 }
             }
@@ -593,6 +646,10 @@ export class ScrollEngine {
         if (this.state.idleTimer !== null) {
             window.clearTimeout(this.state.idleTimer);
             this.state.idleTimer = null;
+        }
+        if (this.particleSystem) {
+            this.particleSystem.destroy();
+            this.particleSystem = undefined;
         }
     }
 }
