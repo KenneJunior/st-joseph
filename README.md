@@ -5,11 +5,11 @@
 
   <p><em>"Edificamus Regnum Dei — Let us build the Kingdom of God"</em></p>
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=flat-square&logo=vercel)](https://saintjosephcollege.vercel.app)
-[![TypeScript 5.x](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![PWA Ready](https://img.shields.io/badge/PWA-Offline--First-orange?style=flat-square)](docs/architecture/pwa.md)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
-[![Status: Live](https://img.shields.io/badge/Status-Live-success?style=flat-square)](https://saintjosephcollege.vercel.app)
+  [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=flat-square&logo=vercel)](https://saintjosephcollege.vercel.app)
+  [![TypeScript 5.x](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+  [![PWA Ready](https://img.shields.io/badge/PWA-Offline--First-orange?style=flat-square)](docs/architecture/pwa.md)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+  [![Status: Live](https://img.shields.io/badge/Status-Live-success?style=flat-square)](https://saintjosephcollege.vercel.app)
 </div>
 
 ---
@@ -291,9 +291,9 @@ npm run preview
 - **Hosting Platform**: Vercel Edge Network / Google Cloud Run containerized edge.
 - **Routing**: Multi-page application routing (`/` -> `index.html`, `/prospectus.html` -> `prospectus.html`).
 - **Caching Strategy**:
-    - `dist/index.html` & `dist/prospectus.html`: `Cache-Control: no-cache` (enables instant Service Worker update checks).
-    - `dist/assets/*`: `Cache-Control: public, max-age=31536000, immutable` (hashed assets cached permanently).
-    - `dist/sw.js`: `Cache-Control: no-cache` (enables prompt worker update detection).
+  - `dist/index.html` & `dist/prospectus.html`: `Cache-Control: no-cache` (enables instant Service Worker update checks).
+  - `dist/assets/*`: `Cache-Control: public, max-age=31536000, immutable` (hashed assets cached permanently).
+  - `dist/sw.js`: `Cache-Control: no-cache` (enables prompt worker update detection).
 
 👉 *Read the full specification: [Build & Deployment Architecture](docs/architecture/build-and-deployment.md)*  
 👉 *View the pipeline model: [Deployment Flow Diagram](docs/diagrams/deployment-flow.mmd)*
@@ -369,12 +369,12 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
   <strong>St. Joseph's Catholic Comprehensive College, Mbengwi</strong><br>
   Momo Division, North West Region, Cameroon<br><br>
 
-📞 <strong>Admissions Office:</strong> <a href="tel:+237683758002">+237 683 758 002</a><br>
-💬 <strong>WhatsApp Inquiries:</strong> <a href="https://wa.me/237672829014">+237 672 829 014</a><br>
-✉️ <strong>Official Email:</strong> <a href="mailto:stjosephcollegembengwi@gmail.com">stjosephcollegembengwi@gmail.com</a><br>
-🌐 <strong>Official Website:</strong> <a href="https://saintjosephcollege.vercel.app">saintjosephcollege.vercel.app</a><br><br>
+  📞 <strong>Admissions Office:</strong> <a href="tel:+237683758002">+237 683 758 002</a><br>
+  💬 <strong>WhatsApp Inquiries:</strong> <a href="https://wa.me/237672829014">+237 672 829 014</a><br>
+  ✉️ <strong>Official Email:</strong> <a href="mailto:stjosephcollegembengwi@gmail.com">stjosephcollegembengwi@gmail.com</a><br>
+  🌐 <strong>Official Website:</strong> <a href="https://saintjosephcollege.vercel.app">saintjosephcollege.vercel.app</a><br><br>
 
-<em>"Train up a child in the way he should go, and when he is old he will not depart from it." — Proverbs 22:6</em><br><br>
+  <em>"Train up a child in the way he should go, and when he is old he will not depart from it." — Proverbs 22:6</em><br><br>
 
-© 2026 St. Joseph's Catholic Comprehensive College, Mbengwi. All Rights Reserved.
+  © 2026 St. Joseph's Catholic Comprehensive College, Mbengwi. All Rights Reserved.
 </div>
