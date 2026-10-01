@@ -48,7 +48,7 @@ body.dark-mode .school-dates-section {
 /* ─── Immediate Next Milestone Banner ─── */
 .next-milestone-banner {
   background: linear-gradient(135deg, rgba(7, 24, 46, 0.91) 0%, rgba(13, 43, 82, 0.88) 100%),
-              url('/assets/sjccc-procesion.jpg') center/cover no-repeat;
+              url('/assets/sjccc-campus.jpg') center/cover no-repeat;
   border: 1px solid rgba(201, 162, 41, 0.45);
   border-radius: var(--radius-lg, 20px);
   padding: 28px 32px;

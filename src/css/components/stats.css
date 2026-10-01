@@ -27,14 +27,15 @@ body.dark-mode .stats-section::before {
 
 .stats-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  max-width: 1000px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1160px;
   margin: 0 auto;
 }
 
 @media (max-width: 1024px) {
   .stats-row {
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
 }
@@ -42,13 +43,14 @@ body.dark-mode .stats-section::before {
 @media (max-width: 768px) {
   .stats-row {
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: 12px;
   }
 }
 
 @media (max-width: 480px) {
   .stats-row {
-    gap: 6px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
 }
 
