@@ -1,98 +1,41 @@
 /**
  * ============================================================================
  * SJCCC – Prospectus Page Bootstrap Orchestrator
- * Coordinates navigation, smooth scrolling, PDF export, theme, and animations
- * for the official prospectus page
+ * Streamlined document-first controller for theme management, mobile navigation,
+ * native print triggering, and offline status monitoring.
  * ============================================================================
  */
 
 import { PROSPECTUS_SELECTORS } from '../../core/config/selectors.ts';
 import { ThemeManager } from '../../core/theme/ThemeManager.ts';
 import { MobileNavigation } from '../../ui/navigation/MobileNavigation.ts';
-import { ScrollReveal } from '../../ui/utils/ScrollReveal.ts';
-import { SmoothScroll } from '../../ui/utils/SmoothScroll.ts';
+import { OfflineIndicator } from '../../features/offline/OfflineIndicator.ts';
+import { COLLEGE_PROFILE } from '../../data/collegeProfile.ts';
+import { TUITION_FEES } from '../../data/tuitionFees.ts';
+import { TECHNICAL_DEPARTMENTS } from '../../data/academicPrograms.ts';
+import { ADMISSION_REQUIREMENTS } from '../../data/admissionRequirements.ts';
+import { ACADEMIC_MILESTONES_2026_2027 } from '../../data/academicCalendar.ts';
+
+// Re-export canonical datasets for document consumers and test validation
+export {
+    COLLEGE_PROFILE,
+    TUITION_FEES,
+    TECHNICAL_DEPARTMENTS,
+    ADMISSION_REQUIREMENTS,
+    ACADEMIC_MILESTONES_2026_2027,
+};
 
 /**
- * Handles PDF Export / Print triggering while temporarily hiding web chrome
+ * Handles PDF Export / Print triggering via standard browser print API.
+ * The print stylesheet (@media print) automatically hides web chrome without DOM mutation.
  */
 export class PdfExporter {
-    private static readonly FOCUS_RESTORE_FALLBACK_MS = 500;
-
-    constructor(buttonId: string, containerSelector: string, headerId: string) {
+    constructor(buttonId: string) {
         const button = document.getElementById(buttonId);
-        const container = document.querySelector<HTMLElement>(containerSelector);
+        if (!button) return;
 
-        if (!button || !container) return;
-
-        button.addEventListener('click', () => this.exportToPdf(container, headerId));
-    }
-
-    private exportToPdf(container: HTMLElement, headerId: string): void {
-        const header = document.getElementById(headerId);
-        const originalContainerDisplay = container.style.display;
-        const originalHeaderDisplay = header?.style.display ?? '';
-
-        container.style.display = 'none';
-        if (header) header.style.display = 'none';
-
-        window.print();
-
-        const restore = (): void => {
-            container.style.display = originalContainerDisplay;
-            if (header) header.style.display = originalHeaderDisplay;
-            window.removeEventListener('focus', restore);
-        };
-
-        window.setTimeout(restore, PdfExporter.FOCUS_RESTORE_FALLBACK_MS);
-        window.addEventListener('focus', restore);
-    }
-}
-
-/**
- * Highlights active navigation link based on scroll position
- */
-export class NavScrollHighlighter {
-    private static readonly SCROLL_OFFSET_PX = 100;
-
-    private readonly sections: NodeListOf<HTMLElement>;
-    private readonly navLinks: NodeListOf<HTMLAnchorElement>;
-
-    constructor(sectionSelector: string, navLinkSelector: string) {
-        this.sections = document.querySelectorAll<HTMLElement>(sectionSelector);
-        this.navLinks = document.querySelectorAll<HTMLAnchorElement>(navLinkSelector);
-
-        if (this.sections.length === 0 || this.navLinks.length === 0) return;
-
-        window.addEventListener('scroll', () => this.highlightActiveSection(), { passive: true });
-    }
-
-    private highlightActiveSection(): void {
-        const scrollPosition = window.scrollY + NavScrollHighlighter.SCROLL_OFFSET_PX;
-
-        this.sections.forEach((section) => {
-            const sectionTop = section.offsetTop;
-            const sectionBottom = sectionTop + section.offsetHeight;
-            const isActive = scrollPosition >= sectionTop && scrollPosition < sectionBottom;
-
-            if (!isActive) return;
-
-            const sectionId = section.getAttribute('id');
-            this.navLinks.forEach((link) => {
-                link.classList.toggle('active-link', link.getAttribute('href') === `#${sectionId}`);
-            });
-        });
-    }
-}
-
-/**
- * Click handler on college logo to navigate back to site root
- */
-export class LogoHomeLink {
-    constructor(selector: string) {
-        const logo = document.querySelector<HTMLElement>(selector);
-        logo?.addEventListener('click', (event: MouseEvent) => {
-            event.preventDefault();
-            window.location.href = window.location.origin;
+        button.addEventListener('click', () => {
+            window.print();
         });
     }
 }
@@ -126,7 +69,7 @@ export class ProspectusApp {
             mode: 'fade',
         });
 
-        // 2. Mobile Navigation
+        // 2. Mobile Navigation for small viewports
         new MobileNavigation(
             PROSPECTUS_SELECTORS.menuToggle,
             PROSPECTUS_SELECTORS.navMenu,
@@ -134,32 +77,13 @@ export class ProspectusApp {
             PROSPECTUS_SELECTORS.navLink
         );
 
-        // 3. Staggered Scroll Reveal
-        new ScrollReveal(PROSPECTUS_SELECTORS.revealOnScroll, {
-            activeClass: 'active',
-            stagger: true,
-        });
+        // 3. Native PDF / Print Export Handler
+        new PdfExporter(PROSPECTUS_SELECTORS.downloadPdfBtn);
 
-        // 4. PDF Exporter
-        new PdfExporter(
-            PROSPECTUS_SELECTORS.downloadPdfBtn,
-            PROSPECTUS_SELECTORS.downloadActionContainer,
-            PROSPECTUS_SELECTORS.mainHeader
-        );
+        // 4. Offline connectivity status indicator with Service Worker cache validation
+        new OfflineIndicator();
 
-        // 5. Smooth Scroll
-        new SmoothScroll(PROSPECTUS_SELECTORS.mainHeader, PROSPECTUS_SELECTORS.anchorLink);
-
-        // 6. Navigation Scroll Highlighter
-        new NavScrollHighlighter(
-            PROSPECTUS_SELECTORS.highlightableSection,
-            PROSPECTUS_SELECTORS.navLink
-        );
-
-        // 7. Logo Home Link
-        new LogoHomeLink(PROSPECTUS_SELECTORS.logoIcon);
-
-        // 8. Logger
+        // 5. Development logger
         new InitLogger();
     }
 }

@@ -2,6 +2,8 @@
    SJCCC OFFICIAL PROSPECTUS
    ========================================================================== */
 
+@import './components/offline-indicator.css';
+
 /* ─── 1. DESIGN TOKENS & SYSTEM VARIABLES ─── */
 :root {
     /* Brand Palette – Refined & Regal */
@@ -152,7 +154,10 @@ input:focus-visible {
     .theme-transition-overlay,
     .nav-cta,
     .nav-link,
-    .wco-titlebar {
+    .wco-titlebar,
+    .offline-indicator,
+    #offlineIndicator,
+    #offline-banner {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
@@ -244,7 +249,6 @@ input:focus-visible {
         display: flex !important;
         flex-wrap: wrap !important;
         gap: 2mm !important;
-        grid-template-columns: repeat(12, 1fr)!important;
     }
 
     /* All cards take 50% width by default */
@@ -311,11 +315,15 @@ input:focus-visible {
     }
 
     /* ─── Section Headers – Tiny Pills ─── */
-    .section-header {
+    .section-header,
+    h2.section-header {
         display: inline-flex !important;
         font-size: 7pt !important;
+        font-weight: 700 !important;
         padding: 1.5mm 3mm !important;
+        margin-top: 0 !important;
         margin-bottom: 2mm !important;
+        line-height: 1.2 !important;
         border-radius: 10px !important;
         background: var(--deep-blue, #07182E) !important;
         color: var(--text-light, #ffffff) !important;
@@ -602,26 +610,47 @@ input:focus-visible {
         transition: none !important;
     }
 
-    /* ─── Dark Mode Print Fixes ─── */
-    body.dark-mode .prospectus-container {
-        background: var(--bg-card, #161c24) !important;
-    }
-
-    body.dark-mode .section-card {
-        background: var(--bg-card, #161c24) !important;
-        border-color: var(--border-card) !important;
+    /* ─── Light Document Print Mode Regardless of Active Theme ─── */
+    html.dark-mode,
+    body.dark-mode,
+    body.dark-mode .prospectus-container,
+    body.dark-mode .section-card,
+    body.dark-mode .footer-card,
+    body.dark-mode .glass-panel,
+    body.dark-mode .glass-card {
+        background: #ffffff !important;
+        color: #1A1E2B !important;
+        border-color: #d1d5db !important;
     }
 
     body.dark-mode .motto-bar {
-        background: var(--bg-card, #161c24) !important;
+        background: #f8fafc !important;
+        color: #07182E !important;
     }
 
     body.dark-mode .data-table th {
         background: var(--deep-blue, #07182E) !important;
+        color: #ffffff !important;
     }
 
-    body.dark-mode .data-table tr:nth-child(even) {
-        background: var(--bg-table-stripe, #1c232d) !important;
+    body.dark-mode .data-table td {
+        background: #ffffff !important;
+        color: #1A1E2B !important;
+        border-color: #e5e7eb !important;
+    }
+
+    body.dark-mode .data-table tr:nth-child(even) td {
+        background: #f9fafb !important;
+    }
+
+    body.dark-mode .uniform-gender h4,
+    body.dark-mode .uniform-gender h3,
+    body.dark-mode .uniform-subheading {
+        color: #07182E !important;
+    }
+
+    body.dark-mode .alert-text {
+        color: #991b1b !important;
     }
 }
 /* ══════════════════════════════════════════════════════════════════════
@@ -707,6 +736,14 @@ body {
     align-items: center;
     gap: 1.2rem;
     cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo-container:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+    border-radius: 8px;
 }
 
 .logo-icon {
@@ -792,6 +829,39 @@ body {
     color: var(--deep-blue);
     transform: rotate(15deg);
     box-shadow: 0 0 20px rgba(201, 162, 41, 0.5);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header-theme-toggle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(201, 162, 41, 0.15);
+    border: 1px solid rgba(201, 162, 41, 0.4);
+    color: var(--gold);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-bounce);
+    padding: 0;
+}
+
+.header-theme-toggle:hover {
+    background: var(--gold);
+    color: var(--deep-blue);
+    transform: rotate(15deg);
+    box-shadow: 0 0 20px rgba(201, 162, 41, 0.5);
+}
+
+.header-theme-toggle:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
 }
 
 .toggle-sun, .toggle-moon {
@@ -969,6 +1039,11 @@ body.dark-mode .motto-bar {
     backdrop-filter: blur(4px);
 }
 
+.section-card[id],
+footer[id] {
+    scroll-margin-top: calc(var(--header-height, 80px) + 1.25rem);
+}
+
 .section-card::before {
     content: '';
     position: absolute;
@@ -991,7 +1066,8 @@ body.dark-mode .motto-bar {
     opacity: 1;
 }
 
-.section-header {
+.section-header,
+h2.section-header {
     background: var(--deep-blue);
     color: var(--text-light);
     padding: 0.8rem 1.4rem;
@@ -999,7 +1075,9 @@ body.dark-mode .motto-bar {
     font-size: 1.1rem;
     font-weight: 700;
     letter-spacing: 0.6px;
+    margin-top: 0;
     margin-bottom: 1.8rem;
+    line-height: 1.3;
     display: inline-flex;
     align-items: center;
     gap: 0.8rem;
@@ -1053,16 +1131,44 @@ body.dark-mode .motto-bar {
     border-style: solid;
 }
 
-.uniform-gender h4 {
+.uniform-gender h4,
+.uniform-gender h3,
+.uniform-subheading {
     color: var(--royal-blue);
+    margin-top: 0;
     margin-bottom: 1rem;
     font-size: 1.15rem;
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 0.6rem;
 }
 
-body.dark-mode .uniform-gender h4 { color: var(--gold-light); }
+body.dark-mode .uniform-gender h4,
+body.dark-mode .uniform-gender h3,
+body.dark-mode .uniform-subheading { color: var(--gold-light); }
+
+.rules-subheading {
+    color: var(--text-main);
+    margin-top: 1.2rem;
+    margin-bottom: 0.6rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.info-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
 
 .icon-list {
     list-style: none;
@@ -1183,9 +1289,12 @@ body.dark-mode .alert-text { color: #ff7b7b; }
     transform: translateY(-5px);
 }
 
-.footer-card h3 {
+.footer-card h3,
+.footer-card h2,
+.footer-heading {
     font-size: 1.4rem;
     color: var(--gold-light);
+    margin-top: 0;
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
@@ -1284,16 +1393,14 @@ body.dark-mode .alert-text { color: #ff7b7b; }
 }
 
 .reveal-on-scroll {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 1.2s cubic-bezier(0.15, 0.85, 0.35, 1),
-                transform 1.2s cubic-bezier(0.15, 0.85, 0.35, 1) !important;
-    will-change: opacity, transform;
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .reveal-on-scroll.active {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
 }
 
 /* Staggered card appearance */
@@ -1655,6 +1762,21 @@ body, .prospectus-container, .section-card, .motto-bar, .academic-banner,
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    .header-actions {
+        gap: 0.5rem;
+    }
+
+    .header-theme-toggle {
+        width: 38px;
+        height: 38px;
+    }
+
+    .menu-toggle {
+        min-width: 38px;
+        min-height: 38px;
+        font-size: 1.4rem;
     }
 
     /* Header */
