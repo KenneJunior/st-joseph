@@ -1,0 +1,109 @@
+/* ==========================================================================
+   SJCCC PROSPECTUS — FOOTER & NOTICES
+   ========================================================================== */
+
+.prospectus-footer {
+    background: linear-gradient(135deg, #07182e, #0a1f3c);
+    border-top: 4px solid var(--gold);
+    color: var(--text-light);
+    padding: 3.5rem 2.8rem 2rem;
+}
+
+.footer-top-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.8rem;
+    margin-bottom: 3rem;
+}
+
+.footer-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    padding: 2.2rem;
+    transition: var(--transition-smooth);
+    backdrop-filter: blur(8px);
+}
+
+.footer-card:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--gold-light);
+    transform: translateY(-5px);
+}
+
+.footer-card h3,
+.footer-card h2,
+.footer-heading {
+    font-size: 1.4rem;
+    color: var(--gold-light);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    padding-bottom: 0.7rem;
+}
+
+.highlight-text {
+    color: var(--gold-light);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.glass-notice-box {
+    background: rgba(201, 162, 41, 0.06);
+    border: 1px solid rgba(201, 162, 41, 0.25);
+    border-radius: var(--radius-md);
+    padding: 1.2rem;
+    margin-top: 1rem;
+}
+
+.glass-notice-box p {
+    margin-bottom: 0.8rem;
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+.glass-notice-box p:last-child {
+    margin-bottom: 0;
+}
+
+.icon-gold {
+    color: var(--gold);
+    margin-right: 0.4rem;
+}
+
+.contact-link-list {
+    list-style: none;
+}
+
+.contact-link-list li {
+    margin-bottom: 1rem;
+}
+
+.contact-link-list a {
+    color: #d1cfc4;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    transition: var(--transition-smooth);
+    font-size: 1.05rem;
+}
+
+.contact-link-list a:hover {
+    color: var(--gold);
+    transform: translateX(8px);
+}
+
+.bottom-strip {
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.8rem;
+    font-size: 0.95rem;
+    color: var(--gold-light);
+    letter-spacing: 1.5px;
+    font-weight: 600;
+}

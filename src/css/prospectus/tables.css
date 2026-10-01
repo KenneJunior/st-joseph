@@ -1,0 +1,47 @@
+/* ==========================================================================
+   SJCCC PROSPECTUS — TABLES
+   ========================================================================== */
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-soft);
+    -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.98rem;
+    min-width: 280px;
+}
+
+.data-table th {
+    background: var(--deep-blue);
+    color: var(--text-light);
+    padding: 1rem 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 0.9rem 1.2rem;
+    border-bottom: 1px solid var(--border-card);
+    color: var(--text-main);
+    white-space: nowrap;
+}
+
+.data-table tr:nth-child(even) {
+    background: var(--bg-table-stripe);
+}
+
+.data-table tr {
+    transition: background 0.3s ease;
+}
+
+.data-table tr:hover {
+    background: rgba(201, 162, 41, 0.12);
+}
