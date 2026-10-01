@@ -39,6 +39,8 @@ export class FaqSection {
     private resultCountEl: HTMLElement | null;
     private emptyStateEl: HTMLElement | null;
     private emptyResetBtn: HTMLButtonElement | null;
+    private categorySelect: HTMLSelectElement | null;
+    private tablistEl: HTMLElement | null;
     
     private currentCategory: string = 'all';
     private currentSearchQuery: string = '';
@@ -51,6 +53,8 @@ export class FaqSection {
         this.container = document.getElementById('faq');
         this.accordionEl = document.getElementById('faqAccordion');
         this.filterButtons = document.querySelectorAll<HTMLButtonElement>('[data-faq-filter]');
+        this.categorySelect = document.getElementById('faqCategorySelect') as HTMLSelectElement | null;
+        this.tablistEl = document.getElementById('faqCategoryTabs');
         this.searchInput = document.getElementById('faqSearchInput') as HTMLInputElement | null;
         this.searchClearBtn = document.getElementById('faqSearchClear') as HTMLButtonElement | null;
         this.expandAllBtn = document.getElementById('faqExpandAllBtn') as HTMLButtonElement | null;
@@ -168,17 +172,69 @@ export class FaqSection {
                 this.setCategory(filter, true);
             });
         });
+
+        // Dropdown select change event - automatically filters on selection
+        this.categorySelect?.addEventListener('change', () => {
+            const filter = this.categorySelect?.value || 'all';
+            this.setCategory(filter, true);
+        });
+
+        // Tablist keyboard navigation (ArrowLeft, ArrowRight, ArrowUp, ArrowDown, Home, End)
+        this.tablistEl?.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
+            const buttons = Array.from(this.filterButtons);
+            if (!buttons.length) return;
+
+            const activeBtn = document.activeElement as HTMLButtonElement | null;
+            const currentIndex = buttons.indexOf(activeBtn as HTMLButtonElement);
+            if (currentIndex === -1) return;
+
+            e.preventDefault();
+            let nextIndex = currentIndex;
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                nextIndex = (currentIndex + 1) % buttons.length;
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                nextIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+            } else if (e.key === 'Home') {
+                nextIndex = 0;
+            } else if (e.key === 'End') {
+                nextIndex = buttons.length - 1;
+            }
+
+            const targetBtn = buttons[nextIndex];
+            if (targetBtn) {
+                targetBtn.focus();
+                const filter = targetBtn.dataset.faqFilter || 'all';
+                this.setCategory(filter, true);
+            }
+        });
+    }
+
+    public getCategoryLabel(category: string): string {
+        switch (category) {
+            case 'admissions': return 'Admissions';
+            case 'boarding': return 'Boarding';
+            case 'fees': return 'Fees & Payments';
+            default: return 'All Questions';
+        }
     }
 
     public setCategory(category: string, animate: boolean = true): void {
         if (this.currentCategory === category) return;
         this.currentCategory = category;
 
+        // Synchronize tab buttons
         this.filterButtons.forEach((btn) => {
             const isActive = btn.dataset.faqFilter === category;
             btn.classList.toggle('is-active', isActive);
             btn.setAttribute('aria-selected', String(isActive));
+            btn.setAttribute('tabindex', isActive ? '0' : '-1');
         });
+
+        // Synchronize select dropdown
+        if (this.categorySelect && this.categorySelect.value !== category) {
+            this.categorySelect.value = category;
+        }
 
         if (!animate || this.isReducedMotion() || !this.accordionEl) {
             this.accordionEl?.classList.remove('is-filtering');
@@ -414,9 +470,14 @@ export class FaqSection {
         // Update Result Count
         if (this.resultCountEl) {
             const total = this.items.length;
-            const newText = (query || category !== 'all')
-                ? `Showing ${visibleCount} of ${total} questions`
-                : `All ${total} questions`;
+            let newText = `All ${total} questions`;
+            if (query && category !== 'all') {
+                newText = `Showing ${visibleCount} matching questions in ${this.getCategoryLabel(category)}`;
+            } else if (category !== 'all') {
+                newText = `Showing ${visibleCount} of ${total} questions (${this.getCategoryLabel(category)})`;
+            } else if (query) {
+                newText = `Showing ${visibleCount} of ${total} questions`;
+            }
 
             if (this.resultCountEl.textContent !== newText) {
                 this.resultCountEl.textContent = newText;
@@ -434,7 +495,7 @@ export class FaqSection {
             this.emptyStateEl.hidden = !isEmpty;
             if (isEmpty) {
                 const querySpan = this.emptyStateEl.querySelector<HTMLElement>('.faq-empty-query');
-                if (querySpan) querySpan.textContent = query ? `"${query}"` : 'the selected category';
+                if (querySpan) querySpan.textContent = query ? `"${query}"` : this.getCategoryLabel(category);
             }
         }
     }
@@ -524,6 +585,15 @@ export class FaqSection {
             const badge = btn.querySelector<HTMLElement>('.faq-filter-count');
             if (badge) badge.textContent = String(counts[filter] || 0);
         });
+
+        if (this.categorySelect) {
+            Array.from(this.categorySelect.options).forEach((opt) => {
+                const val = opt.value;
+                const count = counts[val] ?? 0;
+                const label = this.getCategoryLabel(val);
+                opt.textContent = `${label} (${count})`;
+            });
+        }
     }
 
     private checkInitialHash(): void {
