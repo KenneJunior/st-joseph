@@ -1,0 +1,47 @@
+%% ============================================================================
+%% SJCCC Data Flow & Synchronization Model
+%% Distinguishes between runtime dynamic imports, build-time Schema.org metadata,
+%% and document-first static HTML copies requiring manual parity.
+%% ============================================================================
+flowchart TD
+    subgraph DataSources["Canonical TypeScript Data Layer (src/data/)"]
+        D_Cal["academicCalendar.ts<br/>(Term Resumption & Milestones)"]
+        D_Prog["academicPrograms.ts<br/>(Grammar & Technical Pathways)"]
+        D_Adm["admissionRequirements.ts<br/>(Prerequisites & Interviews)"]
+        D_Fees["tuitionFees.ts<br/>(Approved Fees & Boarding)"]
+        D_Prof["collegeProfile.ts<br/>(Leadership, Identity & Contacts)"]
+        D_FAQ["faqData.ts<br/>(Admissions & Student Life Q&A)"]
+        D_Zones["campusZones.ts<br/>(6 Campus Facility Zones)"]
+        D_Slides["campusSlides.ts<br/>(High-Res Gallery Slides)"]
+    end
+
+    subgraph RuntimeConsumers["Runtime TypeScript Consumers (Dynamic Hydration)"]
+        R_Timeline["TimelineRenderer.ts<br/>(Upcoming School Dates)"]
+        R_Carousel["CarouselRenderer.ts<br/>(Hero/Campus Gallery)"]
+        R_FAQ["FaqRenderer.ts<br/>(Interactive Accordion)"]
+        R_Map["VirtualCampusMap.ts<br/>(Interactive Map Drawer)"]
+        R_Toggles["AcademicLevelToggles.ts<br/>(Curriculum Filter)"]
+    end
+
+    subgraph StaticDocument["Static HTML Presentation (Document-First SEO)"]
+        H_Prospectus["prospectus.html<br/>• Statutory Fee Tables<br/>• Uniform Matrix<br/>• General Rules<br/>• Admissions Criteria"]
+        H_Home["index.html<br/>• Static Header/Footer<br/>• Schema.org JSON-LD (FAQPage)"]
+    end
+
+    D_Cal -->|"Runtime Import"| R_Timeline
+    D_Slides -->|"Runtime Import"| R_Carousel
+    D_FAQ -->|"Runtime Import"| R_FAQ
+    D_Zones -->|"Runtime Import"| R_Map
+    D_Prog -->|"Runtime State"| R_Toggles
+
+    D_Fees -.->|"Static Copy (Manual Sync)"| H_Prospectus
+    D_Prog -.->|"Static Copy (Manual Sync)"| H_Prospectus
+    D_Adm -.->|"Static Copy (Manual Sync)"| H_Prospectus
+    D_Prof -.->|"Static Content"| H_Prospectus
+    D_Prof -.->|"Static Content"| H_Home
+    D_FAQ -.->|"Build-time JSON-LD"| H_Home
+
+    R_Timeline --> H_Home
+    R_Carousel --> H_Home
+    R_FAQ --> H_Home
+    R_Map --> H_Home

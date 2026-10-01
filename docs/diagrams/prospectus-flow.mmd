@@ -1,0 +1,44 @@
+%% ============================================================================
+%% SJCCC Prospectus Runtime Flow
+%% Illustrates document-first bootstrapping from src/prospectus.ts,
+%% zero-JS baseline readability, lightweight composition, and print triggers.
+%% ============================================================================
+sequenceDiagram
+    autonumber
+    actor User as Parent / Auditor
+    participant Browser as Browser Window
+    participant HTML as prospectus.html (Static DOM)
+    participant Entry as src/prospectus.ts
+    participant App as ProspectusApp (prospectus.ts)
+    participant Theme as ThemeManager (mode: fade)
+    participant Nav as MobileNavigation
+    participant PDF as PdfExporter
+    participant PrintCSS as print.css (@media print)
+
+    User->>Browser: Requests /prospectus.html
+    Browser->>HTML: Parses Semantic HTML
+    note over HTML: ZERO-JS BASELINE:<br/>All sections, rules, uniforms & fee tables<br/>are 100% visible and readable immediately.
+
+    Browser->>Entry: Executes src/prospectus.ts
+    Entry->>App: initProspectusPage()
+    
+    rect rgb(240, 245, 255)
+        note over App,Theme: Lean Composition Root
+        App->>Theme: new ThemeManager({ toggleId, mode: 'fade' })
+        App->>Nav: new MobileNavigation(menuToggle, navMenu, mainHeader, navLink)
+        App->>PDF: new PdfExporter(downloadPdfBtn)
+        App->>Browser: new OfflineIndicator()
+    end
+
+    opt User Clicks "Download PDF"
+        User->>PDF: Clicks floating PDF button (#downloadPdfBtn)
+        PDF->>Browser: Invokes native window.print()
+        Browser->>PrintCSS: Applies @media print stylesheet
+        note over PrintCSS: • Forces A4 portrait page sizing<br/>• Suppresses headers, nav drawer & buttons<br/>• Neutralizes dark mode to save ink<br/>• Preserves 2-column paired cards
+        Browser-->>User: Opens system print / "Save as PDF" dialog
+    end
+
+    opt User Toggles Dark Theme
+        User->>Theme: Clicks Sun/Moon Toggle Button
+        Theme->>HTML: Injects fade overlay & flips .dark-mode class
+    end
