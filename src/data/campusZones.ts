@@ -51,7 +51,7 @@ export const CAMPUS_ZONES: CampusZone[] = [
         icon: 'bi-lightning-charge-fill',
         xPercent: 72,
         yPercent: 30,
-        imageSrc: '/assets/Electricity.jpeg',
+        imageSrc: '/assets/sjccc-Electricity.jpeg',
         imageAlt: 'Students working with electrical equipment in SJCCC workshop',
         description: "Our dedicated technical laboratory where students learn electrical circuit design, solar installation, domestic conduit wiring, appliance diagnosis, and industrial motor principles with safety as priority number one.",
         amenities: [
@@ -71,7 +71,7 @@ export const CAMPUS_ZONES: CampusZone[] = [
         icon: 'bi-building-fill',
         xPercent: 48,
         yPercent: 22,
-        imageSrc: '/assets/Campus.jpeg',
+        imageSrc: '/assets/sjccc-Domitory.jpeg',
         imageAlt: 'SJCCC boarding buildings overlooking green Mbengwi hills',
         description: "Separate residential facilities for boys and girls situated in a peaceful, secure compound. Guided by experienced resident House Masters and Matrons providing pastoral care, moral discipline, and structured study routines.",
         amenities: [
@@ -91,7 +91,7 @@ export const CAMPUS_ZONES: CampusZone[] = [
         icon: 'bi-book-half',
         xPercent: 44,
         yPercent: 54,
-        imageSrc: '/assets/Students-in-class.jpeg',
+        imageSrc: '/assets/sjccc-Classroom.jpg',
         imageAlt: 'Students engaged in classroom academic work at SJCCC',
         description: "Spacious, well-ventilated classrooms with generous natural lighting. Houses all Form 1 to Upper Sixth General Education arms, demonstration science stations for Physics, Chemistry, Biology, and computer laboratories.",
         amenities: [
@@ -111,7 +111,7 @@ export const CAMPUS_ZONES: CampusZone[] = [
         icon: 'bi-tools',
         xPercent: 82,
         yPercent: 62,
-        imageSrc: '/assets/Construction-site.jpeg',
+        imageSrc: '/assets/sjccc-Construction-site.jpeg',
         imageAlt: 'Students gaining practical construction experience on campus',
         description: "A comprehensive practical site where students master bricklaying, concrete casting, architectural drawing, surveying, and site safety management under licensed master builders.",
         amenities: [
@@ -125,14 +125,14 @@ export const CAMPUS_ZONES: CampusZone[] = [
     },
     {
         id: 'sports',
-        title: 'Central Quadrangle & Sports Grounds',
-        tagline: 'Athletics, fellowship & recreation under open skies',
+        title: 'Central Quadrangle & Assembly Grounds',
+        tagline: 'College assemblies, athletics & recreation under open skies',
         category: 'Athletics & Community',
         icon: 'bi-dribbble',
         xPercent: 28,
         yPercent: 74,
-        imageSrc: '/assets/Students.jpeg',
-        imageAlt: 'Students gathered on SJCCC campus grounds in fellowship',
+        imageSrc: '/assets/sjccc-view.jpg',
+        imageAlt: 'SJCCC central assembly yard, quadrangle, and sports grounds',
         description: "The expansive outdoor heart of SJCCC. Where the morning college assembly convenes and where students enjoy football, volleyball, handball, inter-house competitions, and cultural festivals in fresh mountain air.",
         amenities: [
             'Regulation football pitch & running tracks',
