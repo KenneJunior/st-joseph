@@ -1,0 +1,1379 @@
+/* ============================================================
+   SJCCC – OFFICIAL GCE EXAMINATION RESULTS (2026)
+   Saint Joseph Catholic Comprehensive College Mbengwi
+   Supports:
+   - Standard Card Utility Pattern (border, shadow, background via CSS variables)
+   - Root .dark-mode theme responsiveness
+   - Fluid typography (320px to 1440px)
+   - Auto-fit minmax(300px, 1fr) grid layout
+   ============================================================ */
+
+/* Section Container & Themed Background */
+.gce-results-section {
+  position: relative;
+  background: var(--bg-off-white);
+  color: var(--text-body);
+  padding: 90px 24px;
+  overflow: hidden;
+  z-index: 1;
+  transition: background var(--duration-normal, 350ms) var(--ease-standard),
+              color var(--duration-normal, 350ms) var(--ease-standard);
+}
+
+.gce-results-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 20%, rgba(201, 162, 41, 0.04), transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Dark mode section override */
+html.dark-mode .gce-results-section,
+body.dark-mode .gce-results-section {
+  background: radial-gradient(circle at 50% 20%, rgba(15, 45, 92, 0.95), rgba(7, 24, 46, 0.98)),
+              url('/assets/sjccc-view.jpg') center/cover no-repeat;
+  color: var(--text-body);
+}
+
+html.dark-mode .gce-results-section::before,
+body.dark-mode .gce-results-section::before {
+  background: rgba(2, 12, 26, 0.92);
+}
+
+.gce-results-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.gce-results-header {
+  text-align: center;
+  max-width: 840px;
+  margin: 0 auto 40px;
+}
+
+.gce-results-header .section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(201, 162, 41, 0.14);
+  color: var(--accent);
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border: 1px solid var(--color-border-brand, rgba(201, 162, 41, 0.35));
+  margin-bottom: 16px;
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-results-header .section-label,
+body.dark-mode .gce-results-header .section-label {
+  color: var(--accent-glow);
+}
+
+.gce-results-header .section-title {
+  font-size: clamp(1.35rem, 4vw, 3rem);
+  font-family: var(--font-heading, serif);
+  color: var(--primary);
+  margin-bottom: 12px;
+  line-height: 1.2;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-results-header .section-title,
+body.dark-mode .gce-results-header .section-title {
+  color: var(--text-light);
+}
+
+.gce-results-header .section-subtitle {
+  font-size: clamp(0.82rem, 2.2vw, 1.15rem);
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-results-header .section-subtitle,
+body.dark-mode .gce-results-header .section-subtitle {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.gce-meta-bar {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 6px 18px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: 30px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  box-shadow: var(--card-shadow);
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-meta-bar,
+body.dark-mode .gce-meta-bar {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.gce-meta-bar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gce-meta-bar i {
+  color: var(--accent);
+}
+
+/* ============================================================
+   CONGRATULATIONS BANNER
+   ============================================================ */
+.gce-congrats-banner {
+  background: var(--surface-card);
+  border: 1px solid var(--color-border-brand, rgba(201, 162, 41, 0.35));
+  border-radius: var(--radius-lg);
+  padding: 24px 32px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  box-shadow: var(--card-shadow);
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-congrats-banner,
+body.dark-mode .gce-congrats-banner {
+  background: linear-gradient(135deg, rgba(201, 162, 41, 0.18), rgba(15, 45, 92, 0.5));
+  border-color: rgba(201, 162, 41, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+}
+
+.gce-congrats-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--sj-gold-400, #d4a85a), var(--sj-gold-600, #8c6a21));
+  color: #07182e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(201, 162, 41, 0.45);
+}
+
+.gce-congrats-content {
+  flex: 1;
+}
+
+.gce-congrats-motto {
+  font-family: var(--font-heading, serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-congrats-motto,
+body.dark-mode .gce-congrats-motto {
+  color: var(--accent-glow);
+}
+
+.gce-congrats-message {
+  font-size: 0.98rem;
+  color: var(--text-body);
+  margin: 0;
+  line-height: 1.5;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-congrats-message,
+body.dark-mode .gce-congrats-message {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* ============================================================
+   GCE SUMMARY CARD: MOTTO, GRADUATION DATE & LOCATION
+   ============================================================ */
+.gce-summary-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  margin-bottom: 44px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  position: relative;
+  transition: transform var(--duration-fast, 200ms) var(--ease-standard),
+              box-shadow var(--duration-fast, 200ms) var(--ease-standard),
+              border-color var(--duration-fast, 200ms) var(--ease-standard),
+              background var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.gce-summary-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-border-brand, rgba(201, 162, 41, 0.4));
+  box-shadow: var(--card-shadow-hover);
+}
+
+html.dark-mode .gce-summary-card,
+body.dark-mode .gce-summary-card {
+  background: linear-gradient(135deg, rgba(12, 35, 71, 0.94), rgba(6, 21, 43, 0.96));
+  border-color: rgba(201, 162, 41, 0.55);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(201, 162, 41, 0.18);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+html.dark-mode .gce-summary-card:hover,
+body.dark-mode .gce-summary-card:hover {
+  border-color: rgba(251, 227, 161, 0.75);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.6), 0 0 35px rgba(201, 162, 41, 0.25);
+}
+
+.gce-summary-card-inner {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 32px;
+  padding: 36px 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.gce-summary-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.gce-summary-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  padding: 5px 14px;
+  background: rgba(201, 162, 41, 0.14);
+  border: 1px solid var(--color-border-brand, rgba(201, 162, 41, 0.35));
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 18px;
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-summary-badge,
+body.dark-mode .gce-summary-badge {
+  color: var(--accent-glow);
+}
+
+/* Featured Motto Blockquote */
+.gce-motto-highlight {
+  margin: 0 0 18px;
+  padding: 16px 20px 16px 22px;
+  background: rgba(201, 162, 41, 0.08);
+  border-left: 5px solid var(--accent);
+  border-radius: 0 16px 16px 0;
+  position: relative;
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-motto-highlight,
+body.dark-mode .gce-motto-highlight {
+  background: radial-gradient(circle at 10% 50%, rgba(201, 162, 41, 0.22), rgba(15, 45, 92, 0.3));
+  border-left-color: var(--accent-glow);
+}
+
+.gce-motto-highlight .quote-icon {
+  font-size: 1.8rem;
+  color: var(--accent);
+  line-height: 1;
+  display: block;
+  margin-bottom: 6px;
+  opacity: 0.9;
+}
+
+html.dark-mode .gce-motto-highlight .quote-icon,
+body.dark-mode .gce-motto-highlight .quote-icon {
+  color: var(--accent-glow);
+}
+
+.gce-motto-text {
+  font-family: var(--font-heading, serif);
+  font-size: clamp(0.98rem, 2.5vw, 1.65rem);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.35;
+  letter-spacing: 0.3px;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-motto-text,
+body.dark-mode .gce-motto-text {
+  color: var(--accent-glow);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.gce-motto-subtext {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-top: 6px;
+  font-weight: 600;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-motto-subtext,
+body.dark-mode .gce-motto-subtext {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.gce-summary-lead {
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: var(--text-body);
+  margin-bottom: 24px;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-summary-lead,
+body.dark-mode .gce-summary-lead {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Meta Grid: Graduation Date & Location */
+.gce-summary-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.gce-summary-meta-box {
+  background: var(--bg-off-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md, 14px);
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: background var(--duration-fast, 200ms) var(--ease-standard),
+              border-color var(--duration-fast, 200ms) var(--ease-standard),
+              transform var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.gce-summary-meta-box:hover {
+  background: var(--bg-cream);
+  border-color: var(--color-border-brand, rgba(201, 162, 41, 0.4));
+  transform: translateY(-2px);
+}
+
+html.dark-mode .gce-summary-meta-box,
+body.dark-mode .gce-summary-meta-box {
+  background: rgba(4, 18, 38, 0.65);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+html.dark-mode .gce-summary-meta-box:hover,
+body.dark-mode .gce-summary-meta-box:hover {
+  background: rgba(10, 31, 63, 0.85);
+}
+
+.gce-summary-meta-box .gce-meta-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(201, 162, 41, 0.14);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  margin-bottom: 2px;
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-summary-meta-box .gce-meta-icon,
+body.dark-mode .gce-summary-meta-box .gce-meta-icon {
+  color: var(--accent-glow);
+}
+
+.gce-meta-title {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+  font-weight: 600;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.gce-meta-value {
+  font-size: 1.05rem;
+  font-family: var(--font-heading, serif);
+  color: var(--text-dark);
+  line-height: 1.25;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-meta-value,
+body.dark-mode .gce-meta-value {
+  color: var(--text-light);
+}
+
+.gce-meta-extra {
+  font-size: 0.78rem;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-meta-extra,
+body.dark-mode .gce-meta-extra {
+  color: var(--accent-glow);
+}
+
+/* Summary Footer Bar */
+.gce-summary-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-light);
+  flex-wrap: wrap;
+  transition: border-color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.gce-summary-congrats {
+  font-size: 0.88rem;
+  color: var(--text-body);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-summary-congrats,
+body.dark-mode .gce-summary-congrats {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.gce-summary-congrats i {
+  color: #f43f5e;
+  font-size: 1rem;
+}
+
+.gce-summary-calendar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 30px;
+  background: rgba(201, 162, 41, 0.14);
+  border: 1px solid var(--color-border-brand, rgba(201, 162, 41, 0.35));
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 700;
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.gce-summary-calendar-link:hover {
+  background: rgba(201, 162, 41, 0.28);
+  border-color: var(--accent);
+  transform: translateX(2px);
+}
+
+html.dark-mode .gce-summary-calendar-link,
+body.dark-mode .gce-summary-calendar-link {
+  color: var(--accent-glow);
+}
+
+/* Aside: Image & Stat Capsule */
+.gce-summary-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gce-summary-image-wrap {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-brand, rgba(201, 162, 41, 0.4));
+  box-shadow: var(--card-shadow);
+  height: 230px;
+}
+
+.gce-summary-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.gce-summary-card:hover .gce-summary-image-wrap img {
+  transform: scale(1.05);
+}
+
+.gce-summary-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(2, 12, 26, 0.88) 0%, transparent 60%);
+  display: flex;
+  align-items: flex-end;
+  padding: 12px 14px;
+}
+
+.gce-image-badge {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.gce-summary-stat-capsule {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 12px 14px;
+  background: var(--bg-off-white);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  text-align: center;
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-summary-stat-capsule,
+body.dark-mode .gce-summary-stat-capsule {
+  background: rgba(4, 18, 38, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.gce-capsule-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.capsule-num {
+  font-family: var(--font-heading, serif);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1.1;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .capsule-num,
+body.dark-mode .capsule-num {
+  color: var(--accent-glow);
+}
+
+.capsule-lbl {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.capsule-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border-light);
+}
+
+/* ============================================================
+   GCE RESULTS GRID: AUTO-FIT MINMAX(300px, 1fr)
+   Ensures cards stack gracefully and consistently on small screens,
+   preventing text-heavy cards from clipping.
+   ============================================================ */
+.gce-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 28px;
+  margin-bottom: 40px;
+}
+
+/* ============================================================
+   .GCE-RESULT-CARD: CARD UTILITY PATTERN & THEME INHERITANCE
+   Uses standard CSS variables (--surface-card, --border-light,
+   --card-shadow, --card-shadow-hover) to inherit the correct colors
+   when .dark-mode is toggled on root elements (html / body / :root).
+   ============================================================ */
+.gce-result-card,
+.fluid-type-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  padding: clamp(9px, 0.6vw + 7px, 32px) clamp(8px, 0.8vw + 6px, 28px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--duration-fast, 200ms) var(--ease-standard),
+              box-shadow var(--duration-fast, 200ms) var(--ease-standard),
+              border-color var(--duration-fast, 200ms) var(--ease-standard),
+              background var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.gce-result-card:hover,
+.fluid-type-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-border-brand, rgba(201, 162, 41, 0.4));
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* Bottom Gold Accent Hover Line matching general site cards (.card) */
+.gce-result-card::after,
+.fluid-type-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--gold-gradient);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-normal, 350ms) var(--ease-standard);
+}
+
+.gce-result-card:hover::after,
+.fluid-type-card:hover::after {
+  transform: scaleX(1);
+}
+
+/* Differentiated Program Color Tops */
+.gce-result-card--olevel {
+  border-top: 4px solid var(--accent);
+}
+
+.gce-result-card--alevel {
+  border-top: 4px solid #3b82f6;
+}
+
+/* Dark mode glassmorphic enhancement when dark-mode is on root */
+html.dark-mode .gce-result-card,
+body.dark-mode .gce-result-card,
+.dark-mode .gce-result-card {
+  background: rgba(10, 31, 63, 0.76);
+  border-color: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+}
+
+html.dark-mode .gce-result-card:hover,
+body.dark-mode .gce-result-card:hover,
+.dark-mode .gce-result-card:hover {
+  border-color: rgba(201, 162, 41, 0.5);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55), 0 0 20px rgba(201, 162, 41, 0.2);
+}
+
+/* ============================================================
+   FLUID TYPOGRAPHY UTILITY FOR .GCE-RESULT-CARD
+   Clamp math from 320px to 1440px+
+   ============================================================ */
+.gce-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(6px, 0.8vw + 4px, 16px);
+  margin-bottom: clamp(10px, 1vw + 6px, 24px);
+}
+
+.gce-card-title-group h3,
+.fluid-type-card .gce-card-title-group h3 {
+  font-size: clamp(0.86rem, 0.70rem + 0.52vw, 1.45rem);
+  font-family: var(--font-heading, serif);
+  color: var(--primary);
+  margin: 0 0 4px;
+  line-height: 1.25;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-card-title-group h3,
+body.dark-mode .gce-card-title-group h3,
+.dark-mode .gce-card-title-group h3 {
+  color: var(--text-light);
+}
+
+.gce-card-subtitle,
+.fluid-type-card .gce-card-subtitle {
+  font-size: clamp(0.64rem, 0.58rem + 0.22vw, 0.85rem);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: clamp(0.3px, 0.05vw, 0.8px);
+  display: block;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+/* Pass Badges */
+.gce-pass-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(4px, 0.2vw + 2px, 6px);
+  padding: clamp(2.5px, 0.25vw + 1px, 6px) clamp(6px, 0.6vw + 4px, 14px);
+  border-radius: 50px;
+  font-size: clamp(0.64rem, 0.58rem + 0.22vw, 0.85rem);
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.gce-pass-badge--gold {
+  background: rgba(201, 162, 41, 0.14);
+  color: var(--accent);
+  border: 1px solid var(--color-border-brand, rgba(201, 162, 41, 0.35));
+}
+
+html.dark-mode .gce-pass-badge--gold,
+body.dark-mode .gce-pass-badge--gold,
+.dark-mode .gce-pass-badge--gold {
+  background: rgba(201, 162, 41, 0.22);
+  color: var(--accent-glow);
+  border-color: rgba(201, 162, 41, 0.5);
+  box-shadow: 0 0 12px rgba(201, 162, 41, 0.18);
+}
+
+.gce-pass-badge--blue {
+  background: rgba(59, 130, 246, 0.12);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+html.dark-mode .gce-pass-badge--blue,
+body.dark-mode .gce-pass-badge--blue,
+.dark-mode .gce-pass-badge--blue {
+  background: rgba(59, 130, 246, 0.22);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.45);
+}
+
+/* Fluid Metrics Strip */
+.gce-metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(3px, 0.5vw + 2px, 12px);
+  background: var(--bg-off-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md, 14px);
+  padding: clamp(6px, 0.6vw + 4px, 16px) clamp(4px, 0.5vw + 2px, 12px);
+  margin-bottom: clamp(10px, 1vw + 6px, 24px);
+  text-align: center;
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-metrics-strip,
+body.dark-mode .gce-metrics-strip,
+.dark-mode .gce-metrics-strip {
+  background: rgba(2, 12, 26, 0.55);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.gce-metric-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.gce-metric-val,
+.fluid-type-card .gce-metric-val {
+  font-size: clamp(1.02rem, 0.82rem + 0.65vw, 1.7rem);
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1.1;
+  font-family: var(--font-heading, serif);
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-metric-val,
+body.dark-mode .gce-metric-val,
+.dark-mode .gce-metric-val {
+  color: var(--text-light);
+}
+
+.gce-result-card--olevel .gce-metric-val.gce-highlight {
+  color: var(--accent);
+}
+
+html.dark-mode .gce-result-card--olevel .gce-metric-val.gce-highlight,
+body.dark-mode .gce-result-card--olevel .gce-metric-val.gce-highlight,
+.dark-mode .gce-result-card--olevel .gce-metric-val.gce-highlight {
+  color: var(--accent-glow);
+}
+
+.gce-result-card--alevel .gce-metric-val.gce-highlight {
+  color: #2563eb;
+}
+
+html.dark-mode .gce-result-card--alevel .gce-metric-val.gce-highlight,
+body.dark-mode .gce-result-card--alevel .gce-metric-val.gce-highlight,
+.dark-mode .gce-result-card--alevel .gce-metric-val.gce-highlight {
+  color: #93c5fd;
+}
+
+.gce-metric-label,
+.fluid-type-card .gce-metric-label {
+  font-size: clamp(0.56rem, 0.50rem + 0.18vw, 0.76rem);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: clamp(0.2px, 0.03vw, 0.5px);
+  margin-top: 4px;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+/* Fluid Subject Distribution Section */
+.gce-distribution-heading,
+.fluid-type-card .gce-distribution-heading {
+  font-size: clamp(0.68rem, 0.62rem + 0.22vw, 0.92rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: clamp(0.3px, 0.04vw, 0.6px);
+  color: var(--primary);
+  margin-bottom: clamp(6px, 0.6vw + 3px, 14px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-distribution-heading,
+body.dark-mode .gce-distribution-heading,
+.dark-mode .gce-distribution-heading {
+  color: var(--text-light);
+}
+
+.gce-distribution-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(5px, 0.4vw + 3px, 10px);
+  margin: 0 0 clamp(10px, 1vw + 6px, 24px);
+  padding: 0;
+  list-style: none;
+}
+
+.gce-dist-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(4px, 0.35vw + 3px, 9px) clamp(6px, 0.6vw + 4px, 14px);
+  background: var(--bg-off-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm, 8px);
+  transition: background var(--duration-fast, 200ms) var(--ease-standard),
+              border-color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.gce-dist-row:hover {
+  background: var(--bg-cream);
+  border-color: var(--color-border-brand, rgba(201, 162, 41, 0.3));
+}
+
+.gce-dist-row.top-tier {
+  background: rgba(201, 162, 41, 0.12);
+  border-color: var(--color-border-brand, rgba(201, 162, 41, 0.35));
+}
+
+html.dark-mode .gce-dist-row,
+body.dark-mode .gce-dist-row,
+.dark-mode .gce-dist-row {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+html.dark-mode .gce-dist-row:hover,
+body.dark-mode .gce-dist-row:hover,
+.dark-mode .gce-dist-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+html.dark-mode .gce-dist-row.top-tier,
+body.dark-mode .gce-dist-row.top-tier,
+.dark-mode .gce-dist-row.top-tier {
+  background: rgba(201, 162, 41, 0.14);
+}
+
+.gce-dist-label,
+.fluid-type-card .gce-dist-label {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 0.3vw + 2px, 8px);
+  font-size: clamp(0.68rem, 0.62rem + 0.22vw, 0.90rem);
+  font-weight: 600;
+  color: var(--text-dark);
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-dist-label,
+body.dark-mode .gce-dist-label,
+.dark-mode .gce-dist-label {
+  color: var(--text-light);
+}
+
+.gce-dist-label .star-icon {
+  color: var(--accent);
+  font-size: clamp(0.72rem, 0.65rem + 0.2vw, 0.95rem);
+}
+
+html.dark-mode .gce-dist-label .star-icon,
+body.dark-mode .gce-dist-label .star-icon,
+.dark-mode .gce-dist-label .star-icon {
+  color: var(--accent-glow);
+}
+
+.gce-dist-count,
+.fluid-type-card .gce-dist-count {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 0.3vw + 2px, 8px);
+  font-size: clamp(0.66rem, 0.60rem + 0.2vw, 0.88rem);
+  font-weight: 700;
+  color: var(--text-body);
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-dist-count,
+body.dark-mode .gce-dist-count,
+.dark-mode .gce-dist-count {
+  color: var(--text-light);
+}
+
+.gce-dist-badge,
+.fluid-type-card .gce-dist-badge {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text-body);
+  padding: clamp(1.5px, 0.1vw + 1px, 3px) clamp(5px, 0.4vw + 3px, 10px);
+  border-radius: 20px;
+  font-size: clamp(0.58rem, 0.52rem + 0.18vw, 0.80rem);
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.gce-dist-row.top-tier .gce-dist-badge {
+  background: rgba(201, 162, 41, 0.22);
+  color: var(--accent);
+  border: 1px solid var(--color-border-brand, rgba(201, 162, 41, 0.35));
+}
+
+html.dark-mode .gce-dist-badge,
+body.dark-mode .gce-dist-badge,
+.dark-mode .gce-dist-badge {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-light);
+}
+
+html.dark-mode .gce-dist-row.top-tier .gce-dist-badge,
+body.dark-mode .gce-dist-row.top-tier .gce-dist-badge,
+.dark-mode .gce-dist-row.top-tier .gce-dist-badge {
+  background: rgba(201, 162, 41, 0.28);
+  color: var(--accent-glow);
+}
+
+/* Card Callout Footer Note */
+.gce-card-footer-note,
+.fluid-type-card .gce-card-footer-note {
+  margin-top: auto;
+  padding-top: clamp(6px, 0.6vw + 4px, 14px);
+  border-top: 1px solid var(--border-light);
+  font-size: clamp(0.62rem, 0.56rem + 0.18vw, 0.82rem);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 0.3vw + 2px, 8px);
+  line-height: clamp(1.25, 0.05vw + 1.25, 1.4);
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-card-footer-note,
+body.dark-mode .gce-card-footer-note,
+.dark-mode .gce-card-footer-note {
+  color: rgba(255, 255, 255, 0.72);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.gce-card-footer-note i {
+  color: var(--accent);
+  font-size: clamp(0.85rem, 0.75rem + 0.25vw, 1.05rem);
+  flex-shrink: 0;
+}
+
+html.dark-mode .gce-card-footer-note i,
+body.dark-mode .gce-card-footer-note i,
+.dark-mode .gce-card-footer-note i {
+  color: var(--accent-glow);
+}
+
+/* ============================================================
+   CONTACT & ACTION STRIP
+   ============================================================ */
+.gce-contact-strip {
+  background: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 24px 30px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: var(--card-shadow);
+  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-contact-strip,
+body.dark-mode .gce-contact-strip {
+  background: rgba(7, 24, 46, 0.9);
+  border-color: var(--color-border-brand, rgba(201, 162, 41, 0.4));
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
+}
+
+.gce-contact-details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+}
+
+.gce-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: var(--text-body);
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+html.dark-mode .gce-contact-item,
+body.dark-mode .gce-contact-item {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.gce-contact-item i {
+  font-size: 1.25rem;
+  color: var(--accent);
+}
+
+html.dark-mode .gce-contact-item i,
+body.dark-mode .gce-contact-item i {
+  color: var(--accent-glow);
+}
+
+.gce-contact-item a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.gce-contact-item a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+html.dark-mode .gce-contact-item a,
+body.dark-mode .gce-contact-item a {
+  color: var(--text-light);
+}
+
+html.dark-mode .gce-contact-item a:hover,
+body.dark-mode .gce-contact-item a:hover {
+  color: var(--accent-glow);
+}
+
+.gce-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   RESPONSIVE BREAKPOINTS
+   Fine-tunes layout spacing and structure below 1024px, 768px, 480px, and 360px
+   ============================================================ */
+
+/* Tablets (<= 1024px) */
+@media (max-width: 1024px) {
+  .gce-results-section {
+    padding: 70px 20px;
+  }
+
+  .gce-results-header {
+    margin-bottom: 32px;
+  }
+
+  .gce-results-grid {
+    gap: 20px;
+  }
+}
+
+/* Mobile & Tablet Transition (<= 900px / 768px) */
+@media (max-width: 900px) {
+  .gce-summary-card-inner {
+    grid-template-columns: 1fr;
+    padding: 28px 24px;
+    gap: 28px;
+  }
+
+  .gce-summary-meta-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gce-summary-aside {
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .gce-congrats-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 24px;
+    gap: 16px;
+  }
+
+  .gce-contact-strip {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .gce-contact-details {
+    justify-content: center;
+  }
+
+  .gce-action-buttons {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .gce-results-section {
+    padding: 48px 14px;
+  }
+
+  .gce-results-header {
+    margin-bottom: 22px;
+  }
+
+  .gce-meta-bar {
+    gap: 8px;
+    padding: 5px 12px;
+  }
+
+  .gce-congrats-banner {
+    padding: 16px 14px;
+    gap: 12px;
+    margin-bottom: 20px;
+    border-radius: var(--radius-sm, 12px);
+  }
+
+  .gce-congrats-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1.3rem;
+  }
+
+  .gce-summary-card {
+    margin-bottom: 24px;
+    border-radius: var(--radius-sm, 14px);
+  }
+
+  .gce-summary-card-inner {
+    padding: 18px 14px;
+    gap: 18px;
+  }
+
+  .gce-motto-highlight {
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    border-radius: 0 12px 12px 0;
+    border-left-width: 3px;
+  }
+
+  .gce-summary-meta-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .gce-summary-meta-box {
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  .gce-summary-image-wrap {
+    height: 180px;
+    border-radius: 12px;
+  }
+
+  .gce-summary-stat-capsule {
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  .gce-results-grid {
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .gce-contact-strip {
+    padding: 16px 14px;
+    gap: 12px;
+    border-radius: 14px;
+  }
+}
+
+/* Small Screens (<= 480px) */
+@media (max-width: 480px) {
+  .gce-results-section {
+    padding: 40px 10px;
+  }
+
+  .gce-congrats-banner {
+    padding: 12px 10px;
+    gap: 10px;
+    border-radius: 10px;
+  }
+
+  .gce-congrats-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    font-size: 1.15rem;
+  }
+
+  .gce-summary-card {
+    border-radius: 12px;
+    margin-bottom: 18px;
+  }
+
+  .gce-summary-card-inner {
+    padding: 13px 10px;
+    gap: 14px;
+  }
+
+  .gce-motto-highlight {
+    padding: 9px 10px;
+    border-radius: 0 10px 10px 0;
+    margin-bottom: 10px;
+  }
+
+  .gce-summary-image-wrap {
+    height: 150px;
+    border-radius: 10px;
+  }
+
+  .gce-summary-stat-capsule {
+    padding: 6px 8px;
+    border-radius: 8px;
+  }
+
+  .gce-summary-footer-bar {
+    padding-top: 10px;
+    gap: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .gce-summary-calendar-link {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .gce-results-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .gce-card-header {
+    flex-wrap: wrap;
+  }
+
+  .gce-contact-strip {
+    padding: 12px 10px;
+    gap: 10px;
+  }
+
+  .gce-contact-details {
+    gap: 10px;
+  }
+}
+
+/* Micro Screens (<= 360px: 360p testing viewport, 320x906, and narrow devices) */
+@media (max-width: 360px) {
+  .gce-results-section {
+    padding: 34px 8px;
+  }
+
+  .gce-congrats-banner {
+    padding: 10px 8px;
+    gap: 8px;
+  }
+
+  .gce-congrats-icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 1.0rem;
+  }
+
+  .gce-summary-card {
+    border-radius: 10px;
+  }
+
+  .gce-summary-card-inner {
+    padding: 10px 8px;
+    gap: 10px;
+  }
+
+  .gce-motto-highlight {
+    padding: 7px 8px;
+    margin-bottom: 8px;
+  }
+
+  .gce-summary-image-wrap {
+    height: 125px;
+  }
+
+  .gce-contact-strip {
+    padding: 10px 8px;
+    gap: 8px;
+  }
+}

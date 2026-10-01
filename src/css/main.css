@@ -26,6 +26,7 @@
 @import './components/cta-banner.css';
 @import './components/theme-toggle.css';
 @import './components/dialog.css';
+@import './components/offline-indicator.css';
 
 /* Features */
 @import './features/preloader.css';
@@ -34,6 +35,7 @@
 @import './features/carousel.css';
 @import './features/academics.css';
 @import './features/calendar-timeline.css';
+@import './features/gce-results.css';
 @import './features/campus-map.css';
 @import './features/map-embed.css';
 @import './features/enquiry.css';
