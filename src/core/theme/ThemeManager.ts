@@ -172,12 +172,32 @@ export class ThemeManager {
     private updateToggleA11y(dark: boolean): void {
         const buttons = this.getToggleElements();
         const label = dark ? 'Switch to light theme' : 'Switch to dark theme';
+        const modeName = dark ? 'Dark Mode' : 'Light Mode';
 
         buttons.forEach((btn) => {
             btn.setAttribute('aria-pressed', String(dark));
             btn.setAttribute('aria-checked', String(dark));
             btn.setAttribute('aria-label', label);
             btn.setAttribute('title', label);
+
+            // Synchronize theme name labels inside or linked to toggle buttons
+            const lightNameEl = btn.querySelector<HTMLElement>('.theme-name-light');
+            const darkNameEl = btn.querySelector<HTMLElement>('.theme-name-dark');
+            if (lightNameEl && darkNameEl) {
+                lightNameEl.style.display = dark ? 'none' : 'inline';
+                darkNameEl.style.display = dark ? 'inline' : 'none';
+            } else {
+                const labelSpan = btn.querySelector<HTMLElement>('.mobile-bottom-label, [data-theme-name]');
+                if (labelSpan && !labelSpan.querySelector('.theme-name-text')) {
+                    labelSpan.textContent = modeName;
+                }
+            }
+        });
+
+        // Also update any standalone theme name indicators
+        const standaloneNames = document.querySelectorAll<HTMLElement>('[data-theme-name]');
+        standaloneNames.forEach((el) => {
+            el.textContent = modeName;
         });
     }
 

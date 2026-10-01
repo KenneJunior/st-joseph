@@ -69,3 +69,56 @@
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
 }
+
+/* ============================================================
+   RESPONSIVE PRIMARY & SECONDARY BUTTON GROUPS (< 480px)
+   Enforces flex-wrap: wrap and flex-direction: column on small screens,
+   ensuring touch-friendly hit areas (min 44px-48px) without truncating.
+   ============================================================ */
+.button-group,
+.btn-group,
+.hero-buttons,
+.gce-action-buttons,
+.faq-help-actions,
+.modal-actions,
+.dialog-footer,
+.announcement-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .button-group,
+  .btn-group,
+  .hero-buttons,
+  .gce-action-buttons,
+  .faq-help-actions,
+  .modal-actions,
+  .dialog-footer,
+  .announcement-bar__actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+
+  .button-group > .btn,
+  .btn-group > .btn,
+  .hero-buttons > .btn,
+  .gce-action-buttons > .btn,
+  .faq-help-actions > button,
+  .faq-help-actions > a,
+  .modal-actions > .btn,
+  .dialog-footer > .btn {
+    width: 100% !important;
+    min-height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+  }
+}
+
