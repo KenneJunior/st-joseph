@@ -1,133 +1,1689 @@
-/* ============================================
-   CAROUSEL
-   ============================================ */
+/* ==========================================================================
+   SJCCC — PREMIUM CINEMATIC 3D DEPTH CAROUSEL
+   --------------------------------------------------------------------------
+   High 3D perspective, scale falloff, rotateY yaw, translate3d Z-depth,
+   and computer-only depth-of-field blur.
+
+   Key Architecture:
+   - High 3D transforms (rotateY inward yaw, scale, and translate3d with Z-depth).
+   - Distance-based styling from active index (data-distance, sibling, :has()).
+   - Optical depth-of-field lens blur strictly on desktop computers.
+   - Touch/mobile devices remain 100% unblurred for 60fps/120fps smoothness.
+   - Reduced-motion safely flattens 3D and removes all blur.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. WRAPPER
+   ========================================================================== */
+
 .carousel-wrapper {
-  position: relative;
-  max-width: 900px;
-  margin: 0 auto;
-  z-index: 1;
+    position: relative;
+
+    width: min(100%, 1180px);
+
+    margin-inline: auto;
+
+    padding-inline: clamp(16px, 3vw, 32px);
 }
+
+
+/* ==========================================================================
+   2. CONTAINER
+   ========================================================================== */
 
 .carousel-container {
-  position: relative;
-  height: 600px;
-  overflow: hidden;
-  border-radius: var(--radius-xl);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    position: relative;
+
+    width: 100%;
+    /*
+     * Generous cinematic height on laptop/desktop:
+     * Eliminates the short/squashed letterbox appearance on laptops,
+     * providing rich vertical headroom for portrait and landscape photos alike.
+     */
+    min-height: 520px;
+    height: clamp(540px, 52vw, 680px);
+
+    overflow: hidden;
+
+    border-radius: 28px;
+
+    /*
+     * Clean dark surface behind the cards.
+     * This is intentionally subtle so the side peeks don't look like
+     * random black space.
+     */
+    background:
+        linear-gradient(
+            145deg,
+            #12213b 0%,
+            #0c182d 55%,
+            #081222 100%
+        );
+
+    perspective: var(--carousel-perspective, 1200px);
+    perspective-origin: 50% 50%;
+
+    touch-action: pan-y;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    cursor: grab;
+
+    isolation: isolate;
+
+    box-shadow:
+        0 20px 50px rgba(3, 10, 25, 0.16),
+        0 40px 90px rgba(3, 10, 25, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.10);
+
+    transition:
+        box-shadow 350ms ease,
+        border-radius 350ms ease;
 }
 
-.carousel-slide {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transform: translateX(10px);
-  transition: opacity 0.6s var(--ease-standard, cubic-bezier(0.2, 0, 0, 1)),
-              transform 0.6s var(--ease-standard, cubic-bezier(0.2, 0, 0, 1));
-  display: flex;
-  flex-direction: column;
-  pointer-events: none;
+#campus .carousel-container:focus-visible,
+.carousel-container:focus-visible {
+    outline: 3px solid #d6ad55;
+    outline-offset: 4px;
 }
 
-.carousel-slide.active {
-  opacity: 1;
-  transform: translateX(0);
-  pointer-events: auto;
+.carousel-container:hover {
+    box-shadow:
+        0 24px 58px rgba(3, 10, 25, 0.20),
+        0 45px 100px rgba(3, 10, 25, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
+
+.carousel-container.is-dragging {
+    cursor: grabbing;
+}
+
+
+/* ==========================================================================
+   3. CONTAINER EDGE
+   --------------------------------------------------------------------------
+   This stays BELOW the slides and controls.
+   ========================================================================== */
+
+.carousel-container::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 0;
+
+    pointer-events: none;
+
+    border-radius: inherit;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.065),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+
+/*
+ * Deliberately removed the previous full-container ::after overlay.
+ *
+ * It was sitting above the slide stack and was responsible for making
+ * the entire carousel feel unnecessarily dark.
+ */
+
+
+/* ==========================================================================
+   4. TRACK
+   ========================================================================== */
+
+.carousel-track,
+#campus .carousel-track {
+    position: relative;
+
+    z-index: 1;
+
+    width: 100%;
+    height: 100%;
+
+    pointer-events: auto;
+    touch-action: pan-y;
+
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+
+
+/* ==========================================================================
+   5. SLIDES — 3D DEPTH SYSTEM DRIVEN BY --carousel-distance
+   ========================================================================== */
+
+.carousel-slide,
+#campus .carousel-track .carousel-slide {
+    position: absolute;
+
+    top: 0;
+    left: 50%;
+
+    width: var(--carousel-slide-width, 80%);
+    height: 100%;
+
+    /*
+     * Safer than dividing the custom property.
+     * Works cleanly whether TS provides px or another valid length.
+     */
+    margin-left: calc(var(--carousel-slide-width, 80%) * -0.5);
+
+    overflow: hidden;
+
+    border-radius: 24px;
+
+    background: #0b1427;
+
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+
+    pointer-events: none;
+
+    isolation: isolate;
+
+    /* Base 3D Depth Channels driven by --carousel-distance (from TypeScript) */
+    --distance: var(--carousel-distance, var(--slide-dist, 0));
+    --abs-distance: var(--carousel-abs-distance, var(--slide-abs-dist, calc(max(var(--distance), calc(var(--distance) * -1)))));
+
+    /* Desktop Depth Multipliers (overridden progressively on mobile) */
+    --depth-rotation-deg: 28deg;
+    --depth-z-px: 160px;
+    --depth-scale-factor: 0.18;
+    --depth-blur-px: 3.5px;
+
+    /* Dynamic continuous 3D transformations */
+    --calc-rotate-y: calc(var(--distance) * -1 * var(--depth-rotation-deg));
+    --calc-translate-z: calc(var(--abs-distance) * -1 * var(--depth-z-px));
+    --calc-scale: max(0.62, calc(1 - (var(--abs-distance) * var(--depth-scale-factor))));
+    --calc-opacity: max(0.18, calc(1 - (var(--abs-distance) * 0.28)));
+    --calc-blur: calc(var(--abs-distance) * var(--depth-blur-px));
+
+    /* Expose channels to TS or direct CSS transform */
+    --slide-rotate-y: var(--calc-rotate-y);
+    --slide-tz: var(--calc-translate-z);
+    --slide-scale: var(--calc-scale);
+    --slide-opacity: var(--calc-opacity);
+    --slide-blur: var(--calc-blur);
+
+    transform:
+        translate3d(
+            var(--slide-tx, 0px),
+            0,
+            var(--slide-tz, var(--calc-translate-z))
+        )
+        scale(var(--slide-scale, var(--calc-scale)))
+        rotateY(var(--slide-rotate-y, var(--calc-rotate-y)));
+
+    opacity: var(--slide-opacity, 1);
+
+    will-change: transform, opacity, filter;
+
+    box-shadow:
+        0 10px 24px rgba(0, 0, 0, 0.18),
+        0 24px 55px rgba(0, 0, 0, 0.22);
+
+    transition:
+        box-shadow 350ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+/* ==========================================================================
+   ACTIVE SLIDE (FOCAL POINT / DISTANCE 0)
+   ========================================================================== */
+
+.carousel-slide.is-active,
+.carousel-slide.active,
+.carousel-slide[data-distance="0"],
+.carousel-slide[aria-hidden="false"] {
+    --slide-dist: 0;
+    --slide-abs-dist: 0;
+    --slide-rotate-y: 0deg;
+    --slide-scale: 1;
+    --slide-tz: 0px;
+    --slide-opacity: 1;
+    --slide-blur: 0px;
+
+    z-index: 100;
+    pointer-events: auto;
+
+    box-shadow:
+        0 24px 54px rgba(0, 0, 0, 0.38),
+        0 42px 96px rgba(0, 0, 0, 0.44),
+        0 0 0 1px rgba(255, 255, 255, 0.14),
+        0 0 36px rgba(214, 173, 85, 0.18);
+}
+
+
+/* ==========================================================================
+   CINEMATIC 3D DEPTH — DISTANCE-BASED SLIDE TRANSFORMS
+   --------------------------------------------------------------------------
+   Applies high 3D transforms (rotateY inward yaw, scale depth falloff, and
+   translate3d with deep Z-axis recession) to neighboring slides based on
+   their distance from the active center index.
+   ========================================================================== */
+
+/* Immediate previous slide (distance -1): rotated inward towards center, scaled down, recessed in Z */
+.carousel-slide[data-distance="-1"],
+.carousel-slide:has(+ .carousel-slide.is-active),
+.carousel-slide:has(+ .carousel-slide.active) {
+    --slide-dist: -1;
+    --slide-abs-dist: 1;
+    --slide-rotate-y: 28deg;
+    --slide-scale: 0.82;
+    --slide-tz: -160px;
+    --slide-opacity: 0.72;
+    --slide-blur: 3.5px;
+
+    z-index: 85;
+
+    box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.32),
+        0 28px 58px rgba(0, 0, 0, 0.36);
+}
+
+/* Immediate next slide (distance +1): rotated inward towards center, scaled down, recessed in Z */
+.carousel-slide[data-distance="1"],
+.carousel-slide.is-active + .carousel-slide,
+.carousel-slide.active + .carousel-slide {
+    --slide-dist: 1;
+    --slide-abs-dist: 1;
+    --slide-rotate-y: -28deg;
+    --slide-scale: 0.82;
+    --slide-tz: -160px;
+    --slide-opacity: 0.72;
+    --slide-blur: 3.5px;
+
+    z-index: 85;
+
+    box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.32),
+        0 28px 58px rgba(0, 0, 0, 0.36);
+}
+
+/* Farther previous slide (distance -2): deeper angle, deeper Z recession */
+.carousel-slide[data-distance="-2"],
+.carousel-slide:has(+ .carousel-slide + .carousel-slide.is-active),
+.carousel-slide:has(+ .carousel-slide + .carousel-slide.active) {
+    --slide-dist: -2;
+    --slide-abs-dist: 2;
+    --slide-rotate-y: 40deg;
+    --slide-scale: 0.68;
+    --slide-tz: -320px;
+    --slide-opacity: 0.40;
+    --slide-blur: 7px;
+
+    z-index: 70;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.24),
+        0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+/* Farther next slide (distance +2): deeper angle, deeper Z recession */
+.carousel-slide[data-distance="2"],
+.carousel-slide.is-active + .carousel-slide + .carousel-slide,
+.carousel-slide.active + .carousel-slide + .carousel-slide {
+    --slide-dist: 2;
+    --slide-abs-dist: 2;
+    --slide-rotate-y: -40deg;
+    --slide-scale: 0.68;
+    --slide-tz: -320px;
+    --slide-opacity: 0.40;
+    --slide-blur: 7px;
+
+    z-index: 70;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.24),
+        0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+/* Distant slides outside active field */
+.carousel-slide[data-abs-distance="3"],
+.carousel-slide[data-abs-distance="4"] {
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+/* ==========================================================================
+   CINEMATIC LIGHTING & DEPTH CONTRAST ON NEIGHBORING SLIDES
+   ========================================================================== */
+
+/* Subtly dim neighboring slides so the active center card dominates visually */
+.carousel-slide:not(.is-active):not(.active) .carousel-image {
+    filter: brightness(0.80) contrast(1.06);
+    transition: filter 350ms ease;
+}
+
+.carousel-slide.is-active .carousel-image,
+.carousel-slide.active .carousel-image,
+.carousel-slide[data-distance="0"] .carousel-image {
+    filter: brightness(1) contrast(1);
+}
+
+
+/* No card transition while dragging */
+.carousel-container.is-dragging .carousel-slide {
+    transition: none !important;
+}
+
+
+/* ==========================================================================
+   CINEMATIC DEPTH-OF-FIELD (DESKTOP COMPUTERS ONLY)
+   --------------------------------------------------------------------------
+   Applies optical lens blur strictly to computers/laptops with pointer fine
+   and hover support. Mobile phones and tablets remain completely unblurred
+   to preserve 60fps/120fps touch scroll performance.
+   ========================================================================== */
+
+@media (min-width: 1025px) and (hover: hover) and (pointer: fine) {
+
+    /* Active center slide is completely sharp */
+    .carousel-slide.is-active,
+    .carousel-slide.active,
+    .carousel-slide[data-distance="0"],
+    .carousel-slide[aria-hidden="false"] {
+        --slide-blur: 0px !important;
+        filter: blur(0px) !important;
+        -webkit-filter: blur(0px) !important;
+    }
+
+    /* Flanking slides receive smooth continuous or discrete depth-of-field lens blur */
+    .carousel-slide {
+        filter: blur(var(--slide-blur, calc(var(--slide-abs-dist, 0) * 3.5px)));
+        -webkit-filter: blur(var(--slide-blur, calc(var(--slide-abs-dist, 0) * 3.5px)));
+    }
+
+    /* Synchronize blur transition during programmatic snapping */
+    .carousel-container.is-animating .carousel-slide {
+        transition:
+            box-shadow 350ms cubic-bezier(0.22, 1, 0.36, 1),
+            filter 350ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* During active user drag, decouple transitions for instant continuous tracking */
+    .carousel-container.is-dragging .carousel-slide {
+        transition: none !important;
+    }
+}
+
+/* Strictly disable blur on touch and mobile devices to protect frame rates */
+@media (max-width: 1024px), (hover: none), (pointer: coarse) {
+    .carousel-slide,
+    .carousel-slide *,
+    .carousel-slide .carousel-image {
+        --slide-blur: 0px !important;
+        filter: none !important;
+        -webkit-filter: none !important;
+    }
+}
+
+
+/* ==========================================================================
+   6. IMAGE
+   ========================================================================== */
 
 .carousel-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center 25%;
+
+    transform-origin: center center;
+
+    user-select: none;
+    -webkit-user-drag: none;
+
+    transition:
+        transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.carousel-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 50%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-  pointer-events: none;
-  z-index: 1;
+.carousel-container.is-dragging .carousel-image {
+    transition: none;
 }
+
+
+/* ==========================================================================
+   7. IMAGE GRADIENT
+   --------------------------------------------------------------------------
+   This overlay belongs ONLY to the slide, not the whole carousel.
+   ========================================================================== */
+
+.carousel-slide::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 2;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(3, 10, 24, 0) 0%,
+            rgba(3, 10, 24, 0.02) 38%,
+            rgba(3, 10, 24, 0.28) 68%,
+            rgba(3, 10, 24, 0.78) 100%
+        );
+}
+
+
+/*
+ * Very subtle highlight.
+ * Not a giant overlay.
+ */
+
+.carousel-slide::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 3;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.055),
+            transparent 24%,
+            transparent 76%,
+            rgba(255, 255, 255, 0.015)
+        );
+}
+
+
+/* ==========================================================================
+   8. CAPTION & TEXT SYSTEM (STYLED & ANIMATED)
+   ========================================================================== */
 
 .carousel-caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 20px 28px;
-  z-index: 2;
-  background: none;
-  color: #fff;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    position: absolute;
+
+    left: clamp(20px, 3.5vw, 44px);
+    right: clamp(20px, 3.5vw, 44px);
+    bottom: clamp(24px, 3.5vw, 44px);
+
+    z-index: 10;
+
+    max-width: 620px;
+
+    padding: clamp(16px, 2.2vw, 24px) clamp(18px, 2.5vw, 28px);
+
+    border-radius: 20px;
+
+    background: linear-gradient(
+        135deg,
+        rgba(6, 16, 34, 0.88) 0%,
+        rgba(4, 11, 24, 0.76) 100%
+    );
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    border: 1px solid rgba(255, 255, 255, 0.16);
+
+    box-shadow:
+        0 16px 36px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+
+    transform-origin: left bottom;
+
+    opacity: 0;
+    transform: translateY(24px);
+    pointer-events: none;
+
+    transition:
+        opacity 380ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 440ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Caption Kicker Badge */
+.carousel-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+    font-size: clamp(0.7rem, 0.85vw, 0.8rem);
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.14em;
+
+    color: #d6ad55;
+
+    margin-bottom: 8px;
+
+    opacity: 0;
+    transform: translateY(12px);
+
+    transition:
+        opacity 380ms ease 60ms,
+        transform 420ms cubic-bezier(0.16, 1, 0.3, 1) 60ms;
+}
+
+.carousel-kicker::before {
+    content: "";
+
+    display: inline-block;
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: #d6ad55;
+
+    box-shadow: 0 0 8px rgba(214, 173, 85, 0.8);
+}
+
+/* Caption Title */
+.carousel-title,
+.carousel-caption h3 {
+    margin: 0 0 8px;
+
+    font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+    font-size: clamp(1.65rem, 3.2vw, 2.75rem);
+
+    font-weight: 700;
+
+    line-height: 1.08;
+
+    letter-spacing: -0.02em;
+
+    color: #ffffff;
+
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+
+    opacity: 0;
+    transform: translateY(16px);
+
+    transition:
+        opacity 400ms ease 120ms,
+        transform 460ms cubic-bezier(0.16, 1, 0.3, 1) 120ms;
+}
+
+/* Gold Accent bar */
+.carousel-title::after,
+.carousel-caption h3::after {
+    content: "";
+
+    display: block;
+
+    width: 44px;
+    height: 2.5px;
+
+    margin-top: 10px;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #d6ad55,
+            rgba(214, 173, 85, 0)
+        );
+
+    transform-origin: left center;
+    transform: scaleX(0);
+
+    transition:
+        transform 480ms cubic-bezier(0.16, 1, 0.3, 1) 220ms;
+}
+
+/* Caption Description Text */
+.carousel-text,
+.carousel-caption p {
+    max-width: 560px;
+
+    margin: 0;
+
+    font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+    font-size: clamp(0.84rem, 1.05vw, 0.96rem);
+
+    line-height: 1.58;
+
+    color: rgba(255, 255, 255, 0.94);
+
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+
+    opacity: 0;
+    transform: translateY(18px);
+
+    transition:
+        opacity 420ms ease 200ms,
+        transform 480ms cubic-bezier(0.16, 1, 0.3, 1) 200ms;
+}
+
+/* Active Slide Entrance Animations (fade-in and slide-up) */
+.carousel-slide.active .carousel-caption,
+.carousel-slide.is-active .carousel-caption,
+.carousel-slide[data-distance="0"] .carousel-caption {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    animation: carouselCaptionSlideUp 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.carousel-slide.active .carousel-kicker,
+.carousel-slide.is-active .carousel-kicker,
+.carousel-slide[data-distance="0"] .carousel-kicker,
+.carousel-slide.active .carousel-title,
+.carousel-slide.is-active .carousel-title,
+.carousel-slide[data-distance="0"] .carousel-title,
+.carousel-slide.active .carousel-caption h3,
+.carousel-slide.is-active .carousel-caption h3,
+.carousel-slide[data-distance="0"] .carousel-caption h3,
+.carousel-slide.active .carousel-text,
+.carousel-slide.is-active .carousel-text,
+.carousel-slide[data-distance="0"] .carousel-text,
+.carousel-slide.active .carousel-caption p,
+.carousel-slide.is-active .carousel-caption p,
+.carousel-slide[data-distance="0"] .carousel-caption p {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.carousel-slide.active .carousel-title::after,
+.carousel-slide.is-active .carousel-title::after,
+.carousel-slide[data-distance="0"] .carousel-title::after,
+.carousel-slide.active .carousel-caption h3::after,
+.carousel-slide.is-active .carousel-caption h3::after,
+.carousel-slide[data-distance="0"] .carousel-caption h3::after {
+    transform: scaleX(1);
+}
+
+/* Caption Entry Keyframe */
+@keyframes carouselCaptionSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(26px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Inactive Slide Exit Animations */
+.carousel-slide:not(.is-active):not(.active) .carousel-caption {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+}
+
+.carousel-slide:not(.is-active):not(.active) .carousel-kicker {
+    opacity: 0;
+    transform: translateY(12px);
+}
+
+.carousel-slide:not(.is-active):not(.active) .carousel-title,
+.carousel-slide:not(.is-active):not(.active) .carousel-caption h3 {
+    opacity: 0;
+    transform: translateY(16px);
+}
+
+.carousel-slide:not(.is-active):not(.active) .carousel-title::after,
+.carousel-slide:not(.is-active):not(.active) .carousel-caption h3::after {
+    transform: scaleX(0);
+}
+
+.carousel-slide:not(.is-active):not(.active) .carousel-text,
+.carousel-slide:not(.is-active):not(.active) .carousel-caption p {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+
+/* ==========================================================================
+   9. SLICK AUTOPLAY LOADING PROGRESS INDICATOR
+   ========================================================================== */
+
+.carousel-progress-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 240;
+    height: 3.5px;
+    background: rgba(255, 255, 255, 0.12);
+    pointer-events: none;
+    overflow: hidden;
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+    transition: opacity 300ms ease;
+}
+
+.carousel-progress-bar {
+    width: 100%;
+    height: 100%;
+    transform-origin: left center;
+    transform: scaleX(0);
+    background: linear-gradient(
+        90deg,
+        #c6922e 0%,
+        #d6ad55 35%,
+        #fbe59a 80%,
+        #ffffff 100%
+    );
+    box-shadow:
+        0 0 10px rgba(214, 173, 85, 0.8),
+        0 0 4px rgba(255, 255, 255, 0.9);
+    border-radius: 999px;
+    will-change: transform;
+}
+
+/* Active progress animation driven by CSS */
+.carousel-container.is-autoplay-active .carousel-progress-bar {
+    animation: carouselProgressFill var(--carousel-autoplay-delay, 5000ms) linear forwards;
+}
+
+/* Paused state (hover on track or slide focus) */
+.carousel-container.is-autoplay-paused .carousel-progress-bar {
+    animation-play-state: paused !important;
+    opacity: 0.8;
+    filter: brightness(0.95);
+    box-shadow: 0 0 8px rgba(214, 173, 85, 0.5);
+}
+
+@keyframes carouselProgressFill {
+    0% {
+        transform: scaleX(0);
+    }
+    100% {
+        transform: scaleX(1);
+    }
+}
+
+
+/* ==========================================================================
+   10. NAVIGATION BUTTONS
+   --------------------------------------------------------------------------
+   Guaranteed visibility: Prev on Left, Next on Right with explicit z-index
+   ========================================================================== */
+
 .carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--primary);
-  border: none;
-  width: 48px;
-  height: 48px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  border-radius: 50%;
-  z-index: 10;
-  transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-  backdrop-filter: blur(5px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    position: absolute;
+
+    top: 50%;
+
+    z-index: 250 !important;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    width: 52px;
+    height: 52px;
+
+    min-width: 44px;
+    min-height: 44px;
+
+    padding: 0;
+
+    border: 1px solid rgba(255, 255, 255, 0.28);
+
+    border-radius: 50%;
+
+    color: #ffffff;
+
+    background: rgba(7, 18, 36, 0.92);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+    transform: translateY(-50%);
+
+    cursor: pointer;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    transition:
+        transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        background 220ms ease,
+        color 220ms ease,
+        border-color 220ms ease,
+        box-shadow 220ms ease;
+}
+
+.carousel-btn-icon {
+    display: block;
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+}
+
+.carousel-btn i.bi {
+    display: none;
 }
 
 .carousel-btn:hover {
-  background: #fff;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.2);
-  transform: translateY(-50%) scale(1.08);
+    background: #ffffff;
+
+    color: #09162d;
+
+    border-color: rgba(255, 255, 255, 0.85);
+
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+
+    transform:
+        translateY(-50%)
+        scale(1.06);
 }
 
-.carousel-btn.prev {
-  left: 16px;
+.carousel-btn:active {
+    transform:
+        translateY(-50%)
+        scale(0.96);
 }
 
-.carousel-btn.next {
-  right: 16px;
+.carousel-btn:focus-visible {
+    outline: 3px solid rgba(214, 173, 85, 0.78);
+    outline-offset: 4px;
 }
 
-.carousel-btn i {
-  font-size: 1.2rem;
-  line-height: 1;
+
+/* Previous Button (Left) - matches all selectors */
+
+.carousel-btn.prev,
+.carousel-btn--prev,
+#prevBtn {
+    left: clamp(14px, 2.5vw, 28px) !important;
+    right: auto !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
-.carousel-dots {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
+
+/* Next Button (Right) - matches all selectors */
+
+.carousel-btn.next,
+.carousel-btn--next,
+#nextBtn {
+    right: clamp(14px, 2.5vw, 28px) !important;
+    left: auto !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
-.carousel-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #ccc;
-  border: none;
-  cursor: pointer;
-  transition: background 0.3s, width 0.3s;
-  padding: 0;
+
+/* ==========================================================================
+   12. DRAG STATE
+   ========================================================================== */
+
+.carousel-container.is-dragging,
+.carousel-container.is-dragging * {
+    user-select: none;
+    -webkit-user-select: none;
 }
 
-.carousel-dot.active {
-  background: var(--accent);
-  width: 32px;
-  border-radius: 10px;
+
+/* ==========================================================================
+   13. TABLET
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+
+    .carousel-container {
+        min-height: 460px;
+        height: clamp(480px, 54vw, 580px);
+
+        border-radius: 24px;
+    }
+
+    /* Progressively reduced 3D depth system for tablet viewports */
+    .carousel-slide,
+    #campus .carousel-track .carousel-slide {
+        border-radius: 21px;
+        --depth-rotation-deg: 16deg;
+        --depth-z-px: 100px;
+        --depth-scale-factor: 0.14;
+        --depth-blur-px: 0px;
+    }
+
+    .carousel-btn {
+        width: 48px;
+        height: 48px;
+    }
+
+    .carousel-btn.prev,
+    .carousel-btn--prev,
+    #prevBtn {
+        left: 14px !important;
+        right: auto !important;
+    }
+
+    .carousel-btn.next,
+    .carousel-btn--next,
+    #nextBtn {
+        right: 14px !important;
+        left: auto !important;
+    }
+}
+
+
+/* ==========================================================================
+   14. MOBILE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+    .carousel-wrapper {
+        padding-inline: 12px;
+    }
+
+    .carousel-container {
+        min-height: 0;
+        height: clamp(320px, 62vw, 440px);
+
+        border-radius: 20px;
+
+        box-shadow:
+            0 14px 32px rgba(3, 10, 25, 0.16),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    /* Progressively reduced 3D depth system for mobile screens */
+    .carousel-slide,
+    #campus .carousel-track .carousel-slide {
+        border-radius: 18px;
+        --depth-rotation-deg: 6deg;
+        --depth-z-px: 40px;
+        --depth-scale-factor: 0.08;
+        --depth-blur-px: 0px;
+    }
+
+    .carousel-caption {
+        left: 16px;
+        right: 16px;
+        bottom: 52px;
+        padding: 14px 18px;
+        border-radius: 16px;
+    }
+
+    .carousel-title,
+    .carousel-caption h3 {
+        font-size: clamp(1.35rem, 5vw, 1.95rem);
+        margin-bottom: 6px;
+    }
+
+    .carousel-text,
+    .carousel-caption p {
+        font-size: 0.78rem;
+        line-height: 1.45;
+    }
+
+    .carousel-title::after,
+    .carousel-caption h3::after {
+        width: 32px;
+        margin-top: 8px;
+    }
+
+    .carousel-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    .carousel-btn.prev,
+    .carousel-btn--prev,
+    #prevBtn {
+        left: 10px !important;
+        right: auto !important;
+    }
+
+    .carousel-btn.next,
+    .carousel-btn--next,
+    #nextBtn {
+        right: 10px !important;
+        left: auto !important;
+    }
+}
+
+
+/* ==========================================================================
+   15. SMALL MOBILE
+   ========================================================================== */
+
+@media (max-width: 480px) {
+
+    .carousel-wrapper {
+        padding-inline: 8px;
+    }
+
+    .carousel-container {
+        height: clamp(280px, 68vw, 360px);
+
+        border-radius: 17px;
+    }
+
+    /* Progressively flattened 3D depth system on small mobile */
+    .carousel-slide,
+    #campus .carousel-track .carousel-slide {
+        border-radius: 15px;
+        --depth-rotation-deg: 0deg;
+        --depth-z-px: 0px;
+        --depth-scale-factor: 0.04;
+        --depth-blur-px: 0px;
+    }
+
+    .carousel-caption {
+        left: 12px;
+        right: 12px;
+        bottom: 48px;
+        padding: 12px 14px;
+        border-radius: 14px;
+    }
+
+    .carousel-kicker {
+        font-size: 0.65rem;
+        margin-bottom: 4px;
+    }
+
+    .carousel-title,
+    .carousel-caption h3 {
+        font-size: clamp(1.18rem, 5.2vw, 1.55rem);
+        margin-bottom: 4px;
+    }
+
+    .carousel-text,
+    .carousel-caption p {
+        display: -webkit-box;
+
+        overflow: hidden;
+
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+
+        font-size: 0.74rem;
+        line-height: 1.4;
+    }
+
+    .carousel-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .carousel-btn.prev,
+    .carousel-btn--prev,
+    #prevBtn {
+        left: 6px !important;
+        right: auto !important;
+    }
+
+    .carousel-btn.next,
+    .carousel-btn--next,
+    #nextBtn {
+        right: 6px !important;
+        left: auto !important;
+    }
+}
+
+
+/* ==========================================================================
+   16. VERY SMALL DEVICES
+   ========================================================================== */
+
+@media (max-width: 360px) {
+
+    .carousel-container {
+        height: 250px;
+
+        border-radius: 15px;
+    }
+
+    .carousel-slide {
+        border-radius: 13px;
+    }
+
+    .carousel-caption {
+        bottom: 47px;
+    }
+
+    .carousel-caption h3 {
+        font-size: 1.15rem;
+    }
+
+    .carousel-caption p {
+        font-size: 0.72rem;
+    }
+
+    .carousel-btn {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+
+/* ==========================================================================
+   17. TOUCH DEVICES
+   ========================================================================== */
+
+@media (hover: none) {
+
+    .carousel-container:hover {
+        box-shadow:
+            0 14px 32px rgba(3, 10, 25, 0.16),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    /*
+     * Prevent desktop hover styling from appearing after tapping.
+     */
+    .carousel-btn:hover {
+        background: rgba(7, 18, 36, 0.94);
+
+        color: #ffffff;
+
+        border-color: rgba(255, 255, 255, 0.18);
+
+        box-shadow:
+            0 8px 24px rgba(0, 0, 0, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.10);
+
+        transform: translateY(-50%);
+    }
+
+    .carousel-dot:hover::before {
+        background: rgba(255, 255, 255, 0.42);
+    }
+}
+
+
+/* ==========================================================================
+   18. DARK MODE
+   ========================================================================== */
+
+html.dark .carousel-container,
+[data-theme="dark"] .carousel-container {
+    background:
+        linear-gradient(
+            145deg,
+            #071020 0%,
+            #040b17 55%,
+            #020711 100%
+        );
+}
+
+html.dark .carousel-btn,
+[data-theme="dark"] .carousel-btn {
+    background: rgba(5, 12, 27, 0.94);
+
+    border-color: rgba(255, 255, 255, 0.13);
+}
+
+html.dark .carousel-btn:hover,
+[data-theme="dark"] .carousel-btn:hover {
+    background: #ffffff;
+
+    color: #071329;
+
+    border-color: rgba(255, 255, 255, 0.75);
+}
+
+
+/* ==========================================================================
+   19. REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .carousel-container {
+        perspective: none;
+    }
+
+    .carousel-slide,
+    .carousel-image,
+    .carousel-caption,
+    .carousel-btn,
+    .carousel-thumb {
+        transition: none;
+    }
+
+    .carousel-slide,
+    .carousel-slide *,
+    .carousel-slide .carousel-image {
+        filter: none !important;
+        -webkit-filter: none !important;
+    }
+
+    /*
+     * Do NOT set transform:none on the slide.
+     * Carousel.ts still needs translate3d() for positioning.
+     */
+}
+
+
+/* ==========================================================================
+   20. HIGH CONTRAST
+   ========================================================================== */
+
+@media (prefers-contrast: more) {
+
+    .carousel-btn {
+        border-color: rgba(255, 255, 255, 0.70);
+    }
+
+    .carousel-thumb {
+        border-color: rgba(255, 255, 255, 0.60);
+    }
+
+    .carousel-thumb.is-active,
+    .carousel-thumb.active {
+        border-color: #ffffff;
+    }
+
+    .carousel-caption p {
+        color: #ffffff;
+    }
+}
+
+
+/* ==========================================================================
+   21. PRINT
+   ========================================================================== */
+
+@media print {
+
+    .carousel-btn,
+    .carousel-thumbnails {
+        display: none !important;
+    }
+
+    .carousel-container {
+        height: auto;
+
+        overflow: visible;
+
+        border: 1px solid #ccc;
+
+        box-shadow: none;
+    }
+}
+
+
+/* ==========================================================================
+   22. CAROUSEL THUMBNAILS NAVIGATION
+   --------------------------------------------------------------------------
+   Small, clickable thumbnails below the carousel allowing direct navigation
+   to any slide, with prominent active gold border & visual indicator.
+   ========================================================================== */
+
+.carousel-thumbnails-wrapper {
+    position: relative;
+    z-index: 20;
+    width: 100%;
+    max-width: 1140px;
+    margin: 22px auto 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 4px;
+}
+
+.thumb-scroll-btn {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(13, 43, 82, 0.90);
+    border: 1px solid rgba(200, 150, 62, 0.45);
+    color: #f0d28b;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    transition: all 220ms ease;
+    z-index: 25;
+    padding: 0;
+}
+
+.thumb-scroll-btn svg {
+    display: block;
+}
+
+.thumb-scroll-btn i {
+    display: none;
+}
+
+.thumb-scroll-btn:hover:not(:disabled) {
+    background: var(--accent, #c8963e);
+    color: #07182e;
+    border-color: #f0d28b;
+    transform: scale(1.08);
+    box-shadow: 0 6px 18px rgba(200, 150, 62, 0.4);
+}
+
+.thumb-scroll-btn:disabled,
+.thumb-scroll-btn[aria-disabled="true"] {
+    opacity: 0.28;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.carousel-thumbnails {
+    position: relative;
+    z-index: 20;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: clamp(10px, 1.8vw, 18px);
+
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 100%;
+
+    margin: 0;
+    padding: 8px 6px 14px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+
+    /* Distinct visible modern scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent, #c8963e) rgba(15, 34, 64, 0.35);
+}
+
+.carousel-thumbnails.is-dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
+}
+
+.carousel-thumbnails::-webkit-scrollbar {
+    height: 6px;
+    display: block;
+}
+
+.carousel-thumbnails::-webkit-scrollbar-track {
+    background: rgba(15, 34, 64, 0.35);
+    border-radius: 999px;
+    margin: 0 10px;
+}
+
+.carousel-thumbnails::-webkit-scrollbar-thumb {
+    background: var(--accent, #c8963e);
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 200ms ease;
+}
+
+.carousel-thumbnails::-webkit-scrollbar-thumb:hover {
+    background: #dfaa4d;
+}
+
+.carousel-thumb {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    flex: 0 0 auto;
+
+    width: clamp(80px, 12vw, 115px);
+
+    padding: 0;
+    margin: 0;
+
+    background: transparent;
+    border: none;
+
+    cursor: pointer;
+    text-align: center;
+    outline: none;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    transition:
+        transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 240ms ease;
+}
+
+.carousel-thumb-img {
+    display: block;
+
+    width: 100%;
+    height: clamp(52px, 7vw, 70px);
+
+    object-fit: cover;
+    object-position: center 25%;
+
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.18);
+
+    background: #0b1427;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+
+    opacity: 0.62;
+    filter: brightness(0.82) contrast(1.02);
+
+    transition:
+        border-color 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-width 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 260ms ease,
+        filter 260ms ease,
+        transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.carousel-thumb-caption {
+    display: block;
+    width: 100%;
+
+    font-family: Inter, system-ui, sans-serif;
+    font-size: clamp(0.70rem, 0.85vw, 0.78rem);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+
+    color: rgba(255, 255, 255, 0.62);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    transition:
+        color 240ms ease,
+        font-weight 240ms ease;
+}
+
+/* Hover state on inactive thumbnails */
+.carousel-thumb:hover:not(.active) .carousel-thumb-img {
+    opacity: 0.92;
+    filter: brightness(0.98);
+    border-color: rgba(214, 173, 85, 0.70);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.36);
+}
+
+.carousel-thumb:hover:not(.active) .carousel-thumb-caption {
+    color: rgba(255, 255, 255, 0.92);
+}
+
+/* Active Thumbnail: Bold Gold Border, Glowing Ring, & Visual Indicator Pip */
+.carousel-thumb.active,
+.carousel-thumb.is-active,
+.carousel-thumb[aria-current="true"] {
+    transform: translateY(-3px);
+}
+
+.carousel-thumb.active .carousel-thumb-img,
+.carousel-thumb.is-active .carousel-thumb-img,
+.carousel-thumb[aria-current="true"] .carousel-thumb-img {
+    opacity: 1;
+    filter: brightness(1.06) contrast(1.05);
+
+    border-color: #d6ad55;
+    border-width: 2.5px;
+
+    box-shadow:
+        0 0 0 2px rgba(214, 173, 85, 0.38),
+        0 8px 24px rgba(0, 0, 0, 0.44),
+        0 0 18px rgba(214, 173, 85, 0.35);
+}
+
+.carousel-thumb.active .carousel-thumb-caption,
+.carousel-thumb.is-active .carousel-thumb-caption,
+.carousel-thumb[aria-current="true"] .carousel-thumb-caption {
+    color: #f0c978;
+    font-weight: 700;
+}
+
+/* Visual Indicator Pip below active thumbnail */
+.carousel-thumb::after {
+    content: "";
+
+    position: absolute;
+    bottom: -6px;
+
+    width: 0;
+    height: 3px;
+
+    border-radius: 999px;
+
+    background: linear-gradient(90deg, #d6ad55, #fbe59a);
+    box-shadow: 0 0 8px rgba(214, 173, 85, 0.85);
+
+    transition: width 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.carousel-thumb.active::after,
+.carousel-thumb.is-active::after,
+.carousel-thumb[aria-current="true"]::after {
+    width: 26px;
+}
+
+/* Accessible Keyboard Focus Ring */
+.carousel-thumb:focus-visible {
+    outline: none;
+}
+
+.carousel-thumb:focus-visible .carousel-thumb-img {
+    outline: 2px solid #ffffff;
+    outline-offset: 3px;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+    .carousel-thumbnails-wrapper {
+        margin-top: 16px;
+        gap: 6px;
+    }
+
+    .thumb-scroll-btn {
+        flex: 0 0 32px;
+        width: 32px;
+        height: 32px;
+    }
+
+    .thumb-scroll-btn svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    .carousel-thumbnails {
+        justify-content: flex-start;
+        padding-inline: 4px;
+        gap: 10px;
+        margin-top: 0;
+    }
+
+    .carousel-thumb {
+        width: 78px;
+    }
+
+    .carousel-thumb-img {
+        height: 52px;
+        border-radius: 10px;
+    }
+
+    .carousel-thumb-caption {
+        font-size: 0.66rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel-thumbnails-wrapper {
+        margin-top: 12px;
+        gap: 4px;
+    }
+
+    .thumb-scroll-btn {
+        flex: 0 0 28px;
+        width: 28px;
+        height: 28px;
+    }
+
+    .thumb-scroll-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .carousel-thumbnails {
+        gap: 8px;
+        margin-top: 0;
+        padding-inline: 4px;
+    }
+
+    .carousel-thumb {
+        width: 68px;
+    }
+
+    .carousel-thumb-img {
+        height: 46px;
+        border-radius: 8px;
+    }
+
+    .carousel-thumb-caption {
+        font-size: 0.62rem;
+    }
 }

@@ -21,9 +21,13 @@
 .hero-bg-img {
   position: absolute;
   inset: 0;
-  background: url('/assets/stJoseph.jpg') center/cover;
+  background-image: url('/assets/stJoseph.jpg');
+  background-position: 50% 10%;
+  background-size: cover;
+  background-repeat: no-repeat;
   opacity: 1;
   transform: scale(1.05);
+  transform-origin: 50% 15%;
   animation: heroSlowZoom 20s ease-in-out infinite alternate;
   z-index: -1;
 }
@@ -47,6 +51,28 @@
   opacity: 0.5;
 }
 
+/* ============================================
+   GLOBAL DUST PARTICLES CANVAS
+   Ambient golden dust motes floating all over the page
+   ============================================ */
+#dustCanvas,
+.dust-particles-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: none;
+  pointer-events: none !important;
+  z-index: 90;
+  display: block;
+  contain: strict;
+}
+
 .hero-particle {
   position: absolute;
   background: rgba(255,255,255,0.6);
@@ -65,11 +91,11 @@
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   color: var(--accent-glow);
-  padding: 8px 20px;
+  padding: clamp(4px, 1vh, 8px) clamp(10px, 2vw, 20px);
   border-radius: 50px;
-  font-size: 0.85rem;
+  font-size: clamp(0.66rem, 1.8vw, 0.85rem);
   font-weight: 600;
-  letter-spacing: 2px;
+  letter-spacing: clamp(0.5px, 0.2vw, 2px);
   text-transform: uppercase;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);

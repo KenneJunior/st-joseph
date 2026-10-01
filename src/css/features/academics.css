@@ -9,6 +9,26 @@
   margin: 0 auto;
 }
 
+@media (max-width: 1024px) {
+  .academics-pillars {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .academics-pillars {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .academics-pillars {
+    gap: 8px;
+  }
+}
+
 .pillar {
   background: var(--surface-card);
   border-radius: var(--radius-lg);
@@ -23,6 +43,12 @@
   z-index: 1;
 }
 
+@media (max-width: 768px) {
+  .pillar {
+    border-radius: var(--radius-sm);
+  }
+}
+
 .pillar:hover {
   border-color: var(--color-border-brand, rgba(201, 162, 41, 0.4));
   box-shadow: 0 12px 32px -4px rgba(7, 24, 46, 0.12), 0 0 16px rgba(201, 162, 41, 0.15);
@@ -35,23 +61,66 @@ body.dark-mode .pillar:hover {
 }
 
 .pillar-general .pillar__header {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  background: linear-gradient(135deg, rgba(7, 24, 46, 0.88), rgba(14, 39, 70, 0.85)),
+              url('/assets/sjccc-Classroom.jpg') center/cover no-repeat;
   color: #fff;
   padding: 28px 24px;
   text-align: center;
 }
 
 .pillar-technical .pillar__header {
-  background: linear-gradient(135deg, var(--accent), var(--accent-light));
-  color: var(--primary-dark);
+  background: linear-gradient(135deg, rgba(7, 24, 46, 0.86), rgba(184, 134, 11, 0.84)),
+              url('/assets/sjccc-Electricity.jpeg') center/cover no-repeat;
+  color: #ffffff;
   padding: 28px 24px;
   text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .pillar-general .pillar__header,
+  .pillar-technical .pillar__header {
+    padding: 20px 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pillar-general .pillar__header,
+  .pillar-technical .pillar__header {
+    padding: 11px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pillar-general .pillar__header,
+  .pillar-technical .pillar__header {
+    padding: 9px 10px;
+  }
 }
 
 .pillar__icon {
   font-size: 2.2rem;
   margin-bottom: 8px;
   transition: transform 0.3s var(--ease-cinematic);
+}
+
+@media (max-width: 1024px) {
+  .pillar__icon {
+    font-size: 1.7rem;
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pillar__icon {
+    font-size: 1.2rem;
+    margin-bottom: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pillar__icon {
+    font-size: 1.05rem;
+  }
 }
 
 .pillar:hover .pillar__icon {
@@ -65,10 +134,43 @@ body.dark-mode .pillar:hover {
   margin-bottom: 6px;
 }
 
+@media (max-width: 1024px) {
+  .pillar__title {
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pillar__title {
+    font-size: 0.98rem;
+    margin-bottom: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pillar__title {
+    font-size: 0.90rem;
+  }
+}
+
 .pillar__desc {
   font-size: 0.9rem;
   opacity: 0.9;
   line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .pillar__desc {
+    font-size: 0.74rem;
+    line-height: 1.3;
+  }
+}
+
+@media (max-width: 480px) {
+  .pillar__desc {
+    font-size: 0.68rem;
+  }
 }
 
 .pillar__levels {
@@ -79,11 +181,45 @@ body.dark-mode .pillar:hover {
   flex: 1;
 }
 
+@media (max-width: 1024px) {
+  .pillar__levels {
+    padding: 20px 18px;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pillar__levels {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pillar__levels {
+    padding: 6px 8px;
+    gap: 5px;
+  }
+}
+
 .level {
   background: var(--bg-off-white);
   border-radius: var(--radius-md);
   padding: 18px 20px;
   transition: background 0.2s;
+}
+
+@media (max-width: 768px) {
+  .level {
+    padding: 7px 9px;
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .level {
+    padding: 6px 7px;
+  }
 }
 
 body.dark-mode .level {
@@ -98,6 +234,23 @@ body.dark-mode .level {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .level--ordinary .level__title,
+  .level--advanced .level__title,
+  .level--commercial .level__title {
+    font-size: 0.80rem;
+    margin-bottom: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .level--ordinary .level__title,
+  .level--advanced .level__title,
+  .level--commercial .level__title {
+    font-size: 0.76rem;
+  }
 }
 
 .level--ordinary .level__title::before {
