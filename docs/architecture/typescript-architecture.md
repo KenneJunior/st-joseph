@@ -95,6 +95,8 @@ Generic primitives with no hardcoded domain logic:
 - `navigation/MobileNavigation.ts`: Accessible off-canvas drawer.
 - `navigation/ScrollSpy.ts`: IntersectionObserver-based nav tracking.
 - `dialog/ConfirmDialog.ts`: Glassmorphic modal dialog.
+- `effects/LiquidGlassAdapter.ts`: Coordinates physical glass rendering via external `@kennejunior/liquidglass`.
+- `utils/CardSplitter.ts`: Visual feedback boundary controller for adjacent cards and pathways.
 
 ### 5. Services (`src/services/`)
 External API and browser platform adapters:

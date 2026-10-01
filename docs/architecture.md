@@ -12,7 +12,7 @@ SJCCC is engineered as a **dual-entrypoint, progressive web application (PWA)** 
 - **Interactive Digital Campus (`/` or `/index.html`)**: An interactive landing page featuring procedural hero physics, touch-enabled carousels, dynamic circular announcements, an interactive 6-zone virtual campus map, and admissions enquiry handling.
 - **Document-First Student Handbook (`/prospectus.html`)**: An official reference student handbook built under a strict **document-first** philosophy. All regulations, uniforms, and approved fee schedules are rendered directly in static semantic HTML, ensuring 100% readability with JavaScript disabled, accompanied by an A4 print engine.
 
-Both pages share unified core services (`ThemeManager`, `MobileNavigation`, `OfflineIndicator`), canonical datasets in `src/data/`, and a two-stage Service Worker caching pipeline.
+Both pages share unified core services (`ThemeManager`, `MobileNavigation`, `OfflineIndicator`, and `LiquidGlassAdapter` via the published [`@kennejunior/liquidglass`](https://github.com/KenneJunior/liquidglass) package), canonical datasets in `src/data/`, and a two-stage Service Worker caching pipeline.
 
 ---
 
@@ -67,20 +67,20 @@ flowchart TD
 
 ## 3. Documentation Map
 
-| Specification Document                                                 | Area Covered                                                                                       |
-|:-----------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------|
-| **[System Overview](architecture/overview.md)**                        | High-level system architecture, dual-entrypoint design, and structural tiers.                      |
-| **[Shared Infrastructure](architecture/shared-infrastructure.md)**     | `ThemeManager`, `MobileNavigation`, `OfflineIndicator`, and shared storage/selector primitives.    |
-| **[Homepage Architecture](architecture/homepage.md)**                  | `HomeApp` composition root, hero scroll physics, carousel, virtual map, and admissions modal.      |
-| **[Prospectus Architecture](architecture/prospectus.md)**              | `ProspectusApp`, zero-JS baseline readability, native print export, and paired card layouts.       |
-| **[CSS Architecture](architecture/css-architecture.md)**               | Core design tokens, dark mode overrides, fluid typography, and the 10-module prospectus CSS suite. |
-| **[TypeScript Architecture](architecture/typescript-architecture.md)** | Module taxonomy, initialization lifecycle, strict compiler contracts, and feature organization.    |
-| **[Canonical Data Layer](architecture/data-layer.md)**                 | Data sources in `src/data/`, dynamic hydration, and static HTML duplication requirements.          |
-| **[Navigation Architecture](architecture/navigation.md)**              | Desktop menus, mobile drawer, bottom tab bar, scrollspy, and keyboard navigation.                  |
-| **[PWA & Offline Architecture](architecture/pwa.md)**                  | Service worker caching strategies, precache sets, runtime eviction, and offline handbook viewing.  |
-| **[Accessibility Architecture](architecture/accessibility.md)**        | Semantic landmarks, `:focus-visible` rings, `.sr-only` utilities, and reduced motion safety.       |
-| **[Build & Deployment](architecture/build-and-deployment.md)**         | Vite Rollup multi-page bundling, two-stage Service Worker compilation, and production artifacts.   |
-| **[Architectural Decision Records](architecture/decisions.md)**        | Accepted architectural decisions (ADRs 001–006) preserving core technical intent.                  |
+| Specification Document | Area Covered |
+| :--- | :--- |
+| **[System Overview](architecture/overview.md)** | High-level system architecture, dual-entrypoint design, and structural tiers. |
+| **[Shared Infrastructure](architecture/shared-infrastructure.md)** | `ThemeManager`, `MobileNavigation`, `OfflineIndicator`, and shared storage/selector primitives. |
+| **[Homepage Architecture](architecture/homepage.md)** | `HomeApp` composition root, hero scroll physics, carousel, virtual map, and admissions modal. |
+| **[Prospectus Architecture](architecture/prospectus.md)** | `ProspectusApp`, zero-JS baseline readability, native print export, and paired card layouts. |
+| **[CSS Architecture](architecture/css-architecture.md)** | Core design tokens, dark mode overrides, fluid typography, and the 10-module prospectus CSS suite. |
+| **[TypeScript Architecture](architecture/typescript-architecture.md)** | Module taxonomy, initialization lifecycle, strict compiler contracts, and feature organization. |
+| **[Canonical Data Layer](architecture/data-layer.md)** | Data sources in `src/data/`, dynamic hydration, and static HTML duplication requirements. |
+| **[Navigation Architecture](architecture/navigation.md)** | Desktop menus, mobile drawer, bottom tab bar, scrollspy, and keyboard navigation. |
+| **[PWA & Offline Architecture](architecture/pwa.md)** | Service worker caching strategies, precache sets, runtime eviction, and offline handbook viewing. |
+| **[Accessibility Architecture](architecture/accessibility.md)** | Semantic landmarks, `:focus-visible` rings, `.sr-only` utilities, and reduced motion safety. |
+| **[Build & Deployment](architecture/build-and-deployment.md)** | Vite Rollup multi-page bundling, two-stage Service Worker compilation, and production artifacts. |
+| **[Architectural Decision Records](architecture/decisions.md)** | Accepted architectural decisions (ADRs 001–006) preserving core technical intent. |
 
 ---
 

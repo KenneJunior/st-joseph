@@ -54,16 +54,16 @@ flowchart TD
 
 The codebase is organized into clean, low-coupling architectural tiers:
 
-| Tier                      | Directory                                                      | Primary Role                                                                                                        |
-|:--------------------------|:---------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------|
-| **Presentation**          | Root (`index.html`, `prospectus.html`)                         | Semantic HTML entrypoints with structured microdata (Schema.org) and accessible landmarks.                          |
-| **Entrypoints**           | `src/main.ts`, `src/prospectus.ts`                             | Bootstrap scripts that register the Service Worker and trigger composition roots on `DOMContentLoaded`.             |
-| **Composition Roots**     | `src/pages/home/home.ts`, `src/pages/prospectus/prospectus.ts` | Page orchestrators responsible for instantiating features and passing configuration down to UI controllers.         |
-| **Shared Infrastructure** | `src/core/`, `src/ui/navigation/`, `src/features/offline/`     | Page-agnostic modules (`ThemeManager`, `MobileNavigation`, `OfflineIndicator`, storage keys, selectors).            |
-| **Domain Features**       | `src/features/`                                                | Self-contained feature modules (Hero physics, Announcement bar, Campus map, Enquiry modal, FAQ).                    |
-| **Canonical Data Layer**  | `src/data/`                                                    | Typed institutional datasets serving as the single source of truth for fees, curriculum, and admissions.            |
-| **Offline & PWA**         | `src/sw.ts`, `src/sw-register.ts`, `src/services/`             | Two-phase service worker build precaching HTML, hashed assets, and handling offline routing.                        |
-| **Design System / CSS**   | `src/css/`                                                     | Shared core tokens and typography scales, homepage feature stylesheets, and an isolated 10-module prospectus suite. |
+| Tier | Directory | Primary Role |
+| :--- | :--- | :--- |
+| **Presentation** | Root (`index.html`, `prospectus.html`) | Semantic HTML entrypoints with structured microdata (Schema.org) and accessible landmarks. |
+| **Entrypoints** | `src/main.ts`, `src/prospectus.ts` | Bootstrap scripts that register the Service Worker and trigger composition roots on `DOMContentLoaded`. |
+| **Composition Roots** | `src/pages/home/home.ts`, `src/pages/prospectus/prospectus.ts` | Page orchestrators responsible for instantiating features and passing configuration down to UI controllers. |
+| **Shared Infrastructure** | `src/core/`, `src/ui/navigation/`, `src/features/offline/` | Page-agnostic modules (`ThemeManager`, `MobileNavigation`, `OfflineIndicator`, storage keys, selectors). |
+| **Domain Features** | `src/features/` | Self-contained feature modules (Hero physics, Announcement bar, Campus map, Enquiry modal, FAQ). |
+| **Canonical Data Layer** | `src/data/` | Typed institutional datasets serving as the single source of truth for fees, curriculum, and admissions. |
+| **Offline & PWA** | `src/sw.ts`, `src/sw-register.ts`, `src/services/` | Two-phase service worker build precaching HTML, hashed assets, and handling offline routing. |
+| **Design System / CSS** | `src/css/` | Shared core tokens and typography scales, homepage feature stylesheets, and an isolated 10-module prospectus suite. |
 
 ---
 

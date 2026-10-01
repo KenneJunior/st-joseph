@@ -49,19 +49,22 @@ sequenceDiagram
 | **PWA Install Prompt** | `src/features/pwa/PwaInstallPrompt.ts` | `src/css/components/dialog.css` | `public/manifest.json` | `src/ui/dialog/ConfirmDialog.ts` |
 | **Preloader** | `src/features/preloader/Preloader.ts` | `src/css/features/preloader.css` | None | Session flag in memory |
 | **Header Progressive Blur** | `src/ui/navigation/HeaderScroll.ts` | `src/css/layout/header.css` | None | Window scroll listener |
-| **Section Tracking** | `src/ui/navigation/ScrollSpy.ts` | `src/css/layout/navigation.css` | None | `IntersectionObserver` |
+| **Section & Dock Active Tracking** | `src/ui/navigation/ScrollSpy.ts` | `src/css/layout/navigation.css`<br>`src/css/layout/navigation-mobile.css` | `src/core/config/navigation.ts` | `IntersectionObserver`, `aria-current="location"` sync |
 
 ---
 
 ## 4. Key Architectural Patterns in Homepage
 
-### 1. Facade Pattern for External Integrations
+### 1. Canonical Navigation & Dock Ordering
+Navigation hierarchy across Desktop, Mobile Drawer, and Mobile Bottom Dock is unified under `src/core/config/navigation.ts`. Dock items follow the canonical order: `Theme -> Home -> Academics -> Dates -> Results -> Map -> Menu`. `ScrollSpy.ts` continuously detects the visible section and synchronizes active states and `aria-current="location"` across all navigation surfaces.
+
+### 2. Facade Pattern for External Integrations
 The Google Map embed in `src/features/location/LocationMapFacade.ts` defers iframe creation until user interaction, preventing heavy third-party scripts from impacting first input delay (FID) or Lighthouse performance scores.
 
-### 2. Live Dynamic Renderers with Fallback
+### 3. Live Dynamic Renderers with Fallback
 Components like the Carousel, FAQ, and School Dates utilize dedicated renderers (`CarouselRenderer.ts`, `FaqRenderer.ts`, `TimelineRenderer.ts`) that populate DOM containers directly from canonical datasets in `src/data/`.
 
-### 3. Image Fallback Safety Guards
+### 4. Image Fallback Safety Guards
 `HomeApp.prototype.initImageFallbackGuards()` sets a window-level capture-phase error listener for `<img>` tags. Any broken image URL automatically redirects to `/assets/Error-Image.jpeg` or `/assets/icons/icon.svg` without unhandled console errors.
 
 ---
