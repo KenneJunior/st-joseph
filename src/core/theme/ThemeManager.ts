@@ -2,6 +2,7 @@
  * ============================================================================
  * SJCCC – Theme Manager
  * Centralized theme controller supporting clip-path animations and smooth fades
+ * with persistent localStorage synchronization
  * ============================================================================
  */
 
@@ -76,15 +77,46 @@ export class ThemeManager {
         this.applyInitialTheme();
         this.bindToggle();
         this.listenForSystemChanges();
+        this.listenForStorageChanges();
+    }
+
+    /**
+     * Safely reads the theme preference stored in localStorage
+     */
+    public getStoredTheme(): ThemePreference | null {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEYS.THEME) || localStorage.getItem('theme');
+            if (saved === 'dark' || saved === 'light') {
+                return saved;
+            }
+            return null;
+        } catch {
+            return null;
+        }
+    }
+
+    /**
+     * Safely writes the theme preference to localStorage
+     */
+    public saveTheme(theme: ThemePreference): void {
+        try {
+            localStorage.setItem(STORAGE_KEYS.THEME, theme);
+        } catch (e) {
+            console.warn('Unable to persist theme to localStorage', e);
+        }
     }
 
     private loadSavedAnimation(): void {
-        const saved = localStorage.getItem(STORAGE_KEYS.THEME_ANIMATION);
-        if (saved && this.animations.includes(saved as AnimationStyle)) {
-            this.currentAnimation = saved as AnimationStyle;
-        } else {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEYS.THEME_ANIMATION);
+            if (saved && this.animations.includes(saved as AnimationStyle)) {
+                this.currentAnimation = saved as AnimationStyle;
+            } else {
+                this.currentAnimation = 'circle-center';
+                localStorage.setItem(STORAGE_KEYS.THEME_ANIMATION, 'circle-center');
+            }
+        } catch {
             this.currentAnimation = 'circle-center';
-            localStorage.setItem(STORAGE_KEYS.THEME_ANIMATION, 'circle-center');
         }
     }
 
@@ -92,70 +124,141 @@ export class ThemeManager {
         const currentIndex = this.animations.indexOf(this.currentAnimation);
         const nextIndex = (currentIndex + 1) % this.animations.length;
         this.currentAnimation = this.animations[nextIndex];
-        localStorage.setItem(STORAGE_KEYS.THEME_ANIMATION, this.currentAnimation);
-    }
-
-    private applyInitialTheme(): void {
-        const saved = localStorage.getItem(STORAGE_KEYS.THEME);
-
-        if (saved === 'dark') {
-            this.applyTheme(true);
-        } else if (saved === 'light') {
-            this.applyTheme(false);
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            this.applyTheme(true);
-        } else {
-            this.applyTheme(false);
+        try {
+            localStorage.setItem(STORAGE_KEYS.THEME_ANIMATION, this.currentAnimation);
+        } catch {
+            // Storage restricted
         }
     }
 
-    private bindToggle(): void {
-        this.toggle?.addEventListener('click', (e: MouseEvent) => {
-            e.preventDefault();
-            if (!this.isAnimating) {
-                this.toggleTheme();
+    private applyInitialTheme(): void {
+        const saved = this.getStoredTheme();
+
+        if (saved === 'dark') {
+            this.applyTheme(true, false);
+        } else if (saved === 'light') {
+            this.applyTheme(false, false);
+        } else if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            this.applyTheme(true, false);
+        } else {
+            this.applyTheme(false, false);
+        }
+    }
+
+    private getToggleElements(): HTMLElement[] {
+        const elements: HTMLElement[] = [];
+        if (this.toggle && !elements.includes(this.toggle)) {
+            elements.push(this.toggle);
+        }
+
+        const candidateIds = ['themeToggle', 'darkModeToggle', 'wcoDarkModeToggle'];
+        for (const id of candidateIds) {
+            const el = document.getElementById(id);
+            if (el && !elements.includes(el)) {
+                elements.push(el);
             }
+        }
+
+        const dataToggles = document.querySelectorAll<HTMLElement>('[data-theme-toggle]');
+        dataToggles.forEach((el) => {
+            if (!elements.includes(el)) {
+                elements.push(el);
+            }
+        });
+
+        return elements;
+    }
+
+    private updateToggleA11y(dark: boolean): void {
+        const buttons = this.getToggleElements();
+        const label = dark ? 'Switch to light theme' : 'Switch to dark theme';
+
+        buttons.forEach((btn) => {
+            btn.setAttribute('aria-pressed', String(dark));
+            btn.setAttribute('aria-checked', String(dark));
+            btn.setAttribute('aria-label', label);
+            btn.setAttribute('title', label);
+        });
+    }
+
+    private bindToggle(): void {
+        const buttons = this.getToggleElements();
+        buttons.forEach((btn) => {
+            if (btn.dataset.themeBound === 'true') return;
+            btn.dataset.themeBound = 'true';
+
+            btn.addEventListener('click', (e: MouseEvent) => {
+                e.preventDefault();
+                if (!this.isAnimating) {
+                    this.toggleTheme();
+                }
+            });
         });
     }
 
     private listenForSystemChanges(): void {
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e: MediaQueryListEvent) => {
-            const hasManual = localStorage.getItem(STORAGE_KEYS.THEME);
-            if (!hasManual) {
-                this.applyTheme(e.matches);
+        try {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e: MediaQueryListEvent) => {
+                const hasManual = this.getStoredTheme();
+                if (!hasManual) {
+                    this.applyTheme(e.matches, false);
+                }
+            });
+        } catch {
+            // Older browser support
+        }
+    }
+
+    private listenForStorageChanges(): void {
+        window.addEventListener('storage', (e: StorageEvent) => {
+            if ((e.key === STORAGE_KEYS.THEME || e.key === 'theme') && e.newValue) {
+                const isDark = e.newValue === 'dark';
+                if (this.isDark !== isDark) {
+                    this.applyTheme(isDark, false);
+                }
             }
         });
     }
 
     public toggleTheme(): void {
-        const prefersReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (this.isAnimating) return;
+
+        const nextDark = !this.isDark;
+
+        // Immediately persist the user's explicit theme choice into localStorage
+        this.saveTheme(nextDark ? 'dark' : 'light');
+
+        const prefersReduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (prefersReduced) {
-            this.applyTheme(!this.isDark);
+            this.applyTheme(nextDark, true);
             return;
         }
 
         if (this.mode === 'fade') {
-            this.toggleThemeFade();
+            this.toggleThemeFade(nextDark);
         } else {
-            this.toggleThemeAnimated();
+            this.toggleThemeAnimated(nextDark);
         }
     }
 
     /**
      * Animated mode: Multi-stage clip-path transition
      */
-    private toggleThemeAnimated(): void {
+    private toggleThemeAnimated(targetDark?: boolean): void {
         if (this.isAnimating) return;
 
-        const goingDark = !this.isDark;
+        const goingDark = typeof targetDark === 'boolean' ? targetDark : !this.isDark;
         this.isAnimating = true;
+
+        // Ensure preference is saved immediately to survive fast reloads
+        this.saveTheme(goingDark ? 'dark' : 'light');
 
         // Step 1: Expand overlay to cover the current theme
         this.expandOverlay(goingDark);
 
         // Step 2: Switch the theme UNDER the overlay (before it shrinks)
         setTimeout(() => {
-            this.applyTheme(goingDark);
+            this.applyTheme(goingDark, true);
         }, this.THEME_SWITCH_DELAY);
 
         // Step 3: Start shrinking overlay to reveal new theme
@@ -174,7 +277,10 @@ export class ThemeManager {
     /**
      * Fade mode: Lightweight overlay fade for prospectus or minimal pages
      */
-    private toggleThemeFade(): void {
+    private toggleThemeFade(targetDark?: boolean): void {
+        const goingDark = typeof targetDark === 'boolean' ? targetDark : !this.isDark;
+        this.saveTheme(goingDark ? 'dark' : 'light');
+
         const overlay = document.createElement('div');
         overlay.className = ThemeManager.FADE_OVERLAY_CLASS;
         document.body.appendChild(overlay);
@@ -182,8 +288,7 @@ export class ThemeManager {
         requestAnimationFrame(() => overlay.classList.add('active'));
 
         window.setTimeout(() => {
-            const goingDark = !this.body.classList.contains(this.DARK_CLASS);
-            this.applyTheme(goingDark);
+            this.applyTheme(goingDark, true);
 
             window.setTimeout(() => {
                 overlay.classList.remove('active');
@@ -192,17 +297,25 @@ export class ThemeManager {
         }, ThemeManager.FADE_TOGGLE_DELAY_MS);
     }
 
-    public applyTheme(dark: boolean): void {
+    public applyTheme(dark: boolean, persist: boolean = true): void {
         this.isDark = dark;
 
-        // Disable transitions temporarily to prevent flash
+        // Disable transitions temporarily on body and html to prevent flash
         this.body.style.transition = 'none';
+        document.documentElement.style.transition = 'none';
 
         if (dark) {
+            document.documentElement.classList.add(this.DARK_CLASS);
+            document.documentElement.setAttribute('data-theme', 'dark');
             this.body.classList.add(this.DARK_CLASS);
         } else {
+            document.documentElement.classList.remove(this.DARK_CLASS);
+            document.documentElement.setAttribute('data-theme', 'light');
             this.body.classList.remove(this.DARK_CLASS);
         }
+
+        // Keep accessibility tags and titles updated on toggle buttons
+        this.updateToggleA11y(dark);
 
         // Force reflow
         void this.body.offsetWidth;
@@ -210,10 +323,17 @@ export class ThemeManager {
         // Re-enable transitions after a tiny delay
         setTimeout(() => {
             this.body.style.transition = '';
+            document.documentElement.style.transition = '';
         }, 50);
 
-        const currentTheme: ThemePreference = dark ? 'dark' : 'light';
-        localStorage.setItem(STORAGE_KEYS.THEME, currentTheme);
+        if (persist) {
+            this.saveTheme(dark ? 'dark' : 'light');
+        }
+
+        // Dispatch themechange event for any listeners
+        window.dispatchEvent(new CustomEvent('themechange', {
+            detail: { theme: dark ? 'dark' : 'light', isDark: dark }
+        }));
     }
 
     private expandOverlay(goingDark: boolean): void {
@@ -303,6 +423,7 @@ export class ThemeManager {
     }
 
     public isDarkMode(): boolean {
-        return this.body.classList.contains(this.DARK_CLASS);
+        return this.isDark || this.body.classList.contains(this.DARK_CLASS);
     }
 }
+

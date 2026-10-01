@@ -135,4 +135,77 @@
   --blur-extension: 120px;
   --blur-intensity: 10px;
   --bar-height: 0px;
+
+  /* Responsive UI Density Tokens */
+  --ui-density: 1;
+  --section-pad-y: 100px;
+  --section-pad-x: 32px;
+  --card-pad: 32px;
+  --grid-gap: 28px;
+  --content-gutter: 24px;
 }
+
+@media (max-width: 1024px) {
+  :root {
+    --ui-density: 0.86;
+    --section-pad-y: 52px;
+    --section-pad-x: 20px;
+    --card-pad: 22px;
+    --grid-gap: 18px;
+    --content-gutter: 16px;
+    --header-height: 68px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --ui-density: 0.72;
+    --section-pad-y: 28px;
+    --section-pad-x: 12px;
+    --card-pad: 13px;
+    --grid-gap: 10px;
+    --content-gutter: 12px;
+    --header-height: 52px;
+    --blur-extension: 45px;
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --ui-density: 0.66;
+    --section-pad-y: 22px;
+    --section-pad-x: 10px;
+    --card-pad: 10px;
+    --grid-gap: 8px;
+    --content-gutter: 10px;
+    --header-height: 50px;
+    --blur-extension: 38px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --ui-density: 0.62;
+    --section-pad-y: 18px;
+    --section-pad-x: 10px;
+    --card-pad: 9px;
+    --grid-gap: 7px;
+    --content-gutter: 9px;
+    --header-height: 48px;
+    --blur-extension: 32px;
+  }
+}
+
+@media (max-width: 360px) {
+  :root {
+    --ui-density: 0.58;
+    --section-pad-y: 15px;
+    --section-pad-x: 6px;
+    --card-pad: 8px;
+    --grid-gap: 6px;
+    --content-gutter: 6px;
+    --header-height: 46px;
+    --blur-extension: 26px;
+  }
+}
+

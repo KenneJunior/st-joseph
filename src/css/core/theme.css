@@ -1,6 +1,7 @@
 /* ============================================
    DARK THEME OVERRIDES
    ============================================ */
+html.dark-mode,
 body.dark-mode {
   --primary: #0d2b52;
   --primary-light: #1a3f6e;

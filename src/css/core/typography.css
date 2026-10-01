@@ -1,26 +1,184 @@
+/* ==========================================================================
+   SJCCC MBENGWI — FLUID TYPOGRAPHY ENGINE
+   Calculated specifically for a compact mobile layout (360px – 414px)
+   ensuring headings, section titles, and body text feel significantly
+   smaller and more content-dense on mobile compared to wide desktop screens.
+   ========================================================================== */
+
+:root {
+  /* -------------------------------------------------------------------------
+     Fluid Typography Scale using mathematical clamp() interpolation:
+     Mobile anchor: 360px – 414px viewport
+     Desktop anchor: 1200px+ viewport
+     ------------------------------------------------------------------------- */
+
+  /* Hero Display Text (360px: 1.40rem -> 414px: ~1.52rem -> 1200px: 3.80rem) [~63% smaller on mobile] */
+  --fluid-text-hero: clamp(1.40rem, 0.65rem + 3.33vw, 3.80rem);
+
+  /* H1 / Primary Display (360px: 1.25rem -> 414px: ~1.36rem -> 1200px: 3.25rem) [~61% smaller on mobile] */
+  --fluid-h1: clamp(1.25rem, 0.65rem + 2.67vw, 3.25rem);
+
+  /* H2 / Section Titles (360px: 1.05rem -> 414px: ~1.14rem -> 1200px: 2.70rem) [~61% smaller on mobile] */
+  --fluid-h2: clamp(1.05rem, 0.55rem + 2.22vw, 2.70rem);
+
+  /* H3 / Sub-headings & Card Titles (360px: 0.88rem -> 414px: ~0.93rem -> 1200px: 1.75rem) [~50% smaller on mobile] */
+  --fluid-h3: clamp(0.88rem, 0.62rem + 1.15vw, 1.75rem);
+
+  /* H4 / Component Section Titles (360px: 0.80rem -> 414px: ~0.84rem -> 1200px: 1.45rem) [~45% smaller on mobile] */
+  --fluid-h4: clamp(0.80rem, 0.61rem + 0.85vw, 1.45rem);
+
+  /* H5 / Micro Titles (360px: 0.74rem -> 414px: ~0.77rem -> 1200px: 1.25rem) [~41% smaller on mobile] */
+  --fluid-h5: clamp(0.74rem, 0.58rem + 0.71vw, 1.25rem);
+
+  /* H6 / Uppercase Kickers (360px: 0.68rem -> 414px: ~0.71rem -> 1200px: 1.10rem) [~38% smaller on mobile] */
+  --fluid-h6: clamp(0.68rem, 0.55rem + 0.58vw, 1.10rem);
+
+  /* Body Copy / Paragraphs (360px: 0.76rem -> 414px: ~0.79rem -> 1200px: 1.05rem) [~28% smaller on mobile] */
+  --fluid-body: clamp(0.76rem, 0.66rem + 0.44vw, 1.05rem);
+
+  /* Subtitles / Lead Copy (360px: 0.70rem -> 414px: ~0.74rem -> 1200px: 1.15rem) [~39% smaller on mobile] */
+  --fluid-lead: clamp(0.70rem, 0.58rem + 0.62vw, 1.15rem);
+
+  /* Overline Labels & Badges (360px: 0.56rem -> 414px: ~0.58rem -> 1200px: 0.85rem) [~34% smaller on mobile] */
+  --fluid-label: clamp(0.56rem, 0.46rem + 0.44vw, 0.85rem);
+
+  /* Small / Caption Text (360px: 0.62rem -> 414px: ~0.65rem -> 1200px: 0.88rem) */
+  --fluid-small: clamp(0.62rem, 0.53rem + 0.40vw, 0.88rem);
+
+  /* Map custom properties to tokens scale for system-wide harmony */
+  --font-size-xs: var(--fluid-label);
+  --font-size-sm: var(--fluid-small);
+  --font-size-base: var(--fluid-body);
+  --font-size-md: var(--fluid-h4);
+  --font-size-lg: var(--fluid-h3);
+  --font-size-xl: var(--fluid-h2);
+  --font-size-2xl: var(--fluid-h1);
+  --font-size-3xl: var(--fluid-text-hero);
+  --font-size-hero: var(--fluid-text-hero);
+}
+
+/* ---------------------------------------------------------------------------
+   Core HTML Heading Elements
+   --------------------------------------------------------------------------- */
+h1, .h1 {
+  font-family: var(--font-heading);
+  font-size: var(--fluid-h1);
+  font-weight: 700;
+  line-height: clamp(1.15, 1.10 + 0.3vw, 1.25);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: var(--primary);
+}
+
+h2, .h2 {
+  font-family: var(--font-heading);
+  font-size: var(--fluid-h2);
+  font-weight: 700;
+  line-height: clamp(1.18, 1.12 + 0.25vw, 1.28);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  color: var(--primary);
+}
+
+h3, .h3 {
+  font-family: var(--font-heading);
+  font-size: var(--fluid-h3);
+  font-weight: 600;
+  line-height: clamp(1.22, 1.18 + 0.2vw, 1.35);
+  color: var(--primary);
+}
+
+h4, .h4 {
+  font-family: var(--font-heading);
+  font-size: var(--fluid-h4);
+  font-weight: 600;
+  line-height: clamp(1.25, 1.20 + 0.2vw, 1.40);
+  color: var(--primary);
+}
+
+h5, .h5 {
+  font-family: var(--font-heading);
+  font-size: var(--fluid-h5);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--primary);
+}
+
+h6, .h6 {
+  font-family: var(--font-body);
+  font-size: var(--fluid-h6);
+  font-weight: 600;
+  line-height: 1.40;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode .h1,
+body.dark-mode .h2,
+body.dark-mode .h3,
+body.dark-mode .h4,
+body.dark-mode .h5,
+body.dark-mode .h6 {
+  color: var(--text-light);
+}
+
+/* ---------------------------------------------------------------------------
+   Body Text & Paragraphs
+   --------------------------------------------------------------------------- */
+body, p, .text-body {
+  font-family: var(--font-body);
+  font-size: var(--fluid-body);
+  line-height: clamp(1.36, 1.30 + 0.5vw, 1.70);
+}
+
+small, .text-sm {
+  font-size: var(--fluid-small);
+  line-height: 1.40;
+}
+
+.text-xs {
+  font-size: var(--fluid-label);
+  line-height: 1.35;
+}
+
+.text-lead {
+  font-size: var(--fluid-lead);
+  line-height: clamp(1.34, 1.28 + 0.45vw, 1.65);
+}
+
+/* ---------------------------------------------------------------------------
+   Section-Level Fluid Typography Components
+   --------------------------------------------------------------------------- */
 .section-label {
   position: relative;
   display: block;
   text-align: center;
-  font-size: 0.8rem;
+  font-size: var(--fluid-label);
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: clamp(1.0px, 0.6px + 0.3vw, 3.0px);
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 12px;
+  margin-bottom: clamp(3px, 1.5px + 0.8vw, 12px);
   z-index: 1;
 }
 
 .section-title {
   position: relative;
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: clamp(5px, 2px + 1.2vw, 16px);
   color: var(--primary);
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-size: var(--fluid-h2);
   font-weight: 700;
   letter-spacing: -0.5px;
-  line-height: 1.25;
+  line-height: clamp(1.16, 1.10 + 0.25vw, 1.25);
   text-wrap: balance;
   z-index: 1;
 }
@@ -33,10 +191,70 @@ body.dark-mode .section-title {
   position: relative;
   text-align: center;
   color: var(--text-muted);
-  max-width: 620px;
-  margin: 0 auto 48px auto;
-  font-size: 1.05rem;
-  line-height: 1.65;
+  max-width: clamp(340px, 300px + 28vw, 620px);
+  margin: 0 auto clamp(12px, 6px + 3.5vw, 48px) auto;
+  font-size: var(--fluid-lead);
+  line-height: clamp(1.32, 1.25 + 0.45vw, 1.65);
   text-wrap: balance;
+  padding: 0 clamp(2px, 0.5vw, 8px);
   z-index: 1;
+}
+
+body.dark-mode .section-subtitle {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.section-divider {
+  width: clamp(20px, 14px + 2.8vw, 48px);
+  height: clamp(1.5px, 1.5px + 0.15vw, 3.0px);
+  background: var(--gold-gradient);
+  border-radius: 2px;
+  margin: 0 auto clamp(10px, 5px + 2.8vw, 40px) auto;
+  box-shadow: 0 0 10px rgba(200, 150, 62, 0.4);
+}
+
+/* ---------------------------------------------------------------------------
+   Targeted Tightness Guardrails for ultra-narrow screens (<= 414px)
+   --------------------------------------------------------------------------- */
+@media (max-width: 414px) {
+  .section-label {
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  .section-title {
+    margin-bottom: 4px;
+    line-height: 1.18;
+  }
+
+  .section-subtitle {
+    line-height: 1.32;
+    margin-bottom: 10px;
+    padding: 0 2px;
+  }
+
+  .section-divider {
+    margin-bottom: 9px;
+  }
+}
+
+@media (max-width: 360px) {
+  .section-label {
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+  }
+
+  .section-title {
+    margin-bottom: 3px;
+    line-height: 1.16;
+  }
+
+  .section-subtitle {
+    line-height: 1.28;
+    margin-bottom: 8px;
+  }
+
+  .section-divider {
+    margin-bottom: 8px;
+  }
 }
