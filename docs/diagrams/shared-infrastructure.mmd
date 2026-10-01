@@ -15,6 +15,7 @@ flowchart TD
         OI["OfflineIndicator<br/>(src/features/offline/OfflineIndicator.ts)"]
         SW_Helper["initServiceWorker()<br/>(src/services/serviceWorker.ts)"]
         CD["ConfirmDialog<br/>(src/ui/dialog/ConfirmDialog.ts)"]
+        LGA["LiquidGlassAdapter<br/>(src/ui/effects/LiquidGlassAdapter.ts)<br/>└── @kennejunior/liquidglass"]
     end
 
     subgraph BrowserState["Browser & Storage Subsystems"]
@@ -36,6 +37,9 @@ flowchart TD
 
     Home -->|"Lifecycle Bootstrap"| SW_Helper
     Prospectus -->|"Lifecycle Bootstrap"| SW_Helper
+
+    Home -->|"Targeted Glass Surfaces"| LGA
+    Prospectus -->|"Targeted Glass Surfaces"| LGA
 
     Home -.->|Consumed via PwaInstallPrompt| CD
 

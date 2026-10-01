@@ -44,6 +44,12 @@ sequenceDiagram
         Features->>DOM: Displays loading / success feedback
     end
 
+    opt User Scrolls Page
+        User->>Features: Scrolls viewport past sections (Academics, Dates, Results, Map)
+        Features->>Shared: ScrollSpy evaluates reading anchor zone via IntersectionObserver
+        Shared->>DOM: Synchronizes .active and aria-current="location" on #navMenu & #mobileBottomBar
+    end
+
     opt User Toggles Dark Theme
         User->>Shared: Clicks Theme Toggle Button
         Shared->>DOM: Injects overlay, sets html.dark-mode, writes localStorage
