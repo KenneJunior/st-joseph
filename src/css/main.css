@@ -19,6 +19,7 @@
 /* Components */
 @import './components/buttons.css';
 @import './components/cards.css';
+@import './components/card-splitter.css';
 @import './components/forms.css';
 @import './components/stats.css';
 @import './components/testimonials.css';
