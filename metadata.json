@@ -1,0 +1,8 @@
+{
+  "name": " st-joseph",
+  "description": "from GitHub: KenneJunior/st-joseph",
+  "requestFramePermissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
