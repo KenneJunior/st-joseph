@@ -30,14 +30,22 @@ export const HOME_SELECTORS = {
 
     // Carousel
     carouselSlide: '.carousel-slide',
-    carouselDots: 'carouselDots',
+    carouselThumbnails: 'carouselThumbnails',
+    carouselThumb: '.carousel-thumb',
     prevBtn: 'prevBtn',
     nextBtn: 'nextBtn',
-    carouselContainer: '.carousel-container',
+    carouselContainer: '#campus .carousel-container',
+    carouselTrack: '#campus .carousel-track',
 
     // Stats & Scroll reveal
     statNumbers: '.stat-number[data-target]',
     reveal: '.reveal',
+
+    // Staggered Sections
+    academicsSection: '#academics',
+    academicsPillars: '#academics .academics-pillars',
+    newsEventsSection: '#news-events',
+    newsEventsGrid: '#news-events .events-grid',
 
     // Academic levels & School Dates
     levelToggle: '.level__toggle',

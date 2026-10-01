@@ -6,6 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>St. Joseph's Catholic Comprehensive College | Mbengwi</title>
 
+  <!-- Theme Preference Initialization (Immediately restores saved theme on page reload without flash) -->
+  <script>
+    (function () {
+      try {
+        var storageKey = 'sjccc-theme';
+        var savedTheme = localStorage.getItem(storageKey) || localStorage.getItem('theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+        if (isDark) {
+          document.documentElement.classList.add('dark-mode');
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark-mode');
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- SEO -->
   <meta
     content="St. Joseph's Catholic Comprehensive College Mbengwi offers a nurturing, holistic General and Technical education from Ordinary to Advanced Level. Discover a caring community in the North West Region of Cameroon."
@@ -47,7 +66,7 @@
   <meta property="og:section:general-school" content="https://saintjosephcollege.vercel.app/">
   <meta property="og:section:general-school:title" content="SJCCC Mbengwi – Holistic Catholic Education">
   <meta property="og:section:general-school:description" content="St. Joseph's Catholic Comprehensive College Mbengwi offers holistic moral, academic, and technical education in a disciplined Christian environment in Cameroon.">
-  <meta property="og:section:general-school:image" content="https://saintjosephcollege.vercel.app/assets/Campus.jpeg">
+  <meta property="og:section:general-school:image" content="https://saintjosephcollege.vercel.app/assets/sjccc-campus.jpg">
   <meta property="og:section:general-school:image:width" content="1200">
   <meta property="og:section:general-school:image:height" content="630">
   <meta property="og:section:general-school:image:type" content="image/jpeg">
@@ -60,7 +79,7 @@
   <meta property="og:section:academics" content="https://saintjosephcollege.vercel.app/#academics">
   <meta property="og:section:academics:title" content="SJCCC Mbengwi – Academic Curriculum &amp; Technical Training">
   <meta property="og:section:academics:description" content="Explore SJCCC Mbengwi's dual-track academic excellence: General Education (O/A-Levels in Arts &amp; Sciences) and Technical Education (Building Construction, Electrical Power Systems, Fashion Design, Automobile Mechanics, and Home Economics).">
-  <meta property="og:section:academics:image" content="https://saintjosephcollege.vercel.app/assets/Students-in-class.jpeg">
+  <meta property="og:section:academics:image" content="https://saintjosephcollege.vercel.app/assets/sjccc-Classroom.jpg">
   <meta property="og:section:academics:image:width" content="1200">
   <meta property="og:section:academics:image:height" content="630">
   <meta property="og:section:academics:image:type" content="image/jpeg">
@@ -88,10 +107,10 @@
   <meta name="twitter:image:alt" content="SJCCC Mbengwi academic blocks, technical workshops, and campus map">
   <meta name="twitter:section:general-school:title" content="SJCCC Mbengwi – Holistic Catholic Education">
   <meta name="twitter:section:general-school:description" content="Discover SJCCC Mbengwi: Premier Catholic boarding college in Cameroon offering holistic moral, academic, and technical education.">
-  <meta name="twitter:section:general-school:image" content="https://saintjosephcollege.vercel.app/assets/Campus.jpeg">
+  <meta name="twitter:section:general-school:image" content="https://saintjosephcollege.vercel.app/assets/sjccc-campus.jpg">
   <meta name="twitter:section:academics:title" content="SJCCC Mbengwi – Academic Curriculum &amp; Technical Training">
   <meta name="twitter:section:academics:description" content="Explore SJCCC Mbengwi's dual-track academic excellence: General O/A-Levels &amp; 5 Technical trades in a serene boarding environment.">
-  <meta name="twitter:section:academics:image" content="https://saintjosephcollege.vercel.app/assets/Students-in-class.jpeg">
+  <meta name="twitter:section:academics:image" content="https://saintjosephcollege.vercel.app/assets/sjccc-Classroom.jpg">
   <meta name="twitter:section:campus-map:title" content="SJCCC Mbengwi – Interactive Campus Map &amp; Facilities">
   <meta name="twitter:section:campus-map:description" content="Navigate SJCCC Mbengwi's peaceful 6-zone boarding campus: Academic blocks, technical workshops, chapel, dormitories, and athletic fields.">
   <meta name="twitter:section:campus-map:image" content="https://saintjosephcollege.vercel.app/assets/campus_map.jpg">
@@ -337,6 +356,11 @@
 </head>
 
 <body>
+  <script>
+    if (document.documentElement.classList.contains('dark-mode')) {
+      document.body.classList.add('dark-mode');
+    }
+  </script>
   <div class="wco-titlebar" id="wcoTitlebar">
     <div class="wco-titlebar__logo">
       <!-- Small SJCCC icon -->
@@ -464,6 +488,10 @@
       </button>
     </div>
   </aside>
+
+  <!-- Ambient Dust Particles Canvas across the whole page -->
+  <canvas id="dustCanvas" class="dust-particles-canvas" aria-hidden="true" data-density="0.65" data-speed="0.55" data-opacity="0.42"></canvas>
+
   <main id="main-content" class="">
 
     <!-- ==================== HERO SECTION ==================== -->
@@ -472,7 +500,6 @@
         <div class="hero-bg-layer">
           <div class="hero-bg-img"></div>
           <div class="hero-overlay"></div>
-          <canvas id="dustCanvas"></canvas>
           <div class="hero-particles" id="heroParticles"></div>
         </div>
         <div class="school-header">
@@ -540,16 +567,16 @@
 
     <!-- ==================== ACADEMICS SECTION ==================== -->
     <section id="academics" class="section-padding cream-bg">
-      <span class="section-label">Our Programmes</span>
-      <h2 class="section-title">Academic &amp; Technical Pathways</h2>
-      <p class="section-subtitle">
+      <span class="section-label stagger-item">Our Programmes</span>
+      <h2 class="section-title stagger-item">Academic &amp; Technical Pathways</h2>
+      <p class="section-subtitle stagger-item">
         We offer two distinct pathways, thoughtfully designed to guide students at their own pace through their Ordinary
         and Advanced Levels.
       </p>
-      <div class="academics-pillars">
+      <div class="academics-pillars stagger-group">
 
         <!-- PILLAR 1: GENERAL EDUCATION -->
-        <div class="pillar pillar-general">
+        <div class="pillar pillar-general stagger-card">
           <header class="pillar__header">
             <div class="pillar__icon"><i class="bi bi-book-fill"></i></div>
             <h3 class="pillar__title">General Education</h3>
@@ -605,7 +632,7 @@
         </div>
 
         <!-- PILLAR 2: TECHNICAL & VOCATIONAL -->
-        <div class="pillar pillar-technical">
+        <div class="pillar pillar-technical stagger-card">
           <header class="pillar__header">
             <div class="pillar__icon"><i class="bi bi-tools"></i></div>
             <h3 class="pillar__title">Technical Education</h3>
@@ -632,7 +659,7 @@
         </div>
 
         <!-- PILLAR 3: COMMERCIAL EDUCATION -->
-        <div class="pillar d-none pillar-general">
+        <div class="pillar d-none pillar-general stagger-card">
           <header class="pillar__header">
             <div class="pillar__icon"><i class="bi bi-currency-dollar"></i></div>
             <h3 class="pillar__title">Commercial Education</h3>
@@ -740,652 +767,21 @@
         <div class="timeline-track-container">
           <div class="timeline-track-line" aria-hidden="true"></div>
 
-          <div class="timeline-milestones-list" id="timelineMilestonesList">
+          <div class="timeline-milestones-list" id="timelineMilestonesList"></div>
 
-            <!-- 1. Resumption New Students -->
-            <article class="timeline-milestone reveal" data-milestone-id="resumption-new-2026" data-term="term-1" data-category="resumption">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">21</span>
-                  <span class="timeline-month-txt">AUG</span>
-                  <span class="timeline-year-txt">2026</span>
-                </div>
-                <div class="timeline-node-marker" title="Resumption Milestone">
-                  <i class="bi bi-door-open-fill"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">First Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">Resumption</span>
-                  </div>
-                  <span class="timeline-status-kicker">Completed</span>
-                </div>
-                <h3 class="timeline-card-title">New Students Resumption &amp; Orientation</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> 21 Aug 2026</span>
-                  <span><i class="bi bi-clock"></i> 8:00 AM – 4:00 PM</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> SJCCC Campus, Mbengwi</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Arrival of Form One and Lower Sixth transfer students on campus. Dormitory allocation, uniform issuance, and welcoming orientation mass.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> Orientation &amp; Campus Tour</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Dormitory Allocation</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Welcoming Mass</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="resumption-new-2026"
-                    title="Save New Students Resumption to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Boarding house check-in required</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 2. Returning Students Resumption -->
-            <article class="timeline-milestone reveal reveal-delay-1" data-milestone-id="resumption-old-2026" data-term="term-1" data-category="resumption">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">02</span>
-                  <span class="timeline-month-txt">SEP</span>
-                  <span class="timeline-year-txt">2026</span>
-                </div>
-                <div class="timeline-node-marker" title="Resumption Milestone">
-                  <i class="bi bi-backpack-fill"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">First Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">Resumption</span>
-                  </div>
-                  <span class="timeline-status-kicker">Active Term</span>
-                </div>
-                <h3 class="timeline-card-title">Returning Students Resumption</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> 02 Sep 2026</span>
-                  <span><i class="bi bi-clock"></i> Classes commence 7:30 AM</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> SJCCC Classrooms</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Returning students in Forms 2, 3, 4, 5, and Upper Sixth resume on campus. Full instructional timetable begins immediately across all general and technical sections.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> Clearance &amp; Registration</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Classes Begin Promptly</li>
-                  <li><i class="bi bi-check-circle-fill"></i> General College Assembly</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="resumption-old-2026"
-                    title="Save Returning Students Resumption to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Tuition clearance mandatory</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 3. First Term Mid-Term Break -->
-            <article class="timeline-milestone reveal reveal-delay-2" data-milestone-id="midterm-break-t1-2026" data-term="term-1" data-category="break">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">26</span>
-                  <span class="timeline-month-txt">OCT</span>
-                  <span class="timeline-year-txt">2026</span>
-                </div>
-                <div class="timeline-node-marker" title="Mid-Term Break">
-                  <i class="bi bi-pause-circle-fill"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">First Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">Holiday &amp; Break</span>
-                  </div>
-                  <span class="timeline-status-kicker">★ Upcoming</span>
-                </div>
-                <h3 class="timeline-card-title">First Term Mid-Term Break</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> 26 – 30 Oct 2026</span>
-                  <span><i class="bi bi-calendar-range"></i> 5 Days Duration</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> Campus &amp; Parental Homes</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Scheduled instructional breather following the initial continuous assessments. Boarders may visit parents with prior executive clearance or remain on campus for supervised study clinics.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> Continuous Assessment Review</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Rest &amp; Pastoral Reflection</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Supervised Boarding Hall Revision</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="midterm-break-t1-2026"
-                    title="Save First Term Mid-Term Break to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Return on campus: Sunday 01 Nov</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 4. First Term Examinations -->
-            <article class="timeline-milestone reveal" data-milestone-id="exams-t1-2026" data-term="term-1" data-category="exam">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">30</span>
-                  <span class="timeline-month-txt">NOV</span>
-                  <span class="timeline-year-txt">2026</span>
-                </div>
-                <div class="timeline-node-marker" title="Examinations">
-                  <i class="bi bi-pencil-square"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">First Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">Examinations</span>
-                  </div>
-                  <span class="timeline-status-kicker">Important</span>
-                </div>
-                <h3 class="timeline-card-title">First Term Examinations</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> 30 Nov – 11 Dec 2026</span>
-                  <span><i class="bi bi-calendar-range"></i> 2 Full Weeks</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> Main Exam Halls, SJCCC</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Comprehensive end-of-term examinations assessing curriculum mastery across all enrolled General and Technical subjects for all forms.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> General &amp; Technical Papers</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Practical Science Lab Exams</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Term 1 Progress Report Compilation</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="exams-t1-2026"
-                    title="Save First Term Examinations to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Writing materials and exam slips mandatory</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 5. Christmas Holiday -->
-            <article class="timeline-milestone reveal reveal-delay-1" data-milestone-id="christmas-vacation-2026" data-term="term-1" data-category="break">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">18</span>
-                  <span class="timeline-month-txt">DEC</span>
-                  <span class="timeline-year-txt">2026</span>
-                </div>
-                <div class="timeline-node-marker" title="Christmas Vacation">
-                  <i class="bi bi-tree-fill"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">First Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">Holiday &amp; Break</span>
-                  </div>
-                  <span class="timeline-status-kicker">Vacation</span>
-                </div>
-                <h3 class="timeline-card-title">Christmas &amp; New Year Holiday</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> 18 Dec 2026 – 03 Jan 2027</span>
-                  <span><i class="bi bi-gift"></i> Christmas Season</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> National / Family Homes</span>
-                </div>
-                <p class="timeline-card-desc">
-                  College closes for Christmas holidays. Students travel home with First Term Progress Report Booklets following the college Nativity Carol Service.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> Carol Service &amp; Nativity Mass</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Term 1 Report Card Distribution</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Christmas Family Rest</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="christmas-vacation-2026"
-                    title="Save Christmas Vacation to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Reports must be signed by parents</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 6. Second Term Resumption -->
-            <article class="timeline-milestone reveal" data-milestone-id="resumption-t2-2027" data-term="term-2" data-category="resumption">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">04</span>
-                  <span class="timeline-month-txt">JAN</span>
-                  <span class="timeline-year-txt">2027</span>
-                </div>
-                <div class="timeline-node-marker" title="Second Term Resumption">
-                  <i class="bi bi-sun-fill"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">Second Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">Resumption</span>
-                  </div>
-                  <span class="timeline-status-kicker">New Term</span>
-                </div>
-                <h3 class="timeline-card-title">Second Term Resumption</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> Monday, 04 Jan 2027</span>
-                  <span><i class="bi bi-clock"></i> 7:30 AM Prompt</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> SJCCC Campus, Mbengwi</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Boarding houses open on Sunday, 03 January 2027. Full academic schedule and instructional lectures resume on Monday morning.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> Epiphany Opening Mass</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Second Fee Installment Clearance</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Full Lecture Timetable Resumes</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="resumption-t2-2027"
-                    title="Save Second Term Resumption to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Boarders return Jan 3 by 5:00 PM</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 7. National Youth Day -->
-            <article class="timeline-milestone reveal reveal-delay-1" data-milestone-id="youth-day-2027" data-term="term-2" data-category="spiritual">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">11</span>
-                  <span class="timeline-month-txt">FEB</span>
-                  <span class="timeline-year-txt">2027</span>
-                </div>
-                <div class="timeline-node-marker" title="Youth Day">
-                  <i class="bi bi-flag-fill"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">Second Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">College Event</span>
-                  </div>
-                  <span class="timeline-status-kicker">Celebration</span>
-                </div>
-                <h3 class="timeline-card-title">National Youth Day &amp; Inter-House March</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> Thursday, 11 Feb 2027</span>
-                  <span><i class="bi bi-trophy-fill"></i> Sports &amp; Civic Pride</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> Mbengwi Grandstand &amp; SJCCC Grounds</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Celebration of Cameroon National Youth Day. SJCCC student delegation marches at the municipal grandstand, followed by inter-house sports finals and cultural showcases.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> Civic Marching Presentation</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Inter-House Athletics Finals</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Traditional Cultural Dance</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="youth-day-2027"
-                    title="Save National Youth Day to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Ceremonial college uniforms required</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 8. Second Term Mid-Term Break -->
-            <article class="timeline-milestone reveal reveal-delay-2" data-milestone-id="midterm-break-t2-2027" data-term="term-2" data-category="break">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">15</span>
-                  <span class="timeline-month-txt">FEB</span>
-                  <span class="timeline-year-txt">2027</span>
-                </div>
-                <div class="timeline-node-marker" title="Mid-Term Break">
-                  <i class="bi bi-cup-hot-fill"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">Second Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">Holiday &amp; Break</span>
-                  </div>
-                  <span class="timeline-status-kicker">Break</span>
-                </div>
-                <h3 class="timeline-card-title">Second Term Mid-Term Break</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> 15 – 19 Feb 2027</span>
-                  <span><i class="bi bi-calendar-range"></i> 5 Days Duration</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> SJCCC Campus &amp; Homes</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Mid-term breather before intense mock examinations. Special revision tutorials held on campus for Form 5 and Upper Sixth candidates.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> Candidate Study Clinics</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Continuous Assessment Review</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Rest &amp; Academic Re-alignment</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="midterm-break-t2-2027"
-                    title="Save Second Term Mid-Term Break to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Candidate forms remain for intensive clinics</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 9. Feast of Saint Joseph -->
-            <article class="timeline-milestone reveal" data-milestone-id="feast-st-joseph-2027" data-term="term-2" data-category="spiritual">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">19</span>
-                  <span class="timeline-month-txt">MAR</span>
-                  <span class="timeline-year-txt">2027</span>
-                </div>
-                <div class="timeline-node-marker" title="Feast of St. Joseph">
-                  <i class="bi bi-bookmark-star-fill"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">Second Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">Spiritual Milestone</span>
-                  </div>
-                  <span class="timeline-status-kicker">Patronal Solemnity</span>
-                </div>
-                <h3 class="timeline-card-title">Feast of Saint Joseph (Patronal Feast)</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> Friday, 19 Mar 2027</span>
-                  <span><i class="bi bi-church"></i> Solemn Feast</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> College Chapel &amp; Assembly Grounds</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Solemn celebration of Saint Joseph, patron saint of the college and workers. High Pontifical Mass, blessing of technical workshops, student project exhibitions, and community feast.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> Solemn Pontifical Mass</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Blessing of Technical Workshops</li>
-                  <li><i class="bi bi-check-circle-fill"></i> College Community Feast</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="feast-st-joseph-2027"
-                    title="Save Feast of Saint Joseph to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Parents, alumni, and friends cordially invited</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 10. Second Term Exams & GCE Mocks -->
-            <article class="timeline-milestone reveal reveal-delay-1" data-milestone-id="exams-t2-2027" data-term="term-2" data-category="exam">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">15</span>
-                  <span class="timeline-month-txt">MAR</span>
-                  <span class="timeline-year-txt">2027</span>
-                </div>
-                <div class="timeline-node-marker" title="Examinations">
-                  <i class="bi bi-file-earmark-text-fill"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">Second Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">Examinations</span>
-                  </div>
-                  <span class="timeline-status-kicker">Crucial Milestone</span>
-                </div>
-                <h3 class="timeline-card-title">Second Term Exams &amp; GCE Mock Written Sessions</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> 15 – 26 Mar 2027</span>
-                  <span><i class="bi bi-calendar-range"></i> 10 Days</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> SJCCC Main Halls</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Rigorous Archdiocesan Mock Examinations for Form 5 and Upper Sixth candidates alongside terminal assessments for intermediate classes before Easter vacation.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> Archdiocesan GCE Mock Papers</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Terminal Subject Evaluations</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Easter Vacation Preparation</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="exams-t2-2027"
-                    title="Save Second Term Exams to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Easter break follows immediately on 26 March</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 11. Third Term Resumption -->
-            <article class="timeline-milestone reveal" data-milestone-id="resumption-t3-2027" data-term="term-3" data-category="resumption">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">12</span>
-                  <span class="timeline-month-txt">APR</span>
-                  <span class="timeline-year-txt">2027</span>
-                </div>
-                <div class="timeline-node-marker" title="Third Term Resumption">
-                  <i class="bi bi-compass-fill"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">Third Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">Resumption</span>
-                  </div>
-                  <span class="timeline-status-kicker">Final Term</span>
-                </div>
-                <h3 class="timeline-card-title">Third Term Resumption</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> Monday, 12 Apr 2027</span>
-                  <span><i class="bi bi-clock"></i> 7:30 AM Prompt</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> SJCCC Campus, Mbengwi</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Final promotional and national examination term commences. Boarders report back Sunday 11 April with completed holiday revision portfolios.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> Holiday Assignment Submission</li>
-                  <li><i class="bi bi-check-circle-fill"></i> GCE Registration Verification</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Intensive Promotional Syllabus Closeout</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="resumption-t3-2027"
-                    title="Save Third Term Resumption to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Final term clearance required</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 12. GCE National Exams -->
-            <article class="timeline-milestone reveal reveal-delay-1" data-milestone-id="gce-national-exams-2027" data-term="term-3" data-category="exam">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">24</span>
-                  <span class="timeline-month-txt">MAY</span>
-                  <span class="timeline-year-txt">2027</span>
-                </div>
-                <div class="timeline-node-marker" title="GCE Board Exams">
-                  <i class="bi bi-award-fill"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">Third Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">Examinations</span>
-                  </div>
-                  <span class="timeline-status-kicker">National Exams</span>
-                </div>
-                <h3 class="timeline-card-title">National GCE Board Written Sessions</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> 24 May – 18 Jun 2027</span>
-                  <span><i class="bi bi-shield-check"></i> Cameroon GCE Board</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> SJCCC GCE Centre</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Cameroon GCE Board Ordinary and Advanced Level written sessions for registered SJCCC General and Technical candidates under strict national invigilation.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> O-Level General &amp; Technical Papers</li>
-                  <li><i class="bi bi-check-circle-fill"></i> A-Level Arts &amp; Sciences</li>
-                  <li><i class="bi bi-check-circle-fill"></i> National Board Invigilation</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="gce-national-exams-2027"
-                    title="Save GCE National Exams to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Official GCE ID cards mandatory</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 13. Promotional Exams -->
-            <article class="timeline-milestone reveal" data-milestone-id="promotional-exams-2027" data-term="term-3" data-category="exam">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">07</span>
-                  <span class="timeline-month-txt">JUN</span>
-                  <span class="timeline-year-txt">2027</span>
-                </div>
-                <div class="timeline-node-marker" title="Promotional Exams">
-                  <i class="bi bi-graph-up-arrow"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">Third Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">Examinations</span>
-                  </div>
-                  <span class="timeline-status-kicker">Promotional</span>
-                </div>
-                <h3 class="timeline-card-title">Annual Promotional Examinations</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> 07 – 18 Jun 2027</span>
-                  <span><i class="bi bi-mortarboard"></i> Forms 1–4 &amp; Lower Sixth</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> SJCCC Classrooms</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Final promotional examinations determining student progression to the next academic level for the subsequent 2027/2028 school year.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> Academic Class Advancement</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Cumulative Year-End GPA Calculation</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Subject Mastery Clearance</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="promotional-exams-2027"
-                    title="Save Promotional Examinations to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Pass mark criteria apply for promotion</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- 14. Valedictory Service & Graduation -->
-            <article class="timeline-milestone reveal reveal-delay-1" data-milestone-id="valedictory-graduation-2027" data-term="term-3" data-category="spiritual">
-              <div class="timeline-date-column">
-                <div class="timeline-date-badge">
-                  <span class="timeline-day-num">25</span>
-                  <span class="timeline-month-txt">JUN</span>
-                  <span class="timeline-year-txt">2027</span>
-                </div>
-                <div class="timeline-node-marker" title="Valedictory Service">
-                  <i class="bi bi-mortarboard-fill"></i>
-                </div>
-              </div>
-              <div class="timeline-card">
-                <div class="timeline-card-header">
-                  <div class="timeline-meta-breadcrumbs">
-                    <span class="timeline-term-tag">Third Term</span>
-                    <span aria-hidden="true">·</span>
-                    <span class="timeline-category-tag">College Event</span>
-                  </div>
-                  <span class="timeline-status-kicker">Solemn Ceremony</span>
-                </div>
-                <h3 class="timeline-card-title">Valedictory Service &amp; Prize-Giving Day</h3>
-                <div class="timeline-card-date-location">
-                  <span class="timeline-mobile-date-text"><i class="bi bi-calendar3"></i> Friday, 25 Jun 2027</span>
-                  <span><i class="bi bi-clock"></i> 9:30 AM Prompt</span>
-                  <span><i class="bi bi-geo-alt-fill"></i> Saint Joseph Jubilee Hall</span>
-                </div>
-                <p class="timeline-card-desc">
-                  Grand annual ceremony honouring academic excellence, discipline, vocational talent, and celebrating the valedictory farewell of the graduating Class of 2027.
-                </p>
-                <ul class="timeline-highlights-list">
-                  <li><i class="bi bi-check-circle-fill"></i> Archdiocesan Honours &amp; Academic Awards</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Graduation Robing &amp; Valedictory Addresses</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Parent-Teacher Association Fellowship</li>
-                </ul>
-                <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="valedictory-graduation-2027"
-                    title="Save Valedictory Service to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
-                  </button>
-                  <span class="timeline-card-notice">Official Summer Vacation begins Friday 02 July 2027</span>
-                </div>
-              </div>
-            </article>
-
+          <!-- Progressive Disclosure Toggle (Full Academic Calendar) -->
+          <div class="timeline-disclosure-wrapper" id="timelineDisclosureWrapper">
+            <button
+              type="button"
+              class="btn btn-outline timeline-disclosure-btn"
+              id="timelineDisclosureBtn"
+              aria-expanded="false"
+              aria-controls="timelineMilestonesList"
+            >
+              <span class="timeline-disclosure-text">View Full Academic Calendar</span>
+              <span class="timeline-disclosure-count">(10 more)</span>
+              <i class="bi bi-chevron-down" aria-hidden="true"></i>
+            </button>
           </div>
 
           <!-- Empty search filter notice -->
@@ -1420,13 +816,13 @@
 
     <!-- ==================== NEWS & EVENTS ==================== -->
     <section id="news-events" class="section-padding bg-image-news">
-      <span class="section-label">Stay Connected</span>
-      <h2 class="section-title">Latest News &amp; Events</h2>
-      <div class="section-divider"></div>
-      <div class="events-grid">
+      <span class="section-label stagger-item">Stay Connected</span>
+      <h2 class="section-title stagger-item">Latest News &amp; Events</h2>
+      <div class="section-divider stagger-item"></div>
+      <div class="events-grid stagger-group">
 
         <!-- Event Card 1 -->
-        <article class="event-card reveal">
+        <article class="event-card stagger-card">
           <div class="event-card__date">
             <span class="event-date__day">04</span>
             <span class="event-date__month">August</span>
@@ -1457,7 +853,7 @@
         </article>
 
         <!-- Event Card 2 -->
-        <article class="event-card d-none reveal reveal-delay-1">
+        <article class="event-card d-none stagger-card">
           <div class="event-card__date">
             <span class="event-date__day">21</span>
             <span class="event-date__month">Aug</span>
@@ -1484,7 +880,7 @@
         </article>
 
         <!-- Event Card 3 -->
-        <article class="event-card reveal reveal-delay-2">
+        <article class="event-card stagger-card">
           <div class="event-card__date">
             <span class="event-date__day">04</span>
             <span class="event-date__month">August</span>
@@ -1534,70 +930,42 @@
       <h2 class="section-title">Life at SJCCC Mbengwi</h2>
       <p class="section-subtitle">Experience our peaceful campus—a safe and engaging place where extracurricular
         activities and close friendships shape well‑rounded individuals.</p>
-      <div class="carousel-wrapper reveal">
-        <div class="carousel-container">
+      <div class="carousel-wrapper reveal" role="region" aria-roledescription="carousel" aria-label="Campus Life Highlights">
+        <div class="carousel-container" tabindex="0" aria-label="Campus life photo carousel. Use Left and Right arrow keys or swipe to navigate.">
+          <div class="carousel-track" id="carouselTrack"></div>
 
-          <!--Slide 1: Campus Landscape-->
-          <div class="carousel-slide active">
-            <img alt="SJCCC Mbengwi campus green landscape with school buildings" class="carousel-image" loading="lazy"
-              src="/assets/Campus.jpeg">
-            <div class="carousel-overlay"></div>
-            <div class="carousel-caption">A peaceful and serene environment, perfect for thoughtful learning and
-              personal
-              growth.
-            </div>
+          <!-- Slick Autoplay Loading Progress Track -->
+          <div class="carousel-progress-track" aria-hidden="true" title="Slide timer">
+            <div class="carousel-progress-bar" id="carouselProgressBar"></div>
           </div>
 
-          <!-- Slide 2: Technical Workshop -->
-          <div class="carousel-slide">
-            <img alt="Students gathered for a group photo" class="carousel-image" loading="lazy"
-              src="/assets/Students.jpeg">
-            <div class="carousel-overlay"></div>
-            <div class="carousel-caption">Students sharing a joyful moment and building lifelong friendships on campus.
-            </div>
-          </div>
-
-          <!-- Slide 3: Construction -->
-          <div class="carousel-slide">
-            <img alt="Students participating in a building project" class="carousel-image" loading="lazy"
-              src="/assets/Construction-site.jpeg">
-            <div class="carousel-overlay"></div>
-            <div class="carousel-caption">Hands-on learning: Students gaining practical experience in building and civil
-              works.
-            </div>
-          </div>
-
-          <!-- Slide 4: Electrical -->
-          <div class="carousel-slide">
-            <img alt="Students repairing electrical appliances" class="carousel-image" loading="lazy"
-              src="/assets/Electricity.jpeg">
-            <div class="carousel-overlay"></div>
-            <div class="carousel-caption">Nurturing practical skills through real-world electrical projects and
-              teamwork.
-            </div>
-          </div>
-
-          <!-- Slide 5: Students -->
-          <div class="carousel-slide">
-            <img alt="Students in chapel setting" class="carousel-image" loading="lazy"
-              src="/assets/Students-in-class.jpeg">
-            <div class="carousel-overlay"></div>
-            <div class="carousel-caption">
-              A glimpse into our vibrant student life, where learning extends beyond the classroom and into meaningful
-              experiences.
-            </div>
-          </div>
-          <button class="carousel-btn prev" id="prevBtn" aria-label="Previous slide"
+          <button class="carousel-btn prev carousel-btn--prev" id="prevBtn" aria-label="Previous slide"
             toolDescription="Show the previous campus image in the carousel.">
-            <i class="bi bi-chevron-left"></i>
+            <svg class="carousel-btn-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <i class="bi bi-chevron-left" aria-hidden="true"></i>
           </button>
-          <button class="carousel-btn next" id="nextBtn" aria-label="Next slide"
+          <button class="carousel-btn next carousel-btn--next" id="nextBtn" aria-label="Next slide"
             toolDescription="Show the next campus image in the carousel.">
-            <i class="bi bi-chevron-right"></i>
+            <svg class="carousel-btn-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            <i class="bi bi-chevron-right" aria-hidden="true"></i>
           </button>
         </div>
-        <div class="carousel-dots" id="carouselDots"></div>
+
+        <!-- Direct Navigation Thumbnails Container with Scroll Controls -->
+        <div class="carousel-thumbnails-wrapper" aria-label="Campus thumbnails navigator">
+          <button type="button" class="thumb-scroll-btn thumb-scroll-prev" id="thumbScrollPrev" aria-label="Scroll thumbnails left" title="Scroll thumbnails left">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <nav class="carousel-thumbnails" id="carouselThumbnails" aria-label="Campus life slide thumbnails"></nav>
+
+          <button type="button" class="thumb-scroll-btn thumb-scroll-next" id="thumbScrollNext" aria-label="Scroll thumbnails right" title="Scroll thumbnails right">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          <i class="bi bi-chevron-right" aria-hidden="true"></i>
+        </button>
       </div>
+    </div>
     </section>
 
     <!-- ==================== VIRTUAL CAMPUS MAP ==================== -->
@@ -1648,79 +1016,117 @@
             
             <!-- Illustrated Map Viewport -->
             <div class="campus-map-viewport" id="campusMapViewport">
-              <div class="campus-map-canvas-wrap">
-                <img src="/assets/campus_map.jpg" alt="Illustrated Map of SJCCC Mbengwi Campus grounds showing school buildings, chapel, dormitories, and sports fields" class="campus-map-image" id="campusMapIllustration" loading="lazy">
-                
-                <!-- Map Overlay Gradient & Grid Lines -->
-                <div class="campus-map-overlay" aria-hidden="true"></div>
+              <div class="campus-map-canvas-wrap" id="campusMapCanvasWrap">
+                <div class="campus-map-content" id="campusMapContent">
+                  <img src="/assets/campus_map.jpg" alt="Illustrated Map of SJCCC Mbengwi Campus grounds showing school buildings, chapel, dormitories, and sports fields" class="campus-map-image" id="campusMapIllustration" loading="lazy">
+                  
+                  <!-- Map Overlay Gradient & Grid Lines -->
+                  <div class="campus-map-overlay" aria-hidden="true"></div>
 
-                <!-- Hotspot Marker 1: Chapel & Shrine -->
-                <button class="map-hotspot-pin active" data-zone-id="chapel" style="left: 24%; top: 36%;"
-                  aria-label="Select College Chapel and St. Joseph Shrine marker" role="button" aria-selected="true">
-                  <span class="map-pin-pulse" aria-hidden="true"></span>
-                  <span class="map-pin-core">
-                    <i class="bi bi-bank" aria-hidden="true"></i>
-                  </span>
-                  <span class="map-pin-label">Chapel &amp; Shrine</span>
-                </button>
+                  <!-- Hotspot Marker 1: Chapel & Shrine -->
+                  <button class="map-hotspot-pin active" data-zone-id="chapel" style="left: 24%; top: 36%;"
+                    aria-label="Select College Chapel and St. Joseph Shrine marker" role="button" aria-selected="true">
+                    <span class="map-pin-pulse" aria-hidden="true"></span>
+                    <span class="map-pin-core">
+                      <i class="bi bi-bank" aria-hidden="true"></i>
+                    </span>
+                    <span class="map-pin-label">Chapel &amp; Shrine</span>
+                  </button>
 
-                <!-- Hotspot Marker 2: Electrical Workshops -->
-                <button class="map-hotspot-pin" data-zone-id="workshops-electrical" style="left: 72%; top: 30%;"
-                  aria-label="Select Technical Electrical Workshops marker" role="button" aria-selected="false">
-                  <span class="map-pin-pulse" aria-hidden="true"></span>
-                  <span class="map-pin-core">
-                    <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
-                  </span>
-                  <span class="map-pin-label">Workshops</span>
-                </button>
+                  <!-- Hotspot Marker 2: Electrical Workshops -->
+                  <button class="map-hotspot-pin" data-zone-id="workshops-electrical" style="left: 72%; top: 30%;"
+                    aria-label="Select Technical Electrical Workshops marker" role="button" aria-selected="false">
+                    <span class="map-pin-pulse" aria-hidden="true"></span>
+                    <span class="map-pin-core">
+                      <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+                    </span>
+                    <span class="map-pin-label">Workshops</span>
+                  </button>
 
-                <!-- Hotspot Marker 3: Boarding Dormitories -->
-                <button class="map-hotspot-pin" data-zone-id="dormitories" style="left: 48%; top: 22%;"
-                  aria-label="Select Boarding Dormitories marker" role="button" aria-selected="false">
-                  <span class="map-pin-pulse" aria-hidden="true"></span>
-                  <span class="map-pin-core">
-                    <i class="bi bi-building-fill" aria-hidden="true"></i>
-                  </span>
-                  <span class="map-pin-label">Dormitories</span>
-                </button>
+                  <!-- Hotspot Marker 3: Boarding Dormitories -->
+                  <button class="map-hotspot-pin" data-zone-id="dormitories" style="left: 48%; top: 22%;"
+                    aria-label="Select Boarding Dormitories marker" role="button" aria-selected="false">
+                    <span class="map-pin-pulse" aria-hidden="true"></span>
+                    <span class="map-pin-core">
+                      <i class="bi bi-building-fill" aria-hidden="true"></i>
+                    </span>
+                    <span class="map-pin-label">Dormitories</span>
+                  </button>
 
-                <!-- Hotspot Marker 4: Classrooms & Science Labs -->
-                <button class="map-hotspot-pin" data-zone-id="classrooms" style="left: 44%; top: 54%;"
-                  aria-label="Select Academic Classroom Blocks and Labs marker" role="button" aria-selected="false">
-                  <span class="map-pin-pulse" aria-hidden="true"></span>
-                  <span class="map-pin-core">
-                    <i class="bi bi-book-half" aria-hidden="true"></i>
-                  </span>
-                  <span class="map-pin-label">Classrooms</span>
-                </button>
+                  <!-- Hotspot Marker 4: Classrooms & Science Labs -->
+                  <button class="map-hotspot-pin" data-zone-id="classrooms" style="left: 44%; top: 54%;"
+                    aria-label="Select Academic Classroom Blocks and Labs marker" role="button" aria-selected="false">
+                    <span class="map-pin-pulse" aria-hidden="true"></span>
+                    <span class="map-pin-core">
+                      <i class="bi bi-book-half" aria-hidden="true"></i>
+                    </span>
+                    <span class="map-pin-label">Classrooms</span>
+                  </button>
 
-                <!-- Hotspot Marker 5: Building & Construction Yard -->
-                <button class="map-hotspot-pin" data-zone-id="construction" style="left: 82%; top: 62%;"
-                  aria-label="Select Building and Construction Yard marker" role="button" aria-selected="false">
-                  <span class="map-pin-pulse" aria-hidden="true"></span>
-                  <span class="map-pin-core">
-                    <i class="bi bi-tools" aria-hidden="true"></i>
-                  </span>
-                  <span class="map-pin-label">Construction</span>
-                </button>
+                  <!-- Hotspot Marker 5: Building & Construction Yard -->
+                  <button class="map-hotspot-pin" data-zone-id="construction" style="left: 82%; top: 62%;"
+                    aria-label="Select Building and Construction Yard marker" role="button" aria-selected="false">
+                    <span class="map-pin-pulse" aria-hidden="true"></span>
+                    <span class="map-pin-core">
+                      <i class="bi bi-tools" aria-hidden="true"></i>
+                    </span>
+                    <span class="map-pin-label">Construction</span>
+                  </button>
 
-                <!-- Hotspot Marker 6: Quadrangle & Sports Grounds -->
-                <button class="map-hotspot-pin" data-zone-id="sports" style="left: 28%; top: 74%;"
-                  aria-label="Select Central Quadrangle and Sports Grounds marker" role="button" aria-selected="false">
-                  <span class="map-pin-pulse" aria-hidden="true"></span>
-                  <span class="map-pin-core">
-                    <i class="bi bi-dribbble" aria-hidden="true"></i>
-                  </span>
-                  <span class="map-pin-label">Sports Ground</span>
-                </button>
+                  <!-- Hotspot Marker 6: Quadrangle & Sports Grounds -->
+                  <button class="map-hotspot-pin" data-zone-id="sports" style="left: 28%; top: 74%;"
+                    aria-label="Select Central Quadrangle and Sports Grounds marker" role="button" aria-selected="false">
+                    <span class="map-pin-pulse" aria-hidden="true"></span>
+                    <span class="map-pin-core">
+                      <i class="bi bi-dribbble" aria-hidden="true"></i>
+                    </span>
+                    <span class="map-pin-label">Sports Ground</span>
+                  </button>
+                </div>
 
+                <!-- Guided Tour Auto-Cycle Control -->
+                <div class="campus-map-tour-control" id="campusMapTourControl">
+                  <button type="button" class="map-tour-btn is-playing" id="mapTourToggleBtn" aria-label="Pause auto guided tour of campus highlights" title="Pause guided campus tour (5s interval)">
+                    <span class="map-tour-pulse-ring" aria-hidden="true"></span>
+                    <i class="bi bi-pause-fill map-tour-icon" id="mapTourIcon" aria-hidden="true"></i>
+                    <span class="map-tour-text-wrap">
+                      <span class="map-tour-btn-text" id="mapTourBtnText">Guided Tour</span>
+                      <span class="map-tour-badge" id="mapTourBadge">Stop 1/6</span>
+                    </span>
+                    <div class="map-tour-progress-track" aria-hidden="true" title="5s interval timer">
+                      <div class="map-tour-progress-bar" id="mapTourTimerBar"></div>
+                    </div>
+                  </button>
+                </div>
+
+                <!-- Zoom Controls Toolbar -->
+                <div class="campus-map-zoom-controls" id="campusMapZoomControls" role="toolbar" aria-label="Campus map zoom and view controls">
+                  <button type="button" class="map-zoom-btn" id="mapZoomInBtn" aria-label="Zoom in map" title="Zoom in (+)">
+                    <i class="bi bi-zoom-in" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="map-zoom-btn map-zoom-btn--level" id="mapZoomLevelBtn" aria-label="Current zoom: 100%. Click to cycle zoom" title="Current zoom (click to cycle)">
+                    <span class="map-zoom-level-text" id="mapZoomLevel">100%</span>
+                  </button>
+                  <button type="button" class="map-zoom-btn" id="mapZoomOutBtn" aria-label="Zoom out map" title="Zoom out (-)" disabled>
+                    <i class="bi bi-zoom-out" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="map-zoom-btn map-zoom-btn--reset" id="mapZoomResetBtn" aria-label="Reset map zoom" title="Reset zoom (100%)">
+                    <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+                <!-- Pan / Drag indicator hint -->
+                <div class="campus-map-pan-hint" id="campusMapPanHint" aria-hidden="true">
+                  <i class="bi bi-arrows-move"></i>
+                  <span>Drag to pan map</span>
+                </div>
               </div>
 
               <!-- Map Viewport Footnote -->
               <div class="campus-map-viewport-bar">
                 <div class="map-legend-hint">
-                  <i class="bi bi-info-circle-fill text-accent"></i>
-                  <span>Click any pin or use <strong>&larr; / &rarr; arrow keys</strong> to cycle facilities</span>
+                  <i class="bi bi-compass text-accent" aria-hidden="true"></i>
+                  <span id="mapTourStatusText">Guided Tour: <strong>Chapel &amp; Shrine</strong> (Stop 1 of 6) · Next highlight in 5s</span>
                 </div>
                 <div class="map-status-pill">
                   <span class="map-status-dot"></span>
@@ -1741,7 +1147,7 @@
                 </div>
 
                 <!-- Facility Content Body -->
-                <div class="map-detail-body">
+                <div class="map-detail-body map-detail-card-content">
                   <div class="map-detail-header">
                     <h3 id="mapDetailTitle" class="map-detail-title">College Chapel &amp; St. Joseph's Shrine</h3>
                     <p id="mapDetailTagline" class="map-detail-tagline">Spiritual foundation and sanctuary for reflection</p>
@@ -1855,27 +1261,47 @@
 
         <!-- Controls: Filters, Search, and Expand/Collapse Tools -->
         <div class="faq-controls-panel reveal">
-          <div class="faq-filters-bar" role="tablist" aria-label="FAQ Categories">
-            <button type="button" class="faq-filter-btn is-active" data-faq-filter="all" role="tab" aria-selected="true" toolDescription="Show all frequently asked questions across all categories.">
-              <i class="bi bi-grid-fill"></i>
-              <span>All Questions</span>
-              <span class="faq-filter-count">15</span>
-            </button>
-            <button type="button" class="faq-filter-btn" data-faq-filter="admissions" role="tab" aria-selected="false" toolDescription="Filter questions related to admission requirements, interviews, and entry criteria.">
-              <i class="bi bi-mortarboard-fill"></i>
-              <span>Admissions</span>
-              <span class="faq-filter-count">5</span>
-            </button>
-            <button type="button" class="faq-filter-btn" data-faq-filter="boarding" role="tab" aria-selected="false" toolDescription="Filter questions related to boarding facilities, dormitory life, and supplies.">
-              <i class="bi bi-house-door-fill"></i>
-              <span>Boarding Facilities</span>
-              <span class="faq-filter-count">5</span>
-            </button>
-            <button type="button" class="faq-filter-btn" data-faq-filter="fees" role="tab" aria-selected="false" toolDescription="Filter questions regarding school fees, bank payment options, and pocket money.">
-              <i class="bi bi-cash-stack"></i>
-              <span>School Fees &amp; Payments</span>
-              <span class="faq-filter-count">5</span>
-            </button>
+          <div class="faq-filter-controls">
+            <!-- Tabs Navigation (Admissions, Boarding, Fees) -->
+            <div class="faq-filters-bar" role="tablist" aria-label="FAQ Categories" id="faqCategoryTabs">
+              <button type="button" id="faq-tab-all" class="faq-filter-btn is-active" data-faq-filter="all" role="tab" aria-selected="true" aria-controls="faqAccordion" tabindex="0" toolDescription="Show all frequently asked questions across all categories.">
+                <i class="bi bi-grid-fill" aria-hidden="true"></i>
+                <span>All Questions</span>
+                <span class="faq-filter-count">15</span>
+              </button>
+              <button type="button" id="faq-tab-admissions" class="faq-filter-btn" data-faq-filter="admissions" role="tab" aria-selected="false" aria-controls="faqAccordion" tabindex="-1" toolDescription="Filter questions related to admission requirements, interviews, and entry criteria.">
+                <i class="bi bi-mortarboard-fill" aria-hidden="true"></i>
+                <span>Admissions</span>
+                <span class="faq-filter-count">5</span>
+              </button>
+              <button type="button" id="faq-tab-boarding" class="faq-filter-btn" data-faq-filter="boarding" role="tab" aria-selected="false" aria-controls="faqAccordion" tabindex="-1" toolDescription="Filter questions related to boarding facilities, dormitory life, and supplies.">
+                <i class="bi bi-house-door-fill" aria-hidden="true"></i>
+                <span>Boarding</span>
+                <span class="faq-filter-count">5</span>
+              </button>
+              <button type="button" id="faq-tab-fees" class="faq-filter-btn" data-faq-filter="fees" role="tab" aria-selected="false" aria-controls="faqAccordion" tabindex="-1" toolDescription="Filter questions regarding school fees, bank payment options, and pocket money.">
+                <i class="bi bi-cash-stack" aria-hidden="true"></i>
+                <span>Fees &amp; Payments</span>
+                <span class="faq-filter-count">5</span>
+              </button>
+            </div>
+
+            <!-- Responsive Category Select Dropdown -->
+            <div class="faq-select-wrapper" id="faqSelectWrapper">
+              <label for="faqCategorySelect" class="faq-select-label">
+                <i class="bi bi-funnel-fill" aria-hidden="true"></i>
+                <span>Category:</span>
+              </label>
+              <div class="faq-select-container">
+                <select id="faqCategorySelect" class="faq-category-select" aria-label="Filter frequently asked questions by category">
+                  <option value="all">All Questions (15)</option>
+                  <option value="admissions">Admissions (5)</option>
+                  <option value="boarding">Boarding (5)</option>
+                  <option value="fees">Fees &amp; Payments (5)</option>
+                </select>
+                <i class="bi bi-chevron-down faq-select-chevron" aria-hidden="true"></i>
+              </div>
+            </div>
           </div>
 
           <div class="faq-search-and-tools">
@@ -1896,354 +1322,7 @@
         </div>
 
         <!-- FAQ Items Accordion -->
-        <div class="faq-list" id="faqAccordion">
-          <article class="faq-item" id="faq-q-form1-requirements" data-category="admissions">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-form1-requirements-answer" id="faq-q-form1-requirements-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-mortarboard-fill"></i> Admission Requirements</span>
-                <h3 class="faq-question-title">What are the admission requirements for Form One (First Cycle)?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-form1-requirements-answer" role="region" aria-labelledby="faq-q-form1-requirements-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>Admission into Form One at SJCCC Mbengwi is open to pupils completing primary education with strong moral standing and academic readiness. The formal entry requirements include:</p>
-<ul class="faq-styled-list">
-  <li><strong>Government Common Entrance Examination:</strong> A verifiable pass in the National Common Entrance Examination.</li>
-  <li><strong>Birth Certificate:</strong> A clear photocopy of the applicant's official birth certificate.</li>
-  <li><strong>Progress Card:</strong> A recent progress card (school booklet/report card) certifying completion of Class Six with satisfactory academic performance and conduct.</li>
-  <li><strong>Transfer Certificate:</strong> For pupils coming from outside institutions, an official transfer certificate from the previous school head.</li>
-  <li><strong>Entrance Interview:</strong> Attendance at the annual Form One interviews held on campus in early August.</li>
-</ul>
-<div class="faq-callout-card">
-  <i class="bi bi-info-circle-fill faq-callout-icon"></i>
-  <div class="faq-callout-body">
-    <strong>Interviews Date:</strong> Form One interviews take place on <strong>Tuesday, 4th August 2026 at 9:00 AM</strong> on the college campus in Mbengwi. Early registrations can be initiated online through our enquiry portal.
-  </div>
-</div>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-lower6-requirements" data-category="admissions">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-lower6-requirements-answer" id="faq-q-lower6-requirements-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-mortarboard-fill"></i> Admission Requirements</span>
-                <h3 class="faq-question-title">What are the entry criteria for Lower Sixth (Second Cycle Arts, Science & Commercial)?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-lower6-requirements-answer" role="region" aria-labelledby="faq-q-lower6-requirements-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>Admission to the Second Cycle (Lower Sixth) requires students to have demonstrated solid academic foundation in their GCE Ordinary Level examinations. Candidates must provide:</p>
-<ul class="faq-styled-list">
-  <li><strong>GCE Ordinary Level Passes:</strong> A pass in at least <strong>four (4) GCE Ordinary Level subjects</strong> forming an approved combination in Arts, Science, or Commercial streams.</li>
-  <li><strong>Official Result Slip:</strong> A certified photocopy of the Cameroon GCE Ordinary Level results slip or certificate.</li>
-  <li><strong>Birth Certificate:</strong> A certified photocopy of the applicant's birth certificate.</li>
-  <li><strong>Formal Application:</strong> A handwritten formal application letter addressed directly to the Principal expressing the candidate's chosen combination and educational motivation.</li>
-</ul>
-<p>Upper Sixth transfers are considered strictly upon review of the student's Lower Sixth progress records and good disciplinary standing.</p>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-technical-programs" data-category="admissions">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-technical-programs-answer" id="faq-q-technical-programs-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-tools"></i> Technical Education</span>
-                <h3 class="faq-question-title">What technical and vocational departments are offered for Forms 1 to 3?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-technical-programs-answer" role="region" aria-labelledby="faq-q-technical-programs-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>In accordance with our mission to educate both minds and hands (<em>"Edificamus Regnum Dei"</em>), SJCCC offers accredited technical and vocational departments alongside general grammar education. In Forms 1 through 3, students can enroll in:</p>
-<ul class="faq-styled-list">
-  <li><strong>Building Construction (CE-BC):</strong> Practical masonry, architectural drawing fundamentals, and structural civil works.</li>
-  <li><strong>Fashion Design & Clothing (FE):</strong> Garment design, pattern drafting, textile cutting, and professional tailoring techniques.</li>
-  <li><strong>Electrical Power Systems (EPS):</strong> Domestic wiring, electrical installation, machine repair, and circuitry principles.</li>
-  <li><strong>Automobile Repair Mechanics (ARM):</strong> Engine mechanics, diagnostic maintenance, vehicle mechanics, and workshop safety.</li>
-  <li><strong>Home Economics (HEc):</strong> Nutrition, food technology, hospitality craft, and family resource management.</li>
-</ul>
-<p>Students benefit from practical workshop sessions supervised by experienced technical instructors, equipping them with self-reliant trade skills.</p>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-interview-day" data-category="admissions">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-interview-day-answer" id="faq-q-interview-day-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-calendar-event"></i> Entrance Process</span>
-                <h3 class="faq-question-title">When do entrance interviews happen and what should candidates bring?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-interview-day-answer" role="region" aria-labelledby="faq-q-interview-day-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>The annual Form One entrance interview takes place in August on the SJCCC Mbengwi campus starting promptly at <strong>9:00 AM</strong>. On interview day, candidates should arrive neatly dressed accompanied by a parent or guardian and bring:</p>
-<ul class="faq-styled-list">
-  <li>Writing materials (blue/black pens, pencils, eraser, and ruler).</li>
-  <li>Original Primary School progress booklet (report card).</li>
-  <li>Common Entrance Examination candidate slip or registration proof.</li>
-  <li>Birth certificate photocopy.</li>
-</ul>
-<p>The interview evaluates basic numeracy, literacy, and readiness for a structured boarding routine. Families unable to travel on the scheduled date should contact the administration via WhatsApp (+237 682 760 271) to arrange a provisional assessment.</p>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-transfer-students" data-category="admissions">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-transfer-students-answer" id="faq-q-transfer-students-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-arrow-left-right"></i> Transfer Policy</span>
-                <h3 class="faq-question-title">Can students transfer into intermediate classes (Forms 2, 3, 4, or Upper Sixth)?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-transfer-students-answer" role="region" aria-labelledby="faq-q-transfer-students-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>Yes. SJCCC Mbengwi accepts transfer students into intermediate classes provided space is available in the requested department and the student meets our character standards.</p>
-<ul class="faq-styled-list">
-  <li><strong>Transfer Certificate:</strong> An official transfer certificate duly signed and stamped by the Principal or Head of the previous school.</li>
-  <li><strong>Progress Card &amp; Term Reports:</strong> Academic transcripts showing consistent attendance, passing marks, and no unresolved disciplinary suspensions.</li>
-  <li><strong>Parent/Guardian Interview:</strong> A short consultative interview with the Principal or Vice-Principal to ensure alignment with college rules.</li>
-</ul>
-<p>Transfers into candidate classes (Form Five and Upper Sixth) are accepted only under exceptional circumstances and require early clearance before examination registration deadlines.</p>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-boarding-facilities" data-category="boarding">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-boarding-facilities-answer" id="faq-q-boarding-facilities-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-house-door-fill"></i> Boarding Facilities</span>
-                <h3 class="faq-question-title">What are the boarding facilities and living conditions like at SJCCC Mbengwi?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-boarding-facilities-answer" role="region" aria-labelledby="faq-q-boarding-facilities-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>SJCCC Mbengwi is a co-educational Catholic boarding college situated in Momo Division, North West Region of Cameroon. Our campus offers a tranquil, green, and secure setting completely secluded from urban noise and distractions.</p>
-<ul class="faq-styled-list">
-  <li><strong>Separate Residential Dormitories:</strong> Gated, dedicated dormitories for boys and girls with strict access controls and round-the-clock supervision.</li>
-  <li><strong>Dedicated Pastoral Team:</strong> Live-in House Masters, Matrons, and religious faculty ensure student welfare, discipline, character guidance, and security 24 hours a day.</li>
-  <li><strong>Structured Study Routine:</strong> Supervised morning and evening study halls (prep) fostering academic discipline, punctuality, and peer collaboration.</li>
-  <li><strong>Recreation &amp; Faith:</strong> On-campus Catholic chapel for spiritual growth, dining hall serving balanced meals, sports courts, and playing fields for football, handball, and athletics.</li>
-</ul>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-boarding-supplies" data-category="boarding">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-boarding-supplies-answer" id="faq-q-boarding-supplies-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-box-seam"></i> Boarding Requirements</span>
-                <h3 class="faq-question-title">What essential bedding, clothing, and toiletry items must boarders bring?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-boarding-supplies-answer" role="region" aria-labelledby="faq-q-boarding-supplies-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>To ensure personal comfort, hygiene, and neatness, every boarding student must bring the following official items on resumption day:</p>
-<ul class="faq-styled-list">
-  <li><strong>Mattress &amp; Bedding:</strong> One single mattress (1.90m X 70cm). <em>For Form One students, the mattress MUST be covered with protective waterproof plastic material.</em> Bring a thick blanket, two sets of bed sheets (blue or green), a pillow, and two pillowcases.</li>
-  <li><strong>Prescribed Footwear:</strong> Official brown sandals for daily classes (purchased on campus or matching college design), black formal shoes for Sundays/feast days, and sports shoes/football boots.</li>
-  <li><strong>Compound &amp; Sports Wear:</strong> Two sets of compound wear (white sleeveless gowns with gathers for girls; black trousers and white short-sleeve shirts for boys). Sports wear obtained according to house colours (Peter: White, François: Yellow, Chanel: Red, Champagnat: Green).</li>
-  <li><strong>Cutlery &amp; Hygiene:</strong> Two silver plates, spoons, fork, table knife, two cups with handles, drinking water flask, large bucket for laundry and bathing, umbrella or raincoat, torchlight, padlocks with keys for lockers, and toiletries (bathing/laundry soap, toothbrush, toothpaste, sanitary towels for girls).</li>
-</ul>
-<div class="faq-callout-card">
-  <i class="bi bi-shield-check faq-callout-icon"></i>
-  <div class="faq-callout-body">
-    <strong>Important Labelling:</strong> Parents must permanently mark every single piece of clothing and personal equipment with the student's name or initials before arrival to prevent mix-ups.
-  </div>
-</div>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-visiting-policy" data-category="boarding">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-visiting-policy-answer" id="faq-q-visiting-policy-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-people-fill"></i> Campus Guidelines</span>
-                <h3 class="faq-question-title">What is the policy on visiting days and contacting boarders during the term?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-visiting-policy-answer" role="region" aria-labelledby="faq-q-visiting-policy-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>To preserve campus serenity and keep students focused on academic and moral growth, visits are strictly regulated:</p>
-<ul class="faq-styled-list">
-  <li><strong>Scheduled Visiting Days:</strong> Visiting occurs <strong>once per term</strong> on a date communicated to parents in advance on the school calendar.</li>
-  <li><strong>Visiting Hours:</strong> Visiting day begins with Holy Mass at <strong>9:00 AM</strong> and concludes promptly at <strong>4:30 PM</strong>.</li>
-  <li><strong>Eligible Visitors:</strong> Only verified parents and officially designated immediate guardians are permitted to visit. Unscheduled or surprise visits are strictly prohibited.</li>
-  <li><strong>Exit Passes:</strong> Once on campus, exit passes to leave the college are not granted except for urgent family funerals of parents or siblings. Students whose parents live outside Bamenda/Mbengwi must have a registered local guardian.</li>
-</ul>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-healthcare-infirmary" data-category="boarding">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-healthcare-infirmary-answer" id="faq-q-healthcare-infirmary-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-heart-pulse-fill"></i> Health & Welfare</span>
-                <h3 class="faq-question-title">How are healthcare and medical emergencies managed on campus?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-healthcare-infirmary-answer" role="region" aria-labelledby="faq-q-healthcare-infirmary-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>The health and well-being of our students are guarded with diligent Catholic pastoral care:</p>
-<ul class="faq-styled-list">
-  <li><strong>Campus Infirmary &amp; Resident Nurse:</strong> SJCCC operates an on-campus clinic staffed by a qualified resident nurse who provides daily consultation, first aid, and basic healthcare.</li>
-  <li><strong>BEPHA Mutual Health Coverage:</strong> Every enrolled student is registered in BEPHA (the Catholic Mutual Health Insurance Scheme of the Archdiocese of Bamenda), covered within the statutory health fee.</li>
-  <li><strong>Hospital Referrals:</strong> In cases requiring specialized medical treatment, students are transported to the reference hospital immediately, and parents or guardians are contacted without delay.</li>
-</ul>
-<div class="faq-callout-card">
-  <i class="bi bi-exclamation-triangle-fill faq-callout-icon"></i>
-  <div class="faq-callout-body">
-    <strong>Special Diet Notice:</strong> The college serves wholesome, balanced communal meals. Please note that students requiring personalized or restrictive medical diets cannot be admitted, as the institution cannot provide separate kitchen catering.
-  </div>
-</div>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-prohibited-items" data-category="boarding">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-prohibited-items-answer" id="faq-q-prohibited-items-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-slash-circle-fill"></i> Discipline & Safety</span>
-                <h3 class="faq-question-title">What items are strictly prohibited in the boarding dormitories?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-prohibited-items-answer" role="region" aria-labelledby="faq-q-prohibited-items-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>To safeguard moral uprightness, discipline, and fire safety across the compound, the following items are strictly contraband. When found, they are permanently confiscated and will not be returned:</p>
-<ul class="faq-styled-list">
-  <li><strong>Electronic Devices:</strong> Mobile phones, smartphones, tablets, digital cameras, personal radios, and walkmans/MP3 players.</li>
-  <li><strong>Heating Appliances:</strong> Electric irons, hot plates, immersion boiling rings, and unauthorised wiring.</li>
-  <li><strong>Unauthorized Clothing &amp; Shoes:</strong> Non-uniform casual clothing, high-heeled shoes, slippers outside dormitories, or fancy footwear.</li>
-  <li><strong>Food &amp; Consumables:</strong> Cooked food brought from outside, garri, alcohol, and cigarettes. Food supplies are permitted only on designated visiting days.</li>
-  <li><strong>Cosmetics &amp; Jewelry:</strong> Chemical bleaching lotions, hair-tinting chemicals, nail hardener/polish, necklaces, rings, and decorative jewelry.</li>
-</ul>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-fees-breakdown" data-category="fees">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-fees-breakdown-answer" id="faq-q-fees-breakdown-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-cash-stack"></i> School Fees</span>
-                <h3 class="faq-question-title">What is the total school fee structure and what does it include?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-fees-breakdown-answer" role="region" aria-labelledby="faq-q-fees-breakdown-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>SJCCC Mbengwi operates with complete financial transparency under the Archdiocese of Bamenda. The approved fees for the 2026/2027 academic session (all in FCFA) are:</p>
-<div class="table-responsive glass-table-wrapper" style="margin: 14px 0;">
-  <table class="data-table" style="width: 100%; border-collapse: collapse;">
-    <thead>
-      <tr style="background: rgba(10, 31, 63, 0.06); text-align: left;">
-        <th style="padding: 10px 14px;">Fee Item</th>
-        <th style="padding: 10px 14px; text-align: right;">Amount (FCFA)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td style="padding: 8px 14px;"><i class="bi bi-house-heart"></i> Boarding & Catering</td><td style="padding: 8px 14px; text-align: right; font-weight: 600;">112,000</td></tr>
-      <tr><td style="padding: 8px 14px;"><i class="bi bi-book"></i> Tuition (1st or 2nd Cycle)</td><td style="padding: 8px 14px; text-align: right; font-weight: 600;">63,000</td></tr>
-      <tr><td style="padding: 8px 14px;"><i class="bi bi-clipboard2"></i> Registration Fee</td><td style="padding: 8px 14px; text-align: right; font-weight: 600;">5,000</td></tr>
-      <tr><td style="padding: 8px 14px;"><i class="bi bi-capsule"></i> Health & BEPHA Mutual Insurance</td><td style="padding: 8px 14px; text-align: right; font-weight: 600;">5,000</td></tr>
-      <tr><td style="padding: 8px 14px;"><i class="bi bi-pencil-square"></i> Examination Fee</td><td style="padding: 8px 14px; text-align: right; font-weight: 600;">4,000</td></tr>
-      <tr><td style="padding: 8px 14px;"><i class="bi bi-people"></i> PTA Contribution</td><td style="padding: 8px 14px; text-align: right; font-weight: 600;">3,000</td></tr>
-      <tr><td style="padding: 8px 14px;"><i class="bi bi-person-badge"></i> Student Identity Card</td><td style="padding: 8px 14px; text-align: right; font-weight: 600;">1,000</td></tr>
-      <tr><td style="padding: 8px 14px;"><i class="bi bi-gear-wide-connected"></i> Practical Fee (Technical & Science classes)</td><td style="padding: 8px 14px; text-align: right; font-weight: 600;">5,000</td></tr>
-      <tr><td style="padding: 8px 14px;"><i class="bi bi-clipboard2-check"></i> C.R.S.E Fee (Form 3 & Lower Sixth)</td><td style="padding: 8px 14px; text-align: right; font-weight: 600;">2,500</td></tr>
-    </tbody>
-  </table>
-</div>
-<p>The standard baseline boarding fee total is <strong>193,000 FCFA</strong> (or up to 200,500 FCFA for technical/science students including practicals and CRSE).</p>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-fees-installments" data-category="fees">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-fees-installments-answer" id="faq-q-fees-installments-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-calendar2-check"></i> Payment Plans</span>
-                <h3 class="faq-question-title">Can school fees be paid in installments?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-fees-installments-answer" role="region" aria-labelledby="faq-q-fees-installments-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>Yes. The college provides an installment plan to help families manage educational expenses comfortably:</p>
-<ul class="faq-styled-list">
-  <li><strong>First Installment:</strong> Payable during July, August, or September prior to or on resumption day. This clears boarding deposit, registration, and initial tuition.</li>
-  <li><strong>Second Installment:</strong> Due and payable before the end of <strong>January</strong> of the academic school year.</li>
-</ul>
-<div class="faq-callout-card">
-  <i class="bi bi-exclamation-octagon-fill faq-callout-icon"></i>
-  <div class="faq-callout-body">
-    <strong>Mandatory Rule for Examination Classes:</strong> Form Five and Upper Sixth candidates are required to pay all school fees in full on or before the reopening of the school year. This prevents class suspensions and guarantees timely registration with the Cameroon GCE Board.
-  </div>
-</div>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-bank-details" data-category="fees">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-bank-details-answer" id="faq-q-bank-details-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-bank2"></i> Banking Instructions</span>
-                <h3 class="faq-question-title">Where and how should school fee payments be deposited?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-bank-details-answer" role="region" aria-labelledby="faq-q-bank-details-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>For safety, audit compliance, and accounting precision, school fees must never be handed as cash to staff or intermediaries. All payments must be deposited directly through our official financial partner:</p>
-<div class="faq-callout-card" style="border-left: 4px solid var(--accent);">
-  <i class="bi bi-check-circle-fill faq-callout-icon"></i>
-  <div class="faq-callout-body">
-    <strong>Institution:</strong> OPUS SECURITATIS (OPSEC) Microfinance<br>
-    <strong>Account Name:</strong> St. Joseph Cath. Col Mbengwi<br>
-    <strong>Account Number:</strong> 100117<br>
-    <strong>Main Branch:</strong> All Saints Business Center, Mile 2 Nkwen, Bamenda (or any OPSEC branch across Cameroon)
-  </div>
-</div>
-<p><strong>Obtaining Your Official Receipt:</strong> Present the stamped OPSEC bank deposit teller to the College Bursar on campus upon resumption to receive your computerized college receipt.</p>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-pocket-money" data-category="fees">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-pocket-money-answer" id="faq-q-pocket-money-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-wallet2"></i> Student Allowance</span>
-                <h3 class="faq-question-title">How is student pocket money managed on campus?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-pocket-money-answer" role="region" aria-labelledby="faq-q-pocket-money-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>To eliminate theft, peer conflict, and misuse of money, students are strictly forbidden from keeping physical money in dormitories, school bags, or classrooms.</p>
-<ul class="faq-styled-list">
-  <li><strong>Deposit with the Bursar:</strong> All pocket money must be handed to the College Bursar on resumption day.</li>
-  <li><strong>Individual Student Ledgers:</strong> The Bursar records the deposit in the student's personal pocket money account.</li>
-  <li><strong>Regulated Disbursements:</strong> Small regulated amounts are disbursed periodically for necessary personal items, haircuts, or stamps.</li>
-  <li><strong>Maximum Allowance:</strong> In keeping with college guidelines, termly pocket money should not exceed <strong>25,000 FCFA</strong> per term.</li>
-</ul>
-              </div>
-            </div>
-          </article>
-          <article class="faq-item" id="faq-q-additional-costs" data-category="fees">
-            <button type="button" class="faq-question-btn" aria-expanded="false" aria-controls="faq-q-additional-costs-answer" id="faq-q-additional-costs-btn">
-              <div class="faq-question-meta">
-                <span class="faq-category-tag"><i class="bi bi-receipt"></i> Additional Costs</span>
-                <h3 class="faq-question-title">Are there any additional fees or hidden charges during the academic year?</h3>
-              </div>
-              <span class="faq-toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
-            </button>
-            <div class="faq-answer-content" id="faq-q-additional-costs-answer" role="region" aria-labelledby="faq-q-additional-costs-btn" hidden>
-              <div class="faq-answer-inner">
-                <p>There are no hidden charges. All mandatory institutional costs are included in the published fees. Transparent incidental costs that families should plan for include:</p>
-<ul class="faq-styled-list">
-  <li><strong>External GCE Board Registration:</strong> Registration fees for the Cameroon GCE Ordinary or Advanced Level examinations for Form 5 and Upper Sixth candidates (fixed independently by the GCE Board).</li>
-  <li><strong>Textbooks &amp; Stationery:</strong> Personal writing materials, 80-leaf exercise books (Forms 1-2), and ledgers (Forms 3 through Upper Sixth).</li>
-  <li><strong>Practical Projects &amp; Field Trips:</strong> Specific technical workshops or educational excursions (e.g. building site visits or geography field study) may require modest ancillary contributions communicated in advance by letter.</li>
-</ul>
-              </div>
-            </div>
-          </article>
-        </div><!-- /faq-list -->
+        <div class="faq-list" id="faqAccordion"></div><!-- /faq-list -->
 
         <!-- Empty Search State -->
         <div class="faq-empty-state" id="faqEmptyState" hidden>

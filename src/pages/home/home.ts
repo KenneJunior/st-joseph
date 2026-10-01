@@ -17,11 +17,14 @@ import { CounterAnimation } from '../../ui/utils/CounterAnimation.ts';
 import { HeroParticles } from '../../features/hero/HeroParticles.ts';
 import { ScrollEngine } from '../../features/hero/ScrollEngine.ts';
 import { Carousel } from '../../features/carousel/Carousel.ts';
+import { renderCarouselSlides } from '../../features/carousel/CarouselRenderer.ts';
 import { AnnouncementBar } from '../../features/announcement/AnnouncementBar.ts';
 import { Preloader } from '../../features/preloader/Preloader.ts';
 import { AcademicLevelToggles } from '../../features/academic/AcademicLevelToggles.ts';
 import { FaqSection } from '../../features/faq/FaqSection.ts';
+import { renderFaqItems } from '../../features/faq/FaqRenderer.ts';
 import { SchoolDatesTimeline } from '../../features/calendar/SchoolDatesTimeline.ts';
+import { renderTimelineMilestones } from '../../features/calendar/TimelineRenderer.ts';
 import { VirtualCampusMap } from '../../features/campus/VirtualCampusMap.ts';
 import { EnquiryModal } from '../../features/enquiry/EnquiryModal.ts';
 import { EnquiryForm } from '../../features/enquiry/EnquiryForm.ts';
@@ -61,10 +64,10 @@ export class HomeApp {
             dismissForDays: 3,
         });
 
-        // 6. Carousel
+        // 6. Carousel (Synchronously render slides, then initialize controller)
+        renderCarouselSlides(document.getElementById('carouselTrack'));
         new Carousel(
             HOME_SELECTORS.carouselSlide,
-            HOME_SELECTORS.carouselDots,
             HOME_SELECTORS.prevBtn,
             HOME_SELECTORS.nextBtn,
             HOME_SELECTORS.carouselContainer
@@ -73,8 +76,48 @@ export class HomeApp {
         // 7. Counters
         new CounterAnimation(HOME_SELECTORS.statNumbers);
 
-        // 8. Scroll reveal
-        new ScrollReveal(HOME_SELECTORS.reveal);
+        // 8. Scroll reveal & Staggered Section Entrances
+        const scrollReveal = new ScrollReveal(HOME_SELECTORS.reveal);
+
+        // Staggered entrance for Academics header (label, title, subtitle)
+        scrollReveal.initStaggerGroup({
+            container: HOME_SELECTORS.academicsSection,
+            itemSelector: '.section-label, .section-title, .section-subtitle',
+            baseDelay: 90,
+            initialDelay: 0,
+            threshold: 0.1,
+            rootMargin: '0px 0px -30px 0px',
+        });
+
+        // Staggered entrance for Academic Pillars (cards)
+        scrollReveal.initStaggerGroup({
+            container: HOME_SELECTORS.academicsPillars,
+            itemSelector: '.pillar',
+            baseDelay: 140,
+            initialDelay: 60,
+            threshold: 0.1,
+            rootMargin: '0px 0px -40px 0px',
+        });
+
+        // Staggered entrance for News & Events header (label, title, divider)
+        scrollReveal.initStaggerGroup({
+            container: HOME_SELECTORS.newsEventsSection,
+            itemSelector: '.section-label, .section-title, .section-divider',
+            baseDelay: 90,
+            initialDelay: 0,
+            threshold: 0.1,
+            rootMargin: '0px 0px -30px 0px',
+        });
+
+        // Staggered entrance for Event Cards
+        scrollReveal.initStaggerGroup({
+            container: HOME_SELECTORS.newsEventsGrid,
+            itemSelector: '.event-card',
+            baseDelay: 150,
+            initialDelay: 60,
+            threshold: 0.1,
+            rootMargin: '0px 0px -40px 0px',
+        });
 
         // 9. Smooth scroll
         new SmoothScroll(HOME_SELECTORS.mainHeader, HOME_SELECTORS.smoothScrollLinks);
@@ -86,6 +129,7 @@ export class HomeApp {
         new AcademicLevelToggles(HOME_SELECTORS.levelToggle);
 
         // 12. Upcoming School Dates & Milestones Timeline
+        renderTimelineMilestones(document.getElementById('timelineMilestonesList'));
         new SchoolDatesTimeline(HOME_SELECTORS.schoolDates);
 
         // 13. Virtual Campus Map interactive explorer
@@ -95,6 +139,7 @@ export class HomeApp {
         new ScrollSpy(HOME_SELECTORS.navLinks);
 
         // 15. FAQ Accordion & Filtering
+        renderFaqItems(document.getElementById('faqAccordion'));
         new FaqSection();
 
         // 16. Enquiry modal
@@ -134,6 +179,14 @@ export class HomeApp {
             counterId: HOME_SELECTORS.hudCounter,
             a11yId: HOME_SELECTORS.a11yAnnouncer,
             canvasId: HOME_SELECTORS.dustCanvas,
+            dustConfig: {
+                density: 0.65,
+                speed: 0.55,
+                opacity: 0.42,
+                minOpacity: 0.08,
+                maxOpacity: 0.48,
+                scrollReactive: true,
+            },
             messages,
             scrollResponse: 0.1,
             snapResponse: 0.1,
