@@ -144,7 +144,7 @@ export const CAMPUS_SLIDES: readonly CampusSlide[] = [
     },
     {
         id: 'holy-mass',
-        imageSrc: '/assets/sjccc-studen-in-chapel-1.png',
+        imageSrc: '/assets/sjccc-student-in-chapel-1.png',
         altText: 'Students and priests celebrating Holy Mass in the chapel',
         kicker: 'Sacred Liturgy',
         title: 'Holy Mass & Eucharistic Worship',
@@ -152,12 +152,12 @@ export const CAMPUS_SLIDES: readonly CampusSlide[] = [
         shortCaption: 'Holy Mass',
     },
     {
-        id: 'graduation-procession',
-        imageSrc: '/assets/sjccc-procesion.jpg',
+        id: 'graduation-preparation',
+        imageSrc: '/assets/sjccc-graduation-preparation.jpg',
         altText: 'Students wearing graduation robes and gowns during convocation procession',
         kicker: 'Academic Robes',
-        title: 'Graduation Robes & Procession',
-        description: 'Graduands proudly dressed in their formal academic gowns and caps, processing together on convocation day.',
+        title: 'Graduation Robes & preparation',
+        description: 'Graduands proudly dressed in their formal academic gowns and caps, preparing together on convocation day.',
         shortCaption: 'Graduation Robes',
     },
     {

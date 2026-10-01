@@ -24,7 +24,7 @@ export function renderCarouselSlides(
 
         return `
             <div class="carousel-slide${isActive}" role="group" aria-roledescription="slide" aria-label="${slideNum} of ${total}: ${slide.title}" data-short-caption="${slide.shortCaption}" id="${slide.id}">
-              <img alt="${slide.altText}" class="carousel-image" loading="lazy" src="${slide.imageSrc}">
+              <img alt="${slide.altText}" class="carousel-image" loading="lazy" src="${slide.imageSrc}" onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';">
               <div class="carousel-overlay"></div>
               <div class="carousel-caption">
                 <span class="carousel-kicker">${slide.kicker}</span>

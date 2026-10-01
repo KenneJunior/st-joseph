@@ -1461,6 +1461,7 @@ html.dark .carousel-btn:hover,
 
 .carousel-thumb {
     position: relative;
+    z-index: 2;
 
     display: flex;
     flex-direction: column;
@@ -1477,8 +1478,10 @@ html.dark .carousel-btn:hover,
     border: none;
 
     cursor: pointer;
+    cursor: zoom-in;
     text-align: center;
     outline: none;
+    pointer-events: auto;
 
     user-select: none;
     -webkit-user-select: none;
@@ -1488,11 +1491,24 @@ html.dark .carousel-btn:hover,
         opacity 240ms ease;
 }
 
-.carousel-thumb-img {
-    display: block;
-
+.carousel-thumb-img-wrap {
+    position: relative;
     width: 100%;
     height: clamp(52px, 7vw, 70px);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    cursor: zoom-in;
+}
+
+.carousel-thumb-img {
+    display: block;
+    pointer-events: none;
+    cursor: pointer;
+    cursor: zoom-in;
+
+    width: 100%;
+    height: 100%;
 
     object-fit: cover;
     object-position: center 25%;
@@ -1516,8 +1532,48 @@ html.dark .carousel-btn:hover,
         transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Brief 'View Gallery' label on hover */
+.carousel-thumb-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%);
+    opacity: 0;
+    pointer-events: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: rgba(11, 20, 39, 0.92);
+    border: 1px solid rgba(214, 173, 85, 0.7);
+    color: #fbe59a;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), 0 0 8px rgba(214, 173, 85, 0.35);
+    transition: opacity 220ms ease, transform 220ms cubic-bezier(0.2, 0.8, 0.25, 1);
+    z-index: 5;
+}
+
+.carousel-thumb-badge i {
+    font-size: 0.68rem;
+    color: #d6ad55;
+}
+
+.carousel-thumb:hover .carousel-thumb-badge,
+.carousel-thumb:focus-visible .carousel-thumb-badge {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+}
+
 .carousel-thumb-caption {
     display: block;
+    pointer-events: none;
     width: 100%;
 
     font-family: Inter, system-ui, sans-serif;

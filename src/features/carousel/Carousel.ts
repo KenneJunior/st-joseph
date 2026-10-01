@@ -445,6 +445,22 @@ export class Carousel {
 
         if (existingThumbs.length === this.slides.length) {
             this.thumbnails = existingThumbs;
+            this.thumbnails.forEach((btn) => {
+                if (!btn.querySelector('.carousel-thumb-badge')) {
+                    const img = btn.querySelector('.carousel-thumb-img');
+                    if (img && !btn.querySelector('.carousel-thumb-img-wrap')) {
+                        const wrap = document.createElement('div');
+                        wrap.className = 'carousel-thumb-img-wrap';
+                        img.parentNode?.insertBefore(wrap, img);
+                        wrap.appendChild(img);
+                        const hoverBadge = document.createElement('span');
+                        hoverBadge.className = 'carousel-thumb-badge';
+                        hoverBadge.setAttribute('aria-hidden', 'true');
+                        hoverBadge.innerHTML = '<i class="bi bi-zoom-in" aria-hidden="true"></i> View Gallery';
+                        wrap.appendChild(hoverBadge);
+                    }
+                }
+            });
         } else {
             this.thumbnailsContainer.innerHTML = '';
             this.thumbnails = this.slides.map((slide, i) => {
@@ -459,6 +475,10 @@ export class Carousel {
                 const label = slide.dataset.shortCaption || kicker || title;
 
                 btn.setAttribute('aria-label', `Go to slide ${i + 1}: ${title}`);
+                btn.title = `View Gallery: ${title}`;
+
+                const imgWrap = document.createElement('div');
+                imgWrap.className = 'carousel-thumb-img-wrap';
 
                 const thumbImg = document.createElement('img');
                 thumbImg.src = img?.getAttribute('src') || '';
@@ -466,17 +486,36 @@ export class Carousel {
                 thumbImg.className = 'carousel-thumb-img';
                 thumbImg.loading = 'lazy';
 
+                const hoverBadge = document.createElement('span');
+                hoverBadge.className = 'carousel-thumb-badge';
+                hoverBadge.setAttribute('aria-hidden', 'true');
+                hoverBadge.innerHTML = '<i class="bi bi-zoom-in" aria-hidden="true"></i> View Gallery';
+
+                imgWrap.appendChild(thumbImg);
+                imgWrap.appendChild(hoverBadge);
+
                 const caption = document.createElement('span');
                 caption.className = 'carousel-thumb-caption';
                 caption.textContent = label;
 
-                btn.appendChild(thumbImg);
+                btn.appendChild(imgWrap);
                 btn.appendChild(caption);
 
                 this.thumbnailsContainer?.appendChild(btn);
                 return btn;
             });
         }
+
+        // Bind direct click listeners to every thumbnail button
+        this.thumbnails.forEach((btn, index) => {
+            btn.addEventListener('click', (e: MouseEvent) => {
+                if (this.thumbHasDragged) return;
+                e.preventDefault();
+                e.stopPropagation();
+                this.goToSlide(index);
+                this.resetAutoPlay();
+            });
+        });
 
         // Setup optional previous & next chevron scroll buttons
         this.thumbScrollPrevBtn = document.getElementById('thumbScrollPrev') as HTMLButtonElement | null;
@@ -513,43 +552,57 @@ export class Carousel {
         };
         this.thumbnailsContainer.addEventListener('scroll', this.handleThumbScroll, { passive: true });
 
-        // Pointer drag to scroll
+        // Desktop mouse-drag scrolling (does not interfere with clicking or mobile touch)
+        let hasCapturedPointer = false;
+
         this.handleThumbPointerDown = (e: PointerEvent): void => {
+            if (e.pointerType === 'touch') {
+                return; // Let touch screen use native touch pan-x scrolling
+            }
             if (e.button !== 0 || !this.thumbnailsContainer) return;
             this.isThumbDragging = true;
             this.thumbHasDragged = false;
+            hasCapturedPointer = false;
             this.thumbDragStartX = e.clientX;
             this.thumbScrollLeftStart = this.thumbnailsContainer.scrollLeft;
-            this.thumbnailsContainer.classList.add('is-dragging');
-            try {
-                this.thumbnailsContainer.setPointerCapture?.(e.pointerId);
-            } catch {
-                // Ignore unsupported
-            }
         };
 
         this.handleThumbPointerMove = (e: PointerEvent): void => {
             if (!this.isThumbDragging || !this.thumbnailsContainer) return;
             const deltaX = e.clientX - this.thumbDragStartX;
-            if (Math.abs(deltaX) > 6) {
+            if (Math.abs(deltaX) > 10) {
                 this.thumbHasDragged = true;
+                if (!hasCapturedPointer) {
+                    try {
+                        this.thumbnailsContainer.setPointerCapture?.(e.pointerId);
+                        hasCapturedPointer = true;
+                        this.thumbnailsContainer.classList.add('is-dragging');
+                    } catch {
+                        // Ignore unsupported
+                    }
+                }
+                this.thumbnailsContainer.scrollLeft = this.thumbScrollLeftStart - deltaX;
+                this.updateThumbScrollButtons();
             }
-            this.thumbnailsContainer.scrollLeft = this.thumbScrollLeftStart - deltaX;
-            this.updateThumbScrollButtons();
         };
 
         this.handleThumbPointerUp = (e: PointerEvent): void => {
             if (!this.isThumbDragging || !this.thumbnailsContainer) return;
             this.isThumbDragging = false;
             this.thumbnailsContainer.classList.remove('is-dragging');
-            try {
-                this.thumbnailsContainer.releasePointerCapture?.(e.pointerId);
-            } catch {
-                // Ignore unsupported
+            if (hasCapturedPointer) {
+                try {
+                    this.thumbnailsContainer.releasePointerCapture?.(e.pointerId);
+                } catch {
+                    // Ignore unsupported
+                }
+                hasCapturedPointer = false;
             }
-            setTimeout(() => {
-                this.thumbHasDragged = false;
-            }, 50);
+            if (this.thumbHasDragged) {
+                setTimeout(() => {
+                    this.thumbHasDragged = false;
+                }, 80);
+            }
         };
 
         this.thumbnailsContainer.addEventListener('pointerdown', this.handleThumbPointerDown);
@@ -557,11 +610,9 @@ export class Carousel {
         this.thumbnailsContainer.addEventListener('pointerup', this.handleThumbPointerUp);
         this.thumbnailsContainer.addEventListener('pointercancel', this.handleThumbPointerUp);
 
-        // Click handler: only navigate if not dragging
+        // Delegated fallback click handler
         this.handleThumbnailsClick = (e: MouseEvent): void => {
             if (this.thumbHasDragged) {
-                e.preventDefault();
-                e.stopPropagation();
                 return;
             }
             const target = e.target as HTMLElement | null;
@@ -569,10 +620,12 @@ export class Carousel {
 
             if (!thumb || !this.thumbnailsContainer?.contains(thumb)) return;
 
-            e.preventDefault();
-            const index = this.thumbnails.indexOf(thumb);
+            const indexAttr = thumb.getAttribute('data-slide-index');
+            const index = indexAttr !== null ? parseInt(indexAttr, 10) : this.thumbnails.indexOf(thumb);
 
-            if (index >= 0) {
+            if (index >= 0 && index < this.slides.length) {
+                e.preventDefault();
+                e.stopPropagation();
                 this.goToSlide(index);
                 this.resetAutoPlay();
             }
