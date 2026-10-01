@@ -1,0 +1,41 @@
+%% ============================================================================
+%% SJCCC PWA & Offline Lifecycle
+%% Shows Service Worker registration, manifest integration, precache storage,
+%% and offline navigation pathways for both Homepage and Prospectus.
+%% ============================================================================
+flowchart TD
+    subgraph Browser["User Browser Client"]
+        Nav["Navigation Request<br/>(/ or /prospectus.html)"]
+        SW_Reg["Registration Bootstrap<br/>(src/services/serviceWorker.ts)"]
+        InstallPrompt["In-App Install Prompt<br/>(PwaInstallPrompt.ts)"]
+        Indicator["Offline Status Badge<br/>(OfflineIndicator.ts)"]
+    end
+
+    subgraph ServiceWorker["Service Worker Engine (dist/sw.js)"]
+        Install["install Event<br/>(Precache Mandatory Assets)"]
+        Activate["activate Event<br/>(Purge Stale Version Caches)"]
+        Fetch["fetch Event Dispatcher<br/>(Classify & Route)"]
+    end
+
+    subgraph CacheStorage["Cache Storage API"]
+        Precache[("sjccc-precache-v2.0.0<br/>• /index.html<br/>• /prospectus.html<br/>• Built Vite JS/CSS<br/>• Fallback graphics")]
+        Runtime[("sjccc-runtime-v2.0.0<br/>(Dynamic CDN & assets)")]
+        Images[("sjccc-images-v2.0.0<br/>(Campus photography, max 60)")]
+    end
+
+    Nav --> SW_Reg
+    SW_Reg -->|"navigator.serviceWorker.register('/sw.js')"| ServiceWorker
+
+    ServiceWorker --> Install
+    Install -->|"Populates"| Precache
+    ServiceWorker --> Activate
+    Activate -->|"Trims"| CacheStorage
+
+    Nav --> Fetch
+    Fetch -->|"mode === 'navigate'"| Precache
+    Fetch -->|"Static JS/CSS"| Precache
+    Fetch -->|"Images"| Images
+
+    Browser <-->|"Online / Offline events"| Indicator
+    Indicator <-->|"Validates offline readiness"| Precache
+    Browser -->|"beforeinstallprompt"| InstallPrompt
