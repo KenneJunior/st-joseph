@@ -3,7 +3,8 @@
    ============================================ */
 .stats-section {
   position: relative;
-  background: url('/assets/Students.jpeg')  fixed center center;
+  background: url('/assets/sjccc-Students.jpeg')  fixed center center;
+  background-size: cover;
   z-index: 1;
 }
 
@@ -32,6 +33,25 @@ body.dark-mode .stats-section::before {
   margin: 0 auto;
 }
 
+@media (max-width: 1024px) {
+  .stats-row {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-row {
+    gap: 6px;
+  }
+}
+
 .stat-card {
   text-align: center;
   padding: 32px 20px;
@@ -45,6 +65,31 @@ body.dark-mode .stats-section::before {
               border-color var(--duration-fast, 200ms) var(--ease-standard);
   position: relative;
   overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+  .stat-card {
+    padding: 22px 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stat-card {
+    padding: 10px 8px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-card {
+    padding: 8px 5px;
+  }
+}
+
+@media (max-width: 360px) {
+  .stat-card {
+    padding: 6px 4px;
+  }
 }
 
 body.dark-mode .stat-card {
@@ -64,6 +109,13 @@ body.dark-mode .stat-card {
   background: var(--gold-gradient);
   border-radius: 0 0 3px 3px;
   transition: width var(--duration-normal, 350ms) var(--ease-standard);
+}
+
+@media (max-width: 768px) {
+  .stat-card::before {
+    width: 32px;
+    height: 2px;
+  }
 }
 
 .stat-card:hover::before {
@@ -91,6 +143,32 @@ body.dark-mode .stat-card:hover {
   margin-bottom: 8px;
 }
 
+@media (max-width: 1024px) {
+  .stat-number {
+    font-size: 2.2rem;
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stat-number {
+    font-size: clamp(1.25rem, 4.2vw, 1.5rem);
+    margin-bottom: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-number {
+    font-size: clamp(1.15rem, 4vw, 1.35rem);
+  }
+}
+
+@media (max-width: 360px) {
+  .stat-number {
+    font-size: 1.08rem;
+  }
+}
+
 body.dark-mode .stat-number {
   color: var(--accent-glow);
 }
@@ -102,6 +180,27 @@ body.dark-mode .stat-number {
   letter-spacing: 0.5px;
 }
 
+@media (max-width: 1024px) {
+  .stat-label {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .stat-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-label {
+    font-size: 0.66rem;
+    line-height: 1.15;
+  }
+}
+
 .stat-icon {
   color: var(--accent);
   font-size: 2.5rem;
@@ -109,9 +208,49 @@ body.dark-mode .stat-number {
   opacity: 0.85;
 }
 
+@media (max-width: 1024px) {
+  .stat-icon {
+    font-size: 1.8rem;
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stat-icon {
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-icon {
+    font-size: 0.95rem;
+  }
+}
+
 .stat-context {
   font-size: 1.25rem;
   color: var(--text-dark);
   margin-top: 6px;
   letter-spacing: 0.3px;
+}
+
+@media (max-width: 1024px) {
+  .stat-context {
+    font-size: 0.92rem;
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stat-context {
+    font-size: 0.68rem;
+    margin-top: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-context {
+    font-size: 0.62rem;
+  }
 }

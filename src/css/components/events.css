@@ -9,6 +9,26 @@
   margin: 0 auto;
 }
 
+@media (max-width: 1024px) {
+  .events-grid {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .events-grid {
+    gap: 8px;
+  }
+}
+
 .event-card {
   background: var(--surface-card);
   border-radius: var(--radius-lg);
@@ -19,6 +39,13 @@
   transition: transform var(--duration-fast, 200ms) var(--ease-standard),
               box-shadow var(--duration-fast, 200ms) var(--ease-standard),
               border-color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+@media (max-width: 768px) {
+  .event-card {
+    flex-direction: column;
+    border-radius: var(--radius-sm);
+  }
 }
 
 .event-card:hover {
@@ -41,10 +68,26 @@
   gap: 2px;
 }
 
+@media (max-width: 768px) {
+  .event-card__date {
+    flex-direction: row;
+    gap: 6px;
+    padding: 5px 10px;
+    min-width: auto;
+    justify-content: flex-start;
+  }
+}
+
 .event-date__day {
   font-size: 1.8rem;
   line-height: 1;
   font-family: var(--font-heading);
+}
+
+@media (max-width: 768px) {
+  .event-date__day {
+    font-size: 1.15rem;
+  }
 }
 
 .event-date__month {
@@ -52,6 +95,12 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .event-date__month {
+    font-size: 0.68rem;
+  }
 }
 
 .event-card__content {
@@ -62,12 +111,50 @@
   justify-content: center;
 }
 
+@media (max-width: 1024px) {
+  .event-card__content {
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .event-card__content {
+    padding: 9px 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .event-card__content {
+    padding: 8px 9px;
+  }
+}
+
 .event-card__title {
   font-family: var(--font-heading);
   font-size: 1.15rem;
   font-weight: 600;
   margin-bottom: 8px;
   color: var(--primary);
+}
+
+@media (max-width: 1024px) {
+  .event-card__title {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .event-card__title {
+    font-size: 0.90rem;
+    margin-bottom: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .event-card__title {
+    font-size: 0.84rem;
+  }
 }
 
 body.dark-mode .event-card__title {
@@ -81,6 +168,20 @@ body.dark-mode .event-card__title {
   margin-bottom: 12px;
 }
 
+@media (max-width: 768px) {
+  .event-card__desc {
+    font-size: 0.74rem;
+    line-height: 1.32;
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .event-card__desc {
+    font-size: 0.68rem;
+  }
+}
+
 .event-card__details {
   list-style: none;
   padding: 0;
@@ -90,6 +191,13 @@ body.dark-mode .event-card__title {
   gap: 6px;
 }
 
+@media (max-width: 768px) {
+  .event-card__details {
+    margin: 3px 0;
+    gap: 2px;
+  }
+}
+
 .event-card__details li {
   font-size: 0.9rem;
   color: var(--text-body);
@@ -97,6 +205,12 @@ body.dark-mode .event-card__title {
   display: flex;
   align-items: baseline;
   gap: 6px;
+}
+
+@media (max-width: 768px) {
+  .event-card__details li {
+    font-size: 0.72rem;
+  }
 }
 
 .event-card__details li::before {
@@ -117,6 +231,12 @@ body.dark-mode .event-card__title {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+}
+
+@media (max-width: 768px) {
+  .event-card__link {
+    font-size: 0.74rem;
+  }
 }
 
 .event-card__link:hover {
@@ -140,6 +260,14 @@ body.dark-mode .event-card__link:hover {
   padding: 6px 14px;
   border-radius: var(--radius-sm);
   transition: background 0.2s, color 0.2s;
+}
+
+@media (max-width: 768px) {
+  .event-card__download {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    margin-top: 4px;
+  }
 }
 
 .event-card__download:hover {
@@ -167,7 +295,7 @@ body.dark-mode .event-card__download:hover {
 /* News Background Image Section */
 .bg-image-news {
   position: relative;
-  background: url('/assets/Campus.jpeg') no-repeat center center/cover;
+  background: url('/assets/sjccc-campus.jpg') no-repeat center center/cover;
   z-index: 1;
   color: #fff;
 }
