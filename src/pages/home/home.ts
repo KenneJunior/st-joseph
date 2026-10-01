@@ -26,10 +26,13 @@ import { renderFaqItems } from '../../features/faq/FaqRenderer.ts';
 import { SchoolDatesTimeline } from '../../features/calendar/SchoolDatesTimeline.ts';
 import { renderTimelineMilestones } from '../../features/calendar/TimelineRenderer.ts';
 import { VirtualCampusMap } from '../../features/campus/VirtualCampusMap.ts';
+import { LocationMapFacade } from '../../features/location/LocationMapFacade.ts';
+import { renderNewsStories } from '../../features/news/NewsStoriesRenderer.ts';
 import { EnquiryModal } from '../../features/enquiry/EnquiryModal.ts';
 import { EnquiryForm } from '../../features/enquiry/EnquiryForm.ts';
 import { SmoothTypingEffect } from '../../features/enquiry/SmoothTypingEffect.ts';
 import { PwaInstallPrompt } from '../../features/pwa/PwaInstallPrompt.ts';
+import { OfflineIndicator } from '../../features/offline/OfflineIndicator.ts';
 
 export class HomeApp {
     constructor() {
@@ -37,6 +40,9 @@ export class HomeApp {
     }
 
     private init(): void {
+        // 0. Image Fallback Safety Guard
+        this.initImageFallbackGuards();
+
         // 1. Preloader
         new Preloader();
 
@@ -55,13 +61,27 @@ export class HomeApp {
             HOME_SELECTORS.mainHeader
         );
 
+        // Clear legacy dismissal storage so user can immediately test the new announcement implementation
+        try {
+            localStorage.removeItem('announcement_dismissed');
+            localStorage.removeItem('Interview_announcement_dismissed');
+            localStorage.removeItem(STORAGE_KEYS.INTERVIEW_ANNOUNCEMENT_DISMISSED);
+            localStorage.removeItem(STORAGE_KEYS.ANNOUNCEMENT_DISMISSED);
+        } catch {
+            // Storage access fallback
+        }
+
         // 5. Announcement bar
         new AnnouncementBar({
             barSelector: HOME_SELECTORS.announcementBar,
             closeBtnSelector: HOME_SELECTORS.announcementClose,
-            storageKey: STORAGE_KEYS.INTERVIEW_ANNOUNCEMENT_DISMISSED,
+            storageKey: STORAGE_KEYS.ANNOUNCEMENT_DISMISSED,
             headerSelector: `#${HOME_SELECTORS.mainHeader}`,
             dismissForDays: 3,
+            announcementId: 'school-resumption-2026',
+            priority: 'urgent',
+            publishedAt: '2026-08-21T08:00:00Z',
+            enableNewNoticePulse: true,
         });
 
         // 6. Carousel (Synchronously render slides, then initialize controller)
@@ -100,6 +120,7 @@ export class HomeApp {
         });
 
         // Staggered entrance for News & Events header (label, title, divider)
+        renderNewsStories(document.getElementById('newsEventsGrid'), undefined, { scrollReveal });
         scrollReveal.initStaggerGroup({
             container: HOME_SELECTORS.newsEventsSection,
             itemSelector: '.section-label, .section-title, .section-divider',
@@ -135,10 +156,13 @@ export class HomeApp {
         // 13. Virtual Campus Map interactive explorer
         new VirtualCampusMap(HOME_SELECTORS.campusMapContainer);
 
-        // 14. Scroll spy
+        // 14. Campus Location & Google Map Interactive Facade
+        new LocationMapFacade();
+
+        // 15. Scroll spy
         new ScrollSpy(HOME_SELECTORS.navLinks);
 
-        // 15. FAQ Accordion & Filtering
+        // 16. FAQ Accordion & Filtering
         renderFaqItems(document.getElementById('faqAccordion'));
         new FaqSection();
 
@@ -206,6 +230,45 @@ export class HomeApp {
                 timeoutMs: 10000,
                 loading: true,
             },
+        });
+
+        // 19. Offline connectivity status indicator with Service Worker cache validation
+        new OfflineIndicator();
+    }
+
+    /**
+     * Installs global capture-phase error listeners to automatically redirect
+     * any broken image request to the canonical fallback image.
+     */
+    private initImageFallbackGuards(): void {
+        const DEFAULT_IMG = '/assets/Error-Image.jpeg';
+        const AVATAR_FALLBACK = '/assets/icons/icon.svg';
+
+        const applyFallback = (img: HTMLImageElement): void => {
+            const fallback = img.classList.contains('testimonial-avatar') ? AVATAR_FALLBACK : DEFAULT_IMG;
+            if (!img.dataset.fallbackApplied && img.src !== fallback) {
+                img.dataset.fallbackApplied = 'true';
+                img.src = fallback;
+            }
+        };
+
+        // Capture phase catches errors on non-bubbling resource elements (<img>)
+        window.addEventListener(
+            'error',
+            (event: Event) => {
+                const target = event.target as HTMLElement | null;
+                if (target && target.tagName === 'IMG') {
+                    applyFallback(target as HTMLImageElement);
+                }
+            },
+            true
+        );
+
+        // Immediate check for any images that failed before hydration
+        document.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
+            if (img.complete && img.naturalWidth === 0) {
+                applyFallback(img);
+            }
         });
     }
 }

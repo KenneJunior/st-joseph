@@ -25,6 +25,39 @@
     })();
   </script>
 
+  <!-- Immediate Image Fallback Guard (Intercepts broken image links before paint) -->
+  <script>
+    (function () {
+      window.addEventListener('error', function (event) {
+        if (event.target && event.target.tagName === 'IMG') {
+          var img = event.target;
+          var fallback = img.classList && img.classList.contains('testimonial-avatar')
+            ? '/assets/icons/icon.svg'
+            : '/assets/Error-Image.jpeg';
+          if (!img.getAttribute('data-fallback-applied') && img.src.indexOf(fallback) === -1) {
+            img.setAttribute('data-fallback-applied', 'true');
+            img.src = fallback;
+          }
+        }
+      }, true);
+    })();
+  </script>
+
+  <!-- Immediate Stale Cache Cleanup (Clears corrupted CSS cache entries from earlier SW versions) -->
+  <script>
+    (function () {
+      if ('caches' in window) {
+        caches.keys().then(function (names) {
+          names.forEach(function (name) {
+            if (name.indexOf('v1.1') !== -1 || name.indexOf('v1.2') !== -1 || name.indexOf('v1.3') !== -1) {
+              caches.delete(name);
+            }
+          });
+        });
+      }
+    })();
+  </script>
+
   <!-- SEO -->
   <meta
     content="St. Joseph's Catholic Comprehensive College Mbengwi offers a nurturing, holistic General and Technical education from Ordinary to Advanced Level. Discover a caring community in the North West Region of Cameroon."
@@ -248,6 +281,54 @@
 }
   </script>
 
+  <!-- Critical Hero Image Preload -->
+  <link rel="preload" as="image" href="/assets/stJoseph.jpg" fetchpriority="high">
+
+  <!-- Hidden News Cards Image Preloader (Pre-fetches & decodes news card media to eliminate layout shifts & delays) -->
+  <script>
+    (function () {
+      var newsCardImages = [
+        '/assets/sjccc-trophies.jpg',
+        '/assets/sjccc-graduants-0.jpg',
+        '/assets/sjccc-Electricity.jpeg',
+        '/assets/sjccc-student-in-chapel-1.png'
+      ];
+
+      var preloadNewsImages = function () {
+        window.__sjcccPrefetchedImages = window.__sjcccPrefetchedImages || [];
+        newsCardImages.forEach(function (src) {
+          // Offscreen hidden image allocation for memory cache & async raster decode
+          var img = new Image();
+          img.decoding = 'async';
+          img.src = src;
+          if (typeof img.decode === 'function') {
+            img.decode().catch(function () {});
+          }
+          window.__sjcccPrefetchedImages.push(img);
+
+          // Declarative prefetch link for browser HTTP disk cache
+          try {
+            var prefetchLink = document.createElement('link');
+            prefetchLink.rel = 'prefetch';
+            prefetchLink.as = 'image';
+            prefetchLink.href = src;
+            document.head.appendChild(prefetchLink);
+          } catch (e) {}
+        });
+      };
+
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(preloadNewsImages, { timeout: 1500 });
+      } else if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(preloadNewsImages, 100);
+      } else {
+        document.addEventListener('DOMContentLoaded', function () {
+          setTimeout(preloadNewsImages, 100);
+        });
+      }
+    })();
+  </script>
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -418,10 +499,6 @@
           <em class="logo-motto">"Edificamus Regnum Dei – Let us build the Kingdom of God"</em>
         </span>
       </div>
-      <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation"
-        toolDescription="Open or close the mobile navigation menu so visitors can access page sections easily.">
-        <i class="bi bi-list"></i>
-      </button>
       <nav id="navMenu">
         <a href="#heroSection" class="nav-link" title="Home" aria-label="Home" toolDescription="Go to the main home section of the school website."><i
             class="bi bi-house nav-icon"></i><span class="nav-text">Home</span></a>
@@ -436,6 +513,9 @@
             class="bi bi-calendar-check nav-icon"></i><span class="nav-text">Dates</span></a>
         <a href="#news-events" class="nav-link" title="News" aria-label="News" toolDescription="Browse the latest news, updates, and school events."><i
             class="bi bi-newspaper nav-icon"></i><span class="nav-text">News</span></a>
+        <a href="#results" class="nav-link" title="GCE Results" aria-label="GCE Results"
+          toolDescription="View official 2026 GCE examination results and academic achievements."><i
+            class="bi bi-award nav-icon"></i><span class="nav-text">2026 Results</span></a>
         <a href="#campus" class="nav-link" title="Campus Life" aria-label="Campus Life"
           toolDescription="Explore campus life, activities, and the learning environment."><i
             class="bi bi-geo-alt nav-icon"></i><span class="nav-text">Campus Life</span></a>
@@ -456,37 +536,122 @@
             class="bi bi-file-earmark-pdf nav-icon"></i><span class="nav-text">Prospectus</span></a>
         <a href="#" class="nav-link" id="installApp" title="Install App" aria-label="Install App" toolDescription="install the the site as an app on your device."><i
             class="bi bi-phone nav-icon"></i><span class="nav-text">Install App</span></a>
-        <a href="#" class="nav-cta theme-toggle-link" id="themeToggle" title="Switch light/dark mode"
-          aria-label="Switch light/dark mode" toolDescription="Switch the website between light and dark theme.">
-          <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px;">
-            <g class="theme-toggle-moon">
-              <path d="M120 67.5C149.25 67.5 172.5 90.75 172.5 120C172.5 149.25 149.25 172.5 120 172.5" fill="white">
-              </path>
-              <path d="M120 67.5C90.75 67.5 67.5 90.75 67.5 120C67.5 149.25 90.75 172.5 120 172.5" fill="black"></path>
-            </g>
-            <path class="theme-toggle-ring"
-              d="M120 3.75C55.5 3.75 3.75 55.5 3.75 120C3.75 184.5 55.5 236.25 120 236.25C184.5 236.25 236.25 184.5 236.25 120C236.25 55.5 184.5 3.75 120 3.75ZM120 214.5V172.5C90.75 172.5 67.5 149.25 67.5 120C67.5 90.75 90.75 67.5 120 67.5V25.5C172.5 25.5 214.5 67.5 214.5 120C214.5 172.5 172.5 214.5 120 214.5Z"
-              fill="white"></path>
-          </svg>
-        </a>
       </nav>
+      <div class="header-actions">
+        <button type="button" class="theme-toggle-btn header-theme-toggle" id="themeToggle" title="Switch light/dark mode"
+          aria-label="Switch light/dark mode" data-theme-toggle toolDescription="Switch the website between light and dark theme.">
+          <span class="theme-icon-wrapper" aria-hidden="true">
+            <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" fill-opacity="0.25"></path>
+              <path d="M19 3v4" stroke-width="1.75"></path>
+              <path d="M17 5h4" stroke-width="1.75"></path>
+            </svg>
+            <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4.5" fill="currentColor" fill-opacity="0.25"></circle>
+              <line x1="12" y1="2" x2="12" y2="4.5"></line>
+              <line x1="12" y1="19.5" x2="12" y2="22"></line>
+              <line x1="4.22" y1="4.22" x2="5.99" y2="5.99"></line>
+              <line x1="18.01" y1="18.01" x2="19.78" y2="19.78"></line>
+              <line x1="2" y1="12" x2="4.5" y2="12"></line>
+              <line x1="19.5" y1="12" x2="22" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.99" y2="18.01"></line>
+              <line x1="18.01" y1="5.99" x2="19.78" y2="4.22"></line>
+            </svg>
+          </span>
+        </button>
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation" aria-expanded="false" aria-controls="navMenu"
+          toolDescription="Open or close the mobile navigation menu so visitors can access page sections easily.">
+          <i class="bi bi-list" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>
   </header>
 
+  <!-- Mobile Bottom Tab Bar (Compact mode navigation for devices < 768px) -->
+  <nav class="mobile-bottom-bar" id="mobileBottomBar" aria-label="Mobile Navigation">
+    <button type="button" class="mobile-bottom-item mobile-bottom-item--theme" id="bottomThemeToggle" data-theme-toggle aria-label="Switch theme" title="Switch theme" toolDescription="Switch the website between light and dark theme.">
+      <i class="bi bi-sun-fill theme-icon-light" aria-hidden="true"></i>
+      <i class="bi bi-moon-stars-fill theme-icon-dark" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">
+        <span class="theme-name-text theme-name-light">Light Mode</span>
+        <span class="theme-name-text theme-name-dark">Dark Mode</span>
+      </span>
+    </button>
+    <a href="#heroSection" class="mobile-bottom-item mobile-bottom-item--home active" data-nav-target="heroSection" aria-label="Home" toolDescription="Navigate to Home section">
+      <i class="bi bi-house-door-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Home</span>
+    </a>
+    <a href="#academics" class="mobile-bottom-item mobile-bottom-item--academics" data-nav-target="academics" aria-label="Academics" toolDescription="Navigate to Academics section">
+      <i class="bi bi-mortarboard-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Academics</span>
+    </a>
+    <a href="#results" class="mobile-bottom-item mobile-bottom-item--results" data-nav-target="results" aria-label="2026 Results" toolDescription="Navigate to GCE Results">
+      <i class="bi bi-award-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Results</span>
+    </a>
+    <a href="#campusMapSection" class="mobile-bottom-item mobile-bottom-item--map" data-nav-target="campusMapSection" aria-label="Campus Map" toolDescription="View Campus Map">
+      <i class="bi bi-map-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Map</span>
+    </a>
+    <a href="#schoolDatesSection" class="mobile-bottom-item mobile-bottom-item--dates" data-nav-target="schoolDatesSection" aria-label="School Dates" toolDescription="View upcoming school dates and academic milestones">
+      <i class="bi bi-calendar-check-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Dates</span>
+    </a>
+    <button type="button" class="mobile-bottom-item mobile-bottom-item--menu mobile-bottom-toggle" id="bottomNavMenuToggle" aria-label="Open Full Navigation Menu" aria-controls="navMenu" aria-expanded="false" toolDescription="Open full navigation drawer">
+      <i class="bi bi-grid-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Menu</span>
+    </button>
+  </nav>
+
   <!-- Announcement Bar -->
-  <aside id="announcementBar" class="announcement-bar" aria-label="Important announcement">
+  <aside id="announcementBar" class="announcement-bar" role="region" aria-label="Important school announcement" data-announcement-id="school-resumption-2026" data-priority="urgent" data-published-at="2026-08-21T08:00:00Z">
     <div class="announcement-bar__inner">
-      <p class="announcement-bar__text">
-        <i class="bi bi-megaphone-fill"></i> <strong>Form One Interviews </strong> – Tuesday, 4th August 2026 at 9:00 AM
-        <a href="#contact" class="announcement-bar__link"
-          toolDescription="Go to the contact section to enquire about the Form One interview and admissions process.">
-          Enquire now →</a>
-      </p>
-      <button class="announcement-bar__close" id="announcementClose" aria-label="Close announcement"
-        toolDescription="Dismiss this important announcement banner from the page.">
-        <i class="bi bi-x-lg"></i>
-      </button>
+      <div class="announcement-bar__content">
+        <span class="announcement-priority priority-urgent" data-priority="urgent" role="status" aria-label="Priority: Urgent Notice">
+          <span class="priority-dot" aria-hidden="true"></span>
+          <i class="bi bi-exclamation-triangle-fill priority-icon" aria-hidden="true"></i>
+          <span class="priority-label">Urgent</span>
+        </span>
+        <div class="announcement-bar__text-wrap">
+          <div class="announcement-bar__message">
+            <i class="bi bi-megaphone-fill announcement-bar__icon" aria-hidden="true"></i>
+            <strong class="announcement-bar__title">School Resumption 2026/2027:</strong>
+            <span class="announcement-bar__date">New Students: 21 Aug · Returning: 2 Sept (8:00 AM Prompt)</span>
+            <span class="announcement-bar__more-content" id="announcementMoreContent" hidden>
+              — Boarding Check-In Notice: All boarders must report with tuition fee bank receipts, prescribed college uniforms, textbooks, and personal toiletries. Dormitory allocations and orientation commence at 8:00 AM.
+            </span>
+          </div>
+        </div>
+        <button type="button" class="announcement-bar__toggle-btn" id="announcementToggleBtn" aria-expanded="false" aria-controls="announcementMoreContent" data-tooltip="Toggle full announcement details" title="Toggle full notice details" toolDescription="Expand or collapse the full announcement text details.">
+          <span class="toggle-text">Read more</span>
+          <i class="bi bi-chevron-down" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="announcement-bar__actions" role="toolbar" aria-label="Announcement actions">
+        <a href="#schoolDatesSection" class="announcement-bar__action-btn announcement-bar__link announcement-bar__cta" data-tooltip="View resumption dates &amp; schedule" title="View detailed resumption schedule" toolDescription="View detailed dates and academic schedule.">
+          <i class="bi bi-calendar2-week cta-icon" aria-hidden="true"></i>
+          <span class="action-btn-text cta-text">Resumption Schedule</span>
+          <i class="bi bi-arrow-right cta-arrow" aria-hidden="true"></i>
+        </a>
+        <div class="announcement-bar__secondary-actions" role="group" aria-label="Secondary announcement actions">
+          <button type="button" class="announcement-bar__action-btn announcement-bar__mark-read-btn notice-read-receipt" id="announcementMarkReadBtn" aria-pressed="false" data-tooltip="Mark notice as read" title="Mark this announcement as read (persists across visits)" toolDescription="Dim this announcement across your visits to acknowledge you have read it.">
+            <i class="bi bi-check2" aria-hidden="true"></i>
+            <span class="action-btn-text mark-read-text">Mark as read</span>
+          </button>
+          <button type="button" class="announcement-bar__action-btn announcement-bar__past-btn" id="viewPastAnnouncementsBtn" aria-haspopup="dialog" aria-controls="pastAnnouncementsModal" data-tooltip="Historical announcements archive" title="View historical school notices archive" toolDescription="Open the historical school announcements modal archive.">
+            <i class="bi bi-clock-history" aria-hidden="true"></i>
+            <span class="action-btn-text past-btn-text">Past Notices</span>
+          </button>
+          <button type="button" class="announcement-bar__action-btn announcement-bar__sound-btn" id="announcementSoundBtn" data-tooltip="Toggle alert audio chime" title="Announcement alert sounds enabled (Click to mute)" aria-label="Toggle alert sound" toolDescription="Enable or mute the gentle chime sound for high priority notifications.">
+            <i class="bi bi-volume-up-fill" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="announcement-bar__action-btn announcement-bar__close" id="announcementClose" data-tooltip="Dismiss notice banner" aria-label="Dismiss announcement" title="Dismiss notice" toolDescription="Dismiss this important announcement banner from the page.">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
     </div>
+    <div class="announcement-bar__progress" aria-hidden="true"></div>
   </aside>
 
   <!-- Ambient Dust Particles Canvas across the whole page -->
@@ -539,27 +704,33 @@
     <!-- ==================== STATS SECTION ==================== -->
     <section id="about" class="stats-section section-padding" style="color:#fff;">
       <div class="content">
-        <span class="section-label" style="color:var(--accent-glow);">Our Environment</span>
-        <h2 class="section-title" style="color:#fff;">A Community That Cares</h2>
+        <span class="section-label" style="color:var(--accent-glow);">Proven Excellence</span>
+        <h2 class="section-title" style="color:#fff;">Academic Rigor &amp; Caring Community</h2>
         <div class="section-divider" style="background:var(--accent-glow);"></div>
         <div class="stats-row">
           <div class="stat-card reveal">
+            <div class="stat-icon"><i class="bi bi-award-fill"></i></div>
+            <div class="stat-number" data-target="100" data-suffix="%">0</div>
+            <div class="stat-label">2026 GCE O-Level</div>
+            <div class="stat-context">10/10 Passed · 100% Success Rate</div>
+          </div>
+          <div class="stat-card reveal reveal-delay-1">
+            <div class="stat-icon"><i class="bi bi-mortarboard-fill"></i></div>
+            <div class="stat-number" data-target="66.6" data-suffix="%">0</div>
+            <div class="stat-label">2026 GCE A-Level</div>
+            <div class="stat-context">Top quality 3 &amp; 4 subject passes</div>
+          </div>
+          <div class="stat-card reveal reveal-delay-2">
             <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
-            <div class="stat-number" data-target="150">0</div>
+            <div class="stat-number" data-target="150" data-suffix="+">0</div>
             <div class="stat-label">Students Enrolled</div>
             <div class="stat-context">Growing together in 2025/2026</div>
           </div>
-          <div class="stat-card reveal reveal-delay-1">
+          <div class="stat-card reveal reveal-delay-3">
             <div class="stat-icon"><i class="bi bi-diagram-3-fill"></i></div>
             <div class="stat-number" data-target="2">0</div>
             <div class="stat-label">Academic Pathways</div>
-            <div class="stat-context">General &amp; Technical </div>
-          </div>
-          <div class="stat-card reveal reveal-delay-2">
-            <div class="stat-icon"><i class="bi bi-heart-fill"></i></div>
-            <div class="stat-number" data-target="1">0</div>
-            <div class="stat-label">Supportive Family</div>
-            <div class="stat-context">Focused on individual student growth</div>
+            <div class="stat-context">General Grammar &amp; Technical Trades</div>
           </div>
         </div>
       </div>
@@ -816,111 +987,708 @@
 
     <!-- ==================== NEWS & EVENTS ==================== -->
     <section id="news-events" class="section-padding bg-image-news">
-      <span class="section-label stagger-item">Stay Connected</span>
+      <span class="section-label stagger-item">College Life &amp; Highlights</span>
       <h2 class="section-title stagger-item">Latest News &amp; Events</h2>
       <div class="section-divider stagger-item"></div>
-      <div class="events-grid stagger-group">
+      <div class="events-grid stagger-group" id="newsEventsGrid">
 
-        <!-- Event Card 1 -->
-        <article class="event-card stagger-card">
-          <div class="event-card__date">
-            <span class="event-date__day">04</span>
-            <span class="event-date__month">August</span>
+        <!-- News Story 1 (Featured: Historic GCE Results) -->
+        <article class="event-card stagger-card news-card news-card--featured" data-story-id="story-gce-2026" role="region" aria-label="Historic 2026 GCE Results: 100% Ordinary Level Pass Rate">
+          <div class="news-card__media">
+            <img
+              src="/assets/sjccc-trophies.jpg"
+              alt="SJCCC academic and athletic achievement trophies on display"
+              class="news-card__img"
+              loading="lazy"
+              width="480"
+              height="280"
+              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';"
+            />
+            <span class="news-card__category-badge">Academic Excellence</span>
+            <span class="news-card__featured-badge"><i class="bi bi-star-fill" aria-hidden="true"></i> Featured Milestone</span>
           </div>
-          <div class="event-card__content">
-            <h3 class="event-card__title">2026/2027 Registration</h3>
-            <p class="event-card__desc">
-              We are delighted to welcome new students for Forms 2, 3, 4, and Lower Sixth. Registration for the
-              2026/2027
-              academic year is joyfully open until September 30th.
+          <div class="event-card__content news-card__content">
+            <div class="news-card__meta">
+              <time datetime="2026-08-21" class="news-card__date">
+                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                <span>21 August 2026</span>
+              </time>
+              <span class="news-card__divider" aria-hidden="true">·</span>
+              <span class="news-card__read-time">
+                <i class="bi bi-clock" aria-hidden="true"></i>
+                <span>3 min read</span>
+              </span>
+            </div>
+            <h3 class="event-card__title news-card__title">
+              <a href="#results" class="news-card__title-link">Historic 2026 GCE Results: 100% Ordinary Level Pass Rate</a>
+            </h3>
+            <p class="event-card__desc news-card__desc">
+              Official returns from the Cameroon GCE Board confirm a landmark 100% pass rate in the General Ordinary Level session, with 50% of candidates passing with 10 and 11 papers.
             </p>
-            <ul class="event-card__details">
-              <li><strong>Venue:</strong> SJCCC Campus</li>
-              <li><strong>Time:</strong> 9:00 AM – 12 noon (Tue–Fri)</li>
-              <li><strong>Fee:</strong> 2,000 FCFA</li>
-              <li><strong>Required Documents:</strong>
-                Photocopy of birth certificate, recent progress report card, and a transfer certificate from the
-                previous
-                school.
-              </li>
-            </ul>
-            <p class="event-card__extra">
-              <i class="bi bi-telephone-fill"></i> Please contact the <a class="event-card__link" id="pMan">Principal
-                Office </a> with any
-              questions.
-            </p>
+
+            <!-- Smooth Height Expandable Region -->
+            <div class="news-card__expandable" id="details-story-gce-2026" aria-hidden="true">
+              <div class="news-card__expandable-inner">
+                <div class="news-card__details">
+                  <div class="news-card__takeaway">
+                    <i class="bi bi-quote" aria-hidden="true"></i>
+                    <span>Landmark 100% O-Level pass rate with 50% scoring 10 to 11 subjects in June 2026.</span>
+                  </div>
+                  <div class="news-card__full-text">
+                    <p>The official examination returns released by the Cameroon GCE Board officially confirm a landmark 100% pass rate for the General Ordinary Level cohort at Saint Joseph Catholic Comprehensive College Mbengwi. Exactly 50% of all registered candidates cleared 10 and 11 subjects with distinguished honors.</p>
+                    <p>Core scientific subjects including Biology, Human Biology, Chemistry, and Additional Mathematics recorded flawless 100% pass rates, while English Language and Religious Knowledge garnered more than 40 Grade "A" marks across the student body.</p>
+                    <p>Principal Rev. Father noted during the assembly: "This achievement demonstrates our culture of rigorous evening tutorials, individual pastoral mentoring, and moral rectitude. We congratulate our teachers and supportive parents across Momo Division."</p>
+                  </div>
+                  <div class="news-card__metadata-grid">
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-award-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Exam Body</span>
+                        <strong class="metadata-value">Cameroon GCE Board</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Center Code</span>
+                        <strong class="metadata-value">Center No. 1028 Mbengwi</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Pass Rate</span>
+                        <strong class="metadata-value">100% O-Level · 66.6% A-Level</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-star-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Distinction</span>
+                        <strong class="metadata-value">50% Passed 10-11 Papers</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="news-card__footer">
+              <button
+                type="button"
+                class="news-card__expand-btn"
+                aria-expanded="false"
+                aria-controls="details-story-gce-2026"
+                aria-label="Read full story details: Historic 2026 GCE Results: 100% Ordinary Level Pass Rate"
+              >
+                <span class="expand-btn-text">Read Full Story</span>
+                <i class="bi bi-chevron-down expand-btn-icon" aria-hidden="true"></i>
+              </button>
+              <a href="#results" class="news-card__cta" aria-label="View Official Returns: Historic 2026 GCE Results">
+                <span>View Official Returns</span>
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </a>
+            </div>
           </div>
         </article>
 
-        <!-- Event Card 2 -->
-        <article class="event-card d-none stagger-card">
-          <div class="event-card__date">
-            <span class="event-date__day">21</span>
-            <span class="event-date__month">Aug</span>
-            <span class="event-date__day">/</span>
-            <span class="event-date__day">2</span>
-            <span class="event-date__month">Sept</span>
+        <!-- News Story 2 (Convocation) -->
+        <article class="event-card stagger-card news-card" data-story-id="story-graduation-2026" role="region" aria-label="Class of 2026 Valedictory Service & Convocation Honors">
+          <div class="news-card__media">
+            <img
+              src="/assets/sjccc-graduants-0.jpg"
+              alt="SJCCC Class of 2026 graduands in formal academic robes and convocation caps"
+              class="news-card__img"
+              loading="lazy"
+              width="480"
+              height="280"
+              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';"
+            />
+            <span class="news-card__category-badge">Convocation</span>
           </div>
-          <div class="event-card__content">
-            <h3 class="event-card__title">School Resumption Dates</h3>
-            <p class="event-card__desc">
-              School resumption for the 2026/2027 academic year is scheduled for 21 August 2026 for new students,
-              including Form 1 students. Old students will resume on 2 September 2026.
+          <div class="event-card__content news-card__content">
+            <div class="news-card__meta">
+              <time datetime="2026-06-26" class="news-card__date">
+                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                <span>26 June 2026</span>
+              </time>
+              <span class="news-card__divider" aria-hidden="true">·</span>
+              <span class="news-card__read-time">
+                <i class="bi bi-clock" aria-hidden="true"></i>
+                <span>4 min read</span>
+              </span>
+            </div>
+            <h3 class="event-card__title news-card__title">
+              <a href="#schoolDatesSection" class="news-card__title-link">Class of 2026 Valedictory Service &amp; Convocation Honors</a>
+            </h3>
+            <p class="event-card__desc news-card__desc">
+              Graduating Form Five and Upper Sixth students were robed and honored in a solemn Thanksgiving High Mass at Saint Joseph Jubilee Hall under the motto "Edificamus Regnum Dei".
             </p>
-            <ul class="event-card__details">
-              <li><strong>New Students:</strong> 21 August 2026</li>
-              <li><strong>Old Students:</strong> 2 September 2026</li>
-              <li><strong>Note:</strong> These school resumption dates are tentative and subject to change.</li>
-            </ul>
-            <p class="event-card__extra">
-              <i class="bi bi-calendar-event-fill"></i> Please stay connected for any updates regarding the resumption
-              schedule.
-            </p>
+
+            <!-- Smooth Height Expandable Region -->
+            <div class="news-card__expandable" id="details-story-graduation-2026" aria-hidden="true">
+              <div class="news-card__expandable-inner">
+                <div class="news-card__details">
+                  <div class="news-card__takeaway">
+                    <i class="bi bi-quote" aria-hidden="true"></i>
+                    <span>185 graduands commissioned with Archdiocesan blessing and lifetime alumni induction.</span>
+                  </div>
+                  <div class="news-card__full-text">
+                    <p>Dressed in formal collegiate academic regalia, 185 graduands from General Arts, Science, and Technical Engineering tracks participated in the 2026 Valedictory High Mass at Saint Joseph Jubilee Hall, celebrated by Archdiocesan clergy and faculty.</p>
+                    <p>The prestigious Edificamus Shield of Honor was awarded to the Senior College Prefect in recognition of seven years of exemplary boarding leadership, academic integrity, and dedicated liturgical service.</p>
+                    <p>During the ceremony, the Saint Joseph Old Boys &amp; Alumni Association (SJCCC-OBA) formally inducted the graduating class, presenting each scholar with a collegiate alumni lapel pin and lifelong mentoring directory access.</p>
+                  </div>
+                  <div class="news-card__metadata-grid">
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-people-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Graduand Count</span>
+                        <strong class="metadata-value">185 Scholars Inducted</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-building-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Venue</span>
+                        <strong class="metadata-value">Saint Joseph Jubilee Hall</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-trophy-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Top Honor</span>
+                        <strong class="metadata-value">Edificamus Shield of Character</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-globe" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Alumni Registry</span>
+                        <strong class="metadata-value">SJCCC-OBA Worldwide Network</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="news-card__footer">
+              <button
+                type="button"
+                class="news-card__expand-btn"
+                aria-expanded="false"
+                aria-controls="details-story-graduation-2026"
+                aria-label="Read full story details: Class of 2026 Valedictory Service &amp; Convocation Honors"
+              >
+                <span class="expand-btn-text">Read Full Story</span>
+                <i class="bi bi-chevron-down expand-btn-icon" aria-hidden="true"></i>
+              </button>
+              <a href="#schoolDatesSection" class="news-card__cta" aria-label="View Convocation Milestone: Class of 2026 Valedictory Service">
+                <span>View Convocation Milestone</span>
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </a>
+            </div>
           </div>
         </article>
 
-        <!-- Event Card 3 -->
-        <article class="event-card stagger-card">
-          <div class="event-card__date">
-            <span class="event-date__day">04</span>
-            <span class="event-date__month">August</span>
+        <!-- News Story 3 (Campus Development) -->
+        <article class="event-card stagger-card news-card" data-story-id="story-technical-workshop-2026" role="region" aria-label="Electrical Power Systems & ICT Laboratory Expansion">
+          <div class="news-card__media">
+            <img
+              src="/assets/sjccc-Electricity.jpeg"
+              alt="SJCCC students engaged in technical electrical engineering workshop training"
+              class="news-card__img"
+              loading="lazy"
+              width="480"
+              height="280"
+              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';"
+            />
+            <span class="news-card__category-badge">Campus Development</span>
           </div>
-          <div class="event-card__content">
-            <h3 class="event-card__title">Form One Entrance Interview</h3>
-            <p class="event-card__desc">
-              We warmly invite all prospective Form One students to join us for a placement interview. This is a lovely
-              opportunity for us to get to know your child and ensure we are the perfect fit for their journey.
+          <div class="event-card__content news-card__content">
+            <div class="news-card__meta">
+              <time datetime="2026-05-12" class="news-card__date">
+                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                <span>12 May 2026</span>
+              </time>
+              <span class="news-card__divider" aria-hidden="true">·</span>
+              <span class="news-card__read-time">
+                <i class="bi bi-clock" aria-hidden="true"></i>
+                <span>2 min read</span>
+              </span>
+            </div>
+            <h3 class="event-card__title news-card__title">
+              <a href="#campusMapSection" class="news-card__title-link">Electrical Power Systems &amp; ICT Laboratory Expansion</a>
+            </h3>
+            <p class="event-card__desc news-card__desc">
+              Commissioning of expanded electrical engineering workstations, solar circuit trainers, and upgraded computer science terminals, advancing hands-on technical education.
             </p>
-            <ul class="event-card__details">
-              <li><strong>Closing Date: </strong> Wed, 30th Sep 2026</li>
-              <li><strong>Time:</strong> 9:00 AM Prompt</li>
-              <li><strong>Venue:</strong> Catholic Primary School Mbengwi</li>
-              <li><strong>Interview fee:</strong> 2,000 FCFA</li>
-              <li><strong>What to bring:</strong> Common Entrance Slip, photocopy of birth certificate, and writing
-                materials.
-              </li>
-            </ul>
-            <p class="event-card__extra">
-              <i class="bi bi-info-circle-fill"></i> Successful candidates will be notified warmly and promptly.
+
+            <!-- Smooth Height Expandable Region -->
+            <div class="news-card__expandable" id="details-story-technical-workshop-2026" aria-hidden="true">
+              <div class="news-card__expandable-inner">
+                <div class="news-card__details">
+                  <div class="news-card__takeaway">
+                    <i class="bi bi-quote" aria-hidden="true"></i>
+                    <span>State-of-the-art solar and electrical testing benches paired with 60 modern computing stations.</span>
+                  </div>
+                  <div class="news-card__full-text">
+                    <p>In alignment with SJCCC’s mission to equip students with certified vocational mastery, the College Board inaugurated two major infrastructure modernizations: the Smart Energy Electrical Training Facility and the upgraded 60-terminal Computer Center.</p>
+                    <p>The electrical laboratory includes industrial three-phase circuit demonstration boards, solar inverter diagnostic stations, and protective relay test benches conforming to CEMAC industrial safety protocols.</p>
+                    <p>The computing facility features high-speed LAN connectivity, offline architectural design suites (CAD), and programming environments to prepare Form 3 through Upper Sixth technical students for regional engineering employment.</p>
+                  </div>
+                  <div class="news-card__metadata-grid">
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-tools" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Facility</span>
+                        <strong class="metadata-value">Smart Energy &amp; Computing Wing</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-sun-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Power Source</span>
+                        <strong class="metadata-value">Dedicated Solar Photovoltaic Bank</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-display-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Workstations</span>
+                        <strong class="metadata-value">60 Terminals + 12 Test Benches</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-patch-check-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Certification</span>
+                        <strong class="metadata-value">GCE Technical &amp; CAP Alignment</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="news-card__footer">
+              <button
+                type="button"
+                class="news-card__expand-btn"
+                aria-expanded="false"
+                aria-controls="details-story-technical-workshop-2026"
+                aria-label="Read full story details: Electrical Power Systems &amp; ICT Laboratory Expansion"
+              >
+                <span class="expand-btn-text">Read Full Story</span>
+                <i class="bi bi-chevron-down expand-btn-icon" aria-hidden="true"></i>
+              </button>
+              <a href="#campusMapSection" class="news-card__cta" aria-label="Tour Technical Labs: Electrical Power Systems & ICT Laboratory Expansion">
+                <span>Tour Technical Labs</span>
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- News Story 4 (Faith & Community) -->
+        <article class="event-card stagger-card news-card" data-story-id="story-patronal-feast-2026" role="region" aria-label="Solemnity of Saint Joseph: College Patronal Feast Celebrations">
+          <div class="news-card__media">
+            <img
+              src="/assets/sjccc-student-in-chapel-1.png"
+              alt="Eucharistic and liturgical procession during the Feast of Saint Joseph on campus grounds"
+              class="news-card__img"
+              loading="lazy"
+              width="480"
+              height="280"
+              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';"
+            />
+            <span class="news-card__category-badge">Faith &amp; Community</span>
+          </div>
+          <div class="event-card__content news-card__content">
+            <div class="news-card__meta">
+              <time datetime="2026-03-19" class="news-card__date">
+                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                <span>19 March 2026</span>
+              </time>
+              <span class="news-card__divider" aria-hidden="true">·</span>
+              <span class="news-card__read-time">
+                <i class="bi bi-clock" aria-hidden="true"></i>
+                <span>3 min read</span>
+              </span>
+            </div>
+            <h3 class="event-card__title news-card__title">
+              <a href="#about" class="news-card__title-link">Solemnity of Saint Joseph: College Patronal Feast Celebrations</a>
+            </h3>
+            <p class="event-card__desc news-card__desc">
+              Students, alumni, and archdiocesan clergy gathered in prayer and cultural fellowship for the Pontifical High Mass, inter-house choral anthems, and athletic finals.
             </p>
+
+            <!-- Smooth Height Expandable Region -->
+            <div class="news-card__expandable" id="details-story-patronal-feast-2026" aria-hidden="true">
+              <div class="news-card__expandable-inner">
+                <div class="news-card__details">
+                  <div class="news-card__takeaway">
+                    <i class="bi bi-quote" aria-hidden="true"></i>
+                    <span>Archdiocesan Eucharistic celebration, Latin choral contests, and annual athletic championship.</span>
+                  </div>
+                  <div class="news-card__full-text">
+                    <p>The feast of Saint Joseph, Universal Patron of Workers and Protector of our College, gathered the entire Mbengwi Catholic community, alumni delegations, and visiting parents for an unforgettable day of spiritual devotion and cultural vibrancy.</p>
+                    <p>The Pontifical High Mass led by visiting Archdiocesan clergy highlighted Saint Joseph’s humble craftsmanship, devotion to family, and persevering faith as the foundational virtues guiding every SJCCC student.</p>
+                    <p>Festivities concluded with the annual Inter-House Choral and Athletic Championship, where Saint Peter’s House clinched the coveted 2026 Patronal Cup after a fiercely contested football final and four-part Latin hymn competition.</p>
+                  </div>
+                  <div class="news-card__metadata-grid">
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-calendar-heart-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Feast Day</span>
+                        <strong class="metadata-value">19 March (Solemnity)</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-building-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Liturgy</span>
+                        <strong class="metadata-value">Pontifical High Mass</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-trophy-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">House Winner</span>
+                        <strong class="metadata-value">Saint Peter's House</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-shield-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Motto Theme</span>
+                        <strong class="metadata-value">"Edificamus Regnum Dei"</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="news-card__footer">
+              <button
+                type="button"
+                class="news-card__expand-btn"
+                aria-expanded="false"
+                aria-controls="details-story-patronal-feast-2026"
+                aria-label="Read full story details: Solemnity of Saint Joseph: College Patronal Feast Celebrations"
+              >
+                <span class="expand-btn-text">Read Full Story</span>
+                <i class="bi bi-chevron-down expand-btn-icon" aria-hidden="true"></i>
+              </button>
+              <a href="#about" class="news-card__cta" aria-label="Discover College Heritage: Solemnity of Saint Joseph">
+                <span>Discover College Heritage</span>
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </a>
+            </div>
           </div>
         </article>
       </div>
     </section>
 
-    <!-- ==================== HIGHLIGHT SECTION ==================== -->
-    <section class="bg-image-section">
-      <div class="content" style="text-align:center;">
-        <span class="section-label" style="color:var(--accent-glow);">Our Promise</span>
-        <h2 class="section-title" style="color:#fff;">Empowering Every Learner</h2>
-        <p style="max-width:600px;margin:0 auto 24px;color:rgba(255,255,255,0.9); line-height: 1.6;">
-          Because we are a small school, nobody gets lost in the crowd. Our dedicated teachers work patiently and
-          closely
-          with every student, ensuring that each child finds their unique path to success and self-confidence.
-        </p>
-        <a class="btn btn-outline" href="#contact" style="color:#fff;border-color:#fff;"
-          toolDescription="Move to the contact section to learn more about the school's learning approach and enrolment process.">Learn
-          More About Our Approach</a>
+    <!-- ==================== GCE RESULTS SECTION ==================== -->
+    <section id="results" class="gce-results-section" aria-labelledby="gceResultsTitle">
+      <div class="gce-results-container">
+        
+        <!-- Header -->
+        <header class="gce-results-header reveal">
+          <span class="section-label"><i class="bi bi-award-fill"></i> Academic Excellence · SJCCC 2026</span>
+          <h2 class="section-title" id="gceResultsTitle">Official 2026 GCE Examination Results</h2>
+          <p class="section-subtitle">Saint Joseph Catholic Comprehensive College Mbengwi (Momo Division)</p>
+          <div class="gce-meta-bar">
+            <span><i class="bi bi-calendar-event"></i> Published: 21st August 2026</span>
+            <span><i class="bi bi-shield-check"></i> Cameroon GCE Board Official Returns</span>
+            <span><i class="bi bi-geo-alt-fill"></i> Mbengwi, Momo Division</span>
+          </div>
+        </header>
+
+        <!-- Summary Highlight Card: College Motto & Graduation Details -->
+        <article class="gce-summary-card reveal" aria-labelledby="gceSummaryTitle">
+          <div class="gce-summary-card-inner">
+            <div class="gce-summary-main">
+              <div class="gce-summary-badge">
+                <i class="bi bi-mortarboard-fill"></i>
+                <span id="gceSummaryTitle">Convocation &amp; Graduation Milestone</span>
+              </div>
+              
+              <blockquote class="gce-motto-highlight">
+                <i class="bi bi-quote quote-icon" aria-hidden="true"></i>
+                <div class="gce-motto-text">Edificamus Regnum Dei - Let us build the Kingdom of God</div>
+                <div class="gce-motto-subtext">Official Motto of Saint Joseph Catholic Comprehensive College Mbengwi</div>
+              </blockquote>
+
+              <p class="gce-summary-lead">
+                In celebration of our extraordinary <strong>100% GCE Ordinary Level</strong> and <strong>66.6% Advanced Level</strong> success, we proudly commend the Class of 2026/2027 and invite parents, alumni, and guardians to join in our solemn Valedictory Service and Graduation Day.
+              </p>
+
+              <div class="gce-summary-meta-grid">
+                <div class="gce-summary-meta-box">
+                  <div class="gce-meta-icon" aria-hidden="true"><i class="bi bi-calendar-check-fill"></i></div>
+                  <div class="gce-meta-info">
+                    <span class="gce-meta-title">Graduation Date</span>
+                    <strong class="gce-meta-value">Friday, 25th June 2027</strong>
+                    <span class="gce-meta-extra"><i class="bi bi-clock"></i> 9:30 AM Prompt</span>
+                  </div>
+                </div>
+
+                <div class="gce-summary-meta-box">
+                  <div class="gce-meta-icon" aria-hidden="true"><i class="bi bi-geo-alt-fill"></i></div>
+                  <div class="gce-meta-info">
+                    <span class="gce-meta-title">Ceremony Location</span>
+                    <strong class="gce-meta-value">Saint Joseph Jubilee Hall</strong>
+                    <span class="gce-meta-extra"><i class="bi bi-pin-map-fill"></i> GRA Mbengwi, Momo Division</span>
+                  </div>
+                </div>
+
+                <div class="gce-summary-meta-box">
+                  <div class="gce-meta-icon" aria-hidden="true"><i class="bi bi-award-fill"></i></div>
+                  <div class="gce-meta-info">
+                    <span class="gce-meta-title">Convocation Honours</span>
+                    <strong class="gce-meta-value">Class of 2026 / 2027</strong>
+                    <span class="gce-meta-extra"><i class="bi bi-patch-check-fill"></i> Robing &amp; Valedictory</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="gce-summary-footer-bar">
+                <div class="gce-summary-congrats">
+                  <i class="bi bi-heart-fill"></i>
+                  <span>Congratulations to Administration, Staff, Students &amp; Parents!</span>
+                </div>
+                <a href="#schoolDatesSection" class="gce-summary-calendar-link" toolDescription="Jump to the academic calendar timeline for graduation details">
+                  <i class="bi bi-calendar-event"></i> View on Academic Calendar
+                </a>
+              </div>
+            </div>
+
+            <div class="gce-summary-aside">
+              <div class="gce-summary-image-wrap">
+                <img src="/assets/sjccc-graduants-0.jpg" alt="SJCCC Graduating Class in academic regalia and convocation robes" loading="lazy" width="480" height="320" onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';">
+                <div class="gce-summary-image-overlay">
+                  <span class="gce-image-badge"><i class="bi bi-patch-check-fill"></i> Formal Robes &amp; Awards</span>
+                </div>
+              </div>
+              <div class="gce-summary-stat-capsule">
+                <div class="gce-capsule-item">
+                  <span class="capsule-num">100%</span>
+                  <span class="capsule-lbl">O-Level</span>
+                </div>
+                <div class="capsule-divider" aria-hidden="true"></div>
+                <div class="gce-capsule-item">
+                  <span class="capsule-num">66.6%</span>
+                  <span class="capsule-lbl">A-Level</span>
+                </div>
+                <div class="capsule-divider" aria-hidden="true"></div>
+                <div class="gce-capsule-item">
+                  <span class="capsule-num">GRA</span>
+                  <span class="capsule-lbl">Mbengwi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Dual Results Grid -->
+        <div class="gce-results-grid">
+
+          <!-- Card 1: Ordinary Level General -->
+          <article class="gce-result-card gce-result-card--olevel fluid-type-card reveal">
+            <header class="gce-card-header">
+              <div class="gce-card-title-group">
+                <h3>O Level General</h3>
+                <span class="gce-card-subtitle">First Cycle Grammar Curriculum</span>
+              </div>
+              <span class="gce-pass-badge gce-pass-badge--gold">
+                <i class="bi bi-check-circle-fill"></i> 100% Passed
+              </span>
+            </header>
+
+            <!-- Metrics Strip -->
+            <div class="gce-metrics-strip">
+              <div class="gce-metric-item">
+                <span class="gce-metric-val" data-counter data-target="10">10</span>
+                <span class="gce-metric-label">Registered</span>
+              </div>
+              <div class="gce-metric-item">
+                <span class="gce-metric-val" data-counter data-target="10">10</span>
+                <span class="gce-metric-label">Passed</span>
+              </div>
+              <div class="gce-metric-item">
+                <span class="gce-metric-val gce-highlight" data-counter data-target="100" data-suffix="%">100%</span>
+                <span class="gce-metric-label">% Passed</span>
+              </div>
+            </div>
+
+            <!-- Subject Distribution Breakdown -->
+            <div class="gce-distribution-heading">
+              <span>Passed in Subjects (Performance Breakdown)</span>
+              <span style="font-size:0.78rem;color:var(--accent-glow);"><i class="bi bi-bar-chart-fill"></i> 10 Candidates</span>
+            </div>
+
+            <ul class="gce-distribution-list">
+              <li class="gce-dist-row top-tier">
+                <span class="gce-dist-label">
+                  <i class="bi bi-star-fill star-icon" aria-hidden="true"></i>
+                  <strong>11 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>2 Students</span>
+                  <span class="gce-dist-badge">Outstanding</span>
+                </span>
+              </li>
+              <li class="gce-dist-row top-tier">
+                <span class="gce-dist-label">
+                  <i class="bi bi-star-fill star-icon" aria-hidden="true"></i>
+                  <strong>10 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>3 Students</span>
+                  <span class="gce-dist-badge">Distinction</span>
+                </span>
+              </li>
+              <li class="gce-dist-row">
+                <span class="gce-dist-label">
+                  <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                  <strong>9 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>1 Student</span>
+                  <span class="gce-dist-badge">Merit</span>
+                </span>
+              </li>
+              <li class="gce-dist-row">
+                <span class="gce-dist-label">
+                  <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                  <strong>8 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>2 Students</span>
+                  <span class="gce-dist-badge">Merit</span>
+                </span>
+              </li>
+              <li class="gce-dist-row">
+                <span class="gce-dist-label">
+                  <i class="bi bi-check2" aria-hidden="true"></i>
+                  <strong>6 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>1 Student</span>
+                  <span class="gce-dist-badge">Pass</span>
+                </span>
+              </li>
+              <li class="gce-dist-row">
+                <span class="gce-dist-label">
+                  <i class="bi bi-check2" aria-hidden="true"></i>
+                  <strong>5 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>1 Student</span>
+                  <span class="gce-dist-badge">Pass</span>
+                </span>
+              </li>
+            </ul>
+
+            <footer class="gce-card-footer-note">
+              <i class="bi bi-stars"></i>
+              <span><strong>100% Quality Output:</strong> Every registered candidate passed with 5 or more subjects, and 50% attained exceptional results in 10 or 11 subjects.</span>
+            </footer>
+          </article>
+
+          <!-- Card 2: Advanced Level General -->
+          <article class="gce-result-card gce-result-card--alevel fluid-type-card reveal reveal-delay-1">
+            <header class="gce-card-header">
+              <div class="gce-card-title-group">
+                <h3>A Level General</h3>
+                <span class="gce-card-subtitle">Second Cycle Grammar (High School)</span>
+              </div>
+              <span class="gce-pass-badge gce-pass-badge--blue">
+                <i class="bi bi-check-circle-fill"></i> 66.6% Passed
+              </span>
+            </header>
+
+            <!-- Metrics Strip -->
+            <div class="gce-metrics-strip">
+              <div class="gce-metric-item">
+                <span class="gce-metric-val" data-counter data-target="3">3</span>
+                <span class="gce-metric-label">Registered</span>
+              </div>
+              <div class="gce-metric-item">
+                <span class="gce-metric-val" data-counter data-target="2">2</span>
+                <span class="gce-metric-label">Passed</span>
+              </div>
+              <div class="gce-metric-item">
+                <span class="gce-metric-val gce-highlight" data-counter data-target="66.6" data-suffix="%">66.6%</span>
+                <span class="gce-metric-label">% Passed</span>
+              </div>
+            </div>
+
+            <!-- Subject Distribution Breakdown -->
+            <div class="gce-distribution-heading">
+              <span>Passed in Subjects (Performance Breakdown)</span>
+              <span style="font-size:0.78rem;color:#93c5fd;"><i class="bi bi-bar-chart-fill"></i> 2 Candidates</span>
+            </div>
+
+            <ul class="gce-distribution-list">
+              <li class="gce-dist-row top-tier">
+                <span class="gce-dist-label">
+                  <i class="bi bi-star-fill star-icon" aria-hidden="true" style="color:#60a5fa;"></i>
+                  <strong>4 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>1 Student</span>
+                  <span class="gce-dist-badge" style="background:rgba(96,165,250,0.25);color:#93c5fd;border:1px solid rgba(96,165,250,0.4);">Full High Distinction</span>
+                </span>
+              </li>
+              <li class="gce-dist-row">
+                <span class="gce-dist-label">
+                  <i class="bi bi-check2-circle" aria-hidden="true" style="color:#60a5fa;"></i>
+                  <strong>3 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>1 Student</span>
+                  <span class="gce-dist-badge">University Qualifying</span>
+                </span>
+              </li>
+            </ul>
+
+            <footer class="gce-card-footer-note" style="margin-top:auto;">
+              <i class="bi bi-mortarboard-fill" style="color:#93c5fd;"></i>
+              <span><strong>University Readiness:</strong> Our Upper Sixth students demonstrated high mastery across advanced subject papers, qualifying for premier university faculties.</span>
+            </footer>
+          </article>
+        </div>
+
+        <!-- Contact & Location Footer Strip -->
+        <div class="gce-contact-strip reveal">
+          <div class="gce-contact-details">
+            <div class="gce-contact-item">
+              <i class="bi bi-geo-alt-fill"></i>
+              <span><strong>Location:</strong> GRA Mbengwi, Momo Division</span>
+            </div>
+            <div class="gce-contact-item">
+              <i class="bi bi-telephone-fill"></i>
+              <span><strong>Contact:</strong> <a href="tel:+237683758002">683 758 002</a></span>
+            </div>
+            <div class="gce-contact-item">
+              <i class="bi bi-whatsapp"></i>
+              <span><a href="https://wa.me/237683758002" target="_blank" rel="noopener noreferrer">WhatsApp SJCCC</a></span>
+            </div>
+          </div>
+          <div class="gce-action-buttons">
+            <a class="btn btn-primary" href="#contact" toolDescription="Enquire for admission at SJCCC Mbengwi">
+              <i class="bi bi-pencil-square"></i> Apply / Enquire Now
+            </a>
+            <a class="btn btn-outline" href="/prospectus.html" style="color:#fff;border-color:rgba(255,255,255,0.4);" toolDescription="View the student prospectus">
+              <i class="bi bi-file-earmark-pdf"></i> View Prospectus
+            </a>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -1018,7 +1786,7 @@
             <div class="campus-map-viewport" id="campusMapViewport">
               <div class="campus-map-canvas-wrap" id="campusMapCanvasWrap">
                 <div class="campus-map-content" id="campusMapContent">
-                  <img src="/assets/campus_map.jpg" alt="Illustrated Map of SJCCC Mbengwi Campus grounds showing school buildings, chapel, dormitories, and sports fields" class="campus-map-image" id="campusMapIllustration" loading="lazy">
+                  <img src="/assets/campus_map.jpg" alt="Illustrated Map of SJCCC Mbengwi Campus grounds showing school buildings, chapel, dormitories, and sports fields" class="campus-map-image" id="campusMapIllustration" loading="lazy" onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';">
                   
                   <!-- Map Overlay Gradient & Grid Lines -->
                   <div class="campus-map-overlay" aria-hidden="true"></div>
@@ -1141,7 +1909,7 @@
                 
                 <!-- Facility Area Photo Preview with Category Tag -->
                 <div class="map-detail-img-container">
-                  <img id="mapDetailImage" class="map-detail-image" src="/assets/stJoseph.jpg" alt="College Chapel &amp; St. Joseph's Shrine at SJCCC Mbengwi" loading="lazy">
+                  <img id="mapDetailImage" class="map-detail-image" src="/assets/stJoseph.jpg" alt="College Chapel &amp; St. Joseph's Shrine at SJCCC Mbengwi" loading="lazy" onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';">
                   <div class="map-detail-img-gradient"></div>
                   <span id="mapDetailCategory" class="map-detail-category-badge">Spiritual Life</span>
                 </div>
@@ -1220,7 +1988,7 @@
       <div class="section-divider"></div>
       <div class="grid-container" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
         <div class="testimonial-card reveal">
-          <img class="testimonial-avatar" src="https://i.pravatar.cc/150?img=11" alt="Paul N." loading="lazy">
+          <img class="testimonial-avatar" src="https://i.pravatar.cc/150?img=11" alt="Paul N." loading="lazy" onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
           <div class="testimonial-quote"><i class="bi bi-chat-quote-fill"></i></div>
           <p>"Because it’s a smaller school, the teachers actually knew my name and my struggles. They gave me the
             personal attention and technical skills that set me apart. I now run my own electrical workshop."</p>
@@ -1228,7 +1996,7 @@
           <div class="testimonial-role">Alumnus, Industrial Electrical</div>
         </div>
         <div class="testimonial-card reveal reveal-delay-1">
-          <img class="testimonial-avatar" src="https://i.pravatar.cc/150?img=47" alt="Mrs. A. Chia" loading="lazy">
+          <img class="testimonial-avatar" src="https://i.pravatar.cc/150?img=47" alt="Mrs. A. Chia" loading="lazy" onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
           <div class="testimonial-quote"><i class="bi bi-chat-quote-fill"></i></div>
           <p>"The moral grounding and patient teachers here prepared my children not just for exams, but for life. It is
             a
@@ -1237,7 +2005,7 @@
           <div class="testimonial-role">Parent</div>
         </div>
         <div class="testimonial-card reveal reveal-delay-2">
-          <img class="testimonial-avatar" src="https://i.pravatar.cc/150?img=12" alt="Br. Emmanuel" loading="lazy">
+          <img class="testimonial-avatar" src="https://i.pravatar.cc/150?img=12" alt="Br. Emmanuel" loading="lazy" onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
           <div class="testimonial-quote"><i class="bi bi-chat-quote-fill"></i></div>
           <p>"Teaching at SJCCC is a blessing. The students are eager to learn, and our close-knit community makes every
             single day special and rewarding."</p>
@@ -1360,21 +2128,145 @@
       </div>
     </section>
 
-    <!-- ==================== GOOGLE MAP ==================== -->
-    <section id="location" class="section-padding">
-      <span class="section-label">Come Visit Us</span>
-      <h2 class="section-title">Our Location</h2>
-      <div class="section-divider"></div>
-      <div class="map-container">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3895.40328761124!2d10.015436059246833!3d6.031508591668883!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x105f23b91aaaaaab%3A0x3d97a1d6fe5673b0!2sSt%20Joseph%20Secondary%20School!5e1!3m2!1sen!2scm!4v1781468634874!5m2!1sen!2scm"
-          width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade" title="SJCCC Mbengwi location">
-        </iframe>
+    <!-- ==================== CAMPUS LOCATION & GOOGLE MAP FACADE ==================== -->
+    <section id="location" class="location-section section-padding">
+      <div class="location-container">
+        <div class="location-header text-center">
+          <span class="section-label">Come Visit Us</span>
+          <h2 class="section-title">Our Location &amp; Campus Grounds</h2>
+          <div class="section-divider"></div>
+          <p class="section-subtitle">
+            Situated atop the scenic highlands of Mbengwi in Momo Division, North West Region of Cameroon.
+          </p>
+        </div>
+
+        <div class="location-card reveal">
+          <!-- Left: High-performance Static Map Facade with on-demand interactive embed -->
+          <div class="location-map-wrapper" id="locationMapWrapper">
+            <div class="location-facade" id="locationFacade">
+              <!-- Topographic and road vector styling -->
+              <div class="location-facade__art">
+                <svg class="location-topo-svg" viewBox="0 0 600 400" preserveAspectRatio="none" aria-hidden="true" role="presentation">
+                  <defs>
+                    <linearGradient id="topoBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#07182E" />
+                      <stop offset="100%" stop-color="#0d2444" />
+                    </linearGradient>
+                    <pattern id="topoGrid" width="30" height="30" patternUnits="userSpaceOnUse">
+                      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(201, 162, 41, 0.08)" stroke-width="0.8" />
+                    </pattern>
+                  </defs>
+                  <rect width="600" height="400" fill="url(#topoBgGrad)" />
+                  <rect width="600" height="400" fill="url(#topoGrid)" />
+                  <!-- Topographic contour curves -->
+                  <path d="M-50,120 Q120,40 300,100 T650,70" fill="none" stroke="rgba(243, 215, 121, 0.12)" stroke-width="1.5" />
+                  <path d="M-50,180 Q150,100 320,160 T650,130" fill="none" stroke="rgba(243, 215, 121, 0.14)" stroke-width="1.5" />
+                  <path d="M-50,240 Q160,180 300,220 T650,190" fill="none" stroke="rgba(201, 162, 41, 0.16)" stroke-width="1.5" />
+                  <path d="M-50,300 Q180,250 330,280 T650,260" fill="none" stroke="rgba(201, 162, 41, 0.14)" stroke-width="1.5" />
+                  <!-- Main Arterial Road (Bamenda-Mbengwi corridor) -->
+                  <path d="M-20,380 C180,340 260,260 300,200 C340,140 440,60 620,30" fill="none" stroke="rgba(201, 162, 41, 0.45)" stroke-width="4" stroke-linecap="round" />
+                  <!-- College Access Boulevard -->
+                  <path d="M300,200 L380,240 L350,290" fill="none" stroke="rgba(243, 215, 121, 0.65)" stroke-width="2.5" stroke-dasharray="4,4" />
+                </svg>
+              </div>
+
+              <!-- Overlay elements -->
+              <div class="location-facade__overlay">
+                <span class="location-facade__badge">
+                  <i class="bi bi-compass" aria-hidden="true"></i>
+                  <span>Mbengwi Central · 2.5 km from Town Center</span>
+                </span>
+
+                <div class="location-pin-wrap">
+                  <div class="location-pin-pulse" aria-hidden="true"></div>
+                  <div class="location-pin-icon" aria-hidden="true">
+                    <i class="bi bi-geo-alt-fill"></i>
+                  </div>
+                  <div class="location-pin-card">
+                    <span class="location-pin-name">SJCCC Campus</span>
+                    <span class="location-pin-coord">6°01'53.4"N 10°00'55.6"E</span>
+                  </div>
+                </div>
+
+                <div class="location-facade__cta-overlay">
+                  <button type="button" class="location-activate-btn" id="loadGoogleMapBtn" aria-label="Load interactive Google Map embed">
+                    <i class="bi bi-map" aria-hidden="true"></i>
+                    <span>Load Interactive Map</span>
+                  </button>
+                  <span class="location-facade__hint">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i> Loads on demand · Offline resilient · Saves data
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Campus Location & Transit Information Panel -->
+          <div class="location-info-panel">
+            <div class="location-info-header">
+              <span class="location-kicker">
+                <i class="bi bi-building" aria-hidden="true"></i> Institutional Campus
+              </span>
+              <h3 class="location-college-name">Saint Joseph Catholic Comprehensive College</h3>
+              <p class="location-motto-quote">"Edificamus Regnum Dei" · Founded 1963 · Archdiocese of Bamenda</p>
+            </div>
+
+            <ul class="location-meta-list" role="list">
+              <li>
+                <div class="location-meta-icon" aria-hidden="true">
+                  <i class="bi bi-geo-alt-fill"></i>
+                </div>
+                <div class="location-meta-text">
+                  <strong>Campus Address</strong>
+                  <span>Mbengwi, Momo Division, North West Region, Republic of Cameroon</span>
+                  <span class="location-meta-sub">Scenic hilltop setting overlooking Mbengwi municipality</span>
+                </div>
+              </li>
+              <li>
+                <div class="location-meta-icon" aria-hidden="true">
+                  <i class="bi bi-signpost-2"></i>
+                </div>
+                <div class="location-meta-text">
+                  <strong>Travel &amp; Access Corridor</strong>
+                  <span>Via Bamenda–Mbengwi Highway (~45 minutes from Bamenda Commercial Avenue)</span>
+                  <span class="location-meta-sub">Accessible by public transit, college bus, and private vehicles</span>
+                </div>
+              </li>
+              <li>
+                <div class="location-meta-icon" aria-hidden="true">
+                  <i class="bi bi-clock-history"></i>
+                </div>
+                <div class="location-meta-text">
+                  <strong>Office &amp; Visitation Hours</strong>
+                  <span>Monday – Friday: 7:30 AM – 3:30 PM</span>
+                  <span class="location-meta-sub">Admissions office, Principal's registry &amp; campus tours</span>
+                </div>
+              </li>
+              <li>
+                <div class="location-meta-icon" aria-hidden="true">
+                  <i class="bi bi-crosshair"></i>
+                </div>
+                <div class="location-meta-text">
+                  <strong>Geographic Positioning</strong>
+                  <span>6.0315° N, 10.0154° E · Elevation: 1,380 m</span>
+                  <span class="location-meta-sub">Clean alpine climate conducive to rigorous academic study</span>
+                </div>
+              </li>
+            </ul>
+
+            <div class="location-actions-toolbar">
+              <a href="https://maps.google.com/?q=St+Joseph+Secondary+School+Mbengwi+Cameroon" target="_blank" rel="noopener noreferrer" class="btn btn-primary location-action-btn" aria-label="Open in Google Maps for turn-by-turn navigation (opens in new tab)">
+                <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                <span>Get Driving Directions</span>
+              </a>
+              <a href="#campusMapSection" class="location-action-btn btn-ghost" aria-label="Explore the 6 Virtual Campus Zones">
+                <i class="bi bi-layers" aria-hidden="true"></i>
+                <span>Explore 6 Campus Zones</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
-      <p style="text-align:center; margin-top:16px; color:var(--text-muted);">
-        <i class="bi bi-geo-alt-fill"></i> Mbengwi, Momo Division, North West Region, Cameroon
-      </p>
     </section>
 
     <!-- ==================== CTA BANNER ==================== -->
@@ -1495,6 +2387,66 @@
       </form>
     </div>
   </div>
+
+  <!-- Past Announcements Modal -->
+  <div class="past-modal-overlay" id="pastAnnouncementsModal" role="dialog" aria-modal="true" aria-labelledby="pastAnnouncementsTitle" hidden>
+    <div class="past-modal-dialog">
+      <header class="past-modal-header">
+        <div class="past-modal-title-group">
+          <h2 id="pastAnnouncementsTitle"><i class="bi bi-bell-fill" aria-hidden="true"></i> Historical Announcements Archive</h2>
+          <p class="past-modal-subtitle">Official school notices, circulars, examination returns &amp; admissions bulletins</p>
+        </div>
+        <button type="button" class="past-modal-close" aria-label="Close announcements archive" title="Close" toolDescription="Close the past announcements modal.">
+          <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
+      </header>
+
+      <div class="past-modal-controls">
+        <div class="past-search-wrap">
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <input type="search" id="pastAnnouncementsSearch" class="past-search-input" placeholder="Search notices (e.g. Resumption, GCE, Interviews, Registration)..." aria-label="Search past announcements">
+        </div>
+        <div class="past-category-filters" role="group" aria-label="Filter notices by category">
+          <button type="button" class="past-filter-btn active" data-category="all">All Categories</button>
+          <button type="button" class="past-filter-btn" data-category="admissions">Admissions &amp; Enrolment</button>
+          <button type="button" class="past-filter-btn" data-category="academic">Academic &amp; GCE</button>
+          <button type="button" class="past-filter-btn" data-category="campus">Campus &amp; Facilities</button>
+          <button type="button" class="past-filter-btn" data-category="celebration">Celebrations &amp; Feasts</button>
+        </div>
+        <div class="past-filter-row">
+          <div class="past-priority-filters" role="group" aria-label="Filter notices by priority level">
+            <span class="past-filter-label"><i class="bi bi-funnel-fill"></i> Priority:</span>
+            <button type="button" class="past-priority-pill active" data-priority-filter="all">All</button>
+            <button type="button" class="past-priority-pill priority-pill-urgent" data-priority-filter="urgent">
+              <span class="priority-dot dot-red"></span> Urgent
+            </button>
+            <button type="button" class="past-priority-pill priority-pill-important" data-priority-filter="important">
+              <span class="priority-dot dot-amber"></span> Important
+            </button>
+            <button type="button" class="past-priority-pill priority-pill-info" data-priority-filter="info">
+              <span class="priority-dot dot-blue"></span> General
+            </button>
+          </div>
+          <div class="past-sort-wrap">
+            <label for="pastSortSelect" class="past-filter-label"><i class="bi bi-sort-down"></i> Sort:</label>
+            <select id="pastSortSelect" class="past-sort-select" aria-label="Sort announcements">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="priority">Highest Priority First</option>
+            </select>
+            <button type="button" class="past-clear-cache-btn" id="pastClearStorageBtn" title="Reset all announcement dismissal and read states">
+              <i class="bi bi-arrow-counterclockwise"></i> Reset Cache
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="past-modal-body" id="pastAnnouncementsList" role="region" aria-live="polite">
+        <!-- Rendered dynamically by PastAnnouncementsModal.ts -->
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="/src/main.ts"></script>
   <script>
     (function () {
