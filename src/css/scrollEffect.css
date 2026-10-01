@@ -55,8 +55,8 @@
 
 @keyframes heroFadeInUp {
     from {
-        opacity: 0;
-        transform: translateY(18px);
+        opacity: 0.85;
+        transform: translateY(8px);
     }
     to {
         opacity: 1;
@@ -74,15 +74,18 @@
     margin-top: 0;
     margin-bottom: 1rem;
     text-wrap: balance;
-    animation: heroFadeInUp 0.8s var(--ease-cinematic) 0.15s both;
+    opacity: 1;
+    animation: heroFadeInUp 0.5s var(--ease-cinematic) 0s both;
 }
 
 .hero-badge {
-    animation: heroFadeInUp 0.8s var(--ease-cinematic) 0.3s both;
+    opacity: 1;
+    animation: heroFadeInUp 0.5s var(--ease-cinematic) 0.05s both;
 }
 
 .hero-buttons {
-    animation: heroFadeInUp 0.8s var(--ease-cinematic) 0.45s both;
+    opacity: 1;
+    animation: heroFadeInUp 0.5s var(--ease-cinematic) 0.1s both;
 }
 
 .gold-shimmer {

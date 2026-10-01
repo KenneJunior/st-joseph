@@ -13,6 +13,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
+  contain: paint;
 }
 .sticky-container .hero-bg-layer {
   z-index: 0;
@@ -29,6 +30,7 @@
   transform: scale(1.05);
   transform-origin: 50% 15%;
   animation: heroSlowZoom 20s ease-in-out infinite alternate;
+  will-change: transform;
   z-index: -1;
 }
 
@@ -49,6 +51,7 @@
   z-index: 2;
   pointer-events: none;
   opacity: 0.5;
+  contain: layout paint;
 }
 
 /* ============================================
@@ -131,6 +134,31 @@
   gap: 16px;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .hero-buttons {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-buttons {
+    flex-direction: column !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    max-width: 340px !important;
+    margin: 0 auto !important;
+    gap: 10px !important;
+  }
+
+  .hero-buttons .btn {
+    width: 100% !important;
+    min-height: 48px !important;
+    font-size: 0.94rem !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
 }
 
 .hero-scroll-indicator {

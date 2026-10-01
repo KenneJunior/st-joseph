@@ -56,6 +56,8 @@ export class ScrollEngine {
     private accumulator = 0;
     // @ts-ignore
     private particleSystem?: ParticleSystem;
+    private dustIdleHandle: number | null = null;
+    private dustTimerHandle: ReturnType<typeof setTimeout> | null = null;
 
     private syncRafId: number | null = null;
     private renderRafId: number | null = null;
@@ -156,7 +158,23 @@ export class ScrollEngine {
         if (this.config.canvasId) {
             const canvasEl = document.getElementById(this.config.canvasId) as HTMLCanvasElement | null;
             if (canvasEl) {
-                this.particleSystem = new ParticleSystem(canvasEl, this.config.dustConfig);
+                // Defer canvas dust particles so critical hero typography and header render instantly
+                const initDustParticles = () => {
+                    if (!this.particleSystem && document.contains(canvasEl)) {
+                        this.particleSystem = new ParticleSystem(canvasEl, this.config.dustConfig);
+                    }
+                };
+
+                if ('requestIdleCallback' in window) {
+                    this.dustIdleHandle = (window as Window & { requestIdleCallback: (cb: IdleRequestCallback, opts?: IdleRequestOptions) => number }).requestIdleCallback(
+                        () => initDustParticles(),
+                        { timeout: 1500 }
+                    );
+                } else {
+                    this.dustTimerHandle = setTimeout(() => {
+                        requestAnimationFrame(initDustParticles);
+                    }, 150);
+                }
             }
         }
 
@@ -646,6 +664,14 @@ export class ScrollEngine {
         if (this.state.idleTimer !== null) {
             window.clearTimeout(this.state.idleTimer);
             this.state.idleTimer = null;
+        }
+        if (this.dustIdleHandle !== null && 'cancelIdleCallback' in window) {
+            (window as Window & { cancelIdleCallback: (handle: number) => void }).cancelIdleCallback(this.dustIdleHandle);
+            this.dustIdleHandle = null;
+        }
+        if (this.dustTimerHandle !== null) {
+            clearTimeout(this.dustTimerHandle);
+            this.dustTimerHandle = null;
         }
         if (this.particleSystem) {
             this.particleSystem.destroy();

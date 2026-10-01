@@ -152,8 +152,8 @@ export class Preloader {
             sessionStorage.setItem('sjccc_preloader_seen', 'true');
         }
 
-        // Repeat visit: accelerated loading phase (200ms) without skipping the visual pillar pattern
-        const minDuration = isRepeatVisit ? 200 : 2000;
+        // Accelerated loading phase to reduce Time to Interaction while maintaining visual brand transition
+        const minDuration = isRepeatVisit ? 120 : 350;
         const startTime = performance.now();
         let progress = 0;
         let isPageReady = document.readyState === 'complete';
