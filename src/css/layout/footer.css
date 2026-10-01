@@ -10,6 +10,24 @@ footer {
   z-index: 1;
 }
 
+@media (max-width: 1024px) {
+  footer {
+    padding: 44px 20px 18px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  footer {
+    padding: 22px 12px 12px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  footer {
+    padding: 18px 10px 10px 10px;
+  }
+}
+
 .footer-content {
   max-width: 1280px;
   margin: 0 auto;
@@ -17,6 +35,21 @@ footer {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 44px;
   margin-bottom: 48px;
+}
+
+@media (max-width: 1024px) {
+  .footer-content {
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
 }
 
 footer h3 {
@@ -27,6 +60,14 @@ footer h3 {
   display: inline-block;
   position: relative;
   padding-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  footer h3 {
+    font-size: 0.88rem;
+    margin-bottom: 4px;
+    padding-bottom: 2px;
+  }
 }
 
 footer h3::after {
@@ -40,16 +81,38 @@ footer h3::after {
   border-radius: 1px;
 }
 
+@media (max-width: 768px) {
+  footer h3::after {
+    width: 20px;
+    height: 1.5px;
+  }
+}
+
 footer p {
   margin-bottom: 8px;
   font-size: 0.9rem;
   line-height: 1.7;
 }
 
+@media (max-width: 768px) {
+  footer p {
+    font-size: 0.74rem;
+    line-height: 1.35;
+    margin-bottom: 3px;
+  }
+}
+
 .footer-social {
   display: flex;
   gap: 12px;
   margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+  .footer-social {
+    gap: 6px;
+    margin-top: 6px;
+  }
 }
 
 .footer-social a {
@@ -64,6 +127,14 @@ footer p {
   text-decoration: none;
   transition: background 0.3s, color 0.3s;
   font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .footer-social a {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
 }
 
 .footer-social a:hover {
@@ -81,12 +152,26 @@ footer p {
   margin: 0 auto;
 }
 
+@media (max-width: 768px) {
+  .copyright {
+    padding-top: 8px;
+    font-size: 0.65rem;
+  }
+}
+
 .contact-link {
   color: var(--text-light);
   text-decoration: none;
   display: block;
   margin-bottom: 0.5rem;
   transition: var(--transition-smooth);
+}
+
+@media (max-width: 768px) {
+  .contact-link {
+    font-size: 0.74rem;
+    margin-bottom: 0.2rem;
+  }
 }
 
 .contact-link:hover {

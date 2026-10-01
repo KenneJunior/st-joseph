@@ -1,10 +1,36 @@
 /* ============================================
-   SECTION LAYOUTS & TYPOGRAPHY
-   ============================================ */
+    SECTION LAYOUTS & TYPOGRAPHY
+    ============================================ */
 .section-padding {
   padding: 100px 32px;
   max-width: 1280px;
   margin: 0 auto;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .section-padding {
+    padding: 52px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding: 26px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-padding {
+    padding: 20px 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .section-padding {
+    padding: 15px 6px;
+  }
 }
 
 .alt-bg {
@@ -26,15 +52,73 @@
   box-shadow: 0 0 10px rgba(200, 150, 62, 0.4);
 }
 
+@media (max-width: 1024px) {
+  .section-divider {
+    margin: 0 auto 24px auto;
+    width: 36px;
+    height: 2px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-divider {
+    margin: 0 auto 12px auto;
+    width: 24px;
+    height: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-divider {
+    margin: 0 auto 9px auto;
+    width: 20px;
+    height: 1.5px;
+  }
+}
+
+@media (max-width: 360px) {
+  .section-divider {
+    margin: 0 auto 8px auto;
+    width: 16px;
+  }
+}
+
 /* ============================================
    IMAGE BACKGROUND SECTIONS
    ============================================ */
 .bg-image-section {
-  background: url('https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?q=80&w=1400') no-repeat center center/cover;
+  background: url('/assets/sjccc-view.jpg') no-repeat center center/cover;
   position: relative;
   padding: 100px 32px;
   z-index: 1;
+  box-sizing: border-box;
+  width: 100%;
 }
+
+@media (max-width: 1024px) {
+  .bg-image-section {
+    padding: 52px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .bg-image-section {
+    padding: 26px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bg-image-section {
+    padding: 20px 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .bg-image-section {
+    padding: 15px 6px;
+  }
+}
+
 
 .bg-image-section::before {
   content: '';
