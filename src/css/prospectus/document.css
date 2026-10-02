@@ -86,8 +86,8 @@ body.dark-mode .motto-bar {
 
 .floating-action-btn {
     pointer-events: auto;
-    background: linear-gradient(135deg, var(--gold) 0%, #e0b83b 100%);
-    color: var(--deep-blue);
+    background: linear-gradient(135deg, rgba(7, 24, 46, 0.7) 0%, 0%, rgba(10, 28, 56, 0.7) 100% 8%);
+    color: var(--gold-light);
     border: none;
     padding: 1.1rem 2.2rem;
     font-size: 1.15rem;
@@ -103,6 +103,7 @@ body.dark-mode .motto-bar {
 }
 
 .floating-action-btn:hover {
+    color: var(--deep-blue);
     background: linear-gradient(135deg, var(--gold-light) 0%, #f5e186 100%);
     transform: translateY(-6px) scale(1.04);
     box-shadow: 0 20px 40px rgba(243, 215, 121, 0.6), 0 0 0 6px rgba(201, 162, 41, 0.25);

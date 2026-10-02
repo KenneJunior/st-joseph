@@ -17,7 +17,7 @@
  * ============================================================================
  */
 
-import { LiquidGlass } from '@kennejunior/liquidglass';
+import {LiquidGlass} from '@kennejunior/liquidglass';
 
 export interface LiquidGlassAdapterConfig {
     /** Refractive index for optical bending (defaults to 1.45 - 1.6) */
@@ -81,7 +81,7 @@ export class LiquidGlassAdapter {
             refractionScale: customConfig.refractionScale ?? (isMobile ? 0.9 : 1.15),
             specularAlpha: customConfig.specularAlpha ?? 0.5,
             // Disable or clamp tilt under reduced-motion or mobile conditions
-            maxTilt: reducedMotion ? 0 : (isMobile ? 0 : (customConfig.maxTilt ?? 6)),
+            maxTilt: reducedMotion ? 1 : (isMobile ? 1 : (customConfig.maxTilt ?? 6)),
             magneticPull: reducedMotion || isMobile ? 0 : 8,
             aberration: reducedMotion ? 0 : (customConfig.aberration ?? 0.03),
             // Disable ambient orb and mobile gyroscope listeners on mobile/reduced-motion to conserve battery and CPU
@@ -166,7 +166,7 @@ export class LiquidGlassAdapter {
             refractiveIndex: 1.52,
             glassThickness: 70,
             bezelWidth: 18,
-            maxTilt: 7,
+            maxTilt: 1,
             rippleColor: 'rgba(255, 255, 255, 0.45)',
         });
 
@@ -175,18 +175,20 @@ export class LiquidGlassAdapter {
             refractiveIndex: 1.48,
             glassThickness: 60,
             bezelWidth: 16,
-            maxTilt: 6,
+            maxTilt: 1,
+            rippleColor: 'rgba(201, 162, 41, 0.35)',
+        });
+        this.enhanceSurface('.map-tour-btn');
+        this.enhanceSurface(".campus-map-zoom-controls");
+        this.enhanceSurface(".stat-card", {
+            refractiveIndex: 1.8,
+            glassThickness: 90,
+            bezelWidth: 16,
+            maxTilt: 1,
             rippleColor: 'rgba(201, 162, 41, 0.35)',
         });
 
         // Targeted selection: Hero interactive outline button
-        this.enhanceSurface('#getInTouchBtn', {
-            refractiveIndex: 1.5,
-            glassThickness: 65,
-            bezelWidth: 16,
-            maxTilt: 5,
-            rippleColor: 'rgba(201, 162, 41, 0.35)',
-        });
     }
 
     /**
@@ -202,20 +204,10 @@ export class LiquidGlassAdapter {
             refractiveIndex: 1.55,
             glassThickness: 80,
             bezelWidth: 20,
-            maxTilt: 7,
+            maxTilt: 1,
             rippleColor: 'rgba(255, 255, 255, 0.5)',
         });
 
-        // Targeted selection: Motto banner glass panel (desktop only; non-interactive banner)
-        if (!LiquidGlassAdapter.isMobileOrConstrained()) {
-            this.enhanceSurface('.motto-bar', {
-                refractiveIndex: 1.45,
-                glassThickness: 50,
-                bezelWidth: 14,
-                maxTilt: 2,
-                enableOrb: false,
-            });
-        }
     }
 
     /**

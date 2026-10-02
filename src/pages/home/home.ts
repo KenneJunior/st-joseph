@@ -191,7 +191,7 @@ export class HomeApp {
             'Nurturing <span class="message-highlight">MINDS</span> & <span class="message-highlight">HANDS</span><br>for a better future',
             'Where <span class="message-highlight">FAITH</span> meets<br><span class="message-highlight">EXCELLENCE</span> in education',
             'Rigorous <span class="message-highlight">ACADEMICS</span><br>& industrial training',
-            'Building <span class="message-highlight">CHARACTER</span><br>since 1963',
+            'Building <span class="message-highlight">CHARACTER</span><br>since 6th SEPT 1999',
             'Empowering students to<br><span class="message-highlight">LEAD</span> & <span class="message-highlight">SERVE</span>',
             'A community of<br><span class="message-highlight">DISCIPLINE</span> & integrity',
             'Your journey to<br><span class="message-highlight">SUCCESS</span> starts here',
