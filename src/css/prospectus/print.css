@@ -155,20 +155,23 @@
         break-after: avoid !important;
     }
 
-    /* ─── 9. Paired 2-Column Card Grid (Optimized for A4 Layout) ─── */
+    /* ─── 9. Robust Sequential Document Flow (Zero-Coupling Print Fragmentation) ─── */
     .prospectus-grid {
-        padding: 3mm !important;
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 2mm !important;
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 3mm 0 !important;
+        margin: 0 !important;
+        border: none !important;
     }
 
     .section-card {
-        flex: 0 0 calc(50% - 1mm) !important;
-        max-width: calc(50% - 1mm) !important;
         display: block !important;
-        margin: 0 !important;
-        padding: 2.5mm 3mm !important;
+        flex: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 2.5mm 0 !important;
+        padding: 2.5mm 3.5mm !important;
         border: 0.5px solid rgba(0, 0, 0, 0.12) !important;
         border-radius: 3px !important;
         box-shadow: none !important;
@@ -176,34 +179,31 @@
         page-break-inside: avoid !important;
         break-inside: avoid !important;
         overflow: hidden !important;
+        box-sizing: border-box !important;
     }
 
-    /* First 4 Compact Information Cards */
-    .section-card:nth-child(1),
-    .section-card:nth-child(2),
-    .section-card:nth-child(3),
-    .section-card:nth-child(4) {
-        flex: 0 0 calc(32% - 1mm) !important;
-        max-width: calc(35% - 1mm) !important;
-    }
-
-    /* College Uniform Matrix (Expanded Width) */
-    .section-card:nth-child(5) {
-        flex: 0 0 65% !important;
-        max-width: 70% !important;
-    }
-
-    .section-card:nth-child(6),
-    .section-card:nth-child(7),
-    .section-card:nth-child(8),
-    .section-card:nth-child(9) {
-        flex: 0 0 calc(50% - 1mm) !important;
-        max-width: calc(50% - 1mm) !important;
+    .section-card:last-child {
+        margin-bottom: 0 !important;
     }
 
     .section-card::before,
     .section-card::after {
         display: none !important;
+    }
+
+    /* ─── Semantic Card Targeting (Eliminating Fragile nth-child Rules) ─── */
+    .section-card#about-sjccc,
+    .section-card#departments-entry,
+    .section-card#books-stationery,
+    .section-card#uniform-apparel,
+    .section-card#boarding-toiletry,
+    .section-card#school-rules,
+    .section-card#fees-structure,
+    .section-card#health-finance,
+    .section-card#important-dates {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: none !important;
     }
 
     /* ─── 10. Section Headings (Compact Dark Blue Pills) ─── */
@@ -273,11 +273,24 @@
         background: none !important;
     }
 
-    .uniform-gender h4 {
+    .uniform-gender h4,
+    .uniform-gender h3,
+    .uniform-subheading {
         font-size: 7pt !important;
         margin-bottom: 1.5mm !important;
         gap: 1mm !important;
         color: #0a1f3f !important;
+    }
+
+    .grid-3-cols {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 2.5mm !important;
+    }
+
+    .info-block {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
     }
 
     /* ─── 13. Bulleted Lists ─── */
@@ -350,6 +363,18 @@
     }
 
     /* ─── 15. Alert & Notice Highlights ─── */
+    .alert-box {
+        padding: 1.5mm 2.5mm !important;
+        font-size: 6.5pt !important;
+        line-height: 1.25 !important;
+        margin-bottom: 2mm !important;
+        border: 0.5px solid rgba(201, 162, 41, 0.4) !important;
+        border-radius: 2px !important;
+        background: #fdfbf7 !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
     .alert-text {
         font-size: 6pt !important;
         color: #c73636 !important;
