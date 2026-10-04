@@ -37,19 +37,21 @@ body {
     transition: var(--transition-bounce);
 }
 
-/* Master Container – Glass Morphism Elevation */
+/* Master Container – Glass Morphism Elevation & Controlled Folio Geometry */
 .prospectus-container {
-    max-width: 2560px;
+    max-width: var(--prospectus-max-width, 1480px);
     width: 100%;
+    zoom: var(--prospectus-zoom, 1);
     background: var(--bg-container);
     backdrop-filter: var(--backdrop-blur);
     -webkit-backdrop-filter: var(--backdrop-blur);
     box-shadow: var(--shadow-main);
     border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    transition: var(--transition-smooth), backdrop-filter 0.8s ease;
-    animation: containerReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    margin: 0 auto;
+    transition: var(--transition-smooth), backdrop-filter 0.8s ease, zoom 0.3s ease;
+    animation: containerReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    margin: 1.25rem auto 2.5rem auto;
 }
 
 /* Focus Visibility & Accessibility */

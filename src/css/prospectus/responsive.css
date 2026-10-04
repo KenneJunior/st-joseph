@@ -1,28 +1,94 @@
 /* ==========================================================================
-   SJCCC PROSPECTUS — RESPONSIVE BREAKPOINTS
+   SJCCC PROSPECTUS — RESPONSIVE BREAKPOINTS & DENSITY TIERS
    ========================================================================== */
 
-/* Tablet Landscape & Compact Desktops (max-width: 1024px) */
-@media (max-width: 1024px) {
-    .prospectus-grid {
-        gap: 1.8rem;
-        padding: 2rem;
-    }
-    
-    .section-card {
-        padding: 1.5rem;
-    }
-    
-    .footer-top-grid {
-        gap: 2rem;
+/* ─── Tier 0: 4K & Ultrawide Screens (min-width: 2560px) ─── */
+@media (min-width: 2560px) {
+    :root {
+        --prospectus-zoom: 0.84;
+        --prospectus-max-width: 1980px;
+        --doc-visual-width: 1660px;
     }
 }
 
-/* Tablet Portrait (max-width: 768px) */
+/* ─── Tier 1: 1080p Desktop & Wide Screens (min-width: 1920px) and (max-width: 2559px) ─── */
+@media (min-width: 1920px) and (max-width: 2559px) {
+    :root {
+        --prospectus-zoom: 0.85;
+        --prospectus-max-width: 1680px;
+        --doc-visual-width: 1428px;
+    }
+}
+
+/* ─── Tier 2: Wide Desktop (min-width: 1440px) and (max-width: 1919px) ─── */
+@media (min-width: 1440px) and (max-width: 1919px) {
+    :root {
+        --prospectus-zoom: 0.88;
+        --prospectus-max-width: 1460px;
+        --doc-visual-width: 1285px;
+    }
+}
+
+/* ─── Tier 3: Standard Desktop & Laptops (min-width: 1025px) and (max-width: 1439px) ─── */
+@media (min-width: 1025px) and (max-width: 1439px) {
+    :root {
+        --prospectus-zoom: 0.90;
+        --prospectus-max-width: 1320px;
+        --doc-visual-width: 1188px;
+    }
+}
+
+/* ─── Tier 4: Tablet Landscape (max-width: 1024px) ─── */
+@media (max-width: 1024px) {
+    :root {
+        --prospectus-zoom: 0.95;
+        --prospectus-max-width: 100%;
+        --doc-visual-width: 100%;
+    }
+
+    .prospectus-container {
+        margin: 0.75rem auto 1.5rem auto;
+        border-radius: var(--radius-md, 10px);
+    }
+
+    .prospectus-grid {
+        gap: 1rem;
+        padding: 1.25rem;
+    }
+    
+    .section-card {
+        padding: 1.1rem;
+    }
+    
+    .grid-3-cols {
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+    }
+
+    .footer-top-grid {
+        gap: 1.25rem;
+    }
+}
+
+/* ─── Tier 5: Tablet Portrait (max-width: 768px) ─── */
 @media (max-width: 768px) {
+    :root {
+        --prospectus-zoom: 1; /* Explicitly 1.0 — zero zoom-out on mobile for perfect readability */
+        --prospectus-max-width: 100%;
+        --doc-visual-width: 100%;
+    }
+
+    .prospectus-container {
+        margin: 0 auto;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        box-shadow: none;
+    }
+
     /* Sticky Navigation */
     #mainHeader {
-        padding: 0.7rem 1.2rem;
+        padding: 0.6rem 1rem;
     }
     
     .logo-container {
@@ -119,8 +185,13 @@
         gap: 1.2rem;
     }
 
-    .col-4, .col-5, .col-3, .col-7, .col-8 {
-        grid-column: span 4;
+    .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-12 {
+        grid-column: span 12;
+    }
+
+    .grid-3-cols {
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
     }
 
     /* Cards */
@@ -198,9 +269,9 @@
     }
     
     .footer-top-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        margin-bottom: 1.8rem;
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
     }
     
     .footer-card {

@@ -74,13 +74,31 @@
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-smooth: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    --radius-xl: 28px;
-    --radius-lg: 20px;
-    --radius-md: 14px;
-    --header-height: 80px;
+    --radius-xl: 24px;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --header-height: 64px;
+
+    /* ─── 7. Document Density & Controlled Scaling Architecture ─── */
+    --prospectus-zoom: 1;
+    --prospectus-max-width: 1460px;
+    --doc-visual-width: 1280px;
+
+    /* Semantic Density Spacing Scale */
+    --space-doc-pad-y: 1.5rem;
+    --space-doc-pad-x: 1.5rem;
+    --space-grid-gap: 1.25rem;
+    --space-card-pad: 1.25rem;
+    --space-header-mb: 1rem;
+    --space-element-gap: 0.65rem;
+
+    /* Typographic Hierarchy Tokens */
+    --text-doc-body: 0.92rem;
+    --text-doc-small: 0.86rem;
+    --text-doc-line-height: 1.48;
 }
 
-/* ─── 7. Dark Theme Overrides (Deep, Immersive & Consolidated) ─── */
+/* ─── 8. Dark Theme Overrides (Deep, Immersive & Consolidated) ─── */
 html.dark-mode,
 body.dark-mode {
     --bg-main: linear-gradient(165deg, #0a0f16 0%, #111820 100%);

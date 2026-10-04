@@ -1,6 +1,6 @@
 {
   "name": "st-joseph",
-  "description": "from GitHub: KenneJunior/st-joseph",
+  "description": "St. Joseph's Catholic Comprehensive College Mbengwi offers a nurturing, holistic General and Technical education from Ordinary to Advanced Level.",
   "requestFramePermissions": [],
   "capabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
