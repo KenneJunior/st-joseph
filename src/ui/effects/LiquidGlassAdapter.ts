@@ -180,6 +180,7 @@ export class LiquidGlassAdapter {
         });
         this.enhanceSurface('.map-tour-btn');
         this.enhanceSurface(".campus-map-zoom-controls");
+        this.enhanceSurface(".news-card__category-badge");
         this.enhanceSurface(".stat-card", {
             refractiveIndex: 1.8,
             glassThickness: 90,

@@ -130,7 +130,6 @@
 }
 
 .hero-buttons {
-  backdrop-filter: blur(5px);
   display: flex;
   gap: 16px;
   flex-wrap: wrap;

@@ -6,7 +6,7 @@
   bottom: 70px;
   right: 20px;
   z-index: var(--z-hud, 2000);
-  background: var(--gold-gradient);
+  background: var( --color-border-brand);
   color: var(--primary-dark);
   border: none;
   border-radius: 50px;

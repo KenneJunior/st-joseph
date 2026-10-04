@@ -95,7 +95,7 @@
   text-transform: uppercase;
   letter-spacing: 0.6px;
   border-radius: 50px;
-  background: rgba(7, 24, 46, 0.88);
+  background: rgba(7, 24, 46, 0.3);
   color: var(--gold-light, #F3D779);
   border: 1px solid rgba(201, 162, 41, 0.4);
   backdrop-filter: blur(8px);
