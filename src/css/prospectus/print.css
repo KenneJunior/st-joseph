@@ -26,8 +26,8 @@
         background: none !important;
         overflow: visible !important;
         font-size: 8pt !important;
-        line-height: 1.25 !important;
-        zoom: 0.8 !important;
+        line-height: 1.3 !important;
+        zoom: 1 !important;
     }
 
     body {
@@ -39,6 +39,7 @@
     .prospectus-container {
         max-width: 100% !important;
         width: 100% !important;
+        zoom: 1 !important;
         margin: 0 !important;
         padding: 0 !important;
         box-shadow: none !important;

@@ -648,7 +648,7 @@ body.dark-mode .timeline-card-footer {
 .btn-download-ics {
   background: transparent;
   border: 1px solid var(--border-light);
-  color: var(--primary);
+  color: var(--text-light);
   padding: 7px 16px;
   border-radius: 8px;
   font-family: var(--font-body);

@@ -3,21 +3,21 @@
    ========================================================================== */
 
 #mainHeader {
-    background: rgba(7, 24, 46, 0.85);
+    background: rgba(7, 24, 46, 0.90);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     color: var(--text-light);
-    padding: 0.9rem 2.5rem;
+    padding: 0.6rem 1.8rem;
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid rgba(201, 162, 41, 0.5);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    border-bottom: 1px solid rgba(201, 162, 41, 0.45);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     transition: var(--transition-smooth);
 }
 
 .header-inner {
-    max-width: 1280px;
+    max-width: var(--doc-visual-width, 1280px);
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -27,7 +27,7 @@
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 1.2rem;
+    gap: 0.9rem;
     cursor: pointer;
     text-decoration: none;
     color: inherit;
@@ -43,29 +43,29 @@
     background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
     color: var(--deep-blue);
     font-weight: 800;
-    padding: 0.5rem 0.85rem;
-    border-radius: 12px;
-    font-size: 1.3rem;
-    box-shadow: 0 4px 12px rgba(201, 162, 41, 0.4);
+    padding: 0.35rem 0.65rem;
+    border-radius: 9px;
+    font-size: 1.15rem;
+    box-shadow: 0 3px 10px rgba(201, 162, 41, 0.35);
 }
 
 .logo-text {
     display: flex;
     flex-direction: column;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     letter-spacing: -0.2px;
 }
 
 .logo-text small {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     opacity: 0.85;
     font-weight: 400;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
 }
 
 .logo-motto {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-style: italic;
     color: var(--gold-light);
     font-family: var(--font-serif);
@@ -74,15 +74,16 @@
 #navMenu {
     display: flex;
     align-items: center;
-    gap: 2.2rem;
+    gap: 1.5rem;
 }
 
 .nav-link {
     color: var(--text-light);
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.92rem;
     position: relative;
-    padding: 0.3rem 0;
+    padding: 0.25rem 0;
     transition: var(--transition-smooth);
 }
 

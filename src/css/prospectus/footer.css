@@ -1,26 +1,26 @@
 /* ==========================================================================
-   SJCCC PROSPECTUS — FOOTER & NOTICES
+   SJCCC PROSPECTUS — FOOTER & NOTICES (Compact Institutional Summary)
    ========================================================================== */
 
 .prospectus-footer {
     background: linear-gradient(135deg, #07182e, #0a1f3c);
-    border-top: 4px solid var(--gold);
+    border-top: 3.5px solid var(--gold);
     color: var(--text-light);
-    padding: 3.5rem 2.8rem 2rem;
+    padding: 1.8rem 1.6rem 1.4rem;
 }
 
 .footer-top-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2.8rem;
-    margin-bottom: 3rem;
+    gap: 1.25rem;
+    margin-bottom: 1.4rem;
 }
 
 .footer-card {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-lg);
-    padding: 2.2rem;
+    border-radius: var(--radius-md, 10px);
+    padding: 1.25rem 1.35rem;
     transition: var(--transition-smooth);
     backdrop-filter: blur(8px);
 }
@@ -28,42 +28,42 @@
 .footer-card:hover {
     background: rgba(255, 255, 255, 0.07);
     border-color: var(--gold-light);
-    transform: translateY(-5px);
+    transform: translateY(-3px);
 }
 
 .footer-card h3,
 .footer-card h2,
 .footer-heading {
-    font-size: 1.4rem;
+    font-size: 1.15rem;
     color: var(--gold-light);
     margin-top: 0;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.85rem;
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.55rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    padding-bottom: 0.7rem;
+    padding-bottom: 0.45rem;
 }
 
 .highlight-text {
     color: var(--gold-light);
-    font-size: 0.95rem;
-    margin-bottom: 1rem;
+    font-size: 0.88rem;
+    margin-bottom: 0.65rem;
     font-style: italic;
 }
 
 .glass-notice-box {
     background: rgba(201, 162, 41, 0.06);
     border: 1px solid rgba(201, 162, 41, 0.25);
-    border-radius: var(--radius-md);
-    padding: 1.2rem;
-    margin-top: 1rem;
+    border-radius: var(--radius-md, 10px);
+    padding: 0.85rem 1rem;
+    margin-top: 0.75rem;
 }
 
 .glass-notice-box p {
-    margin-bottom: 0.8rem;
-    font-size: 0.92rem;
-    line-height: 1.6;
+    margin-bottom: 0.5rem;
+    font-size: 0.86rem;
+    line-height: 1.44;
 }
 
 .glass-notice-box p:last-child {
@@ -72,15 +72,21 @@
 
 .icon-gold {
     color: var(--gold);
-    margin-right: 0.4rem;
+    margin-right: 0.35rem;
 }
 
 .contact-link-list {
     list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .contact-link-list li {
-    margin-bottom: 1rem;
+    margin-bottom: 0.45rem;
+}
+
+.contact-link-list li:last-child {
+    margin-bottom: 0;
 }
 
 .contact-link-list a {
@@ -88,22 +94,23 @@
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 0.9rem;
+    gap: 0.65rem;
     transition: var(--transition-smooth);
-    font-size: 1.05rem;
+    font-size: 0.88rem;
+    line-height: 1.35;
 }
 
 .contact-link-list a:hover {
     color: var(--gold);
-    transform: translateX(8px);
+    transform: translateX(4px);
 }
 
 .bottom-strip {
     text-align: center;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 1.8rem;
-    font-size: 0.95rem;
+    padding-top: 1rem;
+    font-size: 0.8rem;
     color: var(--gold-light);
-    letter-spacing: 1.5px;
+    letter-spacing: 1.2px;
     font-weight: 600;
 }
