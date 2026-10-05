@@ -37,6 +37,10 @@
 /* 11. Print & PDF Rendering Engine */
 @import './prospectus/print.css';
 
+/* 12. Refined Academic Dropdown Navigation & Scroll Lock */
+@import './prospectus/dropdown.css';
+@import './prospectus/dropdown-refined.css';
+
 /* ==========================================================================
    12. Responsive Prospectus Grid Architecture (1024px to 425px & Sub-425px)
    - 1024px to 425px Viewport Range:
