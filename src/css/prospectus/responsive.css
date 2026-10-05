@@ -1,5 +1,7 @@
 /* ==========================================================================
    SJCCC PROSPECTUS — RESPONSIVE BREAKPOINTS & DENSITY TIERS
+   Remediated High-Density Architecture: Preserves desktop multi-column composition,
+   side-by-side card pairs, and 2-column information groups without global CSS zoom.
    ========================================================================== */
 
 /* ─── Tier 0: 4K & Ultrawide Screens (min-width: 2560px) ─── */
@@ -38,12 +40,20 @@
     }
 }
 
-/* ─── Tier 4: Tablet Landscape (max-width: 1024px) ─── */
-@media (max-width: 1024px) {
+/* ─── Tier 4: Tablet Landscape (min-width: 769px) and (max-width: 1024px) ─── */
+@media (min-width: 769px) and (max-width: 1024px) {
     :root {
-        --prospectus-zoom: 0.95;
+        --prospectus-zoom: 1;
         --prospectus-max-width: 100%;
         --doc-visual-width: 100%;
+        --space-grid-gap: 0.9rem;
+        --space-card-pad: 1rem;
+        --space-doc-pad-y: 1.1rem;
+        --space-doc-pad-x: 1.1rem;
+        --text-doc-body: 0.88rem;
+        --text-doc-small: 0.82rem;
+        --text-doc-line-height: 1.44;
+        --space-header-mb: 0.75rem;
     }
 
     .prospectus-container {
@@ -52,72 +62,87 @@
     }
 
     .prospectus-grid {
-        gap: 1rem;
-        padding: 1.25rem;
-    }
-    
-    .section-card {
+        gap: 0.9rem;
         padding: 1.1rem;
     }
     
+    .section-card {
+        padding: 1rem;
+    }
+
+    /* Retain 3 columns on tablet landscape */
     .grid-3-cols {
-        grid-template-columns: 1fr;
-        gap: 0.65rem;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+
+    .uniform-split {
+        display: flex;
+        flex-direction: row;
+        gap: 0.75rem;
     }
 
     .footer-top-grid {
-        gap: 1.25rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.1rem;
     }
 }
 
-/* ─── Tier 5: Tablet Portrait (max-width: 768px) ─── */
-@media (max-width: 768px) {
+/* ─── Tier 5: Tablet Portrait & Large Handhelds (min-width: 540px) and (max-width: 768px) ─── */
+/* Remediation: Preserves 2-card desktop composition instead of collapsing to a single card! */
+@media (min-width: 540px) and (max-width: 768px) {
     :root {
-        --prospectus-zoom: 1; /* Explicitly 1.0 — zero zoom-out on mobile for perfect readability */
+        --prospectus-zoom: 1;
         --prospectus-max-width: 100%;
         --doc-visual-width: 100%;
+        --space-grid-gap: 0.75rem;
+        --space-card-pad: 0.85rem;
+        --space-doc-pad-y: 0.8rem;
+        --space-doc-pad-x: 0.8rem;
+        --text-doc-body: 0.84rem;
+        --text-doc-small: 0.78rem;
+        --text-doc-line-height: 1.40;
+        --space-header-mb: 0.65rem;
     }
 
     .prospectus-container {
-        margin: 0 auto;
-        border-radius: 0;
-        border-left: none;
-        border-right: none;
-        box-shadow: none;
+        margin: 0.5rem auto 1.25rem auto;
+        border-radius: var(--radius-md, 8px);
     }
 
     /* Sticky Navigation */
     #mainHeader {
-        padding: 0.6rem 1rem;
+        padding: 0.55rem 1rem;
     }
     
     .logo-container {
-        gap: 0.8rem;
+        gap: 0.75rem;
     }
     
     .logo-icon {
-        font-size: 1.1rem;
-        padding: 0.4rem 0.6rem;
-        border-radius: 8px;
+        font-size: 1rem;
+        padding: 0.3rem 0.55rem;
+        border-radius: 7px;
     }
     
     .logo-text {
-        font-size: clamp(1.02rem, 0.90rem + 0.45vw, 1.20rem);
+        font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.1rem);
     }
     
     .logo-text small {
-        font-size: clamp(0.65rem, 0.58rem + 0.22vw, 0.74rem);
+        font-size: 0.68rem;
     }
     
     .logo-motto {
-        font-size: clamp(0.56rem, 0.48rem + 0.22vw, 0.70rem);
+        font-size: 0.62rem;
     }
     
     .menu-toggle { 
         display: flex; 
         align-items: center;
         justify-content: center;
-        font-size: 1.6rem;
+        font-size: 1.5rem;
         min-width: 44px;
         min-height: 44px;
     }
@@ -131,8 +156,8 @@
         background: rgba(7, 24, 46, 0.98);
         backdrop-filter: blur(20px);
         flex-direction: column;
-        padding: 1.2rem;
-        gap: 1.2rem;
+        padding: 1rem 1.25rem;
+        gap: 0.85rem;
         border-bottom: 2px solid var(--gold);
     }
     
@@ -141,392 +166,772 @@
     }
     
     .nav-link {
-        font-size: 1.05rem;
+        font-size: 0.95rem;
+        padding: 0.3rem 0;
     }
 
-    /* Masthead */
+    /* Masthead — Compact Fluid Typography */
     .main-header {
-        padding: 1.5rem 1.2rem;
+        padding: 1.1rem 1rem 0.9rem;
     }
     
     .header-cross {
-        font-size: 2.2rem;
+        font-size: 1.5rem;
+        margin-bottom: 0.2rem;
     }
     
     .header-title {
-        font-size: 1.6rem;
-        letter-spacing: 0.5px;
+        font-size: clamp(1.25rem, 3.2vw, 1.6rem);
+        letter-spacing: 0.6px;
     }
     
     .header-subtitle {
-        font-size: 1rem;
+        font-size: clamp(0.85rem, 2vw, 1rem);
         letter-spacing: 1px;
     }
     
     .header-diocese {
-        font-size: 0.95rem;
+        font-size: 0.84rem;
     }
 
-    /* Motto & Banner */
     .motto-bar {
-        font-size: 0.95rem;
-        padding: 0.7rem;
+        font-size: 0.84rem;
+        padding: 0.45rem 0.8rem;
     }
     
     .academic-banner {
-        font-size: 0.95rem;
-        padding: 0.7rem;
+        font-size: 0.82rem;
+        padding: 0.5rem 0.8rem;
         letter-spacing: 0.5px;
     }
 
-    /* Grid System */
+    /* Grid System — 2 Cards Per Row Composition */
     .prospectus-grid {
-        padding: 1.2rem;
-        gap: 1.2rem;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        padding: 0.8rem;
+        gap: 0.75rem;
     }
 
-    .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-12 {
+    /* Preserve 2 cards per row across the prospectus */
+    .col-6 {
+        grid-column: span 6;
+    }
+
+    .col-4 {
+        grid-column: span 6;
+    }
+
+    #books-stationery {
         grid-column: span 12;
     }
 
-    .grid-3-cols {
-        grid-template-columns: 1fr;
-        gap: 0.65rem;
+    .col-12 {
+        grid-column: span 12;
     }
 
     /* Cards */
     .section-card {
-        padding: 1.3rem;
-        border-radius: 16px;
+        padding: 0.85rem;
+        border-radius: 10px;
     }
     
-    .section-card:hover {
-        transform: translateY(-3px);
-    }
-    
-    .section-header {
-        font-size: 0.85rem;
-        padding: 0.6rem 1rem;
-        margin-bottom: 1.2rem;
-        gap: 0.5rem;
+    .section-header,
+    h2.section-header {
+        font-size: 0.82rem;
+        padding: 0.4rem 0.85rem;
+        margin-bottom: 0.65rem;
+        gap: 0.45rem;
     }
     
     .section-card p {
-        font-size: 0.85rem;
-        line-height: 1.5;
+        font-size: 0.82rem;
+        line-height: 1.42;
     }
 
-    /* Uniform Split */
+    /* Uniform & Boarding Side-by-Side */
     .uniform-split {
-        flex-direction: column;
-        gap: 1rem;
+        display: flex;
+        flex-direction: row;
+        gap: 0.65rem;
     }
     
     .uniform-gender {
-        padding: 1rem;
+        flex: 1;
+        padding: 0.7rem 0.8rem;
     }
     
-    .uniform-gender h4 {
-        font-size: 0.95rem;
-        margin-bottom: 0.7rem;
+    .uniform-gender h4,
+    .uniform-gender h3,
+    .uniform-subheading {
+        font-size: 0.85rem;
+        margin-bottom: 0.45rem;
     }
 
     /* Lists */
     .icon-list li {
-        font-size: 0.82rem;
-        padding-left: 1.5rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .icon-list li::before {
-        font-size: 0.8rem;
+        font-size: 0.80rem;
+        padding-left: 1.25rem;
+        margin-bottom: 0.35rem;
+        line-height: 1.38;
     }
 
     /* Tables */
     .data-table {
         font-size: 0.78rem;
-        min-width: 250px;
+        min-width: 0;
     }
     
     .data-table th,
     .data-table td {
-        padding: 0.6rem 0.7rem;
-    }
-    
-    .table-responsive {
-        border-radius: 10px;
+        padding: 0.42rem 0.6rem;
     }
 
-    /* Alert */
-    .alert-text {
-        font-size: 0.75rem;
-        gap: 0.4rem;
+    /* 3-Column Info Blocks */
+    .grid-3-cols {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.55rem;
+    }
+
+    .grid-3-cols .info-block {
+        padding: 0.65rem;
+    }
+
+    .dates-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+    }
+
+    .date-block {
+        min-width: 0;
     }
 
     /* Footer */
     .prospectus-footer {
-        padding: 2rem 1.5rem 1.5rem;
+        padding: 1.4rem 1.1rem 1.1rem;
     }
     
     .footer-top-grid {
-        grid-template-columns: 1fr;
-        gap: 1.25rem;
-        margin-bottom: 1.5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.85rem;
+        margin-bottom: 1.1rem;
     }
     
     .footer-card {
-        padding: 1.5rem;
+        padding: 1rem;
     }
     
-    .footer-card h3 {
-        font-size: 1.1rem;
-        margin-bottom: 1rem;
-        gap: 0.5rem;
+    .footer-card h2,
+    .footer-card h3,
+    .footer-heading {
+        font-size: 0.98rem;
+        margin-bottom: 0.65rem;
     }
     
     .footer-card p {
-        font-size: 0.82rem;
+        font-size: 0.78rem;
     }
     
     .contact-link-list a {
-        font-size: 0.88rem;
-        gap: 0.6rem;
+        font-size: 0.82rem;
+        gap: 0.5rem;
     }
     
     .contact-link-list li {
-        margin-bottom: 0.7rem;
+        margin-bottom: 0.45rem;
     }
     
     .bottom-strip {
-        font-size: 0.7rem;
-        padding-top: 1.2rem;
-        letter-spacing: 0.8px;
+        font-size: 0.68rem;
+        padding-top: 0.9rem;
     }
 
     /* Floating PDF Button */
     .download-action-container {
-        bottom: 20px;
-        right: 20px;
+        bottom: 16px;
+        right: 16px;
     }
     
     .floating-action-btn {
-        padding: 0.8rem 1.5rem;
-        font-size: 0.9rem;
-        gap: 0.5rem;
-        border-radius: 50px;
+        padding: 0.65rem 1.25rem;
+        font-size: 0.84rem;
+        gap: 0.45rem;
+        border-radius: 40px;
+        min-height: 44px;
     }
 }
 
-/* Mobile Phones (max-width: 480px) */
-@media (max-width: 480px) {
+/* ─── Tier 6: High-Density Smartphone Viewports (max-width: 539px) ─── */
+/* Primary Target Range: 360px – 430px wide phones (Desktop-Density & Zero Horizontal Overflow) */
+@media (max-width: 539px) {
+    :root {
+        --prospectus-zoom: 1; /* Explicit 1.0; density is achieved through layout and spacing math */
+        --prospectus-max-width: 100%;
+        --doc-visual-width: 100%;
+        --space-grid-gap: 0.55rem;
+        --space-card-pad: 0.65rem 0.75rem;
+        --space-doc-pad-y: 0.5rem;
+        --space-doc-pad-x: 0.45rem;
+        --text-doc-body: 0.80rem;
+        --text-doc-small: 0.74rem;
+        --text-doc-line-height: 1.36;
+        --space-header-mb: 0.5rem;
+    }
+
     body {
         padding: 0;
     }
     
     .prospectus-container {
         border-radius: 0;
-        border: none;
+        border-left: none;
+        border-right: none;
+        box-shadow: none;
+        margin: 0 auto 1.5rem auto;
     }
 
-    /* Navigation */
+    /* ─── Sticky Header (Strictly under 15% mobile viewport cap) ─── */
     #mainHeader {
-        padding: 0.6rem 1rem;
+        padding: 0.4rem 0.75rem;
+        height: auto;
+        min-height: 48px;
+    }
+
+    .header-inner {
+        width: 100%;
     }
     
+    .logo-container {
+        gap: 0.55rem;
+    }
+
     .logo-icon {
-        font-size: 1rem;
-        padding: 0.3rem 0.5rem;
+        font-size: 0.85rem;
+        padding: 0.22rem 0.45rem;
         border-radius: 6px;
     }
     
     .logo-text {
-        font-size: clamp(0.92rem, 0.82rem + 0.45vw, 1.04rem);
+        font-size: clamp(0.82rem, 2.5vw, 0.94rem);
+        line-height: 1.15;
     }
     
     .logo-text small {
-        font-size: clamp(0.60rem, 0.54rem + 0.22vw, 0.68rem);
+        font-size: 0.60rem;
+        line-height: 1.15;
     }
     
     .logo-motto {
-        display: block;
-        font-size: clamp(0.50rem, 0.44rem + 0.20vw, 0.60rem);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        display: none; /* Suppress extra tagline in mobile sticky bar to maintain single-row elegance */
     }
 
     .header-actions {
-        gap: 0.5rem;
+        gap: 0.35rem;
     }
 
     .header-theme-toggle {
-        width: 38px;
-        height: 38px;
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
     }
 
     .menu-toggle {
-        min-width: 38px;
-        min-height: 38px;
-        font-size: 1.4rem;
+        min-width: 44px;
+        min-height: 44px;
+        font-size: 1.45rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    /* Masthead */
+    #navMenu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(7, 24, 46, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 0.85rem 1rem;
+        gap: 0.75rem;
+        border-bottom: 2px solid var(--gold);
+    }
+
+    .nav-link {
+        font-size: 0.92rem;
+        padding: 0.35rem 0;
+    }
+
+    /* ─── Masthead: Dignified Yet Super-Compact (>50% height reduction) ─── */
     .main-header {
-        padding: 1.2rem 0.8rem;
+        padding: 0.8rem 0.75rem 0.65rem;
     }
     
     .header-cross {
-        font-size: 1.8rem;
-        margin-bottom: 0.3rem;
+        font-size: 1.25rem;
+        margin-bottom: 0.15rem;
     }
     
     .header-title {
-        font-size: 1.35rem;
-        letter-spacing: 0.5px;
+        font-size: clamp(1.10rem, 4.4vw, 1.35rem);
+        letter-spacing: 0.4px;
+        line-height: 1.15;
     }
     
     .header-subtitle {
-        font-size: 0.88rem;
-        letter-spacing: 0.8px;
+        font-size: clamp(0.76rem, 2.7vw, 0.84rem);
+        letter-spacing: 1px;
+        margin-top: 0.1rem;
     }
     
     .header-diocese {
-        font-size: 0.82rem;
+        font-size: 0.72rem;
+        margin-top: 0.1rem;
     }
 
-    /* Motto & Banner */
     .motto-bar {
-        font-size: 0.82rem;
-        padding: 0.6rem;
+        font-size: 0.75rem;
+        padding: 0.32rem 0.6rem;
     }
     
     .academic-banner {
-        font-size: 0.82rem;
-        padding: 0.6rem;
-        letter-spacing: 0.5px;
+        font-size: 0.74rem;
+        padding: 0.35rem 0.6rem;
+        letter-spacing: 0.4px;
     }
 
-    /* Grid */
+    /* ─── Grid System & Card Dimensions ─── */
     .prospectus-grid {
-        padding: 0.8rem;
-        gap: 1rem;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        padding: 0.55rem 0.45rem;
+        gap: 0.55rem;
     }
 
-    /* Cards */
+    .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-12 {
+        grid-column: span 12;
+    }
+
     .section-card {
-        padding: 1rem;
-        border-radius: 12px;
+        padding: 0.65rem 0.75rem;
+        border-radius: 8px;
+    }
+
+    .section-header-outer {
+        margin-bottom: 0.55rem;
     }
     
-    .section-header {
-        font-size: 0.75rem;
-        padding: 0.5rem 0.8rem;
-        margin-bottom: 1rem;
-        border-radius: 40px;
+    .section-header,
+    h2.section-header {
+        font-size: clamp(0.74rem, 2.3vw, 0.82rem);
+        padding: 0.3rem 0.72rem;
+        margin-bottom: 0;
+        gap: 0.38rem;
+        letter-spacing: 0.35px;
+    }
+
+    .section-header .bi {
+        font-size: 0.78rem;
     }
     
     .section-card p {
-        font-size: 0.78rem;
+        font-size: clamp(0.76rem, 2.3vw, 0.84rem);
+        line-height: 1.38;
+        margin-bottom: 0.3rem;
     }
 
-    /* Uniform */
-    .uniform-gender {
-        padding: 0.8rem;
+    .section-card br {
+        margin-top: 0.15rem;
+    }
+
+    .divider {
+        margin: 0.4rem 0;
+    }
+
+    /* ─── 2-Column Information Group: Uniform & Apparel ─── */
+    /* Preserves side-by-side Boys and Girls composition on phones */
+    .uniform-split {
+        display: flex;
+        flex-direction: row;
+        gap: 0.35rem;
+        align-items: stretch;
+        margin-bottom: 0.65rem;
     }
     
-    .uniform-gender h4 {
-        font-size: 0.82rem;
+    .uniform-gender {
+        flex: 1;
+        min-width: 0;
+        padding: 0.55rem 0.6rem;
+        border-radius: 6px;
+    }
+    
+    .uniform-gender h4,
+    .uniform-gender h3,
+    .uniform-subheading {
+        font-size: 0.80rem;
+        margin-bottom: 0.3rem;
+        gap: 0.25rem;
     }
 
-    /* Lists */
+    /* Vertical Splitter Micro-Adaptation for Side-by-Side Mobile */
+    .uniform-split .card-splitter--vertical {
+        flex-direction: column !important;
+        width: auto !important;
+        min-width: 24px !important;
+        height: auto !important;
+        padding: 2px 0 !important;
+        margin: 0 !important;
+        align-self: stretch !important;
+    }
+
+    .uniform-split .card-splitter--vertical .card-splitter__line {
+        width: 1.5px !important;
+        height: auto !important;
+        flex: 1 !important;
+        min-height: 16px !important;
+        background: linear-gradient(to bottom, transparent, rgba(201, 162, 41, 0.35) 20%, rgba(201, 162, 41, 0.35) 80%, transparent) !important;
+    }
+
+    body.dark-mode .uniform-split .card-splitter--vertical .card-splitter__line {
+        background: linear-gradient(to bottom, transparent, rgba(243, 215, 121, 0.4) 20%, rgba(243, 215, 121, 0.4) 80%, transparent) !important;
+    }
+
+    .uniform-split .card-splitter--vertical .card-splitter__badge {
+        margin: 3px 0 !important;
+        padding: 2px 5px !important;
+        font-size: 0.54rem !important;
+        letter-spacing: 0.04em !important;
+    }
+
+    .uniform-split .card-splitter--vertical .card-splitter__icon {
+        font-size: 0.62rem !important;
+    }
+
+    .uniform-split .card-splitter--vertical .card-splitter__text {
+        font-size: 0.50rem !important;
+    }
+
+    /* ─── 2-Column Information Group: Health, Finance & Labour ─── */
+    /* Health occupies row 1; Pocket Money & Manual Labour sit side-by-side on row 2 */
+    .grid-3-cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.45rem;
+    }
+
+    .grid-3-cols > :first-child {
+        grid-column: span 2;
+    }
+
+    .grid-3-cols .info-block {
+        padding: 0.55rem 0.65rem;
+        border-radius: 6px;
+    }
+
+    .grid-3-cols .info-block p {
+        font-size: 0.76rem;
+        line-height: 1.35;
+        margin-bottom: 0;
+    }
+
+    .info-title {
+        font-size: 0.80rem;
+        margin-bottom: 0.25rem;
+        gap: 0.35rem;
+    }
+
+    /* ─── 2-Column Information Group: Important Dates ─── */
+    /* Form 1 Interview and Tentative Re-Opening sit side-by-side */
+    .dates-grid,
+    #important-dates .card-content {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.45rem !important;
+    }
+
+    .date-block,
+    #important-dates .info-block {
+        min-width: 0 !important;
+        flex: none !important;
+        padding: 0.52rem 0.6rem;
+        border-radius: 6px;
+    }
+
+    .date-block p,
+    #important-dates .info-block p {
+        font-size: 0.76rem;
+        line-height: 1.34;
+        margin-bottom: 0;
+    }
+
+    .principal-signature {
+        margin-top: 0.65rem;
+        font-size: 0.92rem;
+        line-height: 1.25;
+    }
+
+    /* ─── 2-Column Information Group: Technical Departments List ─── */
+    .tech-depts-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.2rem 0.45rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .tech-depts-list li {
+        font-size: 0.76rem;
+        padding-left: 1.15rem;
+        margin-bottom: 0.2rem;
+        line-height: 1.3;
+    }
+
+    /* ─── Icon Lists Spacing Math ─── */
     .icon-list li {
+        font-size: 0.76rem;
+        padding-left: 1.15rem;
+        margin-bottom: 0.25rem;
+        line-height: 1.34;
+    }
+
+    .icon-list li::before {
         font-size: 0.75rem;
-        padding-left: 1.3rem;
+    }
+
+    /* ─── Tables: Zero Horizontal Scrolling Guarantee ─── */
+    .table-responsive {
+        border-radius: 6px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .data-table {
+        font-size: clamp(0.70rem, 2.1vw, 0.78rem);
+        min-width: 0;
+        width: 100%;
+    }
+    
+    .data-table caption {
+        font-size: 0.78rem;
         margin-bottom: 0.4rem;
     }
 
-    /* Tables */
-    .data-table {
-        font-size: 0.7rem;
-        min-width: 230px;
-    }
-    
     .data-table th,
     .data-table td {
-        padding: 0.5rem 0.6rem;
+        padding: 0.34rem 0.48rem;
+        line-height: 1.26;
     }
 
-    /* Alert */
+    .data-table th:first-child,
+    .data-table td:first-child {
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    .data-table th:last-child,
+    .data-table td:last-child {
+        white-space: nowrap;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .data-table tfoot th {
+        padding: 0.42rem 0.48rem;
+        font-size: clamp(0.72rem, 2.2vw, 0.80rem);
+    }
+
+    /* Alerts */
+    .alert-box {
+        padding: 0.42rem 0.6rem;
+        font-size: 0.74rem;
+        line-height: 1.32;
+        margin-bottom: 0.5rem;
+        border-radius: 6px;
+    }
+
     .alert-text {
-        font-size: 0.7rem;
+        font-size: 0.72rem;
+        line-height: 1.32;
+        margin-top: 0.45rem;
+        gap: 0.35rem;
+        padding: 0.25rem 0;
     }
 
-    /* Footer */
+    /* ─── Footer Layout ─── */
     .prospectus-footer {
-        padding: 1.5rem 1rem 1.2rem;
+        padding: 1.15rem 0.75rem 0.95rem;
+    }
+    
+    .footer-top-grid {
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+        margin-bottom: 0.85rem;
     }
     
     .footer-card {
-        padding: 1.2rem;
-        border-radius: 14px;
+        padding: 0.75rem 0.82rem;
+        border-radius: 8px;
     }
     
-    .footer-card h3 {
-        font-size: 0.95rem;
+    .footer-card h2,
+    .footer-card h3,
+    .footer-heading {
+        font-size: 0.88rem;
+        margin-bottom: 0.45rem;
+        padding-bottom: 0.3rem;
+        gap: 0.35rem;
     }
     
     .footer-card p {
         font-size: 0.75rem;
+        line-height: 1.35;
     }
     
+    .contact-link-list li {
+        margin-bottom: 0.32rem;
+    }
+
     .contact-link-list a {
-        font-size: 0.8rem;
+        font-size: 0.76rem;
+        gap: 0.45rem;
+        line-height: 1.3;
+    }
+
+    .glass-notice-box {
+        padding: 0.55rem 0.65rem;
+        margin-top: 0.45rem;
+        border-radius: 6px;
+    }
+
+    .glass-notice-box p {
+        font-size: 0.73rem;
+        line-height: 1.34;
+        margin-bottom: 0.3rem;
     }
     
     .bottom-strip {
-        font-size: 0.62rem;
-        padding-top: 1rem;
+        font-size: clamp(0.56rem, 1.8vw, 0.66rem);
+        padding-top: 0.65rem;
+        letter-spacing: 0.4px;
     }
 
-    /* Floating Button */
+    /* ─── Floating Action Button ─── */
     .download-action-container {
-        bottom: 15px;
-        right: 15px;
+        bottom: 12px;
+        right: 12px;
     }
     
     .floating-action-btn {
-        padding: 0.7rem 1.2rem;
-        font-size: 0.8rem;
-        gap: 0.4rem;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        padding: 0.52rem 0.95rem;
+        font-size: 0.76rem;
+        gap: 0.35rem;
+        min-height: 44px;
+        border-radius: 40px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), 0 0 0 2px rgba(201, 162, 41, 0.3);
     }
 }
 
-/* Mobile Phones - Compact (max-width: 360px) */
-@media (max-width: 360px) {
+/* ─── Sub-tier 6A: Large Smartphones / Phablet Widths (min-width: 480px) and (max-width: 539px) ─── */
+/* Preserves 2-card desktop pairing for compact final sections on wide phones */
+@media (min-width: 480px) and (max-width: 539px) {
+    #health-finance {
+        grid-column: span 6;
+    }
+
+    #important-dates {
+        grid-column: span 6;
+    }
+
+    .footer-top-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+    }
+}
+
+/* ─── Tier 7: Ultra-Compact Mobile Phones (max-width: 340px) ─── */
+/* Graceful fallback for extremely small displays (e.g. 320px) preventing horizontal overflow */
+@media (max-width: 340px) {
     .header-title {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
     }
     
     .header-subtitle {
-        font-size: 0.75rem;
+        font-size: 0.72rem;
     }
     
     .section-card {
-        padding: 0.8rem;
+        padding: 0.55rem 0.65rem;
     }
     
-    .section-header {
-        font-size: 0.7rem;
-        padding: 0.4rem 0.7rem;
+    .section-header,
+    h2.section-header {
+        font-size: 0.72rem;
+        padding: 0.28rem 0.6rem;
+    }
+
+    /* Fallback to single column on ultra-narrow screens */
+    .uniform-split {
+        flex-direction: column;
+        gap: 0.45rem;
+    }
+
+    .uniform-split .card-splitter--vertical {
+        flex-direction: row !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        height: auto !important;
+        padding: 0 4px !important;
+        margin: 6px 0 !important;
+    }
+
+    .uniform-split .card-splitter--vertical .card-splitter__line {
+        width: auto !important;
+        height: 1.5px !important;
+        min-height: auto !important;
+        background: linear-gradient(to right, transparent, rgba(201, 162, 41, 0.35) 20%, rgba(201, 162, 41, 0.35) 80%, transparent) !important;
+    }
+
+    body.dark-mode .uniform-split .card-splitter--vertical .card-splitter__line {
+        background: linear-gradient(to right, transparent, rgba(243, 215, 121, 0.4) 20%, rgba(243, 215, 121, 0.4) 80%, transparent) !important;
+    }
+
+    .uniform-split .card-splitter--vertical .card-splitter__badge {
+        margin: 0 6px !important;
+        padding: 2px 6px !important;
+    }
+
+    .grid-3-cols {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-3-cols > :first-child {
+        grid-column: span 1;
+    }
+
+    .dates-grid,
+    #important-dates .card-content {
+        grid-template-columns: 1fr !important;
+    }
+
+    .tech-depts-list {
+        grid-template-columns: 1fr;
     }
     
     .data-table {
-        font-size: 0.65rem;
+        font-size: 0.66rem;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 0.28rem 0.38rem;
     }
     
     .floating-action-btn {
-        padding: 0.6rem 1rem;
-        font-size: 0.75rem;
+        padding: 0.45rem 0.8rem;
+        font-size: 0.72rem;
     }
 }

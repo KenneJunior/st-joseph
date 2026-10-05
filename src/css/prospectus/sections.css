@@ -292,3 +292,29 @@ body.dark-mode .principal-signature {
 body.dark-mode .alert-text {
     color: #ff7b7b;
 }
+
+/* Dates Grid Component */
+.dates-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.date-block {
+    flex: 1;
+    min-width: 180px;
+    background: rgba(201, 162, 41, 0.03);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md, 10px);
+    padding: 0.75rem 0.85rem;
+}
+
+/* Department Program Lists */
+.offers-list {
+    margin-bottom: 0.5rem;
+}
+
+.tech-depts-list {
+    margin-bottom: 0.35rem;
+}
+
