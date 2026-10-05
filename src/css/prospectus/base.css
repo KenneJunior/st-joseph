@@ -22,11 +22,12 @@ body {
     justify-content: center;
     align-items: flex-start;
     padding: 0;
+    padding-top: var(--header-height, 64px);
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition: background 0.8s ease, color 0.8s ease;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 /* Bootstrap Icons Seamless Integration */
