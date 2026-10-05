@@ -49,10 +49,22 @@ export class MobileNavigation {
     private init(): void {
         if (!this.navMenu) return;
 
-        // 1. Header menu toggle click
+        // Establish initial accessibility state for mobile drawer/dropdown
+        this.navMenu.setAttribute('aria-hidden', 'true');
+        if (this.menuToggle) {
+            this.menuToggle.setAttribute('aria-expanded', 'false');
+            this.menuToggle.setAttribute('aria-controls', this.navMenu.id || 'navMenu');
+        }
+        if (this.bottomMenuToggle) {
+            this.bottomMenuToggle.setAttribute('aria-expanded', 'false');
+            this.bottomMenuToggle.setAttribute('aria-controls', this.navMenu.id || 'navMenu');
+        }
+
+        // 1. Header menu toggle click (consolidated single listener)
         this.menuToggle?.addEventListener('click', (e: MouseEvent) => {
             e.stopPropagation();
             this.toggleMenu();
+            setTimeout(() => this.updateHeaderHeight(), 350);
         });
 
         // 2. Mobile bottom bar 'Menu' toggle click
@@ -64,17 +76,13 @@ export class MobileNavigation {
         // 3. Bottom bar tab clicks
         this.bindBottomBarLinks();
 
-        // 4. Link clicks in drawer
+        // 4. Link clicks in drawer/dropdown (clean event delegation only)
         this.bindLinkClicks();
 
-        // 5. Dismiss handlers
+        // 5. Dismiss handlers & Focus Trapping
         this.bindOutsideClick();
         this.bindEscapeKey();
-
-        // 6. Header height dynamic adjustment
-        this.menuToggle?.addEventListener('click', () => {
-            setTimeout(() => this.updateHeaderHeight(), 350);
-        });
+        this.bindFocusTrap();
     }
 
     /**
@@ -90,6 +98,9 @@ export class MobileNavigation {
         if (!this.navMenu) return;
         const isActive = this.navMenu.classList.toggle('active');
         document.body.classList.toggle('drawer-open', isActive);
+
+        // Synchronize ARIA state
+        this.navMenu.setAttribute('aria-hidden', String(!isActive));
 
         // Update header toggle icon and aria
         if (this.menuToggle) {
@@ -109,11 +120,20 @@ export class MobileNavigation {
                 bottomIcon.className = isActive ? 'bi bi-x-circle-fill' : 'bi bi-grid-fill';
             }
         }
+
+        // Focus first link on open for immediate keyboard interaction
+        if (isActive) {
+            requestAnimationFrame(() => {
+                const firstLink = this.navMenu?.querySelector<HTMLElement>(this.linkSelector);
+                firstLink?.focus();
+            });
+        }
     }
 
     public closeMenu(): void {
         if (!this.navMenu?.classList.contains('active')) return;
         this.navMenu.classList.remove('active');
+        this.navMenu.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('drawer-open');
 
         if (this.menuToggle) {
@@ -131,7 +151,7 @@ export class MobileNavigation {
     }
 
     private bindLinkClicks(): void {
-        // Event delegation on navMenu ensures any link click (including nested spans/icons) immediately dismisses the menu
+        // Event delegation on navMenu cleanly handles all link taps without listener multiplication
         this.navMenu?.addEventListener('click', (e: MouseEvent) => {
             const target = e.target as HTMLElement | null;
             if (!target) return;
@@ -143,14 +163,6 @@ export class MobileNavigation {
                 }
             }
         });
-
-        this.navMenu?.querySelectorAll<HTMLAnchorElement>(this.linkSelector)
-            .forEach((link) => {
-                link.addEventListener('click', () => {
-                    this.closeMenu();
-                    this.syncActiveBottomTab(link.getAttribute('href'));
-                });
-            });
     }
 
     private bindBottomBarLinks(): void {
@@ -228,6 +240,32 @@ export class MobileNavigation {
                     this.bottomMenuToggle.focus();
                 } else if (this.menuToggle) {
                     this.menuToggle.focus();
+                }
+            }
+        });
+    }
+
+    private bindFocusTrap(): void {
+        document.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key !== 'Tab' || !this.navMenu?.classList.contains('active')) return;
+
+            const focusable = this.navMenu.querySelectorAll<HTMLElement>(
+                'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            );
+            if (!focusable.length) return;
+
+            const firstElement = focusable[0];
+            const lastElement = focusable[focusable.length - 1];
+
+            if (e.shiftKey) {
+                if (document.activeElement === firstElement) {
+                    e.preventDefault();
+                    lastElement.focus();
+                }
+            } else {
+                if (document.activeElement === lastElement) {
+                    e.preventDefault();
+                    firstElement.focus();
                 }
             }
         });
