@@ -38,41 +38,309 @@
 @import './prospectus/print.css';
 
 /* ==========================================================================
-   12. Mobile Information-Density Grid Rules (Small Mobile Viewports >= 360px)
-   Enforces 2-column layouts on card-heavy containers using repeat(2, minmax(0, 1fr))
-   and responsive gaps, preventing vertical stacking while eliminating horizontal overflow.
+   12. Responsive Prospectus Grid Architecture (1024px to 425px & Sub-425px)
+   - 1024px to 425px Viewport Range:
+     * First row: exactly 3 cards (About SJCCC, Departments & Entry, Books & Stationery)
+     * Remaining rows: exactly 2 cards per row:
+       - Row 2: Uniform & Apparel + Boarding & Toiletry
+       - Row 3: School Rules & Parents' Guide + Fees Structure
+       - Row 4: Health, Finance & Labour + Important Dates
+     * Progressive Information Density Scaling: tightens padding, gaps, margins,
+       and typography as the window scales down to ensure zero overflow and high legibility.
+   - Below 425px:
+     * Single-column flow with responsive typography.
    ========================================================================== */
-@media (min-width: 360px) and (max-width: 1024px) {
-    /* Master Section Card Container: 2-column responsive grid */
+
+@media (min-width: 425px) and (max-width: 1024px) {
+    /* Master Section Card Container: 12-column responsive layout */
     .prospectus-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: clamp(0.45rem, 1.4vw, 0.85rem);
-        padding: clamp(0.45rem, 1.5vw, 0.9rem);
+        display: grid !important;
+        grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+        gap: clamp(0.35rem, 1.1vw, 0.75rem) !important;
+        padding: clamp(0.40rem, 1.2vw, 0.85rem) !important;
     }
 
-    /* Cards requiring full-width tabular or complex horizontal space */
-    .col-full-mobile,
+    /* First Row: Exactly 3 cards (About, Departments, Books) */
+    #about-sjccc,
+    #departments-entry,
+    #books-stationery,
+    .prospectus-grid > .col-4 {
+        grid-column: span 4 !important;
+        min-width: 0 !important;
+    }
+
+    /* Remaining Rows: Exactly 2 cards per row */
+    #uniform-apparel,
+    #boarding-toiletry,
+    #school-rules,
     #fees-structure,
-    #boarding-toiletry {
-        grid-column: 1 / -1;
+    #health-finance,
+    #important-dates,
+    .prospectus-grid > .col-6 {
+        grid-column: span 6 !important;
+        min-width: 0 !important;
     }
 
-    /* Paired section cards in 2-column flow */
+    .col-full-mobile {
+        grid-column: span 12 !important;
+    }
+}
+
+/* Fallback for ultra-compact devices below 425px */
+@media (max-width: 424px) {
+    .prospectus-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 0.45rem !important;
+        padding: 0.4rem 0.35rem !important;
+    }
+
     #about-sjccc,
     #departments-entry,
     #books-stationery,
     #uniform-apparel,
+    #boarding-toiletry,
     #school-rules,
+    #fees-structure,
     #health-finance,
-    #important-dates {
-        grid-column: auto;
+    #important-dates,
+    .col-4,
+    .col-6,
+    .col-12,
+    .section-card {
+        grid-column: span 1 !important;
+        min-width: 0 !important;
+    }
+}
+
+/* ==========================================================================
+   13. Progressive Information Density Scaling (As window scales down)
+   Reduces padding, gaps, margins, and scales typography smoothly
+   to ensure the 3-card first row and 2-card subsequent rows fit beautifully.
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .section-card {
+        padding: clamp(0.40rem, 0.25rem + 0.75vw, 0.85rem) !important;
+        border-radius: clamp(6px, 1vw, 10px) !important;
+        overflow-wrap: break-word;
+        word-break: break-word;
+    }
+
+    .section-header-outer {
+        margin-bottom: clamp(0.35rem, 0.6vw, 0.65rem);
+    }
+
+    .section-header,
+    h2.section-header {
+        font-size: clamp(0.64rem, 0.52rem + 0.3vw, 0.82rem) !important;
+        padding: clamp(0.22rem, 0.4vw, 0.35rem) clamp(0.45rem, 0.9vw, 0.75rem) !important;
+        gap: clamp(0.25rem, 0.5vw, 0.45rem) !important;
+        letter-spacing: clamp(0.2px, 0.05vw, 0.4px) !important;
+        line-height: 1.2 !important;
+    }
+
+    .section-header .bi {
+        font-size: clamp(0.68rem, 0.58rem + 0.3vw, 0.82rem) !important;
+    }
+
+    .section-card p {
+        font-size: clamp(0.68rem, 0.58rem + 0.28vw, 0.84rem) !important;
+        line-height: clamp(1.28, 1.22 + 0.2vw, 1.40) !important;
+        margin-bottom: clamp(0.20rem, 0.4vw, 0.35rem) !important;
+    }
+
+    .icon-list li {
+        font-size: clamp(0.66rem, 0.56rem + 0.26vw, 0.80rem) !important;
+        padding-left: clamp(0.85rem, 1.6vw, 1.15rem) !important;
+        margin-bottom: clamp(0.16rem, 0.35vw, 0.28rem) !important;
+        line-height: clamp(1.26, 1.20 + 0.18vw, 1.34) !important;
+    }
+
+    .icon-list li::before {
+        font-size: clamp(0.60rem, 0.50rem + 0.22vw, 0.72rem) !important;
+    }
+
+    /* Subheadings inside cards */
+    .rules-subheading,
+    .uniform-subheading,
+    .info-title {
+        font-size: clamp(0.70rem, 0.60rem + 0.28vw, 0.85rem) !important;
+        margin-bottom: clamp(0.20rem, 0.4vw, 0.35rem) !important;
+        gap: 0.3rem !important;
+    }
+
+    /* Table density inside Fees card */
+    .data-table {
+        font-size: clamp(0.62rem, 0.52rem + 0.24vw, 0.76rem) !important;
+    }
+
+    .data-table caption {
+        font-size: clamp(0.66rem, 0.56rem + 0.24vw, 0.78rem) !important;
+        margin-bottom: clamp(0.20rem, 0.4vw, 0.35rem) !important;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: clamp(0.22rem, 0.35vw, 0.35rem) clamp(0.28rem, 0.5vw, 0.48rem) !important;
+        line-height: 1.25 !important;
+    }
+
+    .data-table tfoot th {
+        padding: clamp(0.28rem, 0.4vw, 0.42rem) clamp(0.28rem, 0.5vw, 0.48rem) !important;
+        font-size: clamp(0.64rem, 0.54rem + 0.26vw, 0.80rem) !important;
+    }
+
+    /* Health & Important Dates density */
+    .grid-3-cols .info-block,
+    .date-block,
+    #important-dates .info-block {
+        padding: clamp(0.38rem, 0.6vw, 0.65rem) !important;
+    }
+
+    .grid-3-cols .info-block p,
+    .date-block p,
+    #important-dates .info-block p {
+        font-size: clamp(0.66rem, 0.56rem + 0.25vw, 0.78rem) !important;
+        line-height: 1.30 !important;
+    }
+
+    .principal-signature {
+        margin-top: clamp(0.40rem, 0.8vw, 0.65rem) !important;
+        font-size: clamp(0.75rem, 0.65rem + 0.3vw, 0.90rem) !important;
+    }
+
+    /* Compact lists in Departments card */
+    .tech-depts-list,
+    .offers-list {
+        display: block !important;
+    }
+}
+
+/* ==========================================================================
+   14. UNIFORM BOYS & GIRLS DIVIDER — FLAWLESS SEPARATION ARCHITECTURE
+   Fixes the divider in both modes:
+   - When page is big (Boys | Girls side-by-side):
+     * Boys on left, vertical divider in middle with vertical lines, Girls on right.
+   - When page scales down or moves to a single column (Boys up, Girls down):
+     * Boys is placed on top.
+     * The divider is a horizontal bar extending 100% across with ATTIRE badge in center.
+     * Girls is placed below the divider.
+     * ZERO misplaced dividers, ZERO grid collision, ZERO wrapping anomalies.
+   ========================================================================== */
+
+/* Base .uniform-split as Flexbox container */
+.uniform-split {
+    display: flex !important;
+    gap: clamp(0.35rem, 1vw, 0.75rem) !important;
+    align-items: stretch !important;
+}
+
+/* Side-by-Side Mode (Large screens / Wide cards: Boys | Divider | Girls) */
+@media (min-width: 861px) {
+    .uniform-split {
+        flex-direction: row !important;
+    }
+
+    .uniform-split .uniform-gender {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+    }
+
+    .uniform-split .card-splitter,
+    .uniform-split .card-splitter--vertical {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: auto !important;
+        min-width: 32px !important;
+        height: auto !important;
+        padding: 4px 0 !important;
+        margin: 0 !important;
+        align-self: stretch !important;
+    }
+
+    .uniform-split .card-splitter .card-splitter__line {
+        width: 1.5px !important;
+        height: auto !important;
+        flex: 1 !important;
+        min-height: 20px !important;
+        background: linear-gradient(to bottom, transparent, rgba(201, 162, 41, 0.35) 20%, rgba(201, 162, 41, 0.35) 80%, transparent) !important;
+    }
+
+    body.dark-mode .uniform-split .card-splitter .card-splitter__line {
+        background: linear-gradient(to bottom, transparent, rgba(243, 215, 121, 0.4) 20%, rgba(243, 215, 121, 0.4) 80%, transparent) !important;
+    }
+
+    .uniform-split .card-splitter .card-splitter__badge {
+        margin: 4px 0 !important;
+        padding: 3px 8px !important;
+        font-size: 0.60rem !important;
+    }
+
+    .uniform-split .card-splitter .card-splitter__icon i {
+        display: inline-block;
+        transform: none !important;
+    }
+}
+
+/* Single-Column Mode (Boys up, Horizontal Divider in center, Girls down) */
+@media (max-width: 860px) {
+    .uniform-split {
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 0 !important;
+    }
+
+    .uniform-split .uniform-gender {
+        width: 100% !important;
+        flex: none !important;
+        min-width: 100% !important;
+    }
+
+    /* The horizontal divider between Boys and Girls */
+    .uniform-split .card-splitter,
+    .uniform-split .card-splitter--vertical,
+    .uniform-split .card-splitter--responsive {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        height: auto !important;
+        align-self: stretch !important;
+        padding: 0 4px !important;
+        margin: clamp(0.35rem, 1vw, 0.65rem) 0 !important;
+    }
+
+    .uniform-split .card-splitter .card-splitter__line {
+        width: auto !important;
+        flex: 1 !important;
+        height: 1.5px !important;
+        min-height: auto !important;
+        background: linear-gradient(to right, transparent, rgba(201, 162, 41, 0.35) 20%, rgba(201, 162, 41, 0.35) 80%, transparent) !important;
+    }
+
+    body.dark-mode .uniform-split .card-splitter .card-splitter__line {
+        background: linear-gradient(to right, transparent, rgba(243, 215, 121, 0.4) 20%, rgba(243, 215, 121, 0.4) 80%, transparent) !important;
+    }
+
+    .uniform-split .card-splitter .card-splitter__badge {
+        margin: 0 clamp(6px, 1.5vw, 12px) !important;
+        padding: 2px 8px !important;
+        font-size: 0.58rem !important;
+    }
+
+    .uniform-split .card-splitter .card-splitter__icon i {
+        display: inline-block;
+        transform: rotate(90deg) !important;
     }
 }
 
 /* Card-Heavy Sections across all viewports wider than 360px */
 @media (min-width: 360px) {
-    /* Statistics, Metrics & Data Blocks: 2-column layout using repeat(2, minmax(0, 1fr)) */
+    /* Statistics, Metrics & Data Blocks */
     .stats-row,
     .stats-grid,
     .stat-container,
@@ -91,27 +359,7 @@
         min-width: 0 !important;
     }
 
-    /* Programme Summaries & Academic Offerings: 2-column layout using repeat(2, minmax(0, 1fr)) */
-    .tech-depts-list,
-    .offers-list,
-    .programs-summary,
-    .departments-grid,
-    .programme-grid,
-    .academic-pillars-grid {
-        display: grid !important;
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: clamp(0.2rem, 0.8vw, 0.45rem) clamp(0.35rem, 1vw, 0.75rem) !important;
-    }
-
-    .tech-depts-list > *,
-    .offers-list > *,
-    .programs-summary > *,
-    .departments-grid > *,
-    .programme-grid > * {
-        min-width: 0 !important;
-    }
-
-    /* Important Dates Container: 2-column layout using repeat(2, minmax(0, 1fr)) */
+    /* Important Dates Container: 2-column layout */
     .dates-grid,
     #important-dates .card-content {
         display: grid !important;
@@ -125,19 +373,7 @@
         flex: none !important;
     }
 
-    /* Uniform & Apparel Attire Container: 2-column layout using repeat(2, minmax(0, 1fr)) */
-    .uniform-split {
-        display: grid !important;
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: clamp(0.3rem, 1vw, 0.65rem) !important;
-        align-items: stretch;
-    }
-
-    .uniform-splitter {
-        display: none !important;
-    }
-
-    /* Footer Cards Container: 2-column layout using repeat(2, minmax(0, 1fr)) */
+    /* Footer Cards Container: 2-column layout */
     .footer-top-grid {
         display: grid !important;
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
