@@ -261,12 +261,23 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) for the Homepage or [http://localhost:3000/prospectus.html](http://localhost:3000/prospectus.html) for the Prospectus.
 
-### Type Checking & Linting
-Run strict TypeScript static validation across all modules:
-```bash
-npm run lint
-```
-*(Executes `tsc --noEmit` based on `tsconfig.json`).*
+### Developer Commands & QA Pipeline
+
+The repository provides a unified suite of developer tooling and verification scripts:
+
+| Command | Action | Primary Output |
+| :--- | :--- | :--- |
+| `npm run dev` | Launches local development server on port 3000 | Live reload preview |
+| `npm run typecheck` | Strict TypeScript static validation (`tsc --noEmit`) | Type diagnostics |
+| `npm run test` | Runs automated test suite via Vitest | Unit & audit test results |
+| `npm run test:ci` | Runs tests and generates a standard JUnit XML report | `reports/junit.xml` |
+| `npm run audit` | Headless static HTML metadata, link, and A11y audit | `reports/latest/*-audit.json` |
+| `npm run inspect` | Analyzes production `dist/` bundle sizes and manifest | `reports/latest/bundle-inspection.json` |
+| `npm run build` | Compiles multi-page client and Service Worker precache | `dist/` production artifacts |
+| `npm run verify` | Complete 5-stage automated verification pipeline | Full gatekeeper validation |
+
+👉 *Read the full developer tooling guide: [Developer Tooling Documentation](docs/tooling/README.md)*  
+👉 *View the pipeline architecture: [QA Pipeline Diagram](docs/diagrams/qa-pipeline.mmd)*
 
 ### Production Build
 Build the multi-page client and the Service Worker:
@@ -282,6 +293,12 @@ This executes the two-stage build pipeline:
 Preview the production `dist/` build locally:
 ```bash
 npm run preview
+```
+
+### Full Repository Verification
+Run the end-to-end QA pipeline prior to commits or deployments:
+```bash
+npm run verify
 ```
 
 ---

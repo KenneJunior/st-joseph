@@ -11,15 +11,22 @@ import './css/scrollEffect.css';
 
 import { initServiceWorker } from './services/serviceWorker.ts';
 import { initHomePage } from './pages/home/home.ts';
+import { logger } from './core/logger/index.ts';
+import './core/diagnostics/index.ts';
+
+const log = logger.child('Main');
 
 // Initialize service worker lifecycle
 initServiceWorker();
 
 // Boot application when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        initHomePage();
-    });
-} else {
+const boot = () => {
     initHomePage();
+    log.info('SJCCC Digital Campus initialized');
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+} else {
+    boot();
 }

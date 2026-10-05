@@ -1,0 +1,24 @@
+%% Developer Tooling Architecture
+graph TD
+    subgraph DevTools["SJCCC Developer Tooling & Console Infrastructure"]
+        Log["Logger (src/core/logger/)<br/>• Structured Levels (DEBUG, INFO, WARN, ERROR, SUCCESS)<br/>• Scoped Namespaces<br/>• Production Silencing<br/>• Sensitive Key Redaction"]
+        Diag["SystemDiagnostics (src/core/diagnostics/)<br/>• Runtime Environment & Viewport<br/>• Theming & Preference Sentinel<br/>• Service Worker & Cache Probe<br/>• window.sjcccDiagnostics() Console Hook"]
+    end
+
+    subgraph QAPipeline["QA & Automation Pipeline"]
+        Auditor["ContentAuditor (scripts/audit/)<br/>• Semantic HTML & Metadata Parser<br/>• Internal Anchor Target Resolver<br/>• Duplicate DOM ID Sentinel<br/>• Heading Hierarchy & A11y Validator<br/>• Cameroon Contact Format Checker"]
+        BundleInspector["BundleInspector (scripts/inspect/)<br/>• Production Dist Scanner<br/>• Gzip Compression Profiler<br/>• Manifest & SW Integrity Probe"]
+        TestRunner["Vitest Test Suite (tests/)<br/>• Unit Tests (Logger, Diagnostics)<br/>• Audit Integration Tests<br/>• Canonical Data Integrity Tests<br/>• JUnit XML Report Generator"]
+        VerifyOrchestrator["Verification Pipeline (scripts/verify.ts)<br/>• Orchestrates Typecheck ➔ Audit ➔ Tests ➔ Build ➔ Inspection"]
+    end
+
+    subgraph OutputReports["Generated Machine-Readable Reports (reports/latest/)"]
+        AuditJSON["audit-summary.json<br/>homepage-audit.json<br/>prospectus-audit.json"]
+        BundleJSON["bundle-inspection.json"]
+        JUnitXML["junit.xml (Standard CI Report)"]
+    end
+
+    DevTools --> QAPipeline
+    Auditor --> AuditJSON
+    BundleInspector --> BundleJSON
+    TestRunner --> JUnitXML

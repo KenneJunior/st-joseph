@@ -7,12 +7,22 @@
     "dev": "vite --host 0.0.0.0 --port 3000",
     "build": "tsc && vite build && vite build --config vite.sw.config.ts",
     "preview": "vite preview --host 0.0.0.0 --port 3000",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ci": "vitest run --reporter=default --reporter=junit --outputFile=reports/junit.xml",
+    "audit": "tsx scripts/audit/runAudit.ts",
+    "inspect": "tsx scripts/inspect/inspectBundle.ts",
+    "verify": "tsx scripts/verify.ts"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
+    "cheerio": "^1.2.0",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.2",
-    "vite": "^8.0.12"
+    "vite": "^8.0.12",
+    "vitest": "^5.0.3"
   },
   "dependencies": {
     "@kennejunior/liquidglass": "^1.0.5",

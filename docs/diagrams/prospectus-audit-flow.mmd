@@ -1,0 +1,18 @@
+%% Prospectus Document Forensic Audit Flow
+flowchart TD
+    Doc["prospectus.html / index.html"] --> Parser["Cheerio HTML DOM Parser"]
+    
+    Parser --> Meta["Metadata Probe<br/>• Title length & keywords<br/>• Description, Canonical, OG, Twitter<br/>• Favicon & Web Manifest"]
+    Parser --> Structure["Hierarchy & Structural Probe<br/>• Exactly 1 H1 element<br/>• Strict heading sequence (H1➔H2➔H3)<br/>• Duplicate DOM ID detector"]
+    Parser --> Links["Link & Anchor Target Resolver<br/>• Internal #hash targets exist in DOM<br/>• Cameroon Phone Prefix (+237)<br/>• WhatsApp Link Syntax (wa.me/237...)<br/>• Mailto email validation"]
+    Parser --> A11y["Accessibility Baseline<br/>• Button accessible text / aria-label<br/>• Form inputs with associated labels<br/>• Landmark roles (main, nav, header, footer)"]
+    Parser --> Statutory["Prospectus Statutory Requirements<br/>• 9 mandatory section IDs verified<br/>• Fees data-table structure<br/>• OPSEC bank payment information (100117)"]
+
+    Meta --> Report["Audit Aggregator"]
+    Structure --> Report
+    Links --> Report
+    A11y --> Report
+    Statutory --> Report
+
+    Report --> CLI["Terminal Output<br/>Pass/Fail counts, context & line highlights"]
+    Report --> JSON["reports/latest/<br/>• audit-summary.json<br/>• prospectus-audit.json<br/>• homepage-audit.json"]

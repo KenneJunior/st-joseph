@@ -1,0 +1,17 @@
+%% Automated QA Pipeline Workflow
+flowchart TD
+    Start(["Developer / CI: npm run verify"]) --> Step1["1. TypeScript Check<br/>tsc --noEmit"]
+    Step1 -->|Pass| Step2["2. Static Content & A11y Audit<br/>tsx scripts/audit/runAudit.ts"]
+    Step1 -->|Fail| Abort1["Abort: Type Errors Found"]
+
+    Step2 -->|Pass| Step3["3. Automated Test Suite<br/>vitest run"]
+    Step2 -->|Fail| Abort2["Abort: Broken Links / Missing Metadata"]
+
+    Step3 -->|Pass| Step4["4. Dual-Entrypoint Production Build<br/>npm run build"]
+    Step3 -->|Fail| Abort3["Abort: Unit/Integration Failures"]
+
+    Step4 -->|Pass| Step5["5. Bundle & Manifest Inspection<br/>tsx scripts/inspect/inspectBundle.ts"]
+    Step4 -->|Fail| Abort4["Abort: Vite Compilation Error"]
+
+    Step5 -->|Pass| Success(["Verification Complete: Exit 0<br/>All Artifacts & Quality Checks Green"])
+    Step5 -->|Fail| Abort5["Abort: Missing Entrypoints / Corrupt Manifest"]
