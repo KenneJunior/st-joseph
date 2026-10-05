@@ -154,6 +154,8 @@ body.dark-mode #mainHeader.scrolled::before {
   gap: 10px;
   z-index: 2;
   flex-shrink: 0;
+  text-decoration: none;
+  color: inherit;
 }
 
 .logo-icon {
