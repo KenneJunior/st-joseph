@@ -65,9 +65,17 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 16px rgba(201, 162, 41, 0.2);
 }
 
-#getInTouchBtn{
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
+#getInTouchBtn {
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+}
+
+#getInTouchBtn:hover {
+  -webkit-backdrop-filter: blur(18px) saturate(200%);
+  backdrop-filter: blur(18px) saturate(200%);
+  background: rgba(255, 255, 255, 0.22);
 }
 
 /* ============================================================
