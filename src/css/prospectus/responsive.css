@@ -147,24 +147,6 @@
         min-height: 44px;
     }
     
-    #navMenu {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background: rgba(7, 24, 46, 0.98);
-        backdrop-filter: blur(20px);
-        flex-direction: column;
-        padding: 1rem 1.25rem;
-        gap: 0.85rem;
-        border-bottom: 2px solid var(--gold);
-    }
-    
-    #navMenu.active { 
-        display: flex; 
-    }
-    
     .nav-link {
         font-size: 0.95rem;
         padding: 0.3rem 0;
@@ -205,25 +187,33 @@
         letter-spacing: 0.5px;
     }
 
-    /* Grid System — 2 Cards Per Row Composition */
+    /* Grid System — 3 Cards First Row (col-4), 2 Cards Remaining Rows (col-6) */
     .prospectus-grid {
         display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        padding: 0.8rem;
-        gap: 0.75rem;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        padding: 0.75rem 0.65rem;
+        gap: 0.65rem;
     }
 
-    /* Preserve 2 cards per row across the prospectus */
-    .col-6 {
-        grid-column: span 6;
-    }
-
-    .col-4 {
-        grid-column: span 6;
-    }
-
+    /* 1024-425 Contract: First row has 3 cards (About, Departments, Books) */
+    .col-4,
+    #about-sjccc,
+    #departments-entry,
     #books-stationery {
-        grid-column: span 12;
+        grid-column: span 4;
+        min-width: 0;
+    }
+
+    /* Remaining rows have 2 cards each */
+    .col-6,
+    #uniform-apparel,
+    #boarding-toiletry,
+    #school-rules,
+    #fees-structure,
+    #health-finance,
+    #important-dates {
+        grid-column: span 6;
+        min-width: 0;
     }
 
     .col-12 {
@@ -232,40 +222,78 @@
 
     /* Cards */
     .section-card {
-        padding: 0.85rem;
-        border-radius: 10px;
+        padding: 0.70rem 0.75rem;
+        border-radius: 8px;
     }
     
     .section-header,
     h2.section-header {
-        font-size: 0.82rem;
-        padding: 0.4rem 0.85rem;
-        margin-bottom: 0.65rem;
-        gap: 0.45rem;
+        font-size: 0.78rem;
+        padding: 0.32rem 0.75rem;
+        margin-bottom: 0.55rem;
+        gap: 0.40rem;
     }
     
     .section-card p {
-        font-size: 0.82rem;
-        line-height: 1.42;
+        font-size: 0.78rem;
+        line-height: 1.38;
     }
 
-    /* Uniform & Boarding Side-by-Side */
+    /* Uniform & Boarding: Single-column attire with horizontal splitter */
     .uniform-split {
         display: flex;
-        flex-direction: row;
-        gap: 0.65rem;
+        flex-direction: column;
+        gap: 0;
     }
     
     .uniform-gender {
-        flex: 1;
-        padding: 0.7rem 0.8rem;
+        width: 100%;
+        flex: none;
+        padding: 0.60rem 0.65rem;
     }
     
     .uniform-gender h4,
     .uniform-gender h3,
     .uniform-subheading {
-        font-size: 0.85rem;
-        margin-bottom: 0.45rem;
+        font-size: 0.82rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .uniform-split .card-splitter,
+    .uniform-split .card-splitter--vertical {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        height: auto !important;
+        align-self: stretch !important;
+        padding: 0 4px !important;
+        margin: 0.45rem 0 !important;
+    }
+
+    .uniform-split .card-splitter .card-splitter__line {
+        width: auto !important;
+        flex: 1 !important;
+        height: 1.5px !important;
+        min-height: auto !important;
+        background: linear-gradient(to right, transparent, rgba(201, 162, 41, 0.35) 20%, rgba(201, 162, 41, 0.35) 80%, transparent) !important;
+    }
+
+    body.dark-mode .uniform-split .card-splitter .card-splitter__line {
+        background: linear-gradient(to right, transparent, rgba(243, 215, 121, 0.4) 20%, rgba(243, 215, 121, 0.4) 80%, transparent) !important;
+    }
+
+    .uniform-split .card-splitter .card-splitter__badge {
+        margin: 0 8px !important;
+        padding: 2px 8px !important;
+        font-size: 0.58rem !important;
+    }
+
+    .uniform-split .card-splitter .card-splitter__icon i {
+        display: inline-block;
+        transform: rotate(90deg) !important;
     }
 
     /* Lists */
@@ -448,27 +476,6 @@
         justify-content: center;
     }
 
-    #navMenu {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background: rgba(7, 24, 46, 0.98);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        flex-direction: column;
-        padding: 0.85rem 1rem;
-        gap: 0.75rem;
-        border-bottom: 2px solid var(--gold);
-        z-index: 1000;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-    }
-
-    #navMenu.active {
-        display: flex;
-    }
-
     .nav-link {
         font-size: 0.92rem;
         padding: 0.35rem 0;
@@ -512,129 +519,150 @@
         letter-spacing: 0.4px;
     }
 
-    /* ─── Grid System & Card Dimensions (>360px 2-column minmax() flow) ─── */
+    /* ─── Grid System & Card Dimensions (1024px to 425px Contract) ─── */
     .prospectus-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(clamp(155px, calc(50% - clamp(0.35rem, 1vw, 0.65rem)), 1fr), 1fr));
-        padding: clamp(0.45rem, 1.5vw, 0.75rem);
-        gap: clamp(0.45rem, 1.2vw, 0.65rem);
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        padding: clamp(0.35rem, 1.2vw, 0.65rem);
+        gap: clamp(0.35rem, 1vw, 0.55rem);
     }
 
-    /* Cards requiring full-width space */
-    .col-full-mobile,
-    #fees-structure,
-    #boarding-toiletry {
-        grid-column: 1 / -1;
-    }
-
-    /* Paired section cards in 2-column layout */
+    /* 3 Cards First Row: About, Departments, Books */
+    .col-4,
     #about-sjccc,
     #departments-entry,
-    #books-stationery,
+    #books-stationery {
+        grid-column: span 4;
+        min-width: 0;
+    }
+
+    /* 2 Cards Remaining Rows */
+    .col-6,
     #uniform-apparel,
+    #boarding-toiletry,
     #school-rules,
+    #fees-structure,
     #health-finance,
     #important-dates {
-        grid-column: auto;
+        grid-column: span 6;
+        min-width: 0;
+    }
+
+    .col-full-mobile {
+        grid-column: span 12;
     }
 
     .section-card {
-        padding: 0.65rem 0.75rem;
+        padding: 0.50rem 0.60rem;
         border-radius: 8px;
     }
 
     .section-header-outer {
-        margin-bottom: 0.55rem;
+        margin-bottom: 0.45rem;
     }
     
     .section-header,
     h2.section-header {
-        font-size: clamp(0.74rem, 2.3vw, 0.82rem);
-        padding: 0.3rem 0.72rem;
+        font-size: clamp(0.66rem, 2.1vw, 0.76rem);
+        padding: 0.25rem 0.60rem;
         margin-bottom: 0;
-        gap: 0.38rem;
-        letter-spacing: 0.35px;
+        gap: 0.32rem;
+        letter-spacing: 0.3px;
     }
 
     .section-header .bi {
-        font-size: 0.78rem;
+        font-size: 0.72rem;
     }
     
     .section-card p {
-        font-size: clamp(0.76rem, 2.3vw, 0.84rem);
-        line-height: 1.38;
-        margin-bottom: 0.3rem;
+        font-size: clamp(0.68rem, 2.1vw, 0.76rem);
+        line-height: 1.34;
+        margin-bottom: 0.25rem;
     }
 
     .section-card br {
-        margin-top: 0.15rem;
+        margin-top: 0.12rem;
     }
 
     .divider {
-        margin: 0.4rem 0;
+        margin: 0.35rem 0;
     }
 
-    /* ─── 2-Column Information Group: Uniform & Apparel ─── */
-    /* Preserves side-by-side Boys and Girls composition on phones */
+    /* ─── Single-Column Attire with Horizontal Divider ─── */
     .uniform-split {
         display: flex;
-        flex-direction: row;
-        gap: 0.35rem;
+        flex-direction: column;
+        gap: 0;
         align-items: stretch;
-        margin-bottom: 0.65rem;
+        margin-bottom: 0.55rem;
     }
     
     .uniform-gender {
-        flex: 1;
-        min-width: 0;
-        padding: 0.55rem 0.6rem;
+        width: 100%;
+        flex: none;
+        padding: 0.45rem 0.50rem;
         border-radius: 6px;
     }
     
     .uniform-gender h4,
     .uniform-gender h3,
     .uniform-subheading {
-        font-size: 0.80rem;
-        margin-bottom: 0.3rem;
+        font-size: 0.76rem;
+        margin-bottom: 0.25rem;
         gap: 0.25rem;
     }
 
-    /* Vertical Splitter Micro-Adaptation for Side-by-Side Mobile */
+    /* Horizontal Splitter between Boys and Girls */
+    .uniform-split .card-splitter,
     .uniform-split .card-splitter--vertical {
-        flex-direction: column !important;
-        width: auto !important;
-        min-width: 24px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        min-width: 100% !important;
         height: auto !important;
-        padding: 2px 0 !important;
-        margin: 0 !important;
         align-self: stretch !important;
+        padding: 0 4px !important;
+        margin: 0.35rem 0 !important;
     }
 
+    .uniform-split .card-splitter .card-splitter__line,
     .uniform-split .card-splitter--vertical .card-splitter__line {
-        width: 1.5px !important;
-        height: auto !important;
+        width: auto !important;
         flex: 1 !important;
-        min-height: 16px !important;
-        background: linear-gradient(to bottom, transparent, rgba(201, 162, 41, 0.35) 20%, rgba(201, 162, 41, 0.35) 80%, transparent) !important;
+        height: 1.5px !important;
+        min-height: auto !important;
+        background: linear-gradient(to right, transparent, rgba(201, 162, 41, 0.35) 20%, rgba(201, 162, 41, 0.35) 80%, transparent) !important;
     }
 
+    body.dark-mode .uniform-split .card-splitter .card-splitter__line,
     body.dark-mode .uniform-split .card-splitter--vertical .card-splitter__line {
-        background: linear-gradient(to bottom, transparent, rgba(243, 215, 121, 0.4) 20%, rgba(243, 215, 121, 0.4) 80%, transparent) !important;
+        background: linear-gradient(to right, transparent, rgba(243, 215, 121, 0.4) 20%, rgba(243, 215, 121, 0.4) 80%, transparent) !important;
     }
 
+    .uniform-split .card-splitter .card-splitter__badge,
     .uniform-split .card-splitter--vertical .card-splitter__badge {
-        margin: 3px 0 !important;
-        padding: 2px 5px !important;
-        font-size: 0.54rem !important;
+        margin: 0 6px !important;
+        padding: 2px 6px !important;
+        font-size: 0.52rem !important;
         letter-spacing: 0.04em !important;
     }
 
+    .uniform-split .card-splitter .card-splitter__icon,
     .uniform-split .card-splitter--vertical .card-splitter__icon {
-        font-size: 0.62rem !important;
+        font-size: 0.58rem !important;
     }
 
+    .uniform-split .card-splitter .card-splitter__icon i,
+    .uniform-split .card-splitter--vertical .card-splitter__icon i {
+        display: inline-block;
+        transform: rotate(90deg) !important;
+    }
+
+    .uniform-split .card-splitter .card-splitter__text,
     .uniform-split .card-splitter--vertical .card-splitter__text {
-        font-size: 0.50rem !important;
+        font-size: 0.48rem !important;
     }
 
     /* ─── 2-Column Information Group: Health, Finance & Labour ─── */
@@ -873,16 +901,16 @@
     }
 }
 
-/* ─── Tier 7: Ultra-Compact Mobile Phones (max-width: 359px) ─── */
-/* Graceful fallback for displays below 360px (e.g. 320px) preventing horizontal overflow */
-@media (max-width: 359px) {
+/* ─── Tier 7: Ultra-Compact Mobile Phones (max-width: 424px) ─── */
+/* Graceful fallback for displays below 425px (e.g. 320px) preventing horizontal overflow */
+@media (max-width: 424px) {
     .prospectus-grid {
         grid-template-columns: 1fr !important;
         padding: 0.4rem 0.35rem;
         gap: 0.45rem;
     }
 
-    .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-12 {
+    .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-12, .section-card {
         grid-column: span 1 !important;
     }
 
