@@ -4,6 +4,9 @@
  * ============================================================================
  */
 
+import { STORAGE_KEYS } from '../../core/storage/storageKeys.ts';
+import { SearchHistoryDropdown } from '../../ui/utils/SearchHistoryDropdown.ts';
+
 export interface FaqItemElements {
     item: HTMLElement;
     trigger: HTMLButtonElement;
@@ -32,7 +35,9 @@ export class FaqSection {
     private items: FaqItemElements[] = [];
     private filterButtons: NodeListOf<HTMLButtonElement>;
     private searchInput: HTMLInputElement | null;
+    private searchWrapper: HTMLElement | null;
     private searchClearBtn: HTMLButtonElement | null;
+    private searchHistoryDropdown: SearchHistoryDropdown | null = null;
     private expandAllBtn: HTMLButtonElement | null;
     private collapseAllBtn: HTMLButtonElement | null;
     private toolsSeparator: HTMLElement | null;
@@ -56,6 +61,7 @@ export class FaqSection {
         this.categorySelect = document.getElementById('faqCategorySelect') as HTMLSelectElement | null;
         this.tablistEl = document.getElementById('faqCategoryTabs');
         this.searchInput = document.getElementById('faqSearchInput') as HTMLInputElement | null;
+        this.searchWrapper = this.searchInput?.closest<HTMLElement>('.faq-search-wrapper') ?? null;
         this.searchClearBtn = document.getElementById('faqSearchClear') as HTMLButtonElement | null;
         this.expandAllBtn = document.getElementById('faqExpandAllBtn') as HTMLButtonElement | null;
         this.collapseAllBtn = document.getElementById('faqCollapseAllBtn') as HTMLButtonElement | null;
@@ -282,6 +288,32 @@ export class FaqSection {
             this.resetSearch();
             this.setCategory('all', true);
         });
+
+        this.searchHistoryDropdown = new SearchHistoryDropdown({
+            inputEl: this.searchInput,
+            wrapperEl: this.searchWrapper,
+            storageKey: STORAGE_KEYS.FAQ_SEARCH_HISTORY,
+            idPrefix: 'faq-search-history',
+            regionLabel: 'Recent searches',
+            onSelectQuery: (query: string) => {
+                this.currentSearchQuery = query.trim().toLowerCase();
+                if (this.searchClearBtn) {
+                    this.searchClearBtn.hidden = this.currentSearchQuery.length === 0;
+                }
+                this.filterItems(true);
+            },
+            shouldSaveQuery: (query: string) => {
+                const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+                if (terms.length === 0) return false;
+                return this.items.some(({ questionText, answerText, category: itemCat }) =>
+                    terms.every((term) =>
+                        questionText.includes(term) ||
+                        answerText.includes(term) ||
+                        itemCat.includes(term)
+                    )
+                );
+            },
+        });
     }
 
     private resetSearch(): void {
@@ -293,6 +325,7 @@ export class FaqSection {
         if (this.searchClearBtn) this.searchClearBtn.hidden = true;
         this.clearHighlights();
         this.filterItems(true);
+        this.searchHistoryDropdown?.syncVisibility();
     }
 
     private clearHighlights(): void {

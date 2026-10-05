@@ -10,6 +10,8 @@ import {
     type AcademicMilestone,
     ACADEMIC_MILESTONES_2026_2027,
 } from '../../data/academicCalendar.ts';
+import { STORAGE_KEYS } from '../../core/storage/storageKeys.ts';
+import { SearchHistoryDropdown } from '../../ui/utils/SearchHistoryDropdown.ts';
 
 export type { AcademicMilestone };
 export { ACADEMIC_MILESTONES_2026_2027 };
@@ -19,12 +21,14 @@ export class SchoolDatesTimeline {
     private readonly termTabs: NodeListOf<HTMLButtonElement>;
     private readonly categoryButtons: NodeListOf<HTMLButtonElement>;
     private readonly searchInput: HTMLInputElement | null;
+    private readonly searchBox: HTMLElement | null;
     private readonly timelineItems: NodeListOf<HTMLElement>;
     private readonly emptyNotice: HTMLElement | null;
     private readonly disclosureWrapper: HTMLElement | null;
     private readonly disclosureBtn: HTMLButtonElement | null;
     private readonly disclosureText: HTMLElement | null;
     private readonly disclosureCount: HTMLElement | null;
+    private searchHistoryDropdown: SearchHistoryDropdown | null = null;
 
     private currentTerm: string = 'all';
     private currentCategory: string = 'all';
@@ -37,6 +41,7 @@ export class SchoolDatesTimeline {
         this.termTabs = document.querySelectorAll<HTMLButtonElement>('.timeline-tab-btn');
         this.categoryButtons = document.querySelectorAll<HTMLButtonElement>('.timeline-category-btn');
         this.searchInput = document.getElementById('timelineSearchInput') as HTMLInputElement | null;
+        this.searchBox = this.searchInput?.closest<HTMLElement>('.timeline-search-box') ?? null;
         this.timelineItems = document.querySelectorAll<HTMLElement>('.timeline-milestone');
         this.emptyNotice = document.getElementById('timelineEmptyNotice');
         this.disclosureWrapper = document.getElementById('timelineDisclosureWrapper');
@@ -98,6 +103,33 @@ export class SchoolDatesTimeline {
         this.searchInput.addEventListener('input', () => {
             this.searchQuery = this.searchInput?.value.trim().toLowerCase() || '';
             this.applyFilters();
+        });
+
+        this.searchInput.addEventListener('search', () => {
+            if (!this.searchInput?.value) {
+                this.searchQuery = '';
+                this.applyFilters();
+                this.searchHistoryDropdown?.syncVisibility();
+            }
+        });
+
+        this.searchHistoryDropdown = new SearchHistoryDropdown({
+            inputEl: this.searchInput,
+            wrapperEl: this.searchBox,
+            storageKey: STORAGE_KEYS.DATES_SEARCH_HISTORY,
+            idPrefix: 'timeline-search-history',
+            regionLabel: 'Recent searches',
+            onSelectQuery: (query: string) => {
+                this.searchQuery = query.trim().toLowerCase();
+                this.applyFilters();
+            },
+            shouldSaveQuery: (query: string) => {
+                const q = query.trim().toLowerCase();
+                if (q.length < 2) return false;
+                return Array.from(this.timelineItems).some((item) =>
+                    (item.textContent || '').toLowerCase().includes(q)
+                );
+            },
         });
     }
 

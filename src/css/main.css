@@ -28,6 +28,7 @@
 @import './components/theme-toggle.css';
 @import './components/dialog.css';
 @import './components/offline-indicator.css';
+@import './components/search-history.css';
 
 /* Features */
 @import './features/preloader.css';

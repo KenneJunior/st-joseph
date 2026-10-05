@@ -1,0 +1,272 @@
+/* ==========================================================================
+   SJCCC — LOCAL SEARCH HISTORY DROPDOWN UI
+   Shared recent-searches popover for Academic Dates & FAQ search fields
+   ========================================================================== */
+
+/* Ensure parent search controls containers stack above sibling cards (which have transform/will-change stacking contexts) */
+.faq-controls-panel,
+.timeline-controls-bar,
+.timeline-secondary-controls {
+  position: relative;
+  z-index: 30;
+}
+
+.faq-search-wrapper,
+.timeline-search-box {
+  position: relative;
+  z-index: 35;
+}
+
+.search-history-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--surface-card, #ffffff);
+  border: 1px solid var(--color-border-brand, rgba(201, 162, 41, 0.35));
+  border-radius: var(--radius-md, 14px);
+  box-shadow: 0 14px 36px rgba(7, 24, 46, 0.14), 0 0 0 1px rgba(201, 162, 41, 0.12);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: searchHistoryFadeIn 180ms var(--ease-cinematic, cubic-bezier(0.25, 1, 0.35, 1)) both;
+}
+
+.search-history-dropdown[hidden] {
+  display: none !important;
+}
+
+body.dark-mode .search-history-dropdown {
+  background: #0d213d;
+  border-color: rgba(201, 162, 41, 0.42);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.55), 0 0 18px rgba(201, 162, 41, 0.14);
+}
+
+@keyframes searchHistoryFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 6px 6px 6px;
+  border-bottom: 1px solid var(--border-light, rgba(0, 0, 0, 0.06));
+}
+
+body.dark-mode .search-history-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.search-history-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted, #6b7280);
+}
+
+.search-history-title i {
+  color: var(--accent, #c9a229);
+  font-size: 0.82rem;
+  position: static !important;
+  transform: none !important;
+}
+
+body.dark-mode .search-history-title {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.search-history-clear-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--accent, #c9a229);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.search-history-clear-btn i {
+  position: static !important;
+  transform: none !important;
+  font-size: 0.76rem;
+}
+
+.search-history-clear-btn:hover {
+  background: rgba(201, 162, 41, 0.12);
+  border-color: rgba(201, 162, 41, 0.28);
+  color: var(--primary, #0a1f3f);
+}
+
+body.dark-mode .search-history-clear-btn:hover {
+  background: rgba(201, 162, 41, 0.2);
+  color: var(--accent-glow, #f3d779);
+}
+
+.search-history-clear-btn:focus-visible {
+  outline: 2px solid var(--accent, #c9a229);
+  outline-offset: 1px;
+}
+
+.search-history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.search-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  border-radius: 8px;
+  transition: background-color 150ms ease;
+}
+
+.search-history-item:hover,
+.search-history-item:focus-within {
+  background: rgba(201, 162, 41, 0.1);
+}
+
+body.dark-mode .search-history-item:hover,
+body.dark-mode .search-history-item:focus-within {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.search-history-select-btn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: transparent;
+  border: none;
+  padding: 7px 8px;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-dark, #1a1a2e);
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+body.dark-mode .search-history-select-btn {
+  color: var(--text-light, #ffffff);
+}
+
+.search-history-select-btn:focus-visible {
+  outline: 2px solid var(--accent, #c9a229);
+  outline-offset: -2px;
+}
+
+.search-history-item-icon {
+  color: var(--accent, #c9a229);
+  font-size: 0.82rem;
+  flex-shrink: 0;
+  position: static !important;
+  transform: none !important;
+}
+
+.search-history-item-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-history-remove-btn {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-muted, #6b7280);
+  cursor: pointer;
+  margin-right: 2px;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.search-history-remove-btn i {
+  position: static !important;
+  transform: none !important;
+  font-size: 0.7rem;
+}
+
+.search-history-remove-btn:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+}
+
+body.dark-mode .search-history-remove-btn:hover {
+  background: rgba(239, 68, 68, 0.22);
+  color: #f87171;
+}
+
+.search-history-remove-btn:focus-visible {
+  outline: 2px solid var(--accent, #c9a229);
+  outline-offset: -1px;
+}
+
+@media (max-width: 768px) {
+  .search-history-dropdown {
+    padding: 8px;
+    border-radius: var(--radius-sm, 8px);
+  }
+
+  .search-history-title,
+  .search-history-clear-btn {
+    font-size: 0.68rem;
+  }
+
+  .search-history-select-btn {
+    padding: 6px 7px;
+    font-size: 0.76rem;
+    gap: 7px;
+  }
+
+  .search-history-remove-btn {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-history-dropdown,
+  .search-history-item,
+  .search-history-clear-btn,
+  .search-history-remove-btn {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

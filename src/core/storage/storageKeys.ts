@@ -18,6 +18,10 @@ export const STORAGE_KEYS = {
     INTERVIEW_ANNOUNCEMENT_DISMISSED: 'Interview_announcement_dismissed',
     /** LocalStorage key for PWA install prompt dismissal record */
     PWA_PROMPT: 'pwa-install-prompt',
+    /** LocalStorage key for Academic Dates / Milestones search history */
+    DATES_SEARCH_HISTORY: 'sjccc-dates-search-history',
+    /** LocalStorage key for Frequently Asked Questions (FAQ) search history */
+    FAQ_SEARCH_HISTORY: 'sjccc-faq-search-history',
 } as const;
 
 export type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];
