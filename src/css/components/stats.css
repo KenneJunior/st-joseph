@@ -42,15 +42,15 @@ body.dark-mode .stats-section::before {
 
 @media (max-width: 768px) {
   .stats-row {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
   }
 }
 
 @media (max-width: 480px) {
   .stats-row {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
   }
 }
 
@@ -77,20 +77,20 @@ body.dark-mode .stats-section::before {
 
 @media (max-width: 768px) {
   .stat-card {
-    padding: 10px 8px;
+    padding: 6px 3px;
     border-radius: var(--radius-sm);
   }
 }
 
 @media (max-width: 480px) {
   .stat-card {
-    padding: 8px 5px;
+    padding: 5px 2px;
   }
 }
 
 @media (max-width: 360px) {
   .stat-card {
-    padding: 6px 4px;
+    padding: 4px 2px;
   }
 }
 
@@ -154,20 +154,21 @@ body.dark-mode .stat-card:hover {
 
 @media (max-width: 768px) {
   .stat-number {
-    font-size: clamp(1.25rem, 4.2vw, 1.5rem);
-    margin-bottom: 2px;
+    font-size: clamp(1.10rem, 3.8vw, 1.30rem);
+    margin-bottom: 1px;
+    line-height: 1;
   }
 }
 
 @media (max-width: 480px) {
   .stat-number {
-    font-size: clamp(1.15rem, 4vw, 1.35rem);
+    font-size: clamp(1.02rem, 3.5vw, 1.18rem);
   }
 }
 
 @media (max-width: 360px) {
   .stat-number {
-    font-size: 1.08rem;
+    font-size: 0.98rem;
   }
 }
 
@@ -190,16 +191,16 @@ body.dark-mode .stat-number {
 
 @media (max-width: 768px) {
   .stat-label {
-    font-size: 0.72rem;
+    font-size: 0.58rem;
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.15;
   }
 }
 
 @media (max-width: 480px) {
   .stat-label {
-    font-size: 0.66rem;
-    line-height: 1.15;
+    font-size: 0.54rem;
+    line-height: 1.12;
   }
 }
 

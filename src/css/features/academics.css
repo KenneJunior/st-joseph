@@ -18,15 +18,20 @@
 
 @media (max-width: 900px) {
   .academics-pillars {
-    grid-template-columns: 1fr;
-    gap: 14px;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
     max-width: 100%;
+  }
+
+  .card-splitter--responsive {
+    display: none !important;
   }
 }
 
 @media (max-width: 480px) {
   .academics-pillars {
-    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
   }
 }
 
@@ -87,14 +92,14 @@ body.dark-mode .pillar:hover {
 @media (max-width: 768px) {
   .pillar-general .pillar__header,
   .pillar-technical .pillar__header {
-    padding: 11px 12px;
+    padding: 8px 8px;
   }
 }
 
 @media (max-width: 480px) {
   .pillar-general .pillar__header,
   .pillar-technical .pillar__header {
-    padding: 9px 10px;
+    padding: 7px 6px;
   }
 }
 
@@ -113,14 +118,14 @@ body.dark-mode .pillar:hover {
 
 @media (max-width: 768px) {
   .pillar__icon {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-bottom: 2px;
   }
 }
 
 @media (max-width: 480px) {
   .pillar__icon {
-    font-size: 1.05rem;
+    font-size: 0.95rem;
   }
 }
 
@@ -144,14 +149,14 @@ body.dark-mode .pillar:hover {
 
 @media (max-width: 768px) {
   .pillar__title {
-    font-size: 0.98rem;
+    font-size: 0.88rem;
     margin-bottom: 2px;
   }
 }
 
 @media (max-width: 480px) {
   .pillar__title {
-    font-size: 0.90rem;
+    font-size: 0.80rem;
   }
 }
 
@@ -163,14 +168,18 @@ body.dark-mode .pillar:hover {
 
 @media (max-width: 768px) {
   .pillar__desc {
-    font-size: 0.74rem;
-    line-height: 1.3;
+    font-size: 0.68rem;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 
 @media (max-width: 480px) {
   .pillar__desc {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
   }
 }
 
@@ -191,15 +200,15 @@ body.dark-mode .pillar:hover {
 
 @media (max-width: 768px) {
   .pillar__levels {
-    padding: 8px 10px;
-    gap: 6px;
+    padding: 6px 6px;
+    gap: 4px;
   }
 }
 
 @media (max-width: 480px) {
   .pillar__levels {
-    padding: 6px 8px;
-    gap: 5px;
+    padding: 4px 4px;
+    gap: 3px;
   }
 }
 

@@ -58,6 +58,8 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  position: relative;
+  z-index: 20;
 }
 
 .faq-filter-controls {
@@ -351,6 +353,8 @@ body.dark-mode .faq-search-input {
 
 /* FAQ List with smooth cross-fade transition */
 .faq-list {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 14px;

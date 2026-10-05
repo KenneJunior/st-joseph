@@ -285,7 +285,7 @@ body.dark-mode .timeline-category-btn.active {
   max-width: 320px;
 }
 
-.timeline-search-box i {
+.timeline-search-box > i {
   position: absolute;
   left: 14px;
   top: 50%;
@@ -329,7 +329,7 @@ body.dark-mode .timeline-search-input {
   position: absolute;
   top: 20px;
   bottom: 20px;
-  left: 31px;
+  left: 56px;
   width: 2px;
   background: linear-gradient(180deg, var(--accent) 0%, rgba(201, 162, 41, 0.25) 90%, transparent 100%);
   z-index: 0;
@@ -386,21 +386,26 @@ body.dark-mode .timeline-search-input {
 .timeline-date-column {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .timeline-date-badge {
-  display: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   text-align: right;
-  width: 80px;
+  width: 36px;
+  flex-shrink: 0;
 }
 
 @media (min-width: 900px) {
+  .timeline-date-column {
+    gap: 16px;
+  }
+
   .timeline-date-badge {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    width: 80px;
   }
 }
 
@@ -645,10 +650,11 @@ body.dark-mode .timeline-card-footer {
   border-top-color: rgba(255, 255, 255, 0.08);
 }
 
+.timeline-card .btn-download-ics,
 .btn-download-ics {
   background: transparent;
   border: 1px solid var(--border-light);
-  color: var(--text-light);
+  color: var(--primary);
   padding: 7px 16px;
   border-radius: 8px;
   font-family: var(--font-body);
@@ -659,6 +665,10 @@ body.dark-mode .timeline-card-footer {
   align-items: center;
   gap: 8px;
   transition: all 0.25s ease;
+}
+
+.next-milestone-banner .btn-download-ics {
+  color: var(--primary-dark);
 }
 
 .btn-download-ics i {
@@ -676,11 +686,13 @@ body.dark-mode .timeline-card-footer {
   transform: translateY(-2px);
 }
 
+body.dark-mode .timeline-card .btn-download-ics,
 body.dark-mode .btn-download-ics {
   color: var(--text-light);
   border-color: rgba(255, 255, 255, 0.15);
 }
 
+body.dark-mode .timeline-card .btn-download-ics:hover,
 body.dark-mode .btn-download-ics:hover {
   background: rgba(201, 162, 41, 0.18);
   border-color: var(--accent-glow);
