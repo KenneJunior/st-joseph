@@ -6,21 +6,21 @@
     background: linear-gradient(135deg, #07182e, #0a1f3c);
     border-top: 3.5px solid var(--gold);
     color: var(--text-light);
-    padding: 1.8rem 1.6rem 1.4rem;
+    padding: clamp(1rem, 2.5vw, 1.8rem) clamp(0.75rem, 2vw, 1.6rem) clamp(0.85rem, 2vw, 1.4rem);
 }
 
 .footer-top-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-    margin-bottom: 1.4rem;
+    gap: clamp(0.65rem, 1.5vw, 1.25rem);
+    margin-bottom: clamp(0.75rem, 1.8vw, 1.4rem);
 }
 
 .footer-card {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-md, 10px);
-    padding: 1.25rem 1.35rem;
+    padding: clamp(0.75rem, 1.6vw, 1.25rem) clamp(0.8rem, 1.8vw, 1.35rem);
     transition: var(--transition-smooth);
     backdrop-filter: blur(8px);
 }
@@ -34,21 +34,21 @@
 .footer-card h3,
 .footer-card h2,
 .footer-heading {
-    font-size: 1.15rem;
+    font-size: clamp(0.88rem, 0.82rem + 0.4vw, 1.15rem);
     color: var(--gold-light);
     margin-top: 0;
-    margin-bottom: 0.85rem;
+    margin-bottom: clamp(0.45rem, 1vw, 0.85rem);
     display: flex;
     align-items: center;
-    gap: 0.55rem;
+    gap: clamp(0.35rem, 0.8vw, 0.55rem);
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    padding-bottom: 0.45rem;
+    padding-bottom: clamp(0.25rem, 0.6vw, 0.45rem);
 }
 
 .highlight-text {
     color: var(--gold-light);
-    font-size: 0.88rem;
-    margin-bottom: 0.65rem;
+    font-size: clamp(0.75rem, 0.72rem + 0.25vw, 0.88rem);
+    margin-bottom: clamp(0.4rem, 0.8vw, 0.65rem);
     font-style: italic;
 }
 
@@ -56,14 +56,14 @@
     background: rgba(201, 162, 41, 0.06);
     border: 1px solid rgba(201, 162, 41, 0.25);
     border-radius: var(--radius-md, 10px);
-    padding: 0.85rem 1rem;
-    margin-top: 0.75rem;
+    padding: clamp(0.55rem, 1.2vw, 0.85rem) clamp(0.65rem, 1.4vw, 1rem);
+    margin-top: clamp(0.45rem, 1vw, 0.75rem);
 }
 
 .glass-notice-box p {
-    margin-bottom: 0.5rem;
-    font-size: 0.86rem;
-    line-height: 1.44;
+    margin-bottom: clamp(0.28rem, 0.6vw, 0.5rem);
+    font-size: clamp(0.74rem, 0.70rem + 0.25vw, 0.86rem);
+    line-height: clamp(1.32, 1.28 + 0.2vw, 1.44);
 }
 
 .glass-notice-box p:last-child {
@@ -82,7 +82,7 @@
 }
 
 .contact-link-list li {
-    margin-bottom: 0.45rem;
+    margin-bottom: clamp(0.25rem, 0.6vw, 0.45rem);
 }
 
 .contact-link-list li:last-child {
@@ -94,10 +94,10 @@
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 0.65rem;
+    gap: clamp(0.4rem, 0.8vw, 0.65rem);
     transition: var(--transition-smooth);
-    font-size: 0.88rem;
-    line-height: 1.35;
+    font-size: clamp(0.76rem, 0.72rem + 0.25vw, 0.88rem);
+    line-height: clamp(1.26, 1.28 + 0.15vw, 1.35);
 }
 
 .contact-link-list a:hover {
@@ -108,9 +108,9 @@
 .bottom-strip {
     text-align: center;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 1rem;
-    font-size: 0.8rem;
+    padding-top: clamp(0.65rem, 1.2vw, 1rem);
+    font-size: clamp(0.56rem, 0.52rem + 0.3vw, 0.8rem);
     color: var(--gold-light);
-    letter-spacing: 1.2px;
+    letter-spacing: clamp(0.5px, 0.1vw, 1.2px);
     font-weight: 600;
 }

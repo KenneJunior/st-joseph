@@ -5,7 +5,7 @@
 .main-header {
     background: linear-gradient(135deg, var(--deep-blue) 0%, #0a1c38 100%);
     border-bottom: 3.5px solid var(--gold);
-    padding: 1.6rem 1.5rem 1.35rem;
+    padding: clamp(0.75rem, 1.8vw, 1.6rem) clamp(0.65rem, 1.8vw, 1.5rem) clamp(0.6rem, 1.6vw, 1.35rem);
     text-align: center;
     position: relative;
     color: var(--text-light);
@@ -13,50 +13,53 @@
 
 .header-cross {
     color: var(--gold-light);
-    font-size: 2.1rem;
-    margin-bottom: 0.25rem;
+    font-size: clamp(1.2rem, 2.2vw, 2.1rem);
+    margin-bottom: clamp(0.12rem, 0.3vw, 0.25rem);
     animation: crossPulse 3.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
     filter: drop-shadow(0 0 10px rgba(243, 215, 121, 0.5));
 }
 
 .header-title {
     font-family: var(--font-serif);
-    font-size: clamp(1.5rem, 2.8vw, 2.3rem);
+    font-size: clamp(1.10rem, 3.2vw, 2.3rem);
     font-weight: 700;
-    letter-spacing: 1.2px;
-    line-height: 1.15;
+    letter-spacing: clamp(0.4px, 0.1vw, 1.2px);
+    line-height: clamp(1.12, 1.15, 1.18);
     text-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
 }
 
 .header-subtitle {
     color: var(--gold-light);
-    font-size: clamp(0.95rem, 1.6vw, 1.25rem);
+    font-size: clamp(0.76rem, 1.5vw, 1.25rem);
     font-weight: 600;
-    letter-spacing: 2px;
-    margin-top: 0.2rem;
+    letter-spacing: clamp(1px, 0.2vw, 2px);
+    margin-top: clamp(0.1rem, 0.25vw, 0.2rem);
     text-transform: uppercase;
+    line-height: 1.2;
 }
 
 .header-diocese {
     font-family: var(--font-serif);
     font-style: italic;
-    font-size: 0.98rem;
+    font-size: clamp(0.72rem, 1.1vw, 0.98rem);
     opacity: 0.9;
-    margin-top: 0.25rem;
+    margin-top: clamp(0.1rem, 0.25vw, 0.25rem);
     color: #d1c49c;
+    line-height: 1.2;
 }
 
 .motto-bar {
     background: var(--glass-bg);
     backdrop-filter: blur(8px);
     color: var(--deep-blue);
-    padding: 0.65rem 1rem;
+    padding: clamp(0.32rem, 0.8vw, 0.65rem) clamp(0.55rem, 1.2vw, 1rem);
     text-align: center;
     font-family: var(--font-serif);
     font-style: italic;
-    font-size: clamp(0.88rem, 1.3vw, 1.05rem);
+    font-size: clamp(0.74rem, 1.1vw, 1.05rem);
     font-weight: 600;
     border-bottom: 1px solid var(--border-soft);
+    line-height: 1.25;
     transition: background 0.8s ease, color 0.8s ease;
 }
 
@@ -68,10 +71,11 @@ body.dark-mode .motto-bar {
     background: var(--deep-blue);
     color: var(--gold);
     text-align: center;
-    padding: 0.7rem 1rem;
+    padding: clamp(0.35rem, 0.8vw, 0.7rem) clamp(0.55rem, 1.2vw, 1rem);
     font-weight: 700;
-    font-size: clamp(0.82rem, 1.2vw, 0.98rem);
-    letter-spacing: 1.2px;
+    font-size: clamp(0.72rem, 1vw, 0.98rem);
+    letter-spacing: clamp(0.4px, 0.1vw, 1.2px);
+    line-height: 1.25;
     border-bottom: 2px solid var(--gold);
     text-transform: uppercase;
 }

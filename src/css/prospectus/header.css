@@ -177,3 +177,35 @@ body.dark-mode .toggle-moon { display: block; }
     cursor: pointer;
     transition: var(--transition-smooth);
 }
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    #navMenu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(7, 24, 46, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 0.85rem 1.25rem;
+        gap: 0.75rem;
+        border-bottom: 2px solid var(--gold);
+        z-index: 1000;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    #navMenu.active {
+        display: flex;
+    }
+}
+

@@ -62,9 +62,9 @@ footer[id] {
 
 .section-card p {
     color: var(--text-muted);
-    font-size: var(--text-doc-body, 0.92rem);
-    line-height: var(--text-doc-line-height, 1.48);
-    margin-bottom: 0.45rem;
+    font-size: var(--text-doc-body, clamp(0.76rem, 0.72rem + 0.3vw, 0.92rem));
+    line-height: var(--text-doc-line-height, clamp(1.32, 1.28 + 0.2vw, 1.48));
+    margin-bottom: clamp(0.25rem, 0.8vw, 0.45rem);
 }
 
 .section-card p:last-child {
@@ -75,7 +75,7 @@ footer[id] {
 .section-card br {
     content: "";
     display: block;
-    margin-top: 0.35rem;
+    margin-top: clamp(0.12rem, 0.4vw, 0.25rem);
 }
 
 .card-content {
@@ -87,17 +87,17 @@ footer[id] {
 h2.section-header {
     background: var(--deep-blue);
     color: var(--text-light);
-    padding: 0.45rem 1.05rem;
+    padding: clamp(0.3rem, 0.8vw, 0.45rem) clamp(0.65rem, 1.6vw, 1.05rem);
     border-radius: 50px;
-    font-size: 0.92rem;
+    font-size: clamp(0.74rem, 0.70rem + 0.35vw, 0.92rem);
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: clamp(0.3px, 0.1vw, 0.5px);
     margin-top: 0;
-    margin-bottom: var(--space-header-mb, 1rem);
-    line-height: 1.25;
+    margin-bottom: var(--space-header-mb, clamp(0.5rem, 1.2vw, 1rem));
+    line-height: clamp(1.18, 1.2, 1.25);
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
+    gap: clamp(0.35rem, 0.8vw, 0.55rem);
     border-bottom: 2.5px solid var(--gold);
     transition: var(--transition-bounce);
 }
@@ -125,13 +125,13 @@ h2.section-header {
 /* Sub-headings & Detail Panels */
 .uniform-split {
     display: flex;
-    gap: 0.9rem;
+    gap: clamp(0.35rem, 1.2vw, 0.9rem);
 }
 
 .uniform-gender {
     flex: 1;
     background: rgba(201, 162, 41, 0.04);
-    padding: 0.85rem 1rem;
+    padding: clamp(0.55rem, 1.2vw, 0.85rem) clamp(0.6rem, 1.5vw, 1rem);
     border-radius: var(--radius-md, 10px);
     border: 1px dashed var(--border-soft);
     transition: var(--transition-smooth);
@@ -147,12 +147,13 @@ h2.section-header {
 .uniform-subheading {
     color: var(--royal-blue);
     margin-top: 0;
-    margin-bottom: 0.55rem;
-    font-size: 0.96rem;
+    margin-bottom: clamp(0.25rem, 0.8vw, 0.55rem);
+    font-size: clamp(0.80rem, 0.76rem + 0.3vw, 0.96rem);
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: clamp(0.25rem, 0.6vw, 0.45rem);
+    line-height: clamp(1.2, 1.25, 1.3);
 }
 
 body.dark-mode .uniform-gender h4,
@@ -163,47 +164,50 @@ body.dark-mode .uniform-subheading {
 
 .rules-subheading {
     color: var(--text-main);
-    margin-top: 0.75rem;
-    margin-bottom: 0.35rem;
-    font-size: 0.95rem;
+    margin-top: clamp(0.4rem, 1vw, 0.75rem);
+    margin-bottom: clamp(0.2rem, 0.6vw, 0.35rem);
+    font-size: clamp(0.82rem, 0.78rem + 0.3vw, 0.95rem);
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: clamp(0.25rem, 0.6vw, 0.45rem);
+    line-height: clamp(1.2, 1.25, 1.3);
 }
 
 .info-title {
-    font-size: 0.92rem;
+    font-size: clamp(0.80rem, 0.76rem + 0.3vw, 0.92rem);
     font-weight: 700;
     color: var(--text-main);
     margin-top: 0;
-    margin-bottom: 0.35rem;
+    margin-bottom: clamp(0.2rem, 0.6vw, 0.35rem);
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: clamp(0.25rem, 0.6vw, 0.45rem);
+    line-height: clamp(1.2, 1.25, 1.3);
 }
 
 /* 3-Column Layout for Info Blocks (Balances Health & Finance with Important Dates) */
 .grid-3-cols {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.85rem;
+    gap: clamp(0.45rem, 1.2vw, 0.85rem);
 }
 
 .grid-3-cols .info-block {
     background: rgba(201, 162, 41, 0.03);
     border: 1px solid var(--border-card);
     border-radius: var(--radius-md, 10px);
-    padding: 0.75rem 0.85rem;
+    padding: clamp(0.55rem, 1.2vw, 0.75rem) clamp(0.6rem, 1.4vw, 0.85rem);
 }
 
 .principal-signature {
     text-align: center;
     color: var(--royal-blue);
-    font-size: 1.1rem;
-    margin-top: 1.2rem;
+    font-size: clamp(0.92rem, 0.85rem + 0.5vw, 1.1rem);
+    margin-top: clamp(0.65rem, 1.6vw, 1.2rem);
     font-weight: 600;
     font-family: var(--font-serif);
+    line-height: clamp(1.24, 1.28, 1.35);
 }
 
 body.dark-mode .principal-signature {
@@ -211,8 +215,9 @@ body.dark-mode .principal-signature {
 }
 
 .info-block p {
-    font-size: 0.88rem;
-    line-height: 1.44;
+    font-size: clamp(0.76rem, 0.72rem + 0.3vw, 0.88rem);
+    line-height: clamp(1.32, 1.28 + 0.2vw, 1.44);
+    margin-bottom: clamp(0.2rem, 0.5vw, 0.35rem);
 }
 
 /* Icon Lists — Compact Institutional Style */
@@ -224,11 +229,11 @@ body.dark-mode .principal-signature {
 
 .icon-list li {
     position: relative;
-    padding-left: 1.35rem;
-    margin-bottom: 0.35rem;
+    padding-left: clamp(1.1rem, 2.4vw, 1.35rem);
+    margin-bottom: clamp(0.2rem, 0.6vw, 0.35rem);
     color: var(--text-muted);
-    font-size: var(--text-doc-body, 0.90rem);
-    line-height: 1.42;
+    font-size: var(--text-doc-body, clamp(0.76rem, 0.72rem + 0.3vw, 0.90rem));
+    line-height: clamp(1.32, 1.28 + 0.2vw, 1.42);
     transition: var(--transition-smooth);
 }
 
@@ -260,15 +265,15 @@ body.dark-mode .principal-signature {
 .divider {
     border: none;
     border-top: 1px dashed var(--border-soft);
-    margin: 0.75rem 0;
+    margin: clamp(0.4rem, 1vw, 0.75rem) 0;
 }
 
 .alert-box {
-    padding: 0.65rem 0.85rem;
+    padding: clamp(0.42rem, 1vw, 0.65rem) clamp(0.6rem, 1.4vw, 0.85rem);
     border-radius: var(--radius-md, 10px);
-    font-size: 0.86rem;
-    line-height: 1.42;
-    margin-bottom: 0.8rem;
+    font-size: clamp(0.74rem, 0.70rem + 0.25vw, 0.86rem);
+    line-height: clamp(1.32, 1.28 + 0.2vw, 1.42);
+    margin-bottom: clamp(0.45rem, 1.2vw, 0.8rem);
 }
 
 .alert-warning {
@@ -280,13 +285,13 @@ body.dark-mode .principal-signature {
 .alert-text {
     color: var(--accent-red);
     font-weight: 600;
-    font-size: 0.84rem;
-    line-height: 1.4;
-    margin-top: 0.75rem;
+    font-size: clamp(0.72rem, 0.68rem + 0.25vw, 0.84rem);
+    line-height: clamp(1.32, 1.28 + 0.2vw, 1.40);
+    margin-top: clamp(0.4rem, 1vw, 0.75rem);
     display: flex;
     align-items: flex-start;
-    gap: 0.5rem;
-    padding: 0.4rem 0;
+    gap: clamp(0.35rem, 0.8vw, 0.5rem);
+    padding: clamp(0.2rem, 0.5vw, 0.4rem) 0;
 }
 
 body.dark-mode .alert-text {
@@ -297,24 +302,24 @@ body.dark-mode .alert-text {
 .dates-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: clamp(0.45rem, 1.2vw, 1rem);
 }
 
 .date-block {
     flex: 1;
-    min-width: 180px;
+    min-width: 160px;
     background: rgba(201, 162, 41, 0.03);
     border: 1px solid var(--border-card);
     border-radius: var(--radius-md, 10px);
-    padding: 0.75rem 0.85rem;
+    padding: clamp(0.55rem, 1.2vw, 0.75rem) clamp(0.6rem, 1.4vw, 0.85rem);
 }
 
 /* Department Program Lists */
 .offers-list {
-    margin-bottom: 0.5rem;
+    margin-bottom: clamp(0.3rem, 0.8vw, 0.5rem);
 }
 
 .tech-depts-list {
-    margin-bottom: 0.35rem;
+    margin-bottom: clamp(0.2rem, 0.6vw, 0.35rem);
 }
 

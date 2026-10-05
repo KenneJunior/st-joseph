@@ -449,6 +449,7 @@
     }
 
     #navMenu {
+        display: none;
         position: absolute;
         top: 100%;
         left: 0;
@@ -460,6 +461,12 @@
         padding: 0.85rem 1rem;
         gap: 0.75rem;
         border-bottom: 2px solid var(--gold);
+        z-index: 1000;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    #navMenu.active {
+        display: flex;
     }
 
     .nav-link {
@@ -505,16 +512,30 @@
         letter-spacing: 0.4px;
     }
 
-    /* ─── Grid System & Card Dimensions ─── */
+    /* ─── Grid System & Card Dimensions (>360px 2-column minmax() flow) ─── */
     .prospectus-grid {
         display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        padding: 0.55rem 0.45rem;
-        gap: 0.55rem;
+        grid-template-columns: repeat(auto-fit, minmax(clamp(155px, calc(50% - clamp(0.35rem, 1vw, 0.65rem)), 1fr), 1fr));
+        padding: clamp(0.45rem, 1.5vw, 0.75rem);
+        gap: clamp(0.45rem, 1.2vw, 0.65rem);
     }
 
-    .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-12 {
-        grid-column: span 12;
+    /* Cards requiring full-width space */
+    .col-full-mobile,
+    #fees-structure,
+    #boarding-toiletry {
+        grid-column: 1 / -1;
+    }
+
+    /* Paired section cards in 2-column layout */
+    #about-sjccc,
+    #departments-entry,
+    #books-stationery,
+    #uniform-apparel,
+    #school-rules,
+    #health-finance,
+    #important-dates {
+        grid-column: auto;
     }
 
     .section-card {
@@ -852,9 +873,19 @@
     }
 }
 
-/* ─── Tier 7: Ultra-Compact Mobile Phones (max-width: 340px) ─── */
-/* Graceful fallback for extremely small displays (e.g. 320px) preventing horizontal overflow */
-@media (max-width: 340px) {
+/* ─── Tier 7: Ultra-Compact Mobile Phones (max-width: 359px) ─── */
+/* Graceful fallback for displays below 360px (e.g. 320px) preventing horizontal overflow */
+@media (max-width: 359px) {
+    .prospectus-grid {
+        grid-template-columns: 1fr !important;
+        padding: 0.4rem 0.35rem;
+        gap: 0.45rem;
+    }
+
+    .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-12 {
+        grid-column: span 1 !important;
+    }
+
     .header-title {
         font-size: 1.05rem;
     }

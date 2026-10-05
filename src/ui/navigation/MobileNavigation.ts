@@ -131,6 +131,19 @@ export class MobileNavigation {
     }
 
     private bindLinkClicks(): void {
+        // Event delegation on navMenu ensures any link click (including nested spans/icons) immediately dismisses the menu
+        this.navMenu?.addEventListener('click', (e: MouseEvent) => {
+            const target = e.target as HTMLElement | null;
+            if (!target) return;
+            const anchor = target.closest('a');
+            if (anchor && this.navMenu?.contains(anchor)) {
+                if (anchor.id !== 'themeToggle' && anchor.id !== 'darkModeToggle') {
+                    this.closeMenu();
+                    this.syncActiveBottomTab(anchor.getAttribute('href'));
+                }
+            }
+        });
+
         this.navMenu?.querySelectorAll<HTMLAnchorElement>(this.linkSelector)
             .forEach((link) => {
                 link.addEventListener('click', () => {
@@ -186,17 +199,21 @@ export class MobileNavigation {
 
     private bindOutsideClick(): void {
         document.addEventListener('click', (e: MouseEvent) => {
-            const target = e.target as Node;
-            const clickedInsideHeader = this.header?.contains(target);
-            const clickedInsideDrawer = this.navMenu?.contains(target);
-            const clickedInsideBottomToggle = this.bottomMenuToggle?.contains(target);
+            if (!this.navMenu?.classList.contains('active')) return;
 
-            if (
-                !clickedInsideHeader &&
-                !clickedInsideDrawer &&
-                !clickedInsideBottomToggle &&
-                this.navMenu?.classList.contains('active')
-            ) {
+            const target = e.target as Node;
+            const clickedMenuToggle = this.menuToggle?.contains(target);
+            const clickedBottomToggle = this.bottomMenuToggle?.contains(target);
+
+            // Don't interfere if the user clicked the toggle button itself (handled by toggleMenu)
+            if (clickedMenuToggle || clickedBottomToggle) {
+                return;
+            }
+
+            const clickedInsideDrawer = this.navMenu.contains(target);
+
+            // If clicked completely outside the menu, or clicked directly on navMenu container/backdrop overlay
+            if (!clickedInsideDrawer || target === this.navMenu) {
                 this.closeMenu();
             }
         });

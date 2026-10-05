@@ -14,15 +14,15 @@
     width: 100%;
     border-collapse: collapse;
     text-align: left;
-    font-size: var(--text-doc-small, 0.86rem);
-    min-width: 260px;
+    font-size: var(--text-doc-small, clamp(0.70rem, 0.66rem + 0.3vw, 0.86rem));
+    min-width: 0;
 }
 
 .data-table caption {
     text-align: left;
-    font-size: 0.88rem;
+    font-size: clamp(0.76rem, 0.72rem + 0.3vw, 0.88rem);
     color: var(--royal-blue);
-    margin-bottom: 0.6rem;
+    margin-bottom: clamp(0.35rem, 0.8vw, 0.6rem);
     font-weight: 700;
 }
 
@@ -33,26 +33,38 @@ body.dark-mode .data-table caption {
 .data-table th {
     background: var(--deep-blue);
     color: var(--text-light);
-    padding: 0.52rem 0.85rem;
+    padding: clamp(0.32rem, 0.8vw, 0.52rem) clamp(0.45rem, 1vw, 0.85rem);
     font-weight: 600;
-    font-size: 0.86rem;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
+    font-size: clamp(0.70rem, 0.66rem + 0.3vw, 0.86rem);
+    letter-spacing: clamp(0.2px, 0.05vw, 0.3px);
+    line-height: clamp(1.22, 1.25 + 0.1vw, 1.35);
 }
 
 .data-table td {
-    padding: 0.42rem 0.85rem;
+    padding: clamp(0.30rem, 0.7vw, 0.42rem) clamp(0.45rem, 1vw, 0.85rem);
     border-bottom: 1px solid var(--border-card);
     color: var(--text-main);
+    line-height: clamp(1.24, 1.26 + 0.15vw, 1.35);
+}
+
+.data-table th:first-child,
+.data-table td:first-child {
+    white-space: normal;
+    word-break: break-word;
+}
+
+.data-table th:last-child,
+.data-table td:last-child {
     white-space: nowrap;
-    line-height: 1.35;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
 }
 
 .data-table tfoot th {
     background: var(--sj-navy-950, #020c1a);
     color: var(--text-light);
-    padding: 0.55rem 0.85rem;
-    font-size: 0.88rem;
+    padding: clamp(0.38rem, 0.9vw, 0.55rem) clamp(0.45rem, 1vw, 0.85rem);
+    font-size: clamp(0.72rem, 0.68rem + 0.3vw, 0.88rem);
     border-top: 2px solid var(--gold);
 }
 

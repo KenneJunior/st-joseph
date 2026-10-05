@@ -36,3 +36,116 @@
 
 /* 11. Print & PDF Rendering Engine */
 @import './prospectus/print.css';
+
+/* ==========================================================================
+   12. Mobile Information-Density Grid Rules (Small Mobile Viewports >= 360px)
+   Enforces 2-column layouts on card-heavy containers using repeat(2, minmax(0, 1fr))
+   and responsive gaps, preventing vertical stacking while eliminating horizontal overflow.
+   ========================================================================== */
+@media (min-width: 360px) and (max-width: 1024px) {
+    /* Master Section Card Container: 2-column responsive grid */
+    .prospectus-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: clamp(0.45rem, 1.4vw, 0.85rem);
+        padding: clamp(0.45rem, 1.5vw, 0.9rem);
+    }
+
+    /* Cards requiring full-width tabular or complex horizontal space */
+    .col-full-mobile,
+    #fees-structure,
+    #boarding-toiletry {
+        grid-column: 1 / -1;
+    }
+
+    /* Paired section cards in 2-column flow */
+    #about-sjccc,
+    #departments-entry,
+    #books-stationery,
+    #uniform-apparel,
+    #school-rules,
+    #health-finance,
+    #important-dates {
+        grid-column: auto;
+    }
+}
+
+/* Card-Heavy Sections across all viewports wider than 360px */
+@media (min-width: 360px) {
+    /* Statistics, Metrics & Data Blocks: 2-column layout using repeat(2, minmax(0, 1fr)) */
+    .stats-row,
+    .stats-grid,
+    .stat-container,
+    .metrics-grid,
+    .grid-3-cols {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: clamp(0.35rem, 1.2vw, 0.75rem) !important;
+    }
+
+    .stats-row > *,
+    .stats-grid > *,
+    .stat-container > *,
+    .metrics-grid > *,
+    .grid-3-cols > * {
+        min-width: 0 !important;
+    }
+
+    /* Programme Summaries & Academic Offerings: 2-column layout using repeat(2, minmax(0, 1fr)) */
+    .tech-depts-list,
+    .offers-list,
+    .programs-summary,
+    .departments-grid,
+    .programme-grid,
+    .academic-pillars-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: clamp(0.2rem, 0.8vw, 0.45rem) clamp(0.35rem, 1vw, 0.75rem) !important;
+    }
+
+    .tech-depts-list > *,
+    .offers-list > *,
+    .programs-summary > *,
+    .departments-grid > *,
+    .programme-grid > * {
+        min-width: 0 !important;
+    }
+
+    /* Important Dates Container: 2-column layout using repeat(2, minmax(0, 1fr)) */
+    .dates-grid,
+    #important-dates .card-content {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: clamp(0.35rem, 1.2vw, 0.65rem) !important;
+    }
+
+    .date-block,
+    #important-dates .info-block {
+        min-width: 0 !important;
+        flex: none !important;
+    }
+
+    /* Uniform & Apparel Attire Container: 2-column layout using repeat(2, minmax(0, 1fr)) */
+    .uniform-split {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: clamp(0.3rem, 1vw, 0.65rem) !important;
+        align-items: stretch;
+    }
+
+    .uniform-splitter {
+        display: none !important;
+    }
+
+    /* Footer Cards Container: 2-column layout using repeat(2, minmax(0, 1fr)) */
+    .footer-top-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: clamp(0.5rem, 1.2vw, 0.85rem) !important;
+    }
+
+    .footer-top-grid > * {
+        min-width: 0 !important;
+    }
+}
+

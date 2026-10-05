@@ -84,18 +84,18 @@
     --prospectus-max-width: 1460px;
     --doc-visual-width: 1280px;
 
-    /* Semantic Density Spacing Scale */
-    --space-doc-pad-y: 1.5rem;
-    --space-doc-pad-x: 1.5rem;
-    --space-grid-gap: 1.25rem;
-    --space-card-pad: 1.25rem;
-    --space-header-mb: 1rem;
-    --space-element-gap: 0.65rem;
+    /* Semantic Density Spacing Scale (Fluid clamp values for dense mobile without overflow) */
+    --space-doc-pad-y: clamp(0.5rem, 1.8vw, 1.5rem);
+    --space-doc-pad-x: clamp(0.45rem, 1.6vw, 1.5rem);
+    --space-grid-gap: clamp(0.45rem, 1.4vw, 1.25rem);
+    --space-card-pad: clamp(0.65rem, 1.6vw, 1.25rem);
+    --space-header-mb: clamp(0.5rem, 1.2vw, 1rem);
+    --space-element-gap: clamp(0.35rem, 1vw, 0.65rem);
 
-    /* Typographic Hierarchy Tokens */
-    --text-doc-body: 0.92rem;
-    --text-doc-small: 0.86rem;
-    --text-doc-line-height: 1.48;
+    /* Typographic Hierarchy Tokens (Strict line-height & font-size clamp limits) */
+    --text-doc-body: clamp(0.76rem, 0.72rem + 0.3vw, 0.92rem);
+    --text-doc-small: clamp(0.70rem, 0.66rem + 0.3vw, 0.86rem);
+    --text-doc-line-height: clamp(1.32, 1.28 + 0.2vw, 1.48);
 }
 
 /* ─── 8. Dark Theme Overrides (Deep, Immersive & Consolidated) ─── */
