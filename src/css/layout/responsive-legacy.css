@@ -87,20 +87,24 @@
   }
 
   .academics-pillars {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    max-width: 640px;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: 100%;
+  }
+
+  .card-splitter--responsive {
+    display: none !important;
   }
 
   .events-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    max-width: 640px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    max-width: 100%;
   }
 
   .campus-map-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 12px;
   }
 }
 
@@ -195,46 +199,51 @@
 
   /* Stats Grid */
   .stats-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    max-width: 100%;
+  }
+
+  .stat-card {
+    padding: 6px 3px;
+    border-radius: var(--radius-sm);
+  }
+
+  .stat-card::before {
+    width: 24px;
+    height: 1.5px;
+  }
+
+  .stat-number {
+    font-size: clamp(1.10rem, 3.8vw, 1.30rem);
+    margin-bottom: 1px;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.58rem;
+    line-height: 1.15;
+  }
+
+  .stat-icon {
+    font-size: 0.95rem;
+    margin-bottom: 1px;
+  }
+
+  .stat-context {
+    font-size: 0.60rem;
+    margin-top: 1px;
+  }
+
+  /* Academics Pillars */
+  .academics-pillars {
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     max-width: 100%;
   }
 
-  .stat-card {
-    padding: 10px 8px;
-    border-radius: var(--radius-sm);
-  }
-
-  .stat-card::before {
-    width: 30px;
-    height: 2px;
-  }
-
-  .stat-number {
-    font-size: clamp(1.25rem, 4.2vw, 1.5rem);
-    margin-bottom: 2px;
-  }
-
-  .stat-label {
-    font-size: 0.72rem;
-    line-height: 1.2;
-  }
-
-  .stat-icon {
-    font-size: 1.1rem;
-    margin-bottom: 2px;
-  }
-
-  .stat-context {
-    font-size: 0.68rem;
-    margin-top: 2px;
-  }
-
-  /* Academics Pillars */
-  .academics-pillars {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    max-width: 100%;
+  .card-splitter--responsive {
+    display: none !important;
   }
 
   .pillar {
@@ -242,7 +251,7 @@
   }
 
   .pillar__header {
-    padding: 11px 12px;
+    padding: 8px 8px;
   }
 
   .pillar__icon {
@@ -290,9 +299,13 @@
 
   /* Events Grid */
   .events-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
     max-width: 100%;
+  }
+
+  .news-card--featured {
+    grid-column: 1 / -1;
   }
 
   .event-card {
@@ -413,7 +426,7 @@
 
   /* Campus Map */
   .campus-map-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 12px;
   }
 
@@ -467,7 +480,7 @@
   }
 
   .map-detail-img-container {
-    height: 120px;
+    height: clamp(220px, 48vw, 300px);
   }
 
   .map-detail-category-badge {
@@ -511,17 +524,19 @@
   }
 
   .map-detail-amenities-list {
-    gap: 4px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 6px;
   }
 
   .map-detail-amenities-list li {
-    font-size: 0.70rem;
+    font-size: 0.68rem;
     gap: 4px;
-    line-height: 1.25;
+    line-height: 1.2;
   }
 
   .map-detail-meta-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 4px;
   }
 
@@ -903,9 +918,13 @@
   }
 
   .footer-content {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-bottom: 14px;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .footer-content > div:nth-child(2) {
+    grid-column: 1 / -1;
   }
 
   footer h3 {
@@ -1069,25 +1088,25 @@
 
   /* Stats Grid */
   .stats-row {
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
   }
 
   .stat-card {
-    padding: 8px 5px;
+    padding: 5px 2px;
   }
 
   .stat-number {
-    font-size: clamp(1.15rem, 4vw, 1.35rem);
+    font-size: clamp(1.02rem, 3.5vw, 1.18rem);
   }
 
   .stat-label {
-    font-size: 0.66rem;
-    line-height: 1.15;
+    font-size: 0.54rem;
+    line-height: 1.12;
   }
 
   .stat-icon {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
 
   /* Cards Grid */
@@ -1118,39 +1137,44 @@
 
   /* Academics */
   .academics-pillars {
-    gap: 8px;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
   }
 
   .pillar__header {
-    padding: 9px 10px;
+    padding: 7px 6px;
   }
 
   .pillar__icon {
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     margin-bottom: 2px;
   }
 
   .pillar__title {
-    font-size: 0.90rem;
+    font-size: 0.80rem;
   }
 
   .pillar__desc {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .pillar__levels {
-    padding: 6px 8px;
-    gap: 5px;
+    padding: 4px 4px;
+    gap: 3px;
   }
 
   .level {
-    padding: 6px 7px;
+    padding: 4px 5px;
   }
 
   .level--ordinary .level__title,
   .level--advanced .level__title,
   .level--commercial .level__title {
-    font-size: 0.76rem;
+    font-size: 0.70rem;
     margin-bottom: 2px;
   }
 
@@ -1160,13 +1184,18 @@
   }
 
   .level__subjects li {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     padding: 1px 0;
   }
 
   /* Events */
   .events-grid {
-    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .news-card--featured {
+    grid-column: 1 / -1;
   }
 
   .event-card__date {
@@ -1373,19 +1402,19 @@
   }
 
   .stats-row {
-    gap: 4px;
+    gap: 3px;
   }
 
   .stat-card {
-    padding: 6px 4px;
+    padding: 4px 2px;
   }
 
   .stat-number {
-    font-size: 1.08rem;
+    font-size: 0.98rem;
   }
 
   .stat-label {
-    font-size: 0.64rem;
+    font-size: 0.52rem;
   }
 
   .card {
@@ -1401,23 +1430,23 @@
   }
 
   .pillar__levels {
-    padding: 6px 5px;
+    padding: 3px 3px;
   }
 
   .pillar__header {
-    padding: 8px 7px;
+    padding: 6px 5px;
   }
 
   .pillar__title {
-    font-size: 0.84rem;
+    font-size: 0.76rem;
   }
 
   .level {
-    padding: 5px 5px;
+    padding: 3px 4px;
   }
 
   .level__subjects li {
-    font-size: 0.66rem;
+    font-size: 0.60rem;
   }
 
   .cta-banner {

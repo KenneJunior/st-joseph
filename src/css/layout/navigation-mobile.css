@@ -387,7 +387,7 @@ body.drawer-open {
   }
 }
 
-/* ---------- MAX 768px (Compact Mode: Bottom Tab Bar & Touch-Friendly Slide-out Drawer) ---------- */
+/* ---------- MAX 768px (Compact Mode: Floating Glass Pill Bottom Dock & Touch-Friendly Slide-out Drawer) ---------- */
 @media (max-width: 768px) {
   /* Hide top header actions and menu toggle when bottom bar is active */
   .menu-toggle,
@@ -395,158 +395,205 @@ body.drawer-open {
     display: none !important;
   }
 
-  /* Mobile Bottom Tab Bar */
+  /* ─── Mobile Bottom Floating Glass Pill Dock ─── */
   .mobile-bottom-bar {
+    --dock-bg: rgba(255, 255, 255, 0.92);
+    --dock-border: rgba(7, 24, 46, 0.12);
+    --dock-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.78),
+                            inset 0 -1px 0 rgba(7, 24, 46, 0.04);
+    --dock-shadow: 0 10px 28px -6px rgba(7, 24, 46, 0.18),
+                   0 3px 10px -2px rgba(7, 24, 46, 0.10);
+    --dock-blur: 14px;
+    --dock-radius: var(--radius-pill, 9999px);
+    --dock-bottom-offset: calc(10px + env(safe-area-inset-bottom, 0px));
+    --dock-item-color: #465368;
+    --dock-item-hover-bg: rgba(7, 24, 46, 0.05);
+    --dock-item-press-bg: rgba(7, 24, 46, 0.09);
+    --dock-active-bg: rgba(201, 162, 41, 0.14);
+    --dock-active-border: rgba(201, 162, 41, 0.30);
+    --dock-active-color: #8c6a21;
+    --dock-active-dot: var(--accent, #c9a229);
+
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
+    gap: 2px;
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: calc(58px + env(safe-area-inset-bottom, 0px));
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    padding-left: max(6px, env(safe-area-inset-left, 0px));
-    padding-right: max(6px, env(safe-area-inset-right, 0px));
-    z-index: var(--z-nav-bottom, 3500);
-    background: var(--surface-card, #ffffff);
-    backdrop-filter: blur(18px) saturate(180%);
-    -webkit-backdrop-filter: blur(18px) saturate(180%);
-    border-top: 1px solid var(--border-light, rgba(0, 0, 0, 0.08));
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    left: 50%;
+    right: auto;
+    bottom: var(--dock-bottom-offset);
+    width: min(468px, calc(100vw - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+    max-width: calc(100vw - 20px);
+    height: 52px;
+    padding: 4px 6px;
+    border-radius: var(--dock-radius);
+    z-index: var(--z-drawer, 3000);
+    background: var(--dock-bg);
+    border: 1px solid var(--dock-border);
+    box-shadow: var(--dock-shadow), var(--dock-inner-highlight);
     box-sizing: border-box;
-    transform: translateY(0);
+    transform: translate3d(-50%, 0, 0);
     transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.25, 1),
-                background var(--duration-fast, 200ms) var(--ease-standard),
+                background-color var(--duration-fast, 200ms) var(--ease-standard),
                 border-color var(--duration-fast, 200ms) var(--ease-standard),
                 box-shadow var(--duration-fast, 200ms) var(--ease-standard);
     will-change: transform;
   }
 
-  /* Dark theme override */
+  /* Dark theme fallback surface (before backdrop-filter enhancement) */
   html.dark-mode .mobile-bottom-bar,
   body.dark-mode .mobile-bottom-bar {
-    background: rgba(3, 13, 27, 0.96);
-    border-top: 1px solid rgba(201, 162, 41, 0.35);
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.55);
+    --dock-bg: rgba(7, 24, 46, 0.90);
+    --dock-border: rgba(201, 162, 41, 0.30);
+    --dock-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.12),
+                            inset 0 -1px 0 rgba(201, 162, 41, 0.10);
+    --dock-shadow: 0 14px 34px -6px rgba(2, 8, 18, 0.62),
+                   0 4px 12px -2px rgba(0, 0, 0, 0.42);
+    --dock-item-color: rgba(232, 238, 248, 0.76);
+    --dock-item-hover-bg: rgba(255, 255, 255, 0.06);
+    --dock-item-press-bg: rgba(255, 255, 255, 0.10);
+    --dock-active-bg: rgba(201, 162, 41, 0.17);
+    --dock-active-border: rgba(243, 215, 121, 0.34);
+    --dock-active-color: var(--accent-glow, #f3d779);
+    --dock-active-dot: var(--accent-glow, #f3d779);
   }
 
-  /* Scroll-direction hide state */
+  /* Progressive Enhancement: True Frosted Glass Surface when backdrop-filter is supported */
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .mobile-bottom-bar {
+      --dock-bg: rgba(248, 250, 254, 0.72);
+      --dock-border: rgba(10, 31, 63, 0.13);
+      -webkit-backdrop-filter: blur(var(--dock-blur)) saturate(160%);
+      backdrop-filter: blur(var(--dock-blur)) saturate(160%);
+    }
+
+    html.dark-mode .mobile-bottom-bar,
+    body.dark-mode .mobile-bottom-bar {
+      --dock-bg: rgba(7, 24, 46, 0.64);
+      --dock-border: rgba(201, 162, 41, 0.28);
+    }
+  }
+
+  /* Scroll-direction hide state: slides cleanly below the bottom viewport edge while keeping horizontal centering */
   .mobile-bottom-bar.bottom-bar--hidden {
-    transform: translateY(calc(100% + env(safe-area-inset-bottom, 0px)));
+    transform: translate3d(-50%, calc(100% + var(--dock-bottom-offset) + 12px), 0);
   }
 
+  /* Individual Dock Items inside the Continuous Glass Capsule */
   .mobile-bottom-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 2px;
-    min-height: 48px;
+    height: 44px;
+    min-height: 44px;
     min-width: 44px;
     flex: 1 1 0;
-    max-width: 76px;
-    padding: 4px 2px;
-    color: var(--text-muted, #7a7a96);
+    max-width: 72px;
+    padding: 3px 4px;
+    color: var(--dock-item-color);
     text-decoration: none;
     background: transparent;
-    border: none;
-    border-radius: 12px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill, 9999px);
     cursor: pointer;
-    transition: color var(--duration-fast, 200ms) ease,
-                background var(--duration-fast, 200ms) ease,
-                transform var(--duration-fast, 200ms) ease;
+    transition: color 180ms ease,
+                background-color 180ms ease,
+                border-color 180ms ease,
+                transform 150ms ease;
     -webkit-tap-highlight-color: transparent;
     position: relative;
     box-sizing: border-box;
+    user-select: none;
   }
 
-  html.dark-mode .mobile-bottom-item,
-  body.dark-mode .mobile-bottom-item {
-    color: rgba(255, 255, 255, 0.72);
+  @media (hover: hover) {
+    .mobile-bottom-item:hover:not(.active):not([aria-current="location"]) {
+      background: var(--dock-item-hover-bg);
+      color: var(--primary, #0a1f3f);
+    }
+
+    html.dark-mode .mobile-bottom-item:hover:not(.active):not([aria-current="location"]),
+    body.dark-mode .mobile-bottom-item:hover:not(.active):not([aria-current="location"]) {
+      color: #ffffff;
+    }
+  }
+
+  /* Tactile press feedback on touch & click */
+  .mobile-bottom-item:active {
+    transform: scale(0.95);
+    background: var(--dock-item-press-bg);
+  }
+
+  /* Accessible keyboard focus ring */
+  .mobile-bottom-item:focus-visible {
+    outline: 2px solid var(--accent, #c9a229);
+    outline-offset: -2px;
   }
 
   .mobile-bottom-item i {
-    font-size: 1.05rem;
+    font-size: 0.98rem;
     line-height: 1;
     color: inherit;
-    transition: transform var(--duration-fast, 200ms) var(--ease-standard),
-                color var(--duration-fast, 200ms) ease;
+    transition: transform 180ms var(--ease-standard),
+                color 180ms ease;
   }
 
   .mobile-bottom-label {
-    font-size: clamp(0.50rem, 0.44rem + 0.35vw, 0.62rem);
+    font-size: clamp(0.49rem, 0.43rem + 0.30vw, 0.59rem);
     font-weight: 600;
     letter-spacing: -0.1px;
-    line-height: 1.1;
+    line-height: 1.08;
     color: inherit;
     white-space: nowrap;
     text-align: center;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  /* Active state for bottom dock items */
+  /* Active Destination Treatment: Subtle inner glass capsule & restrained gold accent */
   .mobile-bottom-item.active,
   .mobile-bottom-item[aria-current="location"] {
-    color: var(--accent, #c9a229) !important;
-    background: rgba(201, 162, 41, 0.12);
+    color: var(--dock-active-color) !important;
+    background: var(--dock-active-bg);
+    border-color: var(--dock-active-border);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+
+  html.dark-mode .mobile-bottom-item.active,
+  body.dark-mode .mobile-bottom-item.active,
+  html.dark-mode .mobile-bottom-item[aria-current="location"],
+  body.dark-mode .mobile-bottom-item[aria-current="location"] {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10),
+                0 2px 8px rgba(0, 0, 0, 0.22);
   }
 
   .mobile-bottom-item.active i,
   .mobile-bottom-item[aria-current="location"] i {
-    transform: scale(1.12);
-    color: var(--accent, #c9a229);
+    transform: translateY(-0.5px) scale(1.06);
+    color: var(--dock-active-color);
   }
 
   .mobile-bottom-item.active .mobile-bottom-label,
   .mobile-bottom-item[aria-current="location"] .mobile-bottom-label {
     font-weight: 700;
-    color: var(--accent, #c9a229);
+    color: var(--dock-active-color);
   }
 
   .mobile-bottom-item.active::after,
   .mobile-bottom-item[aria-current="location"]::after {
     content: '';
     position: absolute;
-    top: 3px;
+    bottom: 3px;
     left: 50%;
     transform: translateX(-50%);
-    width: 18px;
-    height: 3px;
-    background: var(--accent, #c9a229);
-    border-radius: 3px;
-    box-shadow: 0 0 8px rgba(201, 162, 41, 0.6);
-  }
-
-  /* Dark mode active bottom dock items */
-  html.dark-mode .mobile-bottom-item.active,
-  body.dark-mode .mobile-bottom-item.active,
-  html.dark-mode .mobile-bottom-item[aria-current="location"],
-  body.dark-mode .mobile-bottom-item[aria-current="location"] {
-    color: var(--accent-glow, #fbe3a1) !important;
-    background: rgba(201, 162, 41, 0.16);
-  }
-
-  html.dark-mode .mobile-bottom-item.active i,
-  body.dark-mode .mobile-bottom-item.active i,
-  html.dark-mode .mobile-bottom-item[aria-current="location"] i,
-  body.dark-mode .mobile-bottom-item[aria-current="location"] i {
-    color: var(--accent-glow, #fbe3a1);
-  }
-
-  html.dark-mode .mobile-bottom-item.active .mobile-bottom-label,
-  body.dark-mode .mobile-bottom-item.active .mobile-bottom-label,
-  html.dark-mode .mobile-bottom-item[aria-current="location"] .mobile-bottom-label,
-  body.dark-mode .mobile-bottom-item[aria-current="location"] .mobile-bottom-label {
-    color: var(--accent-glow, #fbe3a1);
-  }
-
-  html.dark-mode .mobile-bottom-item.active::after,
-  body.dark-mode .mobile-bottom-item.active::after,
-  html.dark-mode .mobile-bottom-item[aria-current="location"]::after,
-  body.dark-mode .mobile-bottom-item[aria-current="location"]::after {
-    background: var(--accent-glow, #fbe3a1);
-    box-shadow: 0 0 10px rgba(251, 227, 161, 0.8);
+    width: 12px;
+    height: 2px;
+    background: var(--dock-active-dot);
+    border-radius: 999px;
+    opacity: 0.9;
   }
 
   /* Theme Toggle Icon & Name Switching in Dock Bar */
@@ -590,24 +637,28 @@ body.drawer-open {
     display: inline;
   }
 
-  /* Page content spacing for bottom bar */
+  /* Page bottom breathing room so the floating pill never obscures footer copyright or links */
   #main-content {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 12px;
   }
 
-  /* Floating Controls: Stacking without collisions */
+  footer#contact {
+    padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Floating Controls: Coordinated clearance above the floating glass pill dock */
   #backToTop {
-    bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
-    right: 16px !important;
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 14px !important;
   }
 
   .enquiry-fab {
     bottom: calc(128px + env(safe-area-inset-bottom, 0px)) !important;
-    right: 16px !important;
+    right: 14px !important;
   }
 
   .offline-status-indicator {
-    bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
     left: 12px !important;
   }
 
@@ -766,12 +817,26 @@ body.drawer-open {
 }
 
 /* ============================================================
-   RESPONSIVE CAPACITY FOR MOBILE BOTTOM BAR ITEMS (320px - 768px)
+   RESPONSIVE CAPACITY & PILL GEOMETRY FOR MOBILE BOTTOM DOCK (320px - 768px)
    Canonical Order: 1.Theme 2.Home 3.Academics 4.Dates 5.Results 6.Map 7.Menu
    ============================================================ */
 
 /* < 360px: 4 items -> Theme, Home, Academics, Menu */
 @media (max-width: 359px) {
+  .mobile-bottom-bar {
+    width: min(304px, calc(100vw - 16px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+    height: 48px;
+    padding: 3px 5px;
+    --dock-bottom-offset: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-bottom-item {
+    height: 40px;
+    min-height: 40px;
+    min-width: 40px;
+    padding: 2px 3px;
+  }
+
   .mobile-bottom-item--dates,
   .mobile-bottom-item--results,
   .mobile-bottom-item--map {
@@ -781,6 +846,18 @@ body.drawer-open {
 
 /* 360px - 413px: 5 items -> Theme, Home, Academics, Dates, Menu */
 @media (min-width: 360px) and (max-width: 413px) {
+  .mobile-bottom-bar {
+    width: min(358px, calc(100vw - 20px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+    height: 50px;
+    padding: 3px 5px;
+  }
+
+  .mobile-bottom-item {
+    height: 42px;
+    min-height: 42px;
+    min-width: 42px;
+  }
+
   .mobile-bottom-item--results,
   .mobile-bottom-item--map {
     display: none !important;
@@ -789,6 +866,10 @@ body.drawer-open {
 
 /* 414px - 599px: 6 items -> Theme, Home, Academics, Dates, Results, Menu */
 @media (min-width: 414px) and (max-width: 599px) {
+  .mobile-bottom-bar {
+    width: min(416px, calc(100vw - 22px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+  }
+
   .mobile-bottom-item--map {
     display: none !important;
   }
@@ -803,7 +884,9 @@ body.drawer-open {
 
 /* Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
-  .mobile-bottom-bar {
+  .mobile-bottom-bar,
+  .mobile-bottom-item,
+  .mobile-bottom-item i {
     transition: none !important;
   }
 }
