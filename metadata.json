@@ -1,6 +1,6 @@
 {
-  "name": "St. Joseph's Catholic Comprehensive College",
-  "description": "Official web portal and interactive 2026/2027 student prospectus for St. Joseph's Catholic Comprehensive College (SJCCC) Mbengwi, Cameroon.",
+  "name": "Remix Remix st-joseph",
+  "description": "Imported from GitHub",
   "requestFramePermissions": [],
   "capabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
