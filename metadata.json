@@ -1,6 +1,6 @@
 {
-  "name": "st-joseph",
-  "description": "St. Joseph's Catholic Comprehensive College Mbengwi offers a nurturing, holistic General and Technical education from Ordinary to Advanced Level.",
+  "name": "St. Joseph's Catholic Comprehensive College",
+  "description": "Official web portal and interactive 2026/2027 student prospectus for St. Joseph's Catholic Comprehensive College (SJCCC) Mbengwi, Cameroon.",
   "requestFramePermissions": [],
   "capabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
