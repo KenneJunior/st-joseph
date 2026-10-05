@@ -15,6 +15,7 @@ import { SmoothScroll } from '../../ui/utils/SmoothScroll.ts';
 import { ScrollReveal } from '../../ui/utils/ScrollReveal.ts';
 import { CounterAnimation } from '../../ui/utils/CounterAnimation.ts';
 import { HeroParticles } from '../../features/hero/HeroParticles.ts';
+import { HeroTitleTyping } from '../../features/hero/HeroTitleTyping.ts';
 import { ScrollEngine } from '../../features/hero/ScrollEngine.ts';
 import { Carousel } from '../../features/carousel/Carousel.ts';
 import { renderCarouselSlides } from '../../features/carousel/CarouselRenderer.ts';
@@ -148,7 +149,10 @@ export class HomeApp {
         // 10. Smooth scroll
         new SmoothScroll(HOME_SELECTORS.mainHeader, HOME_SELECTORS.smoothScrollLinks);
 
-        // 10. Hero particles
+        // 10b. Hero school heading typing animation
+        new HeroTitleTyping();
+
+        // 10c. Hero particles
         new HeroParticles(HOME_SELECTORS.heroParticles, 60);
 
         // 11. Academic toggles

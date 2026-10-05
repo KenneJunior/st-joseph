@@ -15,8 +15,8 @@
   /* Hero Display Text (360px: 1.40rem -> 414px: ~1.52rem -> 1200px: 3.80rem) [~63% smaller on mobile] */
   --fluid-text-hero: clamp(1.40rem, 0.65rem + 3.33vw, 3.80rem);
 
-  /* H1 / Primary Display (360px: 1.25rem -> 414px: ~1.36rem -> 1200px: 3.25rem) [~61% smaller on mobile] */
-  --fluid-h1: clamp(1.25rem, 0.65rem + 2.67vw, 3.25rem);
+  /* H1 / Primary Display (increased by ~30% per app specification) */
+  --fluid-h1: clamp(1.625rem, 0.85rem + 3.47vw, 4.25rem);
 
   /* H2 / Section Titles (360px: 1.05rem -> 414px: ~1.14rem -> 1200px: 2.70rem) [~61% smaller on mobile] */
   --fluid-h2: clamp(1.05rem, 0.55rem + 2.22vw, 2.70rem);

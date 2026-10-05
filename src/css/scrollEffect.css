@@ -66,7 +66,7 @@
 
 .school-name {
     font-family: var(--font-heading), serif;
-    font-size: clamp(3.0rem, 4.6vw, 4.5rem);
+    font-size: clamp(3.9rem, 6.0vw, 5.85rem);
     font-weight: 700;
     color: #ffffff;
     text-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -75,7 +75,43 @@
     margin-bottom: 1rem;
     text-wrap: balance;
     opacity: 1;
+    position: relative;
+    min-height: 2.2em;
     animation: heroFadeInUp 0.5s var(--ease-cinematic) 0s both;
+}
+
+/* Subtle typing animation caret for hero school heading */
+.hero-typing-caret {
+    display: inline-block;
+    width: clamp(2px, 0.25vw, 4px);
+    height: 0.85em;
+    vertical-align: -0.05em;
+    background: var(--gold-light, #f0c975);
+    margin-left: clamp(2px, 0.2vw, 5px);
+    border-radius: 2px;
+    box-shadow: 0 0 12px rgba(240, 201, 117, 0.85);
+    animation: heroCaretBlink 0.72s ease-in-out infinite;
+    will-change: opacity;
+}
+
+@keyframes heroCaretBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.hero-typing-caret.fade-out {
+    animation: heroCaretFadeOut 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes heroCaretFadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; visibility: hidden; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-typing-caret {
+        display: none !important;
+    }
 }
 
 .hero-badge {
@@ -296,7 +332,7 @@
         padding-bottom: clamp(1.2rem, 2.5vh, 2rem);
     }
     .school-name {
-        font-size: clamp(2.4rem, 3.6vw, 3.2rem);
+        font-size: clamp(3.12rem, 4.68vw, 4.16rem);
         margin-bottom: 0.6rem;
     }
     .hero-badge {
@@ -324,7 +360,7 @@
         padding-bottom: 0.85rem;
     }
     .school-name {
-        font-size: clamp(2.0rem, 3.6vh, 2.6rem);
+        font-size: clamp(2.6rem, 4.68vh, 3.38rem);
         margin-bottom: 0.35rem;
     }
     .hero-badge {
@@ -368,7 +404,7 @@
     .school-name,
     .school-header .school-name,
     .sticky-container .school-name {
-        font-size: clamp(1.36rem, 0.65rem + 3.2vw, 2.30rem);
+        font-size: clamp(1.77rem, 0.85rem + 4.16vw, 3.0rem);
         font-weight: 700;
         line-height: 1.15;
         margin-top: 0;
@@ -477,7 +513,7 @@
     .school-name,
     .school-header .school-name,
     .sticky-container .school-name {
-        font-size: clamp(1.35rem, 0.85rem + 2.4vw, 1.62rem);
+        font-size: clamp(1.75rem, 1.10rem + 3.12vw, 2.10rem);
         margin-bottom: clamp(0.25rem, 0.8vh, 0.45rem);
         line-height: 1.14;
     }
@@ -526,7 +562,7 @@
     .school-name,
     .school-header .school-name,
     .sticky-container .school-name {
-        font-size: clamp(1.25rem, 0.75rem + 2.4vw, 1.38rem);
+        font-size: clamp(1.62rem, 0.98rem + 3.12vw, 1.80rem);
         margin-bottom: 0.25rem;
         line-height: 1.14;
     }
@@ -590,7 +626,7 @@
     .school-name,
     .school-header .school-name,
     .sticky-container .school-name {
-        font-size: clamp(1.20rem, 3.6vh, 1.45rem);
+        font-size: clamp(1.56rem, 4.68vh, 1.88rem);
         margin-bottom: 0.15rem;
     }
     .hero-badge,
