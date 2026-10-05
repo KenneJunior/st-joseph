@@ -74,13 +74,50 @@
 
 @media (max-width: 768px) {
   .location-map-wrapper {
-    min-height: 320px;
+    min-height: 190px;
+  }
+
+  .location-meta-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 0 0 12px 0;
+  }
+
+  .location-meta-list li {
+    gap: 8px;
+  }
+
+  .location-meta-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+  }
+
+  .location-meta-text {
+    font-size: 0.76rem;
+  }
+
+  .location-meta-text strong {
+    font-size: 0.74rem;
+  }
+
+  .location-college-name {
+    font-size: 1.15rem;
   }
 }
 
 @media (max-width: 480px) {
   .location-map-wrapper {
-    min-height: 280px;
+    min-height: 165px;
+  }
+
+  .location-meta-list {
+    gap: 6px;
+  }
+
+  .location-meta-text {
+    font-size: 0.70rem;
   }
 }
 

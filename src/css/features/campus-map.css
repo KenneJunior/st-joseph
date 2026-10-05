@@ -8,8 +8,10 @@
 }
 
 .campus-map-wrapper {
+  width: 100%;
   max-width: 1240px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .campus-map-header {
@@ -137,9 +139,12 @@ body.dark-mode .map-zone-btn.active {
 /* ─── Campus Map Grid Layout ─── */
 .campus-map-grid {
   display: grid;
-  grid-template-columns: 1.25fr 1fr;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
   gap: 32px;
   align-items: start;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* ─── Map Canvas Viewport ─── */
@@ -151,6 +156,10 @@ body.dark-mode .map-zone-btn.active {
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 body.dark-mode .campus-map-viewport {
@@ -774,6 +783,10 @@ body.dark-mode .campus-map-viewport-bar {
 .map-detail-panel {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* ─── Map Detail Card & Content Subtle Slide-In Keyframes ─── */
@@ -808,6 +821,10 @@ body.dark-mode .campus-map-viewport-bar {
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   opacity: 1;
   transform: translate3d(0, 0, 0);
   will-change: transform, opacity;
@@ -973,15 +990,22 @@ body.dark-mode .map-detail-card.slide-in {
 .map-detail-img-container {
   position: relative;
   width: 100%;
-  height: 220px;
+  max-width: 100%;
+  min-width: 0;
+  height: clamp(280px, 32vw, 360px);
   overflow: hidden;
   background: #07182e;
 }
 
+#mapDetailImage,
 .map-detail-image {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  display: block;
   transition: transform 0.5s ease;
 }
 
@@ -1126,8 +1150,9 @@ body.dark-mode .map-detail-amenities-list li {
 /* ─── Metadata Grid ─── */
 .map-detail-meta-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  min-width: 0;
 }
 
 .map-detail-meta-item {
@@ -1138,6 +1163,12 @@ body.dark-mode .map-detail-amenities-list li {
   border: 1px solid rgba(200, 150, 62, 0.2);
   border-radius: 10px;
   padding: 10px 14px;
+  min-width: 0;
+}
+
+.map-detail-meta-item > div {
+  min-width: 0;
+  overflow: hidden;
 }
 
 body.dark-mode .map-detail-meta-item {
@@ -1216,7 +1247,7 @@ body.dark-mode .map-detail-actions {
 /* ─── Mobile Responsiveness ─── */
 @media (max-width: 991px) {
   .campus-map-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 14px;
   }
 
@@ -1326,7 +1357,7 @@ body.dark-mode .map-detail-actions {
   }
 
   .map-detail-img-container {
-    height: 120px;
+    height: clamp(220px, 48vw, 300px);
   }
 
   .map-detail-category-badge {
@@ -1370,49 +1401,52 @@ body.dark-mode .map-detail-actions {
   }
 
   .map-detail-amenities-list {
-    gap: 4px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px 6px;
   }
 
   .map-detail-amenities-list li {
-    font-size: 0.70rem;
+    font-size: 0.68rem;
     gap: 4px;
-    line-height: 1.25;
+    line-height: 1.2;
   }
 
   .map-detail-meta-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 4px;
   }
 
   .map-detail-meta-item {
-    padding: 4px 7px;
+    padding: 3px 6px;
     border-radius: 5px;
-    gap: 6px;
+    gap: 5px;
   }
 
   .meta-label {
-    font-size: 0.60rem;
+    font-size: 0.58rem;
   }
 
   .meta-value {
-    font-size: 0.72rem;
+    font-size: 0.70rem;
   }
 
   .map-detail-actions {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 5px;
-    padding-top: 6px;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    padding-top: 4px;
   }
 
   .map-detail-nav-group {
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 4px;
   }
 
   .map-step-btn,
   .map-inquire-btn {
-    padding: 5px 10px;
-    font-size: 0.74rem;
+    padding: 4px 8px;
+    font-size: 0.70rem;
     border-radius: 6px;
   }
 }
@@ -1423,7 +1457,7 @@ body.dark-mode .map-detail-actions {
   }
 
   .map-detail-img-container {
-    height: 105px;
+    height: clamp(200px, 54vw, 250px);
   }
 
   .map-detail-body {

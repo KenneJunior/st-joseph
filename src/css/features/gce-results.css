@@ -251,8 +251,9 @@ body.dark-mode .gce-summary-card:hover {
 .gce-summary-card-inner {
   display: grid;
   grid-template-columns: 1fr 340px;
-  gap: 32px;
-  padding: 36px 40px;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(12px, 2.2vw, 36px) clamp(10px, 2.5vw, 40px);
+  font-size: clamp(0.66rem, 0.56rem + 0.34vw, 0.96rem);
   position: relative;
   z-index: 1;
 }
@@ -260,23 +261,24 @@ body.dark-mode .gce-summary-card:hover {
 .gce-summary-main {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .gce-summary-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(4px, 0.35vw + 2px, 8px);
   align-self: flex-start;
-  padding: 5px 14px;
+  padding: clamp(2.5px, 0.25vw + 1.5px, 5px) clamp(7px, 0.55vw + 4px, 14px);
   background: rgba(201, 162, 41, 0.14);
   border: 1px solid var(--color-border-brand, rgba(201, 162, 41, 0.35));
   border-radius: 30px;
-  font-size: 0.8rem;
+  font-size: clamp(0.56rem, 0.48rem + 0.26vw, 0.8rem);
   font-weight: 700;
   color: var(--accent);
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  margin-bottom: 18px;
+  letter-spacing: clamp(0.3px, 0.04vw, 0.6px);
+  margin-bottom: clamp(8px, 0.9vw + 4px, 18px);
   transition: all var(--duration-fast, 200ms) var(--ease-standard);
 }
 
@@ -287,8 +289,8 @@ body.dark-mode .gce-summary-badge {
 
 /* Featured Motto Blockquote */
 .gce-motto-highlight {
-  margin: 0 0 18px;
-  padding: 16px 20px 16px 22px;
+  margin: 0 0 clamp(8px, 0.9vw + 4px, 18px);
+  padding: clamp(6px, 0.8vw + 4px, 16px) clamp(8px, 1vw + 5px, 20px) clamp(6px, 0.8vw + 4px, 16px) clamp(10px, 1vw + 6px, 22px);
   background: rgba(201, 162, 41, 0.08);
   border-left: 5px solid var(--accent);
   border-radius: 0 16px 16px 0;
@@ -303,11 +305,11 @@ body.dark-mode .gce-motto-highlight {
 }
 
 .gce-motto-highlight .quote-icon {
-  font-size: 1.8rem;
+  font-size: clamp(0.95rem, 0.75rem + 0.7vw, 1.8rem);
   color: var(--accent);
   line-height: 1;
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: clamp(2px, 0.3vw + 1px, 6px);
   opacity: 0.9;
 }
 
@@ -318,11 +320,11 @@ body.dark-mode .gce-motto-highlight .quote-icon {
 
 .gce-motto-text {
   font-family: var(--font-heading, serif);
-  font-size: clamp(0.98rem, 2.5vw, 1.65rem);
+  font-size: clamp(0.76rem, 0.60rem + 0.68vw, 1.65rem);
   font-weight: 700;
   color: var(--accent);
-  line-height: 1.35;
-  letter-spacing: 0.3px;
+  line-height: 1.3;
+  letter-spacing: clamp(0.1px, 0.03vw, 0.3px);
   transition: color var(--duration-fast, 200ms) var(--ease-standard);
 }
 
@@ -333,11 +335,11 @@ body.dark-mode .gce-motto-text {
 }
 
 .gce-motto-subtext {
-  font-size: 0.82rem;
+  font-size: clamp(0.54rem, 0.46rem + 0.25vw, 0.82rem);
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-top: 6px;
+  letter-spacing: clamp(0.3px, 0.05vw, 0.8px);
+  margin-top: clamp(3px, 0.3vw + 1px, 6px);
   font-weight: 600;
   transition: color var(--duration-fast, 200ms) var(--ease-standard);
 }
@@ -348,10 +350,10 @@ body.dark-mode .gce-motto-subtext {
 }
 
 .gce-summary-lead {
-  font-size: 0.96rem;
-  line-height: 1.65;
+  font-size: clamp(0.64rem, 0.54rem + 0.34vw, 0.96rem);
+  line-height: clamp(1.32, 0.15vw + 1.28, 1.65);
   color: var(--text-body);
-  margin-bottom: 24px;
+  margin-bottom: clamp(10px, 1vw + 6px, 24px);
   transition: color var(--duration-fast, 200ms) var(--ease-standard);
 }
 
@@ -363,19 +365,20 @@ body.dark-mode .gce-summary-lead {
 /* Meta Grid: Graduation Date & Location */
 .gce-summary-meta-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(4px, 0.6vw + 2px, 14px);
+  margin-bottom: clamp(10px, 1vw + 6px, 24px);
 }
 
 .gce-summary-meta-box {
   background: var(--bg-off-white);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md, 14px);
-  padding: 16px 14px;
+  padding: clamp(6px, 0.6vw + 4px, 16px) clamp(5px, 0.5vw + 3px, 14px);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: clamp(3px, 0.3vw + 1px, 6px);
+  min-width: 0;
   transition: background var(--duration-fast, 200ms) var(--ease-standard),
               border-color var(--duration-fast, 200ms) var(--ease-standard),
               transform var(--duration-fast, 200ms) var(--ease-standard);
@@ -399,15 +402,15 @@ body.dark-mode .gce-summary-meta-box:hover {
 }
 
 .gce-summary-meta-box .gce-meta-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: clamp(22px, 1vw + 16px, 36px);
+  height: clamp(22px, 1vw + 16px, 36px);
+  border-radius: clamp(6px, 0.3vw + 4px, 10px);
   background: rgba(201, 162, 41, 0.14);
   color: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
+  font-size: clamp(0.72rem, 0.58rem + 0.35vw, 1.15rem);
   margin-bottom: 2px;
   transition: all var(--duration-fast, 200ms) var(--ease-standard);
 }
@@ -417,20 +420,28 @@ body.dark-mode .gce-summary-meta-box .gce-meta-icon {
   color: var(--accent-glow);
 }
 
+.gce-meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1px, 0.15vw, 3px);
+  min-width: 0;
+}
+
 .gce-meta-title {
-  font-size: 0.74rem;
+  font-size: clamp(0.50rem, 0.44rem + 0.20vw, 0.74rem);
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: clamp(0.2px, 0.04vw, 0.6px);
   color: var(--text-muted);
   font-weight: 600;
+  line-height: 1.15;
   transition: color var(--duration-fast, 200ms) var(--ease-standard);
 }
 
 .gce-meta-value {
-  font-size: 1.05rem;
+  font-size: clamp(0.64rem, 0.54rem + 0.34vw, 1.05rem);
   font-family: var(--font-heading, serif);
   color: var(--text-dark);
-  line-height: 1.25;
+  line-height: 1.22;
   transition: color var(--duration-fast, 200ms) var(--ease-standard);
 }
 
@@ -440,12 +451,13 @@ body.dark-mode .gce-meta-value {
 }
 
 .gce-meta-extra {
-  font-size: 0.78rem;
+  font-size: clamp(0.52rem, 0.45rem + 0.22vw, 0.78rem);
   color: var(--accent);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: clamp(2px, 0.2vw + 1px, 5px);
   margin-top: 2px;
+  line-height: 1.2;
   transition: color var(--duration-fast, 200ms) var(--ease-standard);
 }
 
@@ -459,19 +471,20 @@ body.dark-mode .gce-meta-extra {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding-top: 18px;
+  gap: clamp(6px, 0.8vw + 4px, 16px);
+  padding-top: clamp(8px, 0.8vw + 4px, 18px);
   border-top: 1px solid var(--border-light);
   flex-wrap: wrap;
   transition: border-color var(--duration-fast, 200ms) var(--ease-standard);
 }
 
 .gce-summary-congrats {
-  font-size: 0.88rem;
+  font-size: clamp(0.58rem, 0.50rem + 0.28vw, 0.88rem);
   color: var(--text-body);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(4px, 0.35vw + 2px, 8px);
+  line-height: 1.25;
   transition: color var(--duration-fast, 200ms) var(--ease-standard);
 }
 
@@ -482,21 +495,23 @@ body.dark-mode .gce-summary-congrats {
 
 .gce-summary-congrats i {
   color: #f43f5e;
-  font-size: 1rem;
+  font-size: clamp(0.68rem, 0.58rem + 0.30vw, 1rem);
+  flex-shrink: 0;
 }
 
 .gce-summary-calendar-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: clamp(4px, 0.35vw + 2px, 8px);
+  padding: clamp(3.5px, 0.35vw + 2px, 8px) clamp(8px, 0.6vw + 4px, 16px);
   border-radius: 30px;
   background: rgba(201, 162, 41, 0.14);
   border: 1px solid var(--color-border-brand, rgba(201, 162, 41, 0.35));
   color: var(--accent);
   text-decoration: none;
-  font-size: 0.84rem;
+  font-size: clamp(0.58rem, 0.50rem + 0.26vw, 0.84rem);
   font-weight: 700;
+  line-height: 1.2;
   transition: all var(--duration-fast, 200ms) var(--ease-standard);
 }
 
@@ -515,7 +530,7 @@ body.dark-mode .gce-summary-calendar-link {
 .gce-summary-aside {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: clamp(6px, 0.8vw + 4px, 14px);
 }
 
 .gce-summary-image-wrap {
@@ -544,16 +559,16 @@ body.dark-mode .gce-summary-calendar-link {
   background: linear-gradient(to top, rgba(2, 12, 26, 0.88) 0%, transparent 60%);
   display: flex;
   align-items: flex-end;
-  padding: 12px 14px;
+  padding: clamp(6px, 0.6vw + 4px, 12px) clamp(8px, 0.6vw + 4px, 14px);
 }
 
 .gce-image-badge {
-  font-size: 0.76rem;
+  font-size: clamp(0.54rem, 0.48rem + 0.20vw, 0.76rem);
   font-weight: 700;
   color: #ffffff;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: clamp(3px, 0.25vw + 2px, 6px);
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
 }
 
@@ -561,7 +576,7 @@ body.dark-mode .gce-summary-calendar-link {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 12px 14px;
+  padding: clamp(5px, 0.6vw + 3px, 12px) clamp(6px, 0.6vw + 4px, 14px);
   background: var(--bg-off-white);
   border: 1px solid var(--border-light);
   border-radius: 14px;
@@ -582,7 +597,7 @@ body.dark-mode .gce-summary-stat-capsule {
 
 .capsule-num {
   font-family: var(--font-heading, serif);
-  font-size: 1.15rem;
+  font-size: clamp(0.74rem, 0.62rem + 0.40vw, 1.15rem);
   font-weight: 800;
   color: var(--accent);
   line-height: 1.1;
@@ -595,17 +610,17 @@ body.dark-mode .capsule-num {
 }
 
 .capsule-lbl {
-  font-size: 0.68rem;
+  font-size: clamp(0.48rem, 0.42rem + 0.18vw, 0.68rem);
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: clamp(0.2px, 0.04vw, 0.5px);
   margin-top: 2px;
   transition: color var(--duration-fast, 200ms) var(--ease-standard);
 }
 
 .capsule-divider {
   width: 1px;
-  height: 24px;
+  height: clamp(16px, 1.2vw + 10px, 24px);
   background: var(--border-light);
 }
 
@@ -619,7 +634,7 @@ body.dark-mode .capsule-num {
   grid-template-columns: 1fr auto 1fr;
   align-items: stretch;
   gap: 24px;
-  margin-bottom: 40px;
+  margin-bottom: 0;
 }
 
 /* ============================================================
@@ -1035,90 +1050,6 @@ body.dark-mode .gce-card-footer-note i,
 }
 
 /* ============================================================
-   CONTACT & ACTION STRIP
-   ============================================================ */
-.gce-contact-strip {
-  background: var(--surface-card);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  padding: 24px 30px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  box-shadow: var(--card-shadow);
-  transition: all var(--duration-fast, 200ms) var(--ease-standard);
-}
-
-html.dark-mode .gce-contact-strip,
-body.dark-mode .gce-contact-strip {
-  background: rgba(7, 24, 46, 0.9);
-  border-color: var(--color-border-brand, rgba(201, 162, 41, 0.4));
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
-}
-
-.gce-contact-details {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 24px;
-}
-
-.gce-contact-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.95rem;
-  color: var(--text-body);
-  transition: color var(--duration-fast, 200ms) var(--ease-standard);
-}
-
-html.dark-mode .gce-contact-item,
-body.dark-mode .gce-contact-item {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.gce-contact-item i {
-  font-size: 1.25rem;
-  color: var(--accent);
-}
-
-html.dark-mode .gce-contact-item i,
-body.dark-mode .gce-contact-item i {
-  color: var(--accent-glow);
-}
-
-.gce-contact-item a {
-  color: var(--primary);
-  font-weight: 700;
-  text-decoration: none;
-  transition: color var(--duration-fast, 200ms) var(--ease-standard);
-}
-
-.gce-contact-item a:hover {
-  color: var(--accent);
-  text-decoration: underline;
-}
-
-html.dark-mode .gce-contact-item a,
-body.dark-mode .gce-contact-item a {
-  color: var(--text-light);
-}
-
-html.dark-mode .gce-contact-item a:hover,
-body.dark-mode .gce-contact-item a:hover {
-  color: var(--accent-glow);
-}
-
-.gce-action-buttons {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-/* ============================================================
    RESPONSIVE BREAKPOINTS
    Fine-tunes layout spacing and structure below 1024px, 768px, 480px, and 360px
    ============================================================ */
@@ -1141,211 +1072,61 @@ body.dark-mode .gce-contact-item a:hover {
 /* Mobile & Tablet Transition (<= 900px / 768px) */
 @media (max-width: 900px) {
   .gce-summary-card-inner {
-    grid-template-columns: 1fr;
-    padding: 28px 24px;
-    gap: 28px;
+    grid-template-columns: 1.3fr 1fr;
+    padding: 16px 14px;
+    gap: 12px;
   }
 
   .gce-summary-meta-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
   }
 
   .gce-summary-aside {
-    max-width: 480px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
     width: 100%;
   }
 
   .gce-congrats-banner {
-    flex-direction: column;
-    text-align: center;
-    padding: 20px 24px;
-    gap: 16px;
-  }
-
-  .gce-contact-strip {
-    flex-direction: column;
-    text-align: center;
+    flex-direction: row;
     align-items: center;
+    text-align: left;
+    padding: 12px 16px;
+    gap: 12px;
   }
 
-  .gce-contact-details {
-    justify-content: center;
+  .gce-results-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 0;
   }
 
-  .gce-action-buttons {
-    justify-content: center;
-    width: 100%;
+  .gce-results-grid .card-splitter--responsive {
+    display: none !important;
   }
 }
 
 @media (max-width: 768px) {
   .gce-results-section {
-    padding: 48px 14px;
+    padding: 24px 10px;
   }
 
   .gce-results-header {
-    margin-bottom: 22px;
-  }
-
-  .gce-meta-bar {
-    gap: 8px;
-    padding: 5px 12px;
-  }
-
-  .gce-congrats-banner {
-    padding: 16px 14px;
-    gap: 12px;
-    margin-bottom: 20px;
-    border-radius: var(--radius-sm, 12px);
-  }
-
-  .gce-congrats-icon {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    font-size: 1.3rem;
-  }
-
-  .gce-summary-card {
-    margin-bottom: 24px;
-    border-radius: var(--radius-sm, 14px);
-  }
-
-  .gce-summary-card-inner {
-    padding: 18px 14px;
-    gap: 18px;
-  }
-
-  .gce-motto-highlight {
-    padding: 12px 14px;
-    margin-bottom: 12px;
-    border-radius: 0 12px 12px 0;
-    border-left-width: 3px;
-  }
-
-  .gce-summary-meta-grid {
-    grid-template-columns: 1fr;
-    gap: 8px;
     margin-bottom: 14px;
   }
 
-  .gce-summary-meta-box {
-    padding: 10px 12px;
-    border-radius: 10px;
+  .gce-meta-bar {
+    gap: 6px;
+    padding: 4px 8px;
+    font-size: 0.66rem;
   }
 
-  .gce-summary-image-wrap {
-    height: 180px;
-    border-radius: 12px;
-  }
-
-  .gce-summary-stat-capsule {
+  .gce-congrats-banner {
     padding: 8px 10px;
-    border-radius: 10px;
-  }
-
-  .gce-results-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .gce-contact-strip {
-    padding: 16px 14px;
-    gap: 12px;
-    border-radius: 14px;
-  }
-}
-
-/* Small Screens (<= 480px) */
-@media (max-width: 480px) {
-  .gce-results-section {
-    padding: 40px 10px;
-  }
-
-  .gce-congrats-banner {
-    padding: 12px 10px;
-    gap: 10px;
-    border-radius: 10px;
-  }
-
-  .gce-congrats-icon {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    min-height: 36px;
-    font-size: 1.15rem;
-  }
-
-  .gce-summary-card {
-    border-radius: 12px;
-    margin-bottom: 18px;
-  }
-
-  .gce-summary-card-inner {
-    padding: 13px 10px;
-    gap: 14px;
-  }
-
-  .gce-motto-highlight {
-    padding: 9px 10px;
-    border-radius: 0 10px 10px 0;
-    margin-bottom: 10px;
-  }
-
-  .gce-summary-image-wrap {
-    height: 150px;
-    border-radius: 10px;
-  }
-
-  .gce-summary-stat-capsule {
-    padding: 6px 8px;
-    border-radius: 8px;
-  }
-
-  .gce-summary-footer-bar {
-    padding-top: 10px;
     gap: 8px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .gce-summary-calendar-link {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .gce-results-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    margin-bottom: 20px;
-  }
-
-  .gce-card-header {
-    flex-wrap: wrap;
-  }
-
-  .gce-contact-strip {
-    padding: 12px 10px;
-    gap: 10px;
-  }
-
-  .gce-contact-details {
-    gap: 10px;
-  }
-}
-
-/* Micro Screens (<= 360px: 360p testing viewport, 320x906, and narrow devices) */
-@media (max-width: 360px) {
-  .gce-results-section {
-    padding: 34px 8px;
-  }
-
-  .gce-congrats-banner {
-    padding: 10px 8px;
-    gap: 8px;
+    margin-bottom: 12px;
+    border-radius: var(--radius-sm, 10px);
   }
 
   .gce-congrats-icon {
@@ -1353,29 +1134,417 @@ body.dark-mode .gce-contact-item a:hover {
     height: 32px;
     min-width: 32px;
     min-height: 32px;
-    font-size: 1.0rem;
+    font-size: 1.05rem;
   }
 
   .gce-summary-card {
-    border-radius: 10px;
+    margin-bottom: 14px;
+    border-radius: var(--radius-sm, 10px);
   }
 
   .gce-summary-card-inner {
+    grid-template-columns: 1.25fr 1fr;
     padding: 10px 8px;
-    gap: 10px;
+    gap: 8px;
+    font-size: 0.66rem;
+  }
+
+  .gce-summary-badge {
+    font-size: 0.56rem;
+    padding: 2px 7px;
+    gap: 4px;
+    margin-bottom: 6px;
   }
 
   .gce-motto-highlight {
-    padding: 7px 8px;
+    padding: 6px 8px;
+    margin-bottom: 8px;
+    border-radius: 0 8px 8px 0;
+    border-left-width: 2.5px;
+    font-size: 0.68rem;
+  }
+
+  .gce-motto-highlight .quote-icon {
+    font-size: 0.92rem;
+    margin-bottom: 2px;
+  }
+
+  .gce-motto-text {
+    font-size: 0.78rem;
+    line-height: 1.22;
+  }
+
+  .gce-motto-subtext {
+    font-size: 0.52rem;
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+  }
+
+  .gce-summary-lead {
+    font-size: 0.64rem;
+    line-height: 1.32;
     margin-bottom: 8px;
   }
 
-  .gce-summary-image-wrap {
-    height: 125px;
+  .gce-summary-meta-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    margin-bottom: 8px;
   }
 
-  .gce-contact-strip {
-    padding: 10px 8px;
+  .gce-summary-meta-box {
+    padding: 5px 4px;
+    border-radius: 6px;
+    text-align: center;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .gce-summary-meta-box .gce-meta-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    margin-bottom: 1px;
+  }
+
+  .gce-meta-info {
+    align-items: center;
+    gap: 1px;
+  }
+
+  .gce-meta-title {
+    font-size: 0.50rem;
+    letter-spacing: 0.2px;
+  }
+
+  .gce-meta-value {
+    font-size: 0.64rem;
+    line-height: 1.15;
+  }
+
+  .gce-meta-extra {
+    font-size: 0.50rem;
+    justify-content: center;
+    gap: 2px;
+    margin-top: 1px;
+  }
+
+  .gce-summary-footer-bar {
+    padding-top: 6px;
+    gap: 6px;
+  }
+
+  .gce-summary-congrats {
+    font-size: 0.58rem;
+    gap: 4px;
+  }
+
+  .gce-summary-congrats i {
+    font-size: 0.68rem;
+  }
+
+  .gce-summary-calendar-link {
+    font-size: 0.56rem;
+    padding: 3px 8px;
+    gap: 4px;
+  }
+
+  .gce-summary-image-wrap {
+    height: 100%;
+    min-height: 110px;
+    max-height: 140px;
+    border-radius: 8px;
+  }
+
+  .gce-summary-image-overlay {
+    padding: 6px 8px;
+  }
+
+  .gce-image-badge {
+    font-size: 0.54rem;
+    gap: 4px;
+  }
+
+  .gce-summary-stat-capsule {
+    padding: 4px 6px;
+    border-radius: 6px;
+  }
+
+  .capsule-num {
+    font-size: 0.76rem;
+  }
+
+  .capsule-lbl {
+    font-size: 0.48rem;
+  }
+
+  .capsule-divider {
+    height: 16px;
+  }
+
+  .gce-results-grid {
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
+    margin-bottom: 0;
+  }
+
+  .gce-results-grid .card-splitter--responsive {
+    display: none !important;
+  }
+
+  .gce-result-card {
+    padding: 8px 6px;
+    border-radius: 8px;
+  }
+
+  .gce-card-header {
+    padding-bottom: 3px;
+    margin-bottom: 4px;
+  }
+
+  .gce-card-header h3 {
+    font-size: 0.80rem;
+  }
+
+  .gce-card-subtitle {
+    font-size: 0.58rem;
+  }
+
+  .gce-pass-badge {
+    font-size: 0.56rem;
+    padding: 2px 5px;
+  }
+
+  .gce-metrics-strip {
+    padding: 4px 3px;
+    margin-bottom: 6px;
+    gap: 2px;
+  }
+
+  .gce-metric-val {
+    font-size: 0.95rem;
+  }
+
+  .gce-metric-label {
+    font-size: 0.52rem;
+    margin-top: 1px;
+  }
+
+  .gce-distribution-heading {
+    font-size: 0.60rem;
+    margin-bottom: 2px;
+  }
+
+  .gce-dist-row {
+    padding: 2px 3px;
+    font-size: 0.58rem;
+  }
+
+  .gce-dist-badge {
+    font-size: 0.50rem;
+    padding: 1px 3px;
+  }
+
+  .gce-card-footer-note {
+    font-size: 0.56rem;
+    padding-top: 4px;
+    margin-top: 4px;
+    line-height: 1.2;
+  }
+}
+
+/* Small Screens (<= 480px) */
+@media (max-width: 480px) {
+  .gce-results-section {
+    padding: 18px 8px;
+  }
+
+  .gce-congrats-banner {
+    padding: 6px 8px;
+    gap: 6px;
+    border-radius: 8px;
+  }
+
+  .gce-congrats-icon {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    font-size: 0.95rem;
+  }
+
+  .gce-summary-card {
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .gce-summary-card-inner {
+    grid-template-columns: 1.2fr 0.8fr;
+    padding: 8px 6px;
+    gap: 6px;
+    font-size: 0.60rem;
+  }
+
+  .gce-summary-badge {
+    font-size: 0.50rem;
+    padding: 2px 6px;
+    gap: 3px;
+    margin-bottom: 5px;
+  }
+
+  .gce-motto-highlight {
+    padding: 5px 6px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 6px;
+    font-size: 0.60rem;
+  }
+
+  .gce-motto-highlight .quote-icon {
+    font-size: 0.80rem;
+    margin-bottom: 1px;
+  }
+
+  .gce-motto-text {
+    font-size: 0.70rem;
+    line-height: 1.2;
+  }
+
+  .gce-motto-subtext {
+    font-size: 0.48rem;
+    margin-top: 2px;
+  }
+
+  .gce-summary-lead {
+    font-size: 0.58rem;
+    line-height: 1.28;
+    margin-bottom: 6px;
+  }
+
+  .gce-summary-meta-grid {
+    gap: 3px;
+    margin-bottom: 6px;
+  }
+
+  .gce-summary-meta-box {
+    padding: 4px 3px;
+    border-radius: 5px;
+  }
+
+  .gce-summary-meta-box .gce-meta-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    font-size: 0.62rem;
+  }
+
+  .gce-meta-title {
+    font-size: 0.46rem;
+  }
+
+  .gce-meta-value {
+    font-size: 0.56rem;
+  }
+
+  .gce-meta-extra {
+    font-size: 0.46rem;
+  }
+
+  .gce-summary-image-wrap {
+    height: 100%;
+    min-height: 95px;
+    max-height: 120px;
+    border-radius: 6px;
+  }
+
+  .gce-image-badge {
+    font-size: 0.48rem;
+  }
+
+  .gce-summary-stat-capsule {
+    padding: 3px 5px;
+    border-radius: 5px;
+  }
+
+  .capsule-num {
+    font-size: 0.68rem;
+  }
+
+  .capsule-lbl {
+    font-size: 0.44rem;
+  }
+
+  .gce-summary-footer-bar {
+    padding-top: 5px;
+    gap: 4px;
+  }
+
+  .gce-summary-congrats {
+    font-size: 0.52rem;
+    gap: 3px;
+  }
+
+  .gce-summary-calendar-link {
+    font-size: 0.52rem;
+    padding: 2.5px 6px;
+    gap: 3px;
+  }
+
+  .gce-results-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 0;
+  }
+
+  .gce-results-grid .card-splitter--responsive {
+    display: none !important;
+  }
+}
+
+/* Micro Screens (<= 360px: 360p testing viewport, 320x906, and narrow devices) */
+@media (max-width: 360px) {
+  .gce-results-section {
+    padding: 20px 6px;
+  }
+
+  .gce-congrats-banner {
+    padding: 8px 6px;
+    gap: 6px;
+  }
+
+  .gce-congrats-icon {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    font-size: 0.90rem;
+  }
+
+  .gce-summary-card {
+    border-radius: 8px;
+  }
+
+  .gce-summary-card-inner {
+    grid-template-columns: 1fr;
+    padding: 8px 6px;
+    gap: 8px;
+    font-size: 0.58rem;
+  }
+
+  .gce-motto-highlight {
+    padding: 5px 6px;
+    margin-bottom: 6px;
+  }
+
+  .gce-motto-text {
+    font-size: 0.66rem;
+  }
+
+  .gce-summary-lead {
+    font-size: 0.56rem;
+  }
+
+  .gce-summary-image-wrap {
+    height: 115px;
   }
 }

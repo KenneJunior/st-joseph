@@ -138,24 +138,36 @@
 
 @media (max-width: 768px) {
   .hero-buttons {
-    gap: 12px;
+    gap: 8px;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+
+  .hero-buttons .btn {
+    width: auto !important;
+    min-height: 40px !important;
+    padding: 8px 16px !important;
+    font-size: 0.82rem !important;
   }
 }
 
 @media (max-width: 480px) {
   .hero-buttons {
-    flex-direction: column !important;
+    flex-direction: row !important;
     flex-wrap: wrap !important;
-    width: 100% !important;
-    max-width: 340px !important;
+    width: auto !important;
+    max-width: 100% !important;
     margin: 0 auto !important;
-    gap: 10px !important;
+    gap: 6px !important;
+    justify-content: center !important;
   }
 
   .hero-buttons .btn {
-    width: 100% !important;
-    min-height: 48px !important;
-    font-size: 0.94rem !important;
+    width: auto !important;
+    min-height: 36px !important;
+    font-size: 0.76rem !important;
+    padding: 6px 12px !important;
     justify-content: center !important;
     box-sizing: border-box !important;
   }
