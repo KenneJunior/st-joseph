@@ -149,7 +149,7 @@ body.drawer-open {
     pointer-events: auto;
   }
 
-  /* Dark overlay backdrop when menu is active */
+  /* Backdrop overlay when menu is active - dark background & blur removed per design request */
   #navMenu.active::after {
     content: '';
     position: fixed;
@@ -157,18 +157,12 @@ body.drawer-open {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     z-index: -2;
     pointer-events: auto;
-    animation: fadeIn 0.3s ease;
-    border-radius: 0 0 25px 25px;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    border-radius: 0;
   }
 
   /* Decorative top section */
@@ -250,7 +244,7 @@ body.drawer-open {
     backdrop-filter: blur(20px) saturate(140%);
     -webkit-backdrop-filter: blur(20px) saturate(140%);
     padding: 72px 20px 24px 20px;
-    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.22);
     transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 visibility 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     gap: 6px;
@@ -266,7 +260,7 @@ body.drawer-open {
     background: rgba(200, 150, 62, 0.15);
     border-color: rgba(200, 150, 62, 0.3);
     color: #ffffff;
-    transform: translateX(8px);
+    transform: translateX(8px) !important;
     box-shadow: 0 4px 20px rgba(200, 150, 62, 0.1);
   }
 
@@ -349,22 +343,34 @@ body.drawer-open {
     height: 22px;
   }
 
-  /* Staggered animation for menu items */
-  #navMenu.active a {
-    animation: menuItemIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  /* Staggered entry animation for all components, links, and buttons in active dropdown menu */
+  #navMenu.active > *,
+  #navMenu.active a,
+  #navMenu.active button {
+    animation: menuItemIn 0.42s cubic-bezier(0.4, 0, 0.2, 1) both;
     opacity: 0;
   }
 
-  #navMenu.active a:nth-child(1) { animation-delay: 0.05s; }
-  #navMenu.active a:nth-child(2) { animation-delay: 0.1s; }
-  #navMenu.active a:nth-child(3) { animation-delay: 0.15s; }
-  #navMenu.active a:nth-child(4) { animation-delay: 0.2s; }
-  #navMenu.active a:nth-child(5) { animation-delay: 0.25s; }
-  #navMenu.active a:nth-child(6) { animation-delay: 0.3s; }
-  #navMenu.active a:nth-child(7) { animation-delay: 0.35s; }
-  #navMenu.active a:nth-child(8) { animation-delay: 0.4s; }
-  #navMenu.active a:nth-child(9) { animation-delay: 0.45s; }
-  #navMenu.active a:nth-child(10) { animation-delay: 0.5s; }
+  #navMenu.active > *:nth-child(1),  #navMenu.active a:nth-child(1)  { animation-delay: 0.04s; }
+  #navMenu.active > *:nth-child(2),  #navMenu.active a:nth-child(2)  { animation-delay: 0.08s; }
+  #navMenu.active > *:nth-child(3),  #navMenu.active a:nth-child(3)  { animation-delay: 0.12s; }
+  #navMenu.active > *:nth-child(4),  #navMenu.active a:nth-child(4)  { animation-delay: 0.16s; }
+  #navMenu.active > *:nth-child(5),  #navMenu.active a:nth-child(5)  { animation-delay: 0.20s; }
+  #navMenu.active > *:nth-child(6),  #navMenu.active a:nth-child(6)  { animation-delay: 0.24s; }
+  #navMenu.active > *:nth-child(7),  #navMenu.active a:nth-child(7)  { animation-delay: 0.28s; }
+  #navMenu.active > *:nth-child(8),  #navMenu.active a:nth-child(8)  { animation-delay: 0.32s; }
+  #navMenu.active > *:nth-child(9),  #navMenu.active a:nth-child(9)  { animation-delay: 0.36s; }
+  #navMenu.active > *:nth-child(10), #navMenu.active a:nth-child(10) { animation-delay: 0.40s; }
+  #navMenu.active > *:nth-child(11), #navMenu.active a:nth-child(11) { animation-delay: 0.44s; }
+  #navMenu.active > *:nth-child(12), #navMenu.active a:nth-child(12) { animation-delay: 0.48s; }
+  #navMenu.active > *:nth-child(13), #navMenu.active a:nth-child(13) { animation-delay: 0.52s; }
+  #navMenu.active > *:nth-child(14), #navMenu.active a:nth-child(14) { animation-delay: 0.56s; }
+  #navMenu.active > *:nth-child(15), #navMenu.active a:nth-child(15) { animation-delay: 0.60s; }
+  #navMenu.active > *:nth-child(16), #navMenu.active a:nth-child(16) { animation-delay: 0.64s; }
+  #navMenu.active > *:nth-child(17), #navMenu.active a:nth-child(17) { animation-delay: 0.68s; }
+  #navMenu.active > *:nth-child(18), #navMenu.active a:nth-child(18) { animation-delay: 0.72s; }
+  #navMenu.active > *:nth-child(19), #navMenu.active a:nth-child(19) { animation-delay: 0.76s; }
+  #navMenu.active > *:nth-child(20), #navMenu.active a:nth-child(20) { animation-delay: 0.80s; }
 
   /* Other responsive adjustments */
   .hero-content h1 {
