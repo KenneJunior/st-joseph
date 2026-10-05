@@ -4,12 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 5174",
-    "build": "tsc && vite build",
-    "preview": "vite preview --port 4173",
-    "v-build": "vercel build",
-    "v-prod": "vercel --prod",
-    "host": "npx localtunnel --port 4173 --subdomain sjccc"
+    "dev": "vite --host 0.0.0.0 --port 3000",
+    "build": "tsc && vite build && vite build --config vite.sw.config.ts",
+    "preview": "vite preview --host 0.0.0.0 --port 3000",
+    "lint": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
@@ -17,8 +15,7 @@
     "vite": "^8.0.12"
   },
   "dependencies": {
-    "@vercel/analytics": "^2.0.1",
-    "pwa-asset-generator": "^8.1.5",
-    "vercel": "^56.3.1"
+    "@kennejunior/liquidglass": "^1.0.5",
+    "vercel": "^62.2.0"
   }
 }

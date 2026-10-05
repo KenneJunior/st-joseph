@@ -1,0 +1,87 @@
+/* ============================================
+   CTA BANNER
+   ============================================ */
+.cta-banner {
+  background: linear-gradient(135deg, rgba(7, 24, 46, 0.90) 0%, rgba(13, 43, 82, 0.88) 100%),
+              url('/assets/sjccc-view.jpg') center/cover no-repeat;
+  border: 1px solid rgba(201, 162, 41, 0.35);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
+  border-radius: var(--radius-xl);
+  padding: 60px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  max-width: 1000px;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+@media (max-width: 1024px) {
+  .cta-banner {
+    padding: 36px 24px;
+    border-radius: var(--radius-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .cta-banner {
+    padding: 18px 12px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .cta-banner {
+    padding: 14px 10px;
+  }
+}
+
+.cta-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+          radial-gradient(ellipse at 20% 80%, rgba(200,150,62,0.2) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 20%, rgba(200,150,62,0.1) 0%, transparent 50%);
+}
+
+.cta-banner > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cta-banner h2 {
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  margin-bottom: 14px;
+}
+
+@media (max-width: 768px) {
+  .cta-banner h2 {
+    font-size: clamp(1.12rem, 3.8vw, 1.35rem);
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cta-banner h2 {
+    font-size: clamp(0.98rem, 3.6vw, 1.15rem);
+  }
+}
+
+.cta-banner p {
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 28px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 768px) {
+  .cta-banner p {
+    font-size: 0.76rem;
+    margin-bottom: 10px;
+    line-height: 1.35;
+  }
+}

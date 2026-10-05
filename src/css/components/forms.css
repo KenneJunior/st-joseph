@@ -1,0 +1,179 @@
+/* ============================================
+   FORMS
+   ============================================ */
+.form-group {
+  margin-bottom: 18px;
+}
+
+@media (max-width: 768px) {
+  .form-group {
+    margin-bottom: 10px;
+  }
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .form-group label {
+    font-size: 0.76rem;
+    margin-bottom: 3px;
+  }
+}
+
+body.dark-mode .form-group label {
+  color: var(--text-light);
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: var(--bg-white);
+  color: var(--text-dark);
+  transition: border 0.2s;
+  caret-color: var(--accent);
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 768px) {
+  .form-group input,
+  .form-group textarea {
+    padding: 7px 10px;
+    font-size: 0.82rem;
+    border-radius: 6px;
+  }
+}
+
+body.dark-mode .form-group input,
+body.dark-mode .form-group textarea {
+  background: var(--bg-white);
+  color: var(--text-dark);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(200,150,62,0.2);
+}
+
+.form-note {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 12px;
+}
+
+#formStatus {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 12px;
+  min-height: 1.2em;
+  transition: color 0.3s;
+}
+
+#formStatus.success { color: #2e7d32; }
+#formStatus.error { color: #c62828; }
+
+body.dark-mode #formStatus.success { color: #81c784; }
+body.dark-mode #formStatus.error { color: #ef5350; }
+
+/* WhatsApp Toggle */
+.form-group.form-toggle {
+  margin: 20px 0 24px 0;
+  padding: 12px 14px;
+  background: var(--bg-off-white);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  transition: background var(--transition-smooth), border-color var(--transition-smooth);
+}
+
+body.dark-mode .form-group.form-toggle {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.form-group .switch-label {
+  display: flex !important;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.form-group input#whatsappRoutingToggle {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 44px !important;
+  height: 24px;
+  padding: 0 !important;
+  background-color: var(--text-muted);
+  opacity: 0.4;
+  border-radius: 50px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+  border: none;
+  transition: background-color var(--transition-fast), opacity var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-group input#whatsappRoutingToggle::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  transition: transform var(--transition-fast);
+}
+
+.form-group .switch-label:hover input#whatsappRoutingToggle {
+  opacity: 0.6;
+}
+
+.form-group input#whatsappRoutingToggle:checked {
+  background-color: #25D366;
+  opacity: 1;
+}
+
+body.dark-mode .form-group input#whatsappRoutingToggle:checked {
+  background-color: #20ba5a;
+}
+
+.form-group input#whatsappRoutingToggle:checked::before {
+  transform: translateX(20px);
+}
+
+.form-group .toggle-text {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-body);
+  line-height: 1.4;
+  transition: color var(--transition-fast);
+}
+
+.form-group .switch-label:hover .toggle-text {
+  color: var(--text-dark);
+}
+
+.form-group input#whatsappRoutingToggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.35);
+}

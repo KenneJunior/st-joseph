@@ -1,0 +1,231 @@
+/* ==========================================================================
+   SJCCC — CARD & CONTENT SPLITTER COMPONENT
+   Provides clear, responsive visual boundaries and tactile feedback between
+   adjacent cards, pathways, and content sections that sit close together.
+   ========================================================================== */
+
+/* ─── Base Splitter Container ─── */
+.card-splitter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  user-select: none;
+  z-index: 2;
+  transition: opacity var(--duration-fast, 200ms) var(--ease-standard),
+              transform var(--duration-fast, 200ms) var(--ease-standard);
+  outline: none;
+}
+
+.card-splitter:focus-visible {
+  border-radius: var(--radius-sm, 8px);
+  box-shadow: 0 0 0 3px rgba(201, 162, 41, 0.45);
+}
+
+/* ─── Lines ─── */
+.card-splitter__line {
+  background: linear-gradient(to bottom, transparent, rgba(201, 162, 41, 0.35) 20%, rgba(201, 162, 41, 0.35) 80%, transparent);
+  transition: background var(--duration-normal, 300ms) var(--ease-standard),
+              box-shadow var(--duration-normal, 300ms) var(--ease-standard),
+              opacity var(--duration-normal, 300ms) var(--ease-standard);
+  flex-shrink: 0;
+}
+
+body.dark-mode .card-splitter__line {
+  background: linear-gradient(to bottom, transparent, rgba(243, 215, 121, 0.4) 20%, rgba(243, 215, 121, 0.4) 80%, transparent);
+}
+
+/* ─── Badge / Emblem ─── */
+.card-splitter__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--surface-card, #ffffff);
+  border: 1px solid rgba(201, 162, 41, 0.3);
+  border-radius: 50px;
+  padding: 6px 14px;
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--primary, #07182e);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06), 0 0 0 2px rgba(201, 162, 41, 0.08);
+  white-space: nowrap;
+  transition: all var(--duration-normal, 300ms) var(--ease-standard);
+  cursor: default;
+}
+
+body.dark-mode .card-splitter__badge {
+  background: rgba(10, 31, 63, 0.95);
+  border-color: rgba(201, 162, 41, 0.4);
+  color: var(--gold-light, #f3d779);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 0 0 2px rgba(201, 162, 41, 0.15);
+}
+
+.card-splitter__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent, #c9a229);
+  font-size: 0.85rem;
+  transition: transform var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.card-splitter__text {
+  font-size: 0.70rem;
+  letter-spacing: 0.08em;
+}
+
+/* ─── Vertical Mode (Side-by-side cards on desktop) ─── */
+.card-splitter--vertical {
+  flex-direction: column;
+  width: auto;
+  min-width: 48px;
+  height: 100%;
+  padding: 12px 0;
+  align-self: stretch;
+}
+
+.card-splitter--vertical .card-splitter__line {
+  width: 2px;
+  flex: 1;
+  min-height: 40px;
+}
+
+.card-splitter--vertical .card-splitter__badge {
+  margin: 12px 0;
+}
+
+/* ─── Horizontal Mode (Stacked cards on mobile) ─── */
+.card-splitter--horizontal {
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+  padding: 0 12px;
+  margin: 16px 0;
+}
+
+.card-splitter--horizontal .card-splitter__line {
+  height: 2px;
+  flex: 1;
+  background: linear-gradient(to right, transparent, rgba(201, 162, 41, 0.35) 20%, rgba(201, 162, 41, 0.35) 80%, transparent);
+}
+
+body.dark-mode .card-splitter--horizontal .card-splitter__line {
+  background: linear-gradient(to right, transparent, rgba(243, 215, 121, 0.4) 20%, rgba(243, 215, 121, 0.4) 80%, transparent);
+}
+
+.card-splitter--horizontal .card-splitter__badge {
+  margin: 0 12px;
+}
+
+/* ─── Compact Variant (For sub-cards like uniform-split) ─── */
+.card-splitter--compact .card-splitter__badge {
+  padding: 4px 8px;
+  font-size: 0.65rem;
+}
+
+.card-splitter--compact .card-splitter__icon {
+  font-size: 0.75rem;
+}
+
+/* ─── Interactive Visual Feedback States ─── */
+.card-splitter:hover .card-splitter__line,
+.card-splitter.is-active .card-splitter__line {
+  background: linear-gradient(to bottom, transparent, var(--gold, #c9a229) 15%, var(--gold-light, #f3d779) 50%, var(--gold, #c9a229) 85%, transparent);
+  box-shadow: 0 0 12px rgba(201, 162, 41, 0.45);
+}
+
+.card-splitter--horizontal:hover .card-splitter__line,
+.card-splitter--horizontal.is-active .card-splitter__line {
+  background: linear-gradient(to right, transparent, var(--gold, #c9a229) 15%, var(--gold-light, #f3d779) 50%, var(--gold, #c9a229) 85%, transparent);
+  box-shadow: 0 0 12px rgba(201, 162, 41, 0.45);
+}
+
+.card-splitter:hover .card-splitter__badge,
+.card-splitter.is-active .card-splitter__badge {
+  border-color: var(--gold, #c9a229);
+  transform: scale(1.06);
+  box-shadow: 0 6px 20px rgba(201, 162, 41, 0.25), 0 0 0 3px rgba(201, 162, 41, 0.15);
+}
+
+.card-splitter:hover .card-splitter__icon {
+  transform: rotate(180deg);
+  color: var(--gold-light, #f3d779);
+}
+
+/* ─── Directional Adjacent Feedback ─── */
+.card-splitter[data-active-side="prev"] .card-splitter__badge {
+  border-left-color: var(--gold, #c9a229);
+  border-left-width: 2px;
+}
+
+.card-splitter[data-active-side="next"] .card-splitter__badge {
+  border-right-color: var(--gold, #c9a229);
+  border-right-width: 2px;
+}
+
+/* Highlight adjacent card border facing the splitter */
+.card-adjacent-active {
+  border-color: rgba(201, 162, 41, 0.55) !important;
+  box-shadow: 0 8px 24px -4px rgba(201, 162, 41, 0.2) !important;
+}
+
+/* ─── Responsive Adaptive Switching (Desktop -> Mobile) ─── */
+@media (max-width: 900px) {
+  .card-splitter--responsive.card-splitter--vertical {
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    min-width: 100%;
+    padding: 0 8px;
+    margin: 14px 0;
+  }
+
+  .card-splitter--responsive.card-splitter--vertical .card-splitter__line {
+    width: auto;
+    height: 2px;
+    min-height: auto;
+    background: linear-gradient(to right, transparent, rgba(201, 162, 41, 0.35) 20%, rgba(201, 162, 41, 0.35) 80%, transparent);
+  }
+
+  body.dark-mode .card-splitter--responsive.card-splitter--vertical .card-splitter__line {
+    background: linear-gradient(to right, transparent, rgba(243, 215, 121, 0.4) 20%, rgba(243, 215, 121, 0.4) 80%, transparent);
+  }
+
+  .card-splitter--responsive.card-splitter--vertical .card-splitter__badge {
+    margin: 0 10px;
+    padding: 5px 12px;
+  }
+}
+
+/* ─── Reduced Motion Safety ─── */
+@media (prefers-reduced-motion: reduce) {
+  .card-splitter,
+  .card-splitter__line,
+  .card-splitter__badge,
+  .card-splitter__icon {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* ─── Print Engine Fallback ─── */
+@media print {
+  .card-splitter {
+    margin: 4mm 0 !important;
+  }
+  .card-splitter__line {
+    background: #c9a229 !important;
+    height: 1px !important;
+  }
+  .card-splitter__badge {
+    background: #fff !important;
+    color: #1a1e2b !important;
+    border: 1px solid #c9a229 !important;
+    box-shadow: none !important;
+  }
+}

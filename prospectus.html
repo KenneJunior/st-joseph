@@ -6,6 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>SJCCC | Official Prospectus 2026/2027</title>
 
+  <!-- Theme Preference Initialization (Immediately restores saved theme on page reload without flash) -->
+  <script>
+    (function () {
+      try {
+        var storageKey = 'sjccc-theme';
+        var savedTheme = localStorage.getItem(storageKey) || localStorage.getItem('theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+        if (isDark) {
+          document.documentElement.classList.add('dark-mode');
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark-mode');
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- Updated MIME type for SVG vector icons -->
   <link rel="icon" type="image/svg+xml" href="/assets/icons/168X168.svg">
   <meta
@@ -17,34 +36,35 @@
 
   <link rel="manifest" href="/manifest.json">
 
-  <!-- Fixed canonical domain extension -->
-  <link rel="canonical" href="https://saintjosephcollege.vercel.app">
+  <!-- Canonical Prospectus URL -->
+  <link rel="canonical" href="https://saintjosephcollege.vercel.app/prospectus.html">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="St. Joseph's Catholic Comprehensive College – Mbengwi">
+  <meta property="og:title" content="SJCCC Official Prospectus 2026/2027 | St. Joseph's Catholic Comprehensive College Mbengwi">
   <meta
-    content="Nurturing minds and hands for a brighter future. A welcoming community offering General & Technical education."
+    content="Official 2026/2027 Student Prospectus for St. Joseph's Catholic Comprehensive College (SJCCC) Mbengwi. Explore general and technical programs, fee schedules, admission requirements, boarding specifications, and college rules."
     property="og:description">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://saintjosephcollege.vercel.app/">
-  <meta property="og:image" content="https://saintjosephcollede.vercel.app/assets/OG/SJCCC.jpg">
+  <meta property="og:url" content="https://saintjosephcollege.vercel.app/prospectus.html">
+  <meta property="og:image" content="https://saintjosephcollege.vercel.app/assets/OG/SJCCC.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="SJCCC Mbengwi campus and students">
-  <meta property="og:author" content="Kenne Boniface" />
-  <meta property="og:creator" content="Kenne Boniface" />
-  <meta property="og:published_time" content="2025-01-01T00:00:00Z" />
+  <meta property="og:author" content="SJCCC Mbengwi" />
+  <meta property="og:creator" content="St. Joseph's Catholic Comprehensive College Mbengwi" />
+  <meta property="og:published_time" content="2026-08-01T00:00:00Z" />
   <meta property="og:site_name" content="Saint Joseph College Mbengwi" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="SJCCC Mbengwi – Holistic Catholic Education">
-  <meta content="General, Technical & Commercial tracks in a nurturing, supportive environment. Enroll today."
+  <meta name="twitter:url" content="https://saintjosephcollege.vercel.app/prospectus.html">
+  <meta name="twitter:title" content="SJCCC Official Prospectus 2026/2027 | St. Joseph's Catholic Comprehensive College Mbengwi">
+  <meta content="Official 2026/2027 Student Prospectus for St. Joseph's Catholic Comprehensive College (SJCCC) Mbengwi. General & Technical education, fee schedules, and admission requirements."
     name="twitter:description">
   <meta name="twitter:image" content="https://saintjosephcollege.vercel.app/assets/OG/SJCCC.jpg">
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Saint Joseph College Mbengwi" />
+  <meta name="apple-mobile-web-app-title" content="SJCCC Prospectus" />
 
   <!-- Bootstrap Icons CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -56,30 +76,45 @@
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="src/css/prospectus.css">
+  <link rel="stylesheet" href="/src/css/prospectus.css">
 
 </head>
 
 <body class="theme-transition">
+  <script>
+    if (document.documentElement.classList.contains('dark-mode')) {
+      document.body.classList.add('dark-mode');
+    }
+  </script>
   <!-- Sticky Navigation Header -->
   <header id="mainHeader" class="glass-header backdrop-blur">
     <div class="header-inner">
-      <div class="logo-container">
+      <a href="/" class="logo-container" aria-label="St. Joseph's Catholic Comprehensive College Mbengwi Home">
         <div class="logo-icon vector-svg-wrapper">SJCCC</div>
         <span class="logo-text">St. Joseph's Catholic<small>Comprehensive College · Mbengwi</small>
           <em class="logo-motto">"Edificamus Regnum Dei – Let us build the Kingdom of God"</em>
         </span>
-      </div>
-      <button class="menu-toggle interactive-hover" id="menuToggle" aria-label="Toggle Navigation">
-        <i class="bi bi-list"></i>
-      </button>
-      <nav id="navMenu">
-        <a href="/" class="nav-link hover-underline">Home</a>
-        <button class="nav-cta interactive-hover" id="darkModeToggle" title="Switch light/dark mode"
-          aria-label="Switch light/dark mode">
+      </a>
+      <div class="header-actions">
+        <button class="header-theme-toggle interactive-hover" id="darkModeToggle" title="Switch light/dark mode"
+          aria-label="Switch light/dark mode" data-theme-toggle>
           <i class="bi bi-sun-fill toggle-sun" aria-hidden="true"></i>
           <i class="bi bi-moon-fill toggle-moon" aria-hidden="true"></i>
         </button>
+        <button class="menu-toggle interactive-hover" id="menuToggle" aria-label="Toggle Navigation" aria-expanded="false" aria-controls="navMenu">
+          <i class="bi bi-list" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav id="navMenu" aria-label="Prospectus Quick Navigation">
+        <a href="/" class="nav-link hover-underline">Home</a>
+        <a href="#about-sjccc" class="nav-link hover-underline">About</a>
+        <a href="#departments-entry" class="nav-link hover-underline">Programs</a>
+        <a href="#uniform-apparel" class="nav-link hover-underline">Uniform</a>
+        <a href="#boarding-toiletry" class="nav-link hover-underline">Boarding</a>
+        <a href="#school-rules" class="nav-link hover-underline">Rules</a>
+        <a href="#fees-structure" class="nav-link hover-underline">Fees</a>
+        <a href="#important-dates" class="nav-link hover-underline">Dates</a>
+        <a href="#contact-notices" class="nav-link hover-underline">Contact</a>
       </nav>
     </div>
   </header>
@@ -88,43 +123,43 @@
 
     <!-- Institutional Header Section -->
     <header class="main-header">
-      <div class="header-cross vector-ornament">✟</div>
+      <div class="header-cross vector-ornament" aria-hidden="true">✟</div>
       <h1 class="header-title">SAINT JOSEPH'S CATHOLIC COMPREHENSIVE COLLEGE</h1>
-      <h2 class="header-subtitle">(S.J.C.C.C) MBENGWI</h2>
+      <p class="header-subtitle">(S.J.C.C.C) MBENGWI</p>
       <p class="header-diocese">Archdiocese of Bamenda</p>
     </header>
 
     <div class="motto-bar glass-panel backdrop-blur">
-      "Edificamus Regnum Dei - Let us build the house of God."
+      "Edificamus Regnum Dei – Let us build the Kingdom of God."
     </div>
 
     <div class="academic-banner">
-      <i class="bi bi-mortarboard-fill"></i> OFFICIAL STUDENT PROSPECTUS • 2026/2027 ACADEMIC YEAR
+      <i class="bi bi-mortarboard-fill" aria-hidden="true"></i> OFFICIAL STUDENT PROSPECTUS • 2026/2027 ACADEMIC YEAR
     </div>
 
     <!-- Responsive Grid System -->
     <main class="prospectus-grid">
 
       <!-- WELCOME TO SJCCC & PREAMBLE -->
-      <section class="section-card glass-card col-4 reveal-on-scroll">
+      <section id="about-sjccc" class="section-card glass-card col-4 reveal-on-scroll" aria-labelledby="heading-about">
         <div class="section-header-outer">
-          <div class="section-header alt-header">
-            <i class="bi bi-bank"></i> ABOUT SJCCC
-          </div>
+          <h2 id="heading-about" class="section-header alt-header">
+            <i class="bi bi-bank" aria-hidden="true"></i> ABOUT SJCCC
+          </h2>
         </div>
         <div class="card-content">
-          <p><strong><i class="bi bi-info-circle-fill text-accent"></i> Preamble:</strong> Saint Joseph's Catholic
+          <p><strong><i class="bi bi-info-circle-fill text-accent" aria-hidden="true"></i> Preamble:</strong> Saint Joseph's Catholic
             Comprehensive College, Mbengwi is a co-educational boarding College situated in a quiet and peaceful
             environment free from urban distractions. Our aim is to provide "Christian and quality education".
             Established on 28th May 1999, the College introduced a Second Cycle with Arts and Commercial sections in the
             2009/2010 academic year, followed a year later by the Science section; the Technical section became
             operational in the 2025/2026 academic year.</p>
           <br>
-          <p><strong><i class="bi bi-shield-check text-accent"></i> Ownership:</strong> The College is a property of the
+          <p><strong><i class="bi bi-shield-check text-accent" aria-hidden="true"></i> Ownership:</strong> The College is a property of the
             Archdiocese of Bamenda. It was formerly entrusted to the Marist Brothers of the Schools and has since
             returned to the direct care of the Archdiocese.</p>
           <br>
-          <p><strong><i class="bi bi-person-raised-hand text-accent"></i> We Admit Students Who Are Ready To:</strong>
+          <p><strong><i class="bi bi-person-raised-hand text-accent" aria-hidden="true"></i> We Admit Students Who Are Ready To:</strong>
           </p>
           <ul class="icon-list animated-list">
             <li>Work hard</li>
@@ -135,14 +170,14 @@
       </section>
 
       <!-- DEPARTMENTS & ENTRY REQUIREMENTS -->
-      <section class="section-card glass-card col-4 reveal-on-scroll">
+      <section id="departments-entry" class="section-card glass-card col-4 reveal-on-scroll" aria-labelledby="heading-departments">
         <div class="section-header-outer">
-          <div class="section-header alt-header">
-            <i class="bi bi-diagram-3"></i> DEPARTMENTS & ENTRY
-          </div>
+          <h2 id="heading-departments" class="section-header alt-header">
+            <i class="bi bi-diagram-3" aria-hidden="true"></i> DEPARTMENTS & ENTRY
+          </h2>
         </div>
         <div class="card-content">
-          <p><strong><i class="bi bi-door-open-fill text-accent"></i> ENTRY REQUIREMENTS</strong></p>
+          <p><strong><i class="bi bi-door-open-fill text-accent" aria-hidden="true"></i> ENTRY REQUIREMENTS</strong></p>
           <ul class="icon-list animated-list" style="margin-bottom: 1rem;">
             <li><strong>First Cycle:</strong> A pass in Government Common Entrance Examination, plus a photocopy of
               birth certificate, a recent progress card, and (for new students) a transfer certificate from the previous
@@ -154,35 +189,35 @@
 
           <hr class="divider">
 
-          <p><strong><i class="bi bi-journal-text text-accent"></i> THE COLLEGE OFFERS:</strong></p>
+          <p><strong><i class="bi bi-journal-text text-accent" aria-hidden="true"></i> THE COLLEGE OFFERS:</strong></p>
           <ul class="icon-list animated-list">
-            <li><i class="bi bi-brush"></i> O/L & A/L Grammar (Arts/Science)</li>
-            <li><i class="bi bi-tools"></i> Form(1-3) Technical</li>
+            <li><i class="bi bi-brush" aria-hidden="true"></i> O/L & A/L Grammar (Arts/Science)</li>
+            <li><i class="bi bi-tools" aria-hidden="true"></i> Form(1-3) Technical</li>
           </ul>
           <br>
           <p><strong>Technical Departments (Forms 1-3):</strong></p>
           <ul class="icon-list animated-list">
-            <li>Building Construction (CE-BC)</li>
-            <li>Fashion Design (FE)</li>
-            <li>Electrical Power System (EPS)</li>
-            <li>Automobile Repair Mechanics (ARM)</li>
-            <li>Home Economics (HEc)</li>
+            <li><i class="bi bi-building" aria-hidden="true"></i> Building Construction (CE-BC)</li>
+            <li><i class="bi bi-scissors" aria-hidden="true"></i> Fashion Design (FE)</li>
+            <li><i class="bi bi-lightning-charge" aria-hidden="true"></i> Electrical Power System (EPS)</li>
+            <li><i class="bi bi-car-front" aria-hidden="true"></i> Automobile Repair Mechanics (ARM)</li>
+            <li><i class="bi bi-cup-hot" aria-hidden="true"></i> Home Economics (HEc)</li>
           </ul>
         </div>
       </section>
 
       <!-- BOOKS & STATIONERY -->
-      <section class="section-card glass-card col-4 reveal-on-scroll">
+      <section id="books-stationery" class="section-card glass-card col-4 reveal-on-scroll" aria-labelledby="heading-books">
         <div class="section-header-outer">
-          <div class="section-header">
-            <i class="bi bi-journal-richtext"></i> BOOKS & STATIONERY
-          </div>
+          <h2 id="heading-books" class="section-header">
+            <i class="bi bi-journal-richtext" aria-hidden="true"></i> BOOKS & STATIONERY
+          </h2>
         </div>
         <div class="card-content">
-          <p><strong><i class="bi bi-pencil-fill text-accent"></i> WRITING MATERIALS:</strong> Pens (Blue, black, red),
+          <p><strong><i class="bi bi-pencil-fill text-accent" aria-hidden="true"></i> WRITING MATERIALS:</strong> Pens (Blue, black, red),
             pencils, sharpeners, erasers, and rulers.</p>
           <br>
-          <p><strong><i class="bi bi-book-half text-accent"></i> TEXTBOOKS & EXERCISE BOOKS:</strong></p>
+          <p><strong><i class="bi bi-book-half text-accent" aria-hidden="true"></i> TEXTBOOKS & EXERCISE BOOKS:</strong></p>
           <ul class="icon-list animated-list">
             <li><strong>Form 1 & 2:</strong> 80 leaves exercise books.</li>
             <li><strong>Form 3 & 4:</strong> Ledgers. This will take them through till form Five, Lower/Upper Sixth.
@@ -193,24 +228,33 @@
       </section>
 
       <!-- UNIFORM & APPAREL -->
-      <section class="section-card glass-card col-6 reveal-on-scroll">
+      <section id="uniform-apparel" class="section-card glass-card col-6 reveal-on-scroll" aria-labelledby="heading-uniform">
         <div class="section-header-outer">
-          <div class="section-header">
-            <i class="bi bi-person-vcard"></i> UNIFORM & APPAREL
-          </div>
+          <h2 id="heading-uniform" class="section-header">
+            <i class="bi bi-person-vcard" aria-hidden="true"></i> UNIFORM & APPAREL
+          </h2>
         </div>
         <div class="card-content">
           <div class="uniform-split" style="margin-bottom: 1rem;">
             <div class="uniform-gender">
-              <h4><i class="bi bi-gender-male"></i> BOYS</h4>
+              <h3 class="uniform-subheading"><i class="bi bi-gender-male" aria-hidden="true"></i> BOYS</h3>
               <ul class="icon-list animated-list">
                 <li>Two pairs of daily wear trousers</li>
                 <li>Two white short-sleeve shirts</li>
                 <li>Blue pullover (1st Cycle) / White (2nd Cycle)</li>
               </ul>
             </div>
+            <!-- UNIFORM GENDER SPLITTER -->
+            <div class="card-splitter card-splitter--vertical card-splitter--responsive card-splitter--compact" role="separator" aria-orientation="vertical" aria-label="Gender Attire Separator" tabindex="0">
+              <div class="card-splitter__line"></div>
+              <div class="card-splitter__badge">
+                <span class="card-splitter__icon"><i class="bi bi-arrow-left-right" aria-hidden="true"></i></span>
+                <span class="card-splitter__text">ATTIRE</span>
+              </div>
+              <div class="card-splitter__line"></div>
+            </div>
             <div class="uniform-gender">
-              <h4><i class="bi bi-gender-female"></i> GIRLS</h4>
+              <h3 class="uniform-subheading"><i class="bi bi-gender-female" aria-hidden="true"></i> GIRLS</h3>
               <ul class="icon-list animated-list">
                 <li>Two daily wear skirts (navy blue pleated)</li>
                 <li>Two white blouses (square neck)</li>
@@ -219,16 +263,16 @@
             </div>
           </div>
 
-          <p><strong><i class="bi bi-house-door text-accent"></i> COMPOUND WEAR:</strong><br>
+          <p><strong><i class="bi bi-house-door text-accent" aria-hidden="true"></i> COMPOUND WEAR:</strong><br>
             Two sets of compound wear. Girls wear a white sleeveless gown with gathers. Boys wear black trousers & white
             short-sleeve shirts.</p>
           <br>
-          <p><strong><i class="bi bi-vinyl text-accent"></i> OFFICIAL SHOES:</strong><br>
+          <p><strong><i class="bi bi-vinyl text-accent" aria-hidden="true"></i> OFFICIAL SHOES:</strong><br>
             The daily and official shoes of the college are a pair of <strong>brown sandals</strong>, purchasable at the
             college campus or elsewhere to the design specified by the college. Worn daily during lessons. Black shoes
             are worn on Sundays, feast days, and festivals with white socks.</p>
           <br>
-          <p><strong><i class="bi bi-trophy text-accent"></i> SPORTS WEAR:</strong><br>
+          <p><strong><i class="bi bi-trophy text-accent" aria-hidden="true"></i> SPORTS WEAR:</strong><br>
             Obtained in school according to house colours (bears school name/logo). Also used for manual work. Parents
             must also provide tennis shoes for sports and, for boys, football boots. <br>
             <em class="house-colors">Peter House: WHITE | François House: YELLOW | Chanel House: RED | Champagnat House:
@@ -238,22 +282,22 @@
       </section>
 
       <!-- BOARDING & TOILETRY -->
-      <section class="section-card glass-card col-6 reveal-on-scroll">
+      <section id="boarding-toiletry" class="section-card glass-card col-6 reveal-on-scroll" aria-labelledby="heading-boarding">
         <div class="section-header-outer">
-          <div class="section-header">
-            <i class="bi bi-list-check"></i> BOARDING & TOILETRY EQUIPMENTS
-          </div>
+          <h2 id="heading-boarding" class="section-header">
+            <i class="bi bi-list-check" aria-hidden="true"></i> BOARDING & TOILETRY EQUIPMENTS
+          </h2>
         </div>
         <div class="card-content">
           <div class="alert-box alert-warning glass-panel">
-            <i class="bi bi-exclamation-circle"></i> <strong>N.B:</strong> Parents must provide their children with
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i> <strong>N.B:</strong> Parents must provide their children with
             everything to assist in their studies. All personal belongings should be marked with the student's name or
             initials to avoid confusion!
           </div>
 
           <div class="uniform-split">
             <div class="uniform-gender">
-              <h4><i class="bi bi-bed"></i> BOARDING & GENERAL</h4>
+              <h3 class="uniform-subheading"><i class="bi bi-bed" aria-hidden="true"></i> BOARDING & GENERAL</h3>
               <ul class="icon-list animated-list">
                 <li>A thick blanket & mattress (1.90 X 70cm). For Form Ones, the mattress MUST be covered with plastic
                   material.</li>
@@ -268,7 +312,7 @@
             </div>
 
             <div class="uniform-gender">
-              <h4><i class="bi bi-droplet"></i> TOILETRY & HYGIENE</h4>
+              <h3 class="uniform-subheading"><i class="bi bi-droplet" aria-hidden="true"></i> TOILETRY & HYGIENE</h3>
               <ul class="icon-list animated-list">
                 <li>Two sets of pyjamas, sufficient underwear (cotton pants, bras, singlets), and warm night attire.
                 </li>
@@ -287,14 +331,14 @@
       </section>
 
       <!-- SCHOOL RULES & PARENTS' GUIDE -->
-      <section class="section-card glass-card col-6 reveal-on-scroll">
+      <section id="school-rules" class="section-card glass-card col-6 reveal-on-scroll" aria-labelledby="heading-rules">
         <div class="section-header-outer">
-          <div class="section-header danger-header">
-            <i class="bi bi-exclamation-triangle-fill"></i> SCHOOL RULES & PARENTS' GUIDE
-          </div>
+          <h2 id="heading-rules" class="section-header danger-header">
+            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> SCHOOL RULES & PARENTS' GUIDE
+          </h2>
         </div>
         <div class="card-content">
-          <h4><i class="bi bi-slash-circle text-danger"></i> PROHIBITED ITEMS</h4>
+          <h3 class="rules-subheading"><i class="bi bi-slash-circle text-danger" aria-hidden="true"></i> PROHIBITED ITEMS</h3>
           <p class="text-muted">The following are strictly prohibited. When seen, they are confiscated, not given back,
             and the student punished severely:</p>
           <ul class="icon-list animated-list" style="margin-bottom: 1rem;">
@@ -305,7 +349,7 @@
             <li>Wrong uniforms/shoes will be confiscated. No breaking bounds or scaling fences.</li>
           </ul>
 
-          <h4><i class="bi bi-people-fill text-accent"></i> PARENTS AND GUARDIANS</h4>
+          <h3 class="rules-subheading"><i class="bi bi-people-fill text-accent" aria-hidden="true"></i> PARENTS AND GUARDIANS</h3>
           <ul class="icon-list animated-list">
             <li>All students must appear neat, smart with short hair cut, and no styles on re-opening day.</li>
             <li>Students not allowed to receive food and chewable from home except on visiting days (Once a term).</li>
@@ -322,90 +366,100 @@
       </section>
 
       <!-- FEES (ALL IN FCFA) -->
-      <section class="section-card glass-card col-6 reveal-on-scroll">
+      <section id="fees-structure" class="section-card glass-card col-6 reveal-on-scroll" aria-labelledby="heading-fees">
         <div class="section-header-outer">
-          <div class="section-header alt-header">
-            <i class="bi bi-cash-stack"></i> FEES (ALL IN FCFA)
-          </div>
+          <h2 id="heading-fees" class="section-header alt-header">
+            <i class="bi bi-cash-stack" aria-hidden="true"></i> FEES (ALL IN FCFA)
+          </h2>
         </div>
         <div class="card-content">
           <div class="table-responsive glass-table-wrapper">
             <table class="data-table">
+              <caption>
+                Official College Fee Schedule (2026/2027 Academic Session)
+              </caption>
               <thead>
                 <tr>
-                  <th>ITEM</th>
-                  <th>AMOUNT (FCFA)</th>
+                  <th scope="col">Fee Item</th>
+                  <th scope="col" style="text-align: right;">Amount (FCFA)</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><i class="bi bi-house-heart"></i> Boarding</td>
-                  <td>112,000</td>
+                  <td><i class="bi bi-house-heart" aria-hidden="true"></i> Boarding</td>
+                  <td style="text-align: right; font-weight: 600;">112,000</td>
                 </tr>
                 <tr>
-                  <td><i class="bi bi-clipboard2"></i> Registration</td>
-                  <td>5,000</td>
+                  <td><i class="bi bi-clipboard2" aria-hidden="true"></i> Registration</td>
+                  <td style="text-align: right; font-weight: 600;">5,000</td>
                 </tr>
                 <tr>
-                  <td><i class="bi bi-book"></i> Tuition 1st Cycle</td>
-                  <td>63,000</td>
+                  <td><i class="bi bi-book" aria-hidden="true"></i> Tuition 1st Cycle (Forms 1–5)*</td>
+                  <td style="text-align: right; font-weight: 600;">63,000</td>
                 </tr>
                 <tr>
-                  <td><i class="bi bi-journal-bookmark-fill"></i> Tuition 2nd Cycle</td>
-                  <td>63,000</td>
+                  <td><i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i> Tuition 2nd Cycle (Lower/Upper Sixth)*</td>
+                  <td style="text-align: right; font-weight: 600;">63,000</td>
                 </tr>
                 <tr>
-                  <td><i class="bi bi-people"></i> PTA</td>
-                  <td>3,000</td>
+                  <td><i class="bi bi-people" aria-hidden="true"></i> PTA</td>
+                  <td style="text-align: right; font-weight: 600;">3,000</td>
                 </tr>
                 <tr>
-                  <td><i class="bi bi-pencil-square"></i> Exam Fee</td>
-                  <td>4,000</td>
+                  <td><i class="bi bi-pencil-square" aria-hidden="true"></i> Exam Fee</td>
+                  <td style="text-align: right; font-weight: 600;">4,000</td>
                 </tr>
                 <tr>
-                  <td><i class="bi bi-person-badge"></i> ID Card</td>
-                  <td>1,000</td>
+                  <td><i class="bi bi-person-badge" aria-hidden="true"></i> ID Card</td>
+                  <td style="text-align: right; font-weight: 600;">1,000</td>
                 </tr>
                 <tr>
-                  <td><i class="bi bi-capsule"></i> Health Fee</td>
-                  <td>5,000</td>
+                  <td><i class="bi bi-capsule" aria-hidden="true"></i> Health Fee</td>
+                  <td style="text-align: right; font-weight: 600;">5,000</td>
                 </tr>
                 <tr>
-                  <td><i class="bi bi-clipboard2-check"></i> C.R.S.E Fee (Form 3 & Lower Sixth)</td>
-                  <td>2,500</td>
+                  <td><i class="bi bi-clipboard2-check" aria-hidden="true"></i> C.R.S.E Fee (Form 3 & Lower Sixth)</td>
+                  <td style="text-align: right; font-weight: 600;">2,500</td>
                 </tr>
                 <tr>
-                  <td><i class="bi bi-gear-wide-connected"></i> Practical (Tech & Science)</td>
-                  <td>5,000</td>
+                  <td><i class="bi bi-gear-wide-connected" aria-hidden="true"></i> Practical (Tech & Science)</td>
+                  <td style="text-align: right; font-weight: 600;">5,000</td>
                 </tr>
               </tbody>
+              <tfoot>
+                <tr>
+                  <th><strong>Total Baseline (1st Cycle Boarding)</strong></th>
+                  <th style="text-align: right; color: var(--gold);"><strong>193,000 FCFA</strong></th>
+                </tr>
+              </tfoot>
             </table>
           </div>
-          <p class="text-muted" style="margin: 0.75rem 0;"><i class="bi bi-info-circle"></i> Classes with a GCE
+          <p class="text-muted" style="margin: 0.75rem 0; font-size: 0.88rem;">
+            <em>*Note on Tuition:</em> Tuition is charged once per enrolled student for their applicable cycle (1st Cycle <strong>or</strong> 2nd Cycle at 63,000 FCFA), not combined. Baseline total reflects 1st Cycle boarding admission.
+          </p>
+          <p class="text-muted" style="margin: 0.75rem 0;"><i class="bi bi-info-circle" aria-hidden="true"></i> Classes with a GCE
             practical subject and field trips may require students offering those subjects to pay extra.</p>
-          <div class="alert-box alert-info glass-panel">
-            <i class="bi bi-lightning-charge-fill"></i> Fees are paid in two installments at OPUS SECURITATIS (OPSEC),
-            All Saints Business Center, Mile 2 Nkwen, North West Region, or any of its branches. First installment in
-            July, August and September; second installment before the end of January.<br>
-            <strong>Account Name:</strong> St. Joseph Cath. Col Mbengwi &nbsp;|&nbsp; <strong>Account Number:</strong>
-            100117
-          </div>
-          <p class="text-muted" style="margin-top: 0.75rem;"><i class="bi bi-exclamation-circle"></i>
+          <p class="alert-text">
+            <i class="bi bi-bank2" aria-hidden="true"></i>
+            <span><strong>Bank Payment:</strong> All fees must be deposited at <strong>OPUS SECURITATIS (OPSEC) Microfinance</strong>, Account No: <strong>100117</strong> (St. Joseph Cath. Col Mbengwi) at OPUS SECURITATIS (OPSEC), All Saints Business Center, Mile 2 Nkwen, North West Region, or any of its branches. No cash is accepted in the college.</span>
+          </p>
+          <p class="text-muted" style="margin-top: 0.75rem;"><i class="bi bi-exclamation-circle" aria-hidden="true"></i>
             <strong>N.B:</strong> Form Five and Upper Sixth students must pay all fees on or before the start of the
             academic year to avoid class suspension.</p>
         </div>
       </section>
 
       <!-- HEALTH, FINANCE & MANUAL LABOUR -->
-      <section class="section-card glass-card col-6 reveal-on-scroll">
+      <section id="health-finance" class="section-card glass-card col-6 reveal-on-scroll" aria-labelledby="heading-health">
         <div class="section-header-outer">
-          <div class="section-header">
-            <i class="bi bi-heart-pulse-fill"></i> HEALTH, FINANCE & MANUAL LABOUR
-          </div>
+          <h2 id="heading-health" class="section-header">
+            <i class="bi bi-heart-pulse-fill" aria-hidden="true"></i> HEALTH, FINANCE & MANUAL LABOUR
+          </h2>
         </div>
         <div class="card-content grid-3-cols">
           <div class="info-block">
-            <p><strong><i class="bi bi-heart-fill text-accent"></i> HEALTH:</strong><br>
+            <h3 class="info-title"><i class="bi bi-heart-fill text-accent" aria-hidden="true"></i> HEALTH</h3>
+            <p>
               The school has a nurse and an infirmary. Serious cases are taken to the hospital and parents/guardians
               informed. Students are registered in BEPHA (a mutual health scheme for Catholic Institutions). Come with
               names, phone numbers, and residential addresses of parents/guardians. Students are expected to maintain
@@ -414,12 +468,14 @@
             </p>
           </div>
           <div class="info-block">
-            <p><strong><i class="bi bi-wallet-fill text-accent"></i> POCKET MONEY:</strong><br>
+            <h3 class="info-title"><i class="bi bi-wallet-fill text-accent" aria-hidden="true"></i> POCKET MONEY</h3>
+            <p>
               All money should be deposited and kept with the bursar. No student should keep money in the dormitory or
               classroom. Pocket allowance should not be more than 25,000FCFA per term.</p>
           </div>
           <div class="info-block">
-            <p><strong><i class="bi bi-tools text-accent"></i> MANUAL LABOUR EQUIPMENTS:</strong><br>
+            <h3 class="info-title"><i class="bi bi-tools text-accent" aria-hidden="true"></i> MANUAL LABOUR EQUIPMENTS</h3>
+            <p>
               All new students are to pay 1,500frs for manual labour equipments (e.g. floor rag, brooms,
               cutlasses/lances and hoes).</p>
           </div>
@@ -427,61 +483,61 @@
       </section>
 
       <!-- IMPORTANT DATES -->
-      <section class="section-card glass-card col-6 reveal-on-scroll">
+      <section id="important-dates" class="section-card glass-card col-6 reveal-on-scroll" aria-labelledby="heading-dates">
         <div class="section-header-outer">
-          <div class="section-header alt-header">
-            <i class="bi bi-calendar-event-fill"></i> IMPORTANT DATES
-          </div>
+          <h2 id="heading-dates" class="section-header alt-header">
+            <i class="bi bi-calendar-event-fill" aria-hidden="true"></i> IMPORTANT DATES
+          </h2>
         </div>
         <div class="card-content" style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
           <div class="info-block" style="flex: 1; min-width: 220px;">
-            <p><strong><i class="bi bi-person-check-fill text-accent"></i> FORM 1 INTERVIEW:</strong><br>Tuesday, 4th
+            <p><strong><i class="bi bi-person-check-fill text-accent" aria-hidden="true"></i> FORM 1 INTERVIEW:</strong><br>Tuesday, 4th
               August 2026 at 9:00 AM</p>
           </div>
           <div class="info-block" style="flex: 1; min-width: 220px;">
-            <p><strong><i class="bi bi-door-open text-accent"></i> TENTATIVE RE-OPENING:</strong>
+            <p><strong><i class="bi bi-door-open text-accent" aria-hidden="true"></i> TENTATIVE RE-OPENING:</strong>
               <br>Re-opening days will be communicated to parents/guardians in advance. Students are expected to report
               on the specified dates.
             </p>
           </div>
         </div>
-        <p style="text-align: center; color:var(--accent) ;font-size: 1.2rem; margin-top: 1.5rem;"><em>Rev. Fr. Joseph
+        <p class="principal-signature"><em>Rev. Fr. Joseph
             Gael Kenne, S.D<br>Principal</em></p>
       </section>
 
     </main>
 
     <!-- Footer Section -->
-    <footer class="prospectus-footer glass-footer backdrop-blur">
+    <footer id="contact-notices" class="prospectus-footer glass-footer backdrop-blur" aria-labelledby="heading-footer-contact">
       <div class="footer-top-grid">
         <!-- Contact Box Card -->
         <div class="footer-card glass-card reveal-on-scroll">
-          <h3><i class="bi bi-telephone-fill"></i> CONTACT US</h3>
+          <h2 id="heading-footer-contact" class="footer-heading"><i class="bi bi-telephone-fill" aria-hidden="true"></i> CONTACT US</h2>
           <p class="highlight-text">(Admission continues daily for all classes)</p>
           <ul class="contact-link-list animated-list">
-            <li><a href="tel:+682760271" class="hover-scale"><i class="bi bi-phone"></i> +237 682 760 271 (Phone)</a>
+            <li><a href="tel:+237682760271" class="hover-scale"><i class="bi bi-phone" aria-hidden="true"></i> +237 682 760 271 (Phone)</a>
             </li>
-            <li><a href="https://wa.me/682760271" class="hover-scale"><i class="bi bi-whatsapp"></i> +237 682 760 271
+            <li><a href="https://wa.me/237682760271" class="hover-scale"><i class="bi bi-whatsapp" aria-hidden="true"></i> +237 682 760 271
                 (WhatsApp)</a></li>
-            <li><a href="https://saintjosephcollege.vercel.app" class="hover-scale"><i class="bi bi-globe"></i>
+            <li><a href="https://saintjosephcollege.vercel.app" class="hover-scale"><i class="bi bi-globe" aria-hidden="true"></i>
                 www.saintjosephcollege.vercel.app</a></li>
-            <li><a href="mailto:stjosephcollegembengwi@gmail.com" class="hover-scale"><i class="bi bi-envelope-at"></i>
+            <li><a href="mailto:stjosephcollegembengwi@gmail.com" class="hover-scale"><i class="bi bi-envelope-at" aria-hidden="true"></i>
                 stjosephcollegembengwi@gmail.com</a></li>
-            <li><a href="#" class="hover-scale"><i class="bi bi-mailbox"></i> Post Office Box 23, Mbengwi, MOMO,
+            <li><a href="#" class="hover-scale"><i class="bi bi-mailbox" aria-hidden="true"></i> Post Office Box 23, Mbengwi, MOMO,
                 North-West Region, Republic of Cameroon</a></li>
           </ul>
         </div>
 
         <!-- Notices & Transportation Card -->
         <div class="footer-card glass-card reveal-on-scroll">
-          <h3><i class="bi bi-info-circle-fill"></i> IMPORTANT NOTICE</h3>
+          <h2 class="footer-heading"><i class="bi bi-info-circle-fill" aria-hidden="true"></i> IMPORTANT NOTICE</h2>
           <p style="margin-bottom: 1.2rem;">Acceptance of a place in the college is also the acceptance to respect all
             the rules and regulations of the college as laid down by the authorities. Students will be asked to withdraw
             if they persistently break College rules or fail to meet the academic demands.</p>
           <div class="glass-notice-box glass-panel">
-            <p><i class="bi bi-info-circle icon-gold"></i> <strong>Notice:</strong> Parents are strongly cautioned not
+            <p><i class="bi bi-info-circle icon-gold" aria-hidden="true"></i> <strong>Notice:</strong> Parents are strongly cautioned not
               to give the school fees to their children because some have the temptation to spend the money.</p>
-            <p><i class="bi bi-exclamation-triangle icon-gold"></i> <strong>Reminder:</strong> Statement of Account is
+            <p><i class="bi bi-exclamation-triangle icon-gold" aria-hidden="true"></i> <strong>Reminder:</strong> Statement of Account is
               given at the end of First Term.</p>
           </div>
         </div>
@@ -495,11 +551,11 @@
 
   <!-- PDF Engine Trigger Action Block -->
   <div class="download-action-container">
-    <button id="downloadPdfBtn" class="floating-action-btn glass-btn interactive-hover">
-      <i class="bi bi-file-earmark-pdf-fill"></i> Download Prospectus (PDF)
+    <button id="downloadPdfBtn" class="floating-action-btn glass-btn interactive-hover" aria-label="Download or Print Official Prospectus as PDF">
+      <i class="bi bi-file-earmark-pdf-fill" aria-hidden="true"></i> Download Prospectus (PDF)
     </button>
   </div>
-  <script src="src/propspectus.ts" type="module"></script>
+  <script src="/src/prospectus.ts" type="module"></script>
 </body>
 
 </html>

@@ -1,0 +1,31 @@
+%% ============================================================================
+%% SJCCC Service Worker Request Lifecycle
+%% Illustrates request classification and routing strategies in src/sw.ts.
+%% ============================================================================
+flowchart TD
+    Req([Incoming Fetch Request]) --> Classify{Classify Request}
+
+    Classify -->|Navigation mode === 'navigate'| NavStrategy[Network-First with 3500ms Timeout]
+    Classify -->|Hashed Vite JS / CSS| CacheFirst[Cache-First Strategy]
+    Classify -->|Images .jpg, .png, .webp| ImageStrategy[Cache-First with Image Fallback]
+    Classify -->|Approved CDN Google Fonts, cdnjs| SWRStrategy[Stale-While-Revalidate]
+    Classify -->|Formspree, WhatsApp, Google Maps| NetOnly[Network-Only Pass-Through]
+
+    NavStrategy --> TryNet{Network Responds < 3500ms?}
+    TryNet -->|Yes| ReturnNet[Return Network Response & Cache Copy]
+    TryNet -->|No / Offline| CheckCache{Cached HTML in Precache?}
+    CheckCache -->|Yes| ReturnCachedHTML[Return Precached index.html / prospectus.html]
+    CheckCache -->|No| ReturnOfflineDoc[Return Built-in OFFLINE_HTML Fallback]
+
+    CacheFirst --> InCache{Asset in Cache?}
+    InCache -->|Yes| ReturnAsset[Return Cached Asset Immediately]
+    InCache -->|No| FetchNetAsset[Fetch Network, Store in Cache & Return]
+
+    ImageStrategy --> InImgCache{Image in Cache?}
+    InImgCache -->|Yes| ReturnImg[Return Cached Image]
+    InImgCache -->|No| FetchNetImg{Network Available?}
+    FetchNetImg -->|Yes| StoreImg[Store in Images Cache & Return]
+    FetchNetImg -->|No| ReturnImgFallback[Return /assets/Error-Image.jpeg]
+
+    SWRStrategy --> ReturnStale[Return Cached Version & Fetch Background Update]
+    NetOnly --> DirectNet[Direct Fetch without Caching]

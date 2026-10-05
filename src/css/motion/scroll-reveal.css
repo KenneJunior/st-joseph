@@ -1,0 +1,78 @@
+/* ============================================
+   SCROLL REVEAL & STAGGERED ENTRANCE SYSTEM
+   Hardware-accelerated transforms with zero layout shift (CLS = 0)
+   ============================================ */
+.reveal,
+.stagger-item {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s var(--ease-cinematic, cubic-bezier(0.25, 1, 0.35, 1)),
+              transform 0.65s var(--ease-cinematic, cubic-bezier(0.25, 1, 0.35, 1));
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+
+.reveal.revealed,
+.stagger-item.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger Card: subtle elevation scale for cards (Pillars & Event cards) */
+.stagger-card {
+  opacity: 0;
+  transform: translateY(28px) scale(0.98);
+  transition: opacity 0.65s var(--ease-cinematic, cubic-bezier(0.25, 1, 0.35, 1)),
+              transform 0.7s var(--ease-cinematic, cubic-bezier(0.25, 1, 0.35, 1));
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+
+.stagger-card.revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Card hover physics after reveal has completed */
+.stagger-card.revealed:hover {
+  transform: translateY(-3px) scale(1);
+  transition: transform var(--duration-fast, 200ms) var(--ease-standard, cubic-bezier(0.2, 0, 0, 1)),
+              box-shadow var(--duration-fast, 200ms) var(--ease-standard, cubic-bezier(0.2, 0, 0, 1)),
+              border-color var(--duration-fast, 200ms) var(--ease-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+/* Manual Delay Modifiers */
+.reveal-delay-1 { transition-delay: 0.08s; }
+.reveal-delay-2 { transition-delay: 0.16s; }
+.reveal-delay-3 { transition-delay: 0.24s; }
+.reveal-delay-4 { transition-delay: 0.32s; }
+
+/* CSS fallback nth-child stagger delays inside a revealed group */
+.stagger-group.revealed > .stagger-item:nth-child(1),
+.stagger-group.revealed > .stagger-card:nth-child(1) { transition-delay: 0.05s; }
+.stagger-group.revealed > .stagger-item:nth-child(2),
+.stagger-group.revealed > .stagger-card:nth-child(2) { transition-delay: 0.16s; }
+.stagger-group.revealed > .stagger-item:nth-child(3),
+.stagger-group.revealed > .stagger-card:nth-child(3) { transition-delay: 0.27s; }
+.stagger-group.revealed > .stagger-item:nth-child(4),
+.stagger-group.revealed > .stagger-card:nth-child(4) { transition-delay: 0.38s; }
+
+/* Memory optimization: release will-change once resting */
+.reveal.revealed:not(:hover),
+.stagger-item.revealed:not(:hover),
+.stagger-card.revealed:not(:hover) {
+  will-change: auto;
+}
+
+/* Accessibility: Strict Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .stagger-item,
+  .stagger-card {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+    will-change: auto !important;
+  }
+}

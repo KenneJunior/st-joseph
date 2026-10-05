@@ -1,0 +1,88 @@
+%% ============================================================================
+%% SJCCC Module Dependency Graph
+%% Illustrates architectural dependency flow across entrypoints, controllers,
+%% features, shared infrastructure, services, and canonical data stores.
+%% ============================================================================
+flowchart TD
+    subgraph Entrypoints["Entrypoints (Root src/)"]
+        MainEntry["src/main.ts"]
+        ProspectusEntry["src/prospectus.ts"]
+    end
+
+    subgraph Controllers["Composition Roots (src/pages/)"]
+        HomeApp["src/pages/home/home.ts<br/>(HomeApp)"]
+        ProspectusApp["src/pages/prospectus/prospectus.ts<br/>(ProspectusApp)"]
+    end
+
+    subgraph SharedCore["Core & Shared UI (src/core/ & src/ui/)"]
+        ThemeMgr["core/theme/ThemeManager.ts"]
+        MobNav["ui/navigation/MobileNavigation.ts"]
+        HeadScroll["ui/navigation/HeaderScroll.ts"]
+        ScrollSpy["ui/navigation/ScrollSpy.ts"]
+        ScrollReveal["ui/utils/ScrollReveal.ts"]
+        CounterAnim["ui/utils/CounterAnimation.ts"]
+        ConfDialog["ui/dialog/ConfirmDialog.ts"]
+    end
+
+    subgraph HomepageFeatures["Homepage Features (src/features/)"]
+        HeroEng["features/hero/ScrollEngine.ts<br/>& HeroParticles.ts"]
+        Carousel["features/carousel/Carousel.ts"]
+        Announce["features/announcement/AnnouncementBar.ts"]
+        AcadTog["features/academic/AcademicLevelToggles.ts"]
+        Timeline["features/calendar/SchoolDatesTimeline.ts"]
+        CampusMap["features/campus/VirtualCampusMap.ts"]
+        Enquiry["features/enquiry/EnquiryForm.ts<br/>& EnquiryModal.ts"]
+        FaqSection["features/faq/FaqSection.ts"]
+        PwaPrompt["features/pwa/PwaInstallPrompt.ts"]
+    end
+
+    subgraph ProspectusLocal["Prospectus Local Handlers"]
+        PdfExport["PdfExporter<br/>(window.print trigger)"]
+        InitLog["InitLogger<br/>(Dev Diagnostics)"]
+    end
+
+    subgraph SharedFeaturesServices["Shared Features & Services"]
+        OfflineInd["features/offline/OfflineIndicator.ts"]
+        SWService["services/serviceWorker.ts"]
+        EnquiryServ["services/enquiryService.ts"]
+    end
+
+    subgraph DataStores["Canonical Data Layer (src/data/)"]
+        DataSources["academicPrograms.ts<br/>tuitionFees.ts<br/>academicCalendar.ts<br/>collegeProfile.ts<br/>admissionRequirements.ts"]
+    end
+
+    MainEntry --> HomeApp
+    ProspectusEntry --> ProspectusApp
+    MainEntry --> SWService
+    ProspectusEntry --> SWService
+
+    HomeApp --> ThemeMgr
+    HomeApp --> MobNav
+    HomeApp --> HeadScroll
+    HomeApp --> ScrollSpy
+    HomeApp --> ScrollReveal
+    HomeApp --> CounterAnim
+    HomeApp --> OfflineInd
+
+    HomeApp --> HeroEng
+    HomeApp --> Carousel
+    HomeApp --> Announce
+    HomeApp --> AcadTog
+    HomeApp --> Timeline
+    HomeApp --> CampusMap
+    HomeApp --> Enquiry
+    HomeApp --> FaqSection
+    HomeApp --> PwaPrompt
+
+    ProspectusApp --> ThemeMgr
+    ProspectusApp --> MobNav
+    ProspectusApp --> OfflineInd
+    ProspectusApp --> PdfExport
+    ProspectusApp --> InitLog
+    ProspectusApp -.-> DataSources
+
+    Enquiry --> EnquiryServ
+    PwaPrompt --> ConfDialog
+    Timeline --> DataSources
+    FaqSection --> DataSources
+    Carousel --> DataSources

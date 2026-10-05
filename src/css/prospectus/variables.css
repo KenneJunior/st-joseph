@@ -1,0 +1,122 @@
+/* ==========================================================================
+   SJCCC PROSPECTUS — DESIGN TOKENS & CONSOLIDATED THEME VARIABLES
+   ========================================================================== */
+
+:root {
+    /* ─── 1. Brand Primitive Tokens (from shared SJCCC Design System) ─── */
+    --sj-navy-950: #020c1a;
+    --sj-navy-900: #07182e;
+    --sj-navy-800: #0a1f3f;
+    --sj-navy-700: #0f2d5c;
+    --sj-navy-600: #1a3f6e;
+
+    --sj-gold-600: #8c6a21;
+    --sj-gold-500: #c9a229;
+    --sj-gold-400: #d4a85a;
+    --sj-gold-300: #f3d779;
+    --sj-gold-200: #fbe3a1;
+
+    /* ─── 2. Consolidated Semantic Brand Tokens ─── */
+    --color-brand-primary: var(--sj-navy-900);
+    --color-brand-deep: var(--sj-navy-950);
+    --color-brand-accent: var(--sj-gold-500);
+    --color-brand-accent-soft: var(--sj-gold-400);
+    --color-brand-accent-bright: var(--sj-gold-300);
+
+    /* ─── 3. Unified Theme Aliases (Consolidated for Full Backward Compatibility) ─── */
+    --primary: var(--color-brand-primary);
+    --primary-light: var(--sj-navy-800);
+    --primary-dark: var(--sj-navy-950);
+    --accent: var(--color-brand-accent);
+    --accent-light: var(--color-brand-accent-soft);
+    --accent-glow: var(--color-brand-accent-bright);
+    --gold-gradient: linear-gradient(135deg, var(--color-brand-accent) 0%, var(--color-brand-accent-bright) 50%, var(--color-brand-accent) 100%);
+
+    /* Document-First Semantic Aliases */
+    --deep-blue: var(--color-brand-primary);
+    --royal-blue: var(--sj-navy-800);
+    --gold: var(--color-brand-accent);
+    --gold-light: var(--color-brand-accent-bright);
+    --accent-red: #c73636;
+    --accent-green: #2a5c3e;
+
+    /* ─── 4. Stacking Context (Z-Index Scale) ─── */
+    --z-base: 0;
+    --z-transition: 0;
+    --z-raised: 10;
+    --z-header: 1000;
+    --z-hud: 2000;
+    --z-drawer: 3000;
+    --z-banner: 4000;
+    --z-modal: 5000;
+    --z-dialog: 6000;
+    --z-preloader: 8000;
+    --z-wco: 10000;
+
+    /* ─── 5. Light Theme (Warm, Textured, & Elegant) ─── */
+    --bg-main: linear-gradient(165deg, #f8f6f0 0%, #eae5d9 100%);
+    --bg-container: rgba(255, 252, 245, 0.9);
+    --bg-card: #ffffff;
+    --bg-table-stripe: #fbf9f2;
+    --text-main: #1a1e2b;
+    --text-muted: #5a5d66;
+    --text-light: #ffffff;
+    --border-soft: rgba(201, 162, 41, 0.3);
+    --border-card: rgba(0, 0, 0, 0.05);
+    --shadow-main: 0 25px 50px -12px rgba(10, 25, 45, 0.18), 0 8px 20px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 35px 60px -15px rgba(10, 25, 45, 0.25), 0 12px 28px rgba(201, 162, 41, 0.2);
+    --backdrop-blur: blur(12px);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+
+    /* ─── 6. Typography & Motion Primitives ─── */
+    --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --radius-xl: 24px;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --header-height: 64px;
+
+    /* ─── 7. Document Density & Controlled Scaling Architecture ─── */
+    --prospectus-zoom: 1;
+    --prospectus-max-width: 1460px;
+    --doc-visual-width: 1280px;
+
+    /* Semantic Density Spacing Scale */
+    --space-doc-pad-y: 1.5rem;
+    --space-doc-pad-x: 1.5rem;
+    --space-grid-gap: 1.25rem;
+    --space-card-pad: 1.25rem;
+    --space-header-mb: 1rem;
+    --space-element-gap: 0.65rem;
+
+    /* Typographic Hierarchy Tokens */
+    --text-doc-body: 0.92rem;
+    --text-doc-small: 0.86rem;
+    --text-doc-line-height: 1.48;
+}
+
+/* ─── 8. Dark Theme Overrides (Deep, Immersive & Consolidated) ─── */
+html.dark-mode,
+body.dark-mode {
+    --bg-main: linear-gradient(165deg, #0a0f16 0%, #111820 100%);
+    --bg-container: rgba(13, 17, 23, 0.9);
+    --bg-card: #161c24;
+    --bg-table-stripe: #1c232d;
+    --text-main: #e6edf3;
+    --text-muted: #8b949e;
+    --border-soft: rgba(201, 162, 41, 0.45);
+    --border-card: rgba(255, 255, 255, 0.08);
+    --shadow-main: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 8px 20px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 35px 60px -15px rgba(212, 175, 55, 0.2), 0 12px 28px rgba(0, 0, 0, 0.5);
+    --backdrop-blur: blur(16px);
+    --glass-bg: rgba(22, 28, 36, 0.75);
+
+    /* Dark Mode Brand Accents */
+    --accent: var(--sj-gold-400);
+    --accent-glow: var(--sj-gold-200);
+    --gold: var(--sj-gold-400);
+    --gold-light: var(--sj-gold-200);
+}

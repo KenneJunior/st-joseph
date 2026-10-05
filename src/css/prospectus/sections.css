@@ -1,0 +1,294 @@
+/* ==========================================================================
+   SJCCC PROSPECTUS — GRID & SECTION CARDS
+   ========================================================================== */
+
+/* Responsive Grid Layout */
+.prospectus-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--space-grid-gap, 1.25rem);
+    padding: var(--space-doc-pad-y, 1.5rem) var(--space-doc-pad-x, 1.5rem);
+}
+
+.col-4  { grid-column: span 4; }
+.col-5  { grid-column: span 5; }
+.col-3  { grid-column: span 3; }
+.col-6  { grid-column: span 6; }
+.col-7  { grid-column: span 7; }
+.col-8  { grid-column: span 8; }
+.col-12 { grid-column: span 12; }
+
+/* Section Cards – Elevated & Compact Institutional Folio Cards */
+.section-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md, 10px);
+    border: 1px solid var(--border-card);
+    padding: var(--space-card-pad, 1.25rem);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+}
+
+.section-card[id],
+footer[id] {
+    scroll-margin-top: calc(var(--header-height, 64px) + 1rem);
+}
+
+.section-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.section-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--gold);
+}
+
+.section-card:hover::before {
+    opacity: 1;
+}
+
+.section-card p {
+    color: var(--text-muted);
+    font-size: var(--text-doc-body, 0.92rem);
+    line-height: var(--text-doc-line-height, 1.48);
+    margin-bottom: 0.45rem;
+}
+
+.section-card p:last-child {
+    margin-bottom: 0;
+}
+
+/* Normalize explicit <br> tags between paragraphs inside cards to eliminate giant gaps */
+.section-card br {
+    content: "";
+    display: block;
+    margin-top: 0.35rem;
+}
+
+.card-content {
+    flex: 1;
+}
+
+/* Section Headers — Dignified Compact Institutional Pills */
+.section-header,
+h2.section-header {
+    background: var(--deep-blue);
+    color: var(--text-light);
+    padding: 0.45rem 1.05rem;
+    border-radius: 50px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-top: 0;
+    margin-bottom: var(--space-header-mb, 1rem);
+    line-height: 1.25;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    border-bottom: 2.5px solid var(--gold);
+    transition: var(--transition-bounce);
+}
+
+.section-header-outer {
+    width: 100%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.section-header.alt-header { background: var(--royal-blue); }
+.section-header.danger-header { background: var(--accent-red); }
+
+.section-card:hover .section-header {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.section-card:hover .section-header .bi {
+    transform: scale(1.15) rotate(-6deg);
+    color: var(--gold-light);
+}
+
+/* Sub-headings & Detail Panels */
+.uniform-split {
+    display: flex;
+    gap: 0.9rem;
+}
+
+.uniform-gender {
+    flex: 1;
+    background: rgba(201, 162, 41, 0.04);
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md, 10px);
+    border: 1px dashed var(--border-soft);
+    transition: var(--transition-smooth);
+}
+
+.uniform-gender:hover {
+    background: rgba(201, 162, 41, 0.08);
+    border-style: solid;
+}
+
+.uniform-gender h4,
+.uniform-gender h3,
+.uniform-subheading {
+    color: var(--royal-blue);
+    margin-top: 0;
+    margin-bottom: 0.55rem;
+    font-size: 0.96rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+body.dark-mode .uniform-gender h4,
+body.dark-mode .uniform-gender h3,
+body.dark-mode .uniform-subheading {
+    color: var(--gold-light);
+}
+
+.rules-subheading {
+    color: var(--text-main);
+    margin-top: 0.75rem;
+    margin-bottom: 0.35rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.info-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 0;
+    margin-bottom: 0.35rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+/* 3-Column Layout for Info Blocks (Balances Health & Finance with Important Dates) */
+.grid-3-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.85rem;
+}
+
+.grid-3-cols .info-block {
+    background: rgba(201, 162, 41, 0.03);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md, 10px);
+    padding: 0.75rem 0.85rem;
+}
+
+.principal-signature {
+    text-align: center;
+    color: var(--royal-blue);
+    font-size: 1.1rem;
+    margin-top: 1.2rem;
+    font-weight: 600;
+    font-family: var(--font-serif);
+}
+
+body.dark-mode .principal-signature {
+    color: var(--gold-light);
+}
+
+.info-block p {
+    font-size: 0.88rem;
+    line-height: 1.44;
+}
+
+/* Icon Lists — Compact Institutional Style */
+.icon-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.icon-list li {
+    position: relative;
+    padding-left: 1.35rem;
+    margin-bottom: 0.35rem;
+    color: var(--text-muted);
+    font-size: var(--text-doc-body, 0.90rem);
+    line-height: 1.42;
+    transition: var(--transition-smooth);
+}
+
+.icon-list li:last-child {
+    margin-bottom: 0;
+}
+
+.icon-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: var(--transition-bounce);
+}
+
+.icon-list li:hover {
+    color: var(--text-main);
+    transform: translateX(3px);
+}
+
+.icon-list li:hover::before {
+    left: 4px;
+    color: var(--gold-light);
+}
+
+/* Dividers & Alerts */
+.divider {
+    border: none;
+    border-top: 1px dashed var(--border-soft);
+    margin: 0.75rem 0;
+}
+
+.alert-box {
+    padding: 0.65rem 0.85rem;
+    border-radius: var(--radius-md, 10px);
+    font-size: 0.86rem;
+    line-height: 1.42;
+    margin-bottom: 0.8rem;
+}
+
+.alert-warning {
+    background: rgba(201, 162, 41, 0.08);
+    border: 1px solid var(--border-soft);
+    color: var(--text-main);
+}
+
+.alert-text {
+    color: var(--accent-red);
+    font-weight: 600;
+    font-size: 0.84rem;
+    line-height: 1.4;
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.4rem 0;
+}
+
+body.dark-mode .alert-text {
+    color: #ff7b7b;
+}

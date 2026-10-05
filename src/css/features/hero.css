@@ -1,0 +1,193 @@
+/* ============================================
+   HERO SECTION
+   ============================================ */
+#heroSection.hero-section {
+  min-height: 600vh; /* Engine height */
+  display: block;    /* Remove flex from parent */
+  overflow: visible; /* CRITICAL: Sticky won't work if this is 'hidden' */
+  padding: 0;        /* Reset padding */
+  background: var(--primary-dark);
+}
+
+.hero-bg-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  contain: paint;
+}
+.sticky-container .hero-bg-layer {
+  z-index: 0;
+}
+
+.hero-bg-img {
+  position: absolute;
+  inset: 0;
+  background-image: url('/assets/stJoseph.jpg');
+  background-position: 50% 10%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 1;
+  transform: scale(1.05);
+  transform-origin: 50% 15%;
+  animation: heroSlowZoom 20s ease-in-out infinite alternate;
+  will-change: transform;
+  z-index: -1;
+}
+
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+          radial-gradient(ellipse at 30% 50%, rgba(200,150,62,0.12) 0%, transparent 60%),
+          radial-gradient(ellipse at 70% 30%, var(--overlay-dark) 0%, transparent 60%),
+          linear-gradient(180deg, var(--overlay-dark) 0%, rgba(10,31,63,0.9) 50%, var(--overlay-dark) 100%);
+}
+
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.5;
+  contain: layout paint;
+}
+
+/* ============================================
+   GLOBAL DUST PARTICLES CANVAS
+   Ambient golden dust motes floating all over the page
+   ============================================ */
+#dustCanvas,
+.dust-particles-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: none;
+  pointer-events: none !important;
+  z-index: 90;
+  display: block;
+  contain: strict;
+}
+
+.hero-particle {
+  position: absolute;
+  background: rgba(255,255,255,0.6);
+  border-radius: 50%;
+  animation: floatUp linear infinite;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 880px;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--accent-glow);
+  padding: clamp(4px, 1vh, 8px) clamp(10px, 2vw, 20px);
+  border-radius: 50px;
+  font-size: clamp(0.66rem, 1.8vw, 0.85rem);
+  font-weight: 600;
+  letter-spacing: clamp(0.5px, 0.2vw, 2px);
+  text-transform: uppercase;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.hero-content h1 {
+  color: var(--text-light);
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  letter-spacing: -0.5px;
+}
+
+.hero-content h1 .gold-accent {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  color: rgba(255,255,255,0.8);
+  font-size: 1.15rem;
+  max-width: 600px;
+  margin: 0 auto 36px auto;
+  line-height: 1.7;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .hero-buttons {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-buttons {
+    flex-direction: column !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    max-width: 340px !important;
+    margin: 0 auto !important;
+    gap: 10px !important;
+  }
+
+  .hero-buttons .btn {
+    width: 100% !important;
+    min-height: 48px !important;
+    font-size: 0.94rem !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+}
+
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  animation: bounceDown 2s ease-in-out infinite;
+}
+
+.hero-scroll-indicator span {
+  display: block;
+  width: 30px;
+  height: 50px;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 20px;
+  position: relative;
+}
+
+.hero-scroll-indicator span::after {
+  content: '';
+  width: 6px;
+  height: 10px;
+  background: #fff;
+  border-radius: 3px;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: scrollDot 2s ease-in-out infinite;
+}

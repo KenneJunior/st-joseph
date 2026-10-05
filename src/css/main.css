@@ -1,0 +1,59 @@
+/* ==========================================================================
+   SJCCC — MASTER CSS ENTRY
+   St. Joseph Catholic Comprehensive College (SJCCC), Mbengwi
+   ========================================================================== */
+
+/* Core */
+@import './core/tokens.css';
+@import './core/theme.css';
+@import './core/reset.css';
+@import './core/typography.css';
+@import './core/utilities.css';
+
+/* Layout */
+@import './layout/header.css';
+@import './layout/navigation.css';
+@import './layout/sections.css';
+@import './layout/footer.css';
+
+/* Components */
+@import './components/buttons.css';
+@import './components/cards.css';
+@import './components/card-splitter.css';
+@import './components/forms.css';
+@import './components/stats.css';
+@import './components/testimonials.css';
+@import './components/events.css';
+@import './components/cta-banner.css';
+@import './components/theme-toggle.css';
+@import './components/dialog.css';
+@import './components/offline-indicator.css';
+
+/* Features */
+@import './features/preloader.css';
+@import './features/hero.css';
+@import './features/announcement.css';
+@import './features/carousel.css';
+@import './features/academics.css';
+@import './features/calendar-timeline.css';
+@import './features/gce-results.css';
+@import './features/campus-map.css';
+@import './features/map-embed.css';
+@import './features/enquiry.css';
+@import './features/enquiry-typing.css';
+@import './features/faq.css';
+@import './features/pwa-wco.css';
+
+/* Motion */
+@import './motion/keyframes.css';
+@import './motion/scroll-reveal.css';
+
+/* UI */
+@import './ui/back-to-top.css';
+
+/* Responsive */
+@import './layout/responsive-legacy.css';
+@import './layout/navigation-mobile.css';
+
+/* Accessibility MUST remain last */
+@import './core/accessibility.css';

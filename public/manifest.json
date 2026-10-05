@@ -20,62 +20,62 @@
   ],
   "icons": [
     {
-      "src": "public/assets/icons/Apple/manifest-icon-192.maskable.png",
+      "src": "/assets/icons/Apple/manifest-icon-192.maskable.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "public/assets/icons/Apple/manifest-icon-192.maskable.png",
+      "src": "/assets/icons/Apple/manifest-icon-192.maskable.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "public/assets/icons/Apple/manifest-icon-512.maskable.png",
+      "src": "/assets/icons/Apple/manifest-icon-512.maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "public/assets/icons/Apple/manifest-icon-512.maskable.png",
+      "src": "/assets/icons/Apple/manifest-icon-512.maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/assets/icons/icon_96X96.svg",
-      "sizes": "96X96",
+      "src": "/assets/icons/96X96.svg",
+      "sizes": "96x96",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/assets/icons/icon_128X128.svg",
-      "sizes": "128X128",
+      "src": "/assets/icons/128X128.svg",
+      "sizes": "128x128",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
       "src": "/assets/icons/144X144.svg",
-      "sizes": "144X144",
+      "sizes": "144x144",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
       "src": "/assets/icons/168X168.svg",
-      "sizes": "168X168",
+      "sizes": "168x168",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/assets/icons/192X192.svg",
-      "sizes": "192X192",
+      "src": "/assets/icons/196X196.svg",
+      "sizes": "196x196",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
       "src": "/assets/icons/512X512.svg",
-      "sizes": "512X512",
+      "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
@@ -123,61 +123,61 @@
       "url": "/prospectus.html",
       "icons": [
         {
-          "src": "/assets/icons/icon_96X96.svg",
-          "sizes": "96X96",
+          "src": "/assets/icons/96X96.svg",
+          "sizes": "96x96",
           "type": "image/svg+xml",
           "purpose": "any"
         },
         {
-          "src": "/assets/icons/icon_128X128.svg",
-          "sizes": "128X128",
+          "src": "/assets/icons/128X128.svg",
+          "sizes": "128x128",
           "type": "image/svg+xml",
           "purpose": "any"
         },
         {
           "src": "/assets/icons/144X144.svg",
-          "sizes": "144X144",
+          "sizes": "144x144",
           "type": "image/svg+xml",
           "purpose": "any"
         },
         {
           "src": "/assets/icons/168X168.svg",
-          "sizes": "168X168",
+          "sizes": "168x168",
           "type": "image/svg+xml",
           "purpose": "any"
         },
         {
-          "src": "/assets/icons/192X192.svg",
-          "sizes": "192X192",
+          "src": "/assets/icons/196X196.svg",
+          "sizes": "196x196",
           "type": "image/svg+xml",
           "purpose": "any maskable"
         },
         {
           "src": "/assets/icons/512X512.svg",
-          "sizes": "512X512",
+          "sizes": "512x512",
           "type": "image/svg+xml",
           "purpose": "any maskable"
         },
         {
-          "src": "public/assets/icons/Apple/manifest-icon-192.maskable.png",
+          "src": "/assets/icons/Apple/manifest-icon-192.maskable.png",
           "sizes": "192x192",
           "type": "image/png",
           "purpose": "any"
         },
         {
-          "src": "public/assets/icons/Apple/manifest-icon-192.maskable.png",
+          "src": "/assets/icons/Apple/manifest-icon-192.maskable.png",
           "sizes": "192x192",
           "type": "image/png",
           "purpose": "maskable"
         },
         {
-          "src": "public/assets/icons/Apple/manifest-icon-512.maskable.png",
+          "src": "/assets/icons/Apple/manifest-icon-512.maskable.png",
           "sizes": "512x512",
           "type": "image/png",
           "purpose": "any"
         },
         {
-          "src": "public/assets/icons/Apple/manifest-icon-512.maskable.png",
+          "src": "/assets/icons/Apple/manifest-icon-512.maskable.png",
           "sizes": "512x512",
           "type": "image/png",
           "purpose": "maskable"

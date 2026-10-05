@@ -1,0 +1,508 @@
+/* ==========================================================================
+   SJCCC PROSPECTUS — PRINT & PDF EXPORT ENGINE STYLES
+   Document-First, Zero-JS A4 Portrait Print Architecture
+   ========================================================================== */
+
+@media print {
+    /* ─── 1. Exact Color Fidelity Guarantee ─── */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+
+    /* ─── 2. Page Setup (A4 Portrait with Precise 5mm Margins) ─── */
+    @page {
+        size: A4 portrait;
+        margin: 5mm !important;
+    }
+
+    /* ─── 3. Document-First Base Print Reset ─── */
+    html, body {
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: none !important;
+        overflow: visible !important;
+        font-size: 8pt !important;
+        line-height: 1.3 !important;
+        zoom: 1 !important;
+    }
+
+    body {
+        background-color: #ffffff !important;
+        color: #1a1e2b !important;
+    }
+
+    /* ─── 4. Master Document Container ─── */
+    .prospectus-container {
+        max-width: 100% !important;
+        width: 100% !important;
+        zoom: 1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: #ffffff !important;
+        animation: none !important;
+    }
+
+    /* ─── 5. Suppression of Interactive Web Chrome & Navigation ─── */
+    #mainHeader,
+    .menu-toggle,
+    #navMenu,
+    .download-action-container,
+    .floating-action-btn,
+    .stats-bar,
+    .theme-transition-overlay,
+    .nav-cta,
+    .nav-link,
+    .wco-titlebar,
+    .offline-indicator,
+    #offlineIndicator,
+    #offline-banner,
+    .back-to-top {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        pointer-events: none !important;
+    }
+
+    /* ─── 6. Document-First Visibility Guarantee (Zero-JS Full Readability) ─── */
+    .reveal-on-scroll,
+    .reveal,
+    .section-card,
+    .footer-card,
+    .prospectus-grid,
+    .data-table,
+    .table-responsive {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        transition: none !important;
+        animation: none !important;
+    }
+
+    /* ─── 7. Institutional Document Masthead ─── */
+    .main-header {
+        background: #07182e !important;
+        color: #ffffff !important;
+        padding: 5mm 4mm !important;
+        border-bottom: 1.5px solid #c9a229 !important;
+        text-align: center !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+
+    .header-cross {
+        color: #f3d779 !important;
+        font-size: 14pt !important;
+        margin-bottom: 1mm !important;
+        animation: none !important;
+        filter: none !important;
+    }
+
+    .header-title {
+        color: #ffffff !important;
+        font-size: 15pt !important;
+        letter-spacing: 1px !important;
+        text-shadow: none !important;
+        margin: 0 !important;
+    }
+
+    .header-subtitle {
+        color: #f3d779 !important;
+        font-size: 9pt !important;
+        letter-spacing: 2px !important;
+        margin: 1mm 0 !important;
+    }
+
+    .header-diocese {
+        color: #d1c49c !important;
+        font-size: 7pt !important;
+        margin: 0 !important;
+    }
+
+    /* ─── 8. Motto & Academic Banners ─── */
+    .motto-bar {
+        background: #ffffff !important;
+        color: #07182e !important;
+        font-size: 7pt !important;
+        padding: 2mm 4mm !important;
+        border-bottom: 0.5px solid rgba(201, 162, 41, 0.3) !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+        text-align: center !important;
+    }
+
+    .academic-banner {
+        background: #07182e !important;
+        color: #c9a229 !important;
+        font-size: 7pt !important;
+        padding: 2mm 4mm !important;
+        border-bottom: 1px solid #c9a229 !important;
+        text-align: center !important;
+        letter-spacing: 0.5px !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+
+    /* ─── 9. Robust Sequential Document Flow (Zero-Coupling Print Fragmentation) ─── */
+    .prospectus-grid {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 3mm 0 !important;
+        margin: 0 !important;
+        border: none !important;
+    }
+
+    .section-card {
+        display: block !important;
+        flex: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 2.5mm 0 !important;
+        padding: 2.5mm 3.5mm !important;
+        border: 0.5px solid rgba(0, 0, 0, 0.12) !important;
+        border-radius: 3px !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+    }
+
+    .section-card:last-child {
+        margin-bottom: 0 !important;
+    }
+
+    .section-card::before,
+    .section-card::after {
+        display: none !important;
+    }
+
+    /* ─── Semantic Card Targeting (Eliminating Fragile nth-child Rules) ─── */
+    .section-card#about-sjccc,
+    .section-card#departments-entry,
+    .section-card#books-stationery,
+    .section-card#uniform-apparel,
+    .section-card#boarding-toiletry,
+    .section-card#school-rules,
+    .section-card#fees-structure,
+    .section-card#health-finance,
+    .section-card#important-dates {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: none !important;
+    }
+
+    /* ─── 10. Section Headings (Compact Dark Blue Pills) ─── */
+    .section-header,
+    h2.section-header {
+        display: inline-flex !important;
+        font-size: 7pt !important;
+        font-weight: 700 !important;
+        padding: 1.5mm 3mm !important;
+        margin-top: 0 !important;
+        margin-bottom: 2mm !important;
+        line-height: 1.2 !important;
+        border-radius: 10px !important;
+        background: #07182e !important;
+        color: #ffffff !important;
+        border-bottom: 1px solid #c9a229 !important;
+        letter-spacing: 0.3px !important;
+        gap: 1.5mm !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+
+    .section-header-outer {
+        width: 100% !important;
+        align-items: center !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    .section-header.alt-header {
+        background: #0a1f3f !important;
+    }
+
+    .section-header.danger-header {
+        background: #c73636 !important;
+    }
+
+    .section-header .bi {
+        font-size: 6pt !important;
+    }
+
+    /* ─── 11. Print Typography ─── */
+    .section-card p {
+        font-size: 7pt !important;
+        line-height: 1.3 !important;
+        color: #5a5d66 !important;
+        margin-bottom: 1mm !important;
+    }
+
+    .section-card strong {
+        color: #1a1e2b !important;
+        font-weight: 700 !important;
+    }
+
+    /* ─── 12. Uniform Split Layout ─── */
+    .uniform-split {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 2mm !important;
+    }
+
+    .uniform-gender {
+        flex: 1 !important;
+        padding: 2mm !important;
+        border: 0.5px dashed rgba(201, 162, 41, 0.4) !important;
+        border-radius: 3px !important;
+        background: none !important;
+    }
+
+    .uniform-gender h4,
+    .uniform-gender h3,
+    .uniform-subheading {
+        font-size: 7pt !important;
+        margin-bottom: 1.5mm !important;
+        gap: 1mm !important;
+        color: #0a1f3f !important;
+    }
+
+    .grid-3-cols {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 2.5mm !important;
+    }
+
+    .info-block {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    /* ─── 13. Bulleted Lists ─── */
+    .icon-list {
+        list-style: none !important;
+        padding-left: 0 !important;
+        margin: 0 !important;
+    }
+
+    .icon-list li {
+        font-size: 6.5pt !important;
+        padding-left: 3.5mm !important;
+        margin-bottom: 0.8mm !important;
+        color: #5a5d66 !important;
+        line-height: 1.2 !important;
+        position: relative !important;
+    }
+
+    .icon-list li::before {
+        content: "•" !important;
+        position: absolute !important;
+        left: 0.5mm !important;
+        color: #c9a229 !important;
+        font-size: 6pt !important;
+        font-weight: bold !important;
+    }
+
+    /* ─── 14. High-Fidelity Print Tables ─── */
+    .table-responsive {
+        overflow-x: visible !important;
+        border: 0.5px solid rgba(201, 162, 41, 0.3) !important;
+        border-radius: 2px !important;
+        margin: 0 !important;
+    }
+
+    .data-table {
+        width: 100% !important;
+        font-size: 6.5pt !important;
+        border-collapse: collapse !important;
+        min-width: auto !important;
+        margin: 0 !important;
+    }
+
+    .data-table th {
+        background: #07182e !important;
+        color: #ffffff !important;
+        padding: 1.5mm 2mm !important;
+        font-size: 6.5pt !important;
+        white-space: normal !important;
+        letter-spacing: 0.2px !important;
+        line-height: 1.2 !important;
+    }
+
+    .data-table td {
+        padding: 1.2mm 2mm !important;
+        font-size: 6.5pt !important;
+        border-bottom: 0.5px solid rgba(0, 0, 0, 0.08) !important;
+        color: #1a1e2b !important;
+        white-space: normal !important;
+        line-height: 1.2 !important;
+    }
+
+    .data-table tr {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .data-table tr:nth-child(even) {
+        background: #fbf9f2 !important;
+    }
+
+    /* ─── 15. Alert & Notice Highlights ─── */
+    .alert-box {
+        padding: 1.5mm 2.5mm !important;
+        font-size: 6.5pt !important;
+        line-height: 1.25 !important;
+        margin-bottom: 2mm !important;
+        border: 0.5px solid rgba(201, 162, 41, 0.4) !important;
+        border-radius: 2px !important;
+        background: #fdfbf7 !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    .alert-text {
+        font-size: 6pt !important;
+        color: #c73636 !important;
+        margin-top: 1.5mm !important;
+        gap: 1mm !important;
+        padding: 0 !important;
+    }
+
+    /* ─── 16. Institutional Footer ─── */
+    .prospectus-footer {
+        background: #07182e !important;
+        color: #ffffff !important;
+        padding: 3mm 4mm !important;
+        border-top: 1.5px solid #c9a229 !important;
+        page-break-before: auto !important;
+    }
+
+    .footer-top-grid {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 2mm !important;
+        margin-bottom: 2mm !important;
+    }
+
+    .footer-card {
+        flex: 0 0 calc(50% - 1mm) !important;
+        max-width: calc(50% - 1mm) !important;
+        padding: 2.5mm 3mm !important;
+        border: 0.5px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 3px !important;
+        background: rgba(255, 255, 255, 0.03) !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .footer-card h2,
+    .footer-card h3,
+    .footer-heading {
+        font-size: 7.5pt !important;
+        color: #f3d779 !important;
+        margin-bottom: 2mm !important;
+        padding-bottom: 1mm !important;
+        border-bottom: 0.5px solid rgba(255, 255, 255, 0.15) !important;
+        gap: 1.5mm !important;
+    }
+
+    .footer-card p {
+        font-size: 6.5pt !important;
+        color: #d1cfc4 !important;
+        margin-bottom: 1mm !important;
+        line-height: 1.3 !important;
+    }
+
+    .contact-link-list {
+        list-style: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .contact-link-list li {
+        margin-bottom: 1mm !important;
+    }
+
+    .contact-link-list a {
+        font-size: 6.5pt !important;
+        color: #d1cfc4 !important;
+        text-decoration: none !important;
+        pointer-events: none !important;
+        gap: 1.5mm !important;
+    }
+
+    .bottom-strip {
+        font-size: 6pt !important;
+        color: #f3d779 !important;
+        padding-top: 2mm !important;
+        border-top: 0.5px solid rgba(255, 255, 255, 0.15) !important;
+        text-align: center !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    /* ─── 17. Neutralize Dark Mode During Printing (Guaranteed Ink Saving) ─── */
+    html.dark-mode,
+    body.dark-mode,
+    body.dark-mode .prospectus-container,
+    body.dark-mode .section-card,
+    body.dark-mode .footer-card,
+    body.dark-mode .glass-panel,
+    body.dark-mode .glass-card {
+        background: #ffffff !important;
+        color: #1a1e2b !important;
+        border-color: #d1d5db !important;
+    }
+
+    body.dark-mode .motto-bar {
+        background: #f8fafc !important;
+        color: #07182e !important;
+    }
+
+    body.dark-mode .data-table th {
+        background: #07182e !important;
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .data-table td {
+        background: #ffffff !important;
+        color: #1a1e2b !important;
+        border-color: #e5e7eb !important;
+    }
+
+    body.dark-mode .data-table tr:nth-child(even) td {
+        background: #f9fafb !important;
+    }
+
+    body.dark-mode .uniform-gender h4,
+    body.dark-mode .uniform-gender h3,
+    body.dark-mode .uniform-subheading {
+        color: #07182e !important;
+    }
+
+    body.dark-mode .alert-text {
+        color: #991b1b !important;
+    }
+
+    /* ─── 18. Suppress All Screen Animations in Print ─── */
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

@@ -1,0 +1,111 @@
+/* ==========================================================================
+   SJCCC PROSPECTUS — INSTITUTIONAL DOCUMENT MASTHEAD & ACTIONS
+   ========================================================================== */
+
+.main-header {
+    background: linear-gradient(135deg, var(--deep-blue) 0%, #0a1c38 100%);
+    border-bottom: 3.5px solid var(--gold);
+    padding: 1.6rem 1.5rem 1.35rem;
+    text-align: center;
+    position: relative;
+    color: var(--text-light);
+}
+
+.header-cross {
+    color: var(--gold-light);
+    font-size: 2.1rem;
+    margin-bottom: 0.25rem;
+    animation: crossPulse 3.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    filter: drop-shadow(0 0 10px rgba(243, 215, 121, 0.5));
+}
+
+.header-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.8vw, 2.3rem);
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    line-height: 1.15;
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+}
+
+.header-subtitle {
+    color: var(--gold-light);
+    font-size: clamp(0.95rem, 1.6vw, 1.25rem);
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin-top: 0.2rem;
+    text-transform: uppercase;
+}
+
+.header-diocese {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.98rem;
+    opacity: 0.9;
+    margin-top: 0.25rem;
+    color: #d1c49c;
+}
+
+.motto-bar {
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    color: var(--deep-blue);
+    padding: 0.65rem 1rem;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(0.88rem, 1.3vw, 1.05rem);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-soft);
+    transition: background 0.8s ease, color 0.8s ease;
+}
+
+body.dark-mode .motto-bar {
+    color: var(--gold-light);
+}
+
+.academic-banner {
+    background: var(--deep-blue);
+    color: var(--gold);
+    text-align: center;
+    padding: 0.7rem 1rem;
+    font-weight: 700;
+    font-size: clamp(0.82rem, 1.2vw, 0.98rem);
+    letter-spacing: 1.2px;
+    border-bottom: 2px solid var(--gold);
+    text-transform: uppercase;
+}
+
+/* Floating Action Button — PDF Print / Export Trigger */
+.download-action-container {
+    position: fixed;
+    bottom: 35px;
+    right: 35px;
+    z-index: var(--z-hud, 2000);
+    pointer-events: none;
+}
+
+.floating-action-btn {
+    pointer-events: auto;
+    background: linear-gradient(135deg, rgba(7, 24, 46, 0.7) 0%, 0%, rgba(10, 28, 56, 0.7) 100% 8%);
+    color: var(--gold-light);
+    border: none;
+    padding: 1.1rem 2.2rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border-radius: 60px;
+    cursor: pointer;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 0 4px rgba(201, 162, 41, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: var(--transition-bounce);
+    letter-spacing: 0.4px;
+}
+
+.floating-action-btn:hover {
+    color: var(--deep-blue);
+    background: linear-gradient(135deg, var(--gold-light) 0%, #f5e186 100%);
+    transform: translateY(-6px) scale(1.04);
+    box-shadow: 0 20px 40px rgba(243, 215, 121, 0.6), 0 0 0 6px rgba(201, 162, 41, 0.25);
+}

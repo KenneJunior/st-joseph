@@ -1,0 +1,51 @@
+%% ============================================================================
+%% SJCCC Multi-Page Build & Deployment Pipeline
+%% Illustrates dual Vite compilation, Service Worker asset manifest injection,
+%% and production artifact generation.
+%% ============================================================================
+flowchart TD
+    subgraph Source["Source Repository"]
+        HTML_Src["index.html<br/>prospectus.html"]
+        TS_Src["src/main.ts<br/>src/prospectus.ts<br/>src/pages/"]
+        CSS_Src["src/css/main.css<br/>src/css/prospectus.css"]
+        SW_Src["src/sw.ts<br/>src/sw/offlineAssets.ts"]
+        Static_Src["public/<br/>(manifest.json, assets/, icons/)"]
+    end
+
+    subgraph BuildPipeline["Build Pipeline (npm run build)"]
+        TSC["1. tsc --noEmit<br/>(Full Typecheck Validation)"]
+        ViteClient["2. vite build<br/>(Rollup Multi-Page Bundling)"]
+        ManifestOut["dist/.vite/manifest.json<br/>(Hashed Asset Map)"]
+        ViteSW["3. vite build --config vite.sw.config.ts<br/>(Injects __SW_MANIFEST_ASSETS__)"]
+    end
+
+    subgraph ProductionArtifacts["Production Output (dist/)"]
+        DistHTML["dist/index.html<br/>dist/prospectus.html"]
+        DistAssets["dist/assets/<br/>• main-[hash].js<br/>• prospectus-[hash].js<br/>• main-[hash].css<br/>• prospectus-[hash].css"]
+        DistSW["dist/sw.js<br/>(Self-contained Service Worker)"]
+        DistStatic["dist/manifest.json<br/>dist/assets/ (photography & icons)"]
+    end
+
+    subgraph Hosting["Deployment Targets"]
+        LiveProd["Vercel / Cloud Run Production Edge<br/>(HTTP/2, HTTPS, Instant Global CDN)"]
+    end
+
+    HTML_Src --> TSC
+    TS_Src --> TSC
+    TSC --> ViteClient
+    CSS_Src --> ViteClient
+    Static_Src --> ViteClient
+
+    ViteClient --> DistHTML
+    ViteClient --> DistAssets
+    ViteClient --> ManifestOut
+
+    ManifestOut --> ViteSW
+    SW_Src --> ViteSW
+    ViteSW --> DistSW
+    Static_Src --> DistStatic
+
+    DistHTML --> LiveProd
+    DistAssets --> LiveProd
+    DistSW --> LiveProd
+    DistStatic --> LiveProd

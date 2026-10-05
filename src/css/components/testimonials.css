@@ -1,0 +1,124 @@
+/* ============================================
+   TESTIMONIALS
+   ============================================ */
+.testimonial-card {
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
+  padding: 36px 30px;
+  box-shadow: var(--card-shadow);
+  text-align: center;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .testimonial-card {
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonial-card {
+    padding: 12px 10px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonial-card {
+    padding: 10px 8px;
+  }
+}
+
+.testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.testimonial-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent);
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+  .testimonial-avatar {
+    width: 36px;
+    height: 36px;
+    border-width: 2px;
+    margin-bottom: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonial-avatar {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.testimonial-quote {
+  font-size: 3rem;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 8px;
+  font-family: var(--font-heading);
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  .testimonial-quote {
+    font-size: 1.35rem;
+    margin-bottom: 1px;
+  }
+}
+
+.testimonial-card p {
+  font-style: italic;
+  color: var(--text-body);
+  margin-bottom: 16px;
+  line-height: 1.7;
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .testimonial-card p {
+    font-size: 0.74rem;
+    line-height: 1.35;
+    margin-bottom: 4px;
+  }
+}
+
+.testimonial-author {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .testimonial-author {
+    font-size: 0.76rem;
+  }
+}
+
+body.dark-mode .testimonial-author {
+  color: var(--text-light);
+}
+
+.testimonial-role {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .testimonial-role {
+    font-size: 0.66rem;
+  }
+}

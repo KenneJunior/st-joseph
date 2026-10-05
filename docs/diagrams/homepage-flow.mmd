@@ -1,0 +1,56 @@
+%% ============================================================================
+%% SJCCC Homepage Runtime Flow
+%% Illustrates bootstrapping from src/main.ts through HomeApp composition
+%% into interactive feature listeners and background observers.
+%% ============================================================================
+sequenceDiagram
+    autonumber
+    actor User as Student / Parent
+    participant Entry as src/main.ts
+    participant SW as serviceWorker.ts
+    participant HomeApp as HomeApp (home.ts)
+    participant Shared as Shared Infrastructure
+    participant Features as Feature Controllers
+    participant DOM as Document DOM
+
+    User->>Entry: Loads / or /index.html
+    Entry->>SW: initServiceWorker()
+    Entry->>HomeApp: initHomePage() on DOMContentLoaded
+    
+    rect rgb(240, 245, 255)
+        note over HomeApp,Shared: Phase 1: Shared Core Initialization
+        HomeApp->>Shared: new ThemeManager(HOME_SELECTORS.themeToggle)
+        HomeApp->>Shared: new MobileNavigation(menuToggle, navMenu, mainHeader)
+        HomeApp->>Shared: new OfflineIndicator()
+    end
+
+    rect rgb(255, 250, 240)
+        note over HomeApp,Features: Phase 2: Feature & Renderer Bootstrap
+        HomeApp->>Features: new Preloader()
+        HomeApp->>Features: renderCarouselSlides() & new Carousel()
+        HomeApp->>Features: renderTimelineMilestones() & new SchoolDatesTimeline()
+        HomeApp->>Features: renderNewsStories() & renderFaqItems()
+        HomeApp->>Features: new VirtualCampusMap()
+        HomeApp->>Features: new ScrollEngine() & new HeroParticles()
+        HomeApp->>Features: new EnquiryModal() & new EnquiryForm()
+        HomeApp->>Features: new PwaInstallPrompt()
+    end
+
+    HomeApp->>DOM: DOM fully hydrated & interactive
+
+    opt User Interacts with Admissions Enquiry
+        User->>Features: Opens Enquiry Modal (FAB click)
+        User->>Features: Submits Form (Formspree or WhatsApp)
+        Features->>DOM: Displays loading / success feedback
+    end
+
+    opt User Scrolls Page
+        User->>Features: Scrolls viewport past sections (Academics, Dates, Results, Map)
+        Features->>Shared: ScrollSpy evaluates reading anchor zone via IntersectionObserver
+        Shared->>DOM: Synchronizes .active and aria-current="location" on #navMenu & #mobileBottomBar
+    end
+
+    opt User Toggles Dark Theme
+        User->>Shared: Clicks Theme Toggle Button
+        Shared->>DOM: Injects overlay, sets html.dark-mode, writes localStorage
+    end

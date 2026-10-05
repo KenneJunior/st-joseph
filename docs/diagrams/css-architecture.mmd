@@ -1,0 +1,60 @@
+%% ============================================================================
+%% SJCCC CSS Architecture & Ownership Boundaries
+%% Illustrates separation between Shared Core Tokens, Homepage Master Stylesheet,
+%% and the 10-module Prospectus Stylesheet Suite.
+%% ============================================================================
+flowchart TD
+    subgraph CoreDesignTokens["Core Design System (src/css/core/)"]
+        Tokens["tokens.css<br/>(--sj-navy-*, --sj-gold-*, radii, spacing)"]
+        Theme["theme.css<br/>(Dark Mode Overrides)"]
+        Reset["reset.css<br/>& accessibility.css"]
+        Typo["typography.css<br/>(Fluid clamp scales)"]
+    end
+
+    subgraph SharedComponents["Shared Component Styles (src/css/components/)"]
+        OfflineCSS["offline-indicator.css<br/>(Reused Across Both Pages)"]
+        DialogCSS["dialog.css<br/>(ConfirmDialog Glass UI)"]
+    end
+
+    subgraph HomepageCSS["Homepage Stylesheet Tree (src/css/main.css)"]
+        MainCSS["src/css/main.css<br/>(Master Composition)"]
+        HomeLayout["layout/<br/>(header, navigation, navigation-mobile, footer)"]
+        HomeFeatures["features/<br/>(hero, announcement, carousel, academics,<br/>campus-map, enquiry, faq, gce-results)"]
+        HomeMotion["motion/<br/>(keyframes.css, scroll-reveal.css)"]
+    end
+
+    subgraph ProspectusCSS["Prospectus Modular Suite (src/css/prospectus.css)"]
+        ProCSS["src/css/prospectus.css<br/>(Master Entrypoint)"]
+        P_Vars["prospectus/variables.css"]
+        P_Base["prospectus/base.css"]
+        P_Head["prospectus/header.css"]
+        P_Doc["prospectus/document.css"]
+        P_Sec["prospectus/sections.css"]
+        P_Tab["prospectus/tables.css"]
+        P_Foot["prospectus/footer.css"]
+        P_Mot["prospectus/motion.css"]
+        P_Resp["prospectus/responsive.css"]
+        P_Print["prospectus/print.css (@media print)"]
+    end
+
+    Tokens --> MainCSS
+    Theme --> MainCSS
+    Reset --> MainCSS
+    Typo --> MainCSS
+    OfflineCSS --> MainCSS
+    DialogCSS --> MainCSS
+    HomeLayout --> MainCSS
+    HomeFeatures --> MainCSS
+    HomeMotion --> MainCSS
+
+    OfflineCSS --> ProCSS
+    P_Vars --> ProCSS
+    P_Base --> ProCSS
+    P_Head --> ProCSS
+    P_Doc --> ProCSS
+    P_Sec --> ProCSS
+    P_Tab --> ProCSS
+    P_Foot --> ProCSS
+    P_Mot --> ProCSS
+    P_Resp --> ProCSS
+    P_Print --> ProCSS

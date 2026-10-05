@@ -1,0 +1,54 @@
+%% ============================================================================
+%% SJCCC Shared Infrastructure Model
+%% Shows the shared modules, their internal state/storage dependencies,
+%% and the consumers that rely upon them.
+%% ============================================================================
+flowchart TD
+    subgraph Consumers["Consumers (Pages)"]
+        Home["Homepage<br/>(src/pages/home/home.ts)"]
+        Prospectus["Prospectus<br/>(src/pages/prospectus/prospectus.ts)"]
+    end
+
+    subgraph SharedModules["Shared Infrastructure Modules"]
+        TM["ThemeManager<br/>(src/core/theme/ThemeManager.ts)"]
+        MN["MobileNavigation<br/>(src/ui/navigation/MobileNavigation.ts)"]
+        OI["OfflineIndicator<br/>(src/features/offline/OfflineIndicator.ts)"]
+        SW_Helper["initServiceWorker()<br/>(src/services/serviceWorker.ts)"]
+        CD["ConfirmDialog<br/>(src/ui/dialog/ConfirmDialog.ts)"]
+        LGA["LiquidGlassAdapter<br/>(src/ui/effects/LiquidGlassAdapter.ts)<br/>└── @kennejunior/liquidglass"]
+    end
+
+    subgraph BrowserState["Browser & Storage Subsystems"]
+        LS[("localStorage<br/>(theme, announcements, pwa)")]
+        MQ["window.matchMedia<br/>(prefers-color-scheme)"]
+        NET["window.navigator.onLine<br/>+ network events"]
+        SW_API["navigator.serviceWorker<br/>(Controller & Cache)"]
+        DOM["DOM Root & Elements<br/>(html.dark-mode, aria-expanded)"]
+    end
+
+    Home -->|"Animated multi-shape overlay"| TM
+    Prospectus -->|"Smooth fade mode"| TM
+
+    Home -->|"Header + Nav Menu"| MN
+    Prospectus -->|"Header + Nav Menu + Link auto-close"| MN
+
+    Home -->|"Global Sentinel"| OI
+    Prospectus -->|"Global Sentinel"| OI
+
+    Home -->|"Lifecycle Bootstrap"| SW_Helper
+    Prospectus -->|"Lifecycle Bootstrap"| SW_Helper
+
+    Home -->|"Targeted Glass Surfaces"| LGA
+    Prospectus -->|"Targeted Glass Surfaces"| LGA
+
+    Home -.->|Consumed via PwaInstallPrompt| CD
+
+    TM <--> LS
+    TM <--> MQ
+    TM --> DOM
+
+    MN --> DOM
+    OI <--> NET
+    OI <--> SW_API
+    SW_Helper <--> SW_API
+    CD --> DOM

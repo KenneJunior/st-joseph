@@ -1,0 +1,56 @@
+%% ============================================================================
+%% SJCCC High-Level Application Architecture
+%% Shows the high-level system relationship between Homepage, Prospectus,
+%% Shared Infrastructure, Data Layer, and PWA/Service Worker.
+%% ============================================================================
+flowchart TD
+    subgraph PresentationLayer["Presentation Layer (Multi-Page HTML)"]
+        HTML_Home["index.html<br/>(Interactive Campus Experience)"]
+        HTML_Prospectus["prospectus.html<br/>(Document-First Official Handbook)"]
+    end
+
+    subgraph Entrypoints["Page Entrypoints & Composition Roots"]
+        Entry_Home["src/main.ts<br/>src/pages/home/home.ts<br/>(HomeApp)"]
+        Entry_Prospectus["src/prospectus.ts<br/>src/pages/prospectus/prospectus.ts<br/>(ProspectusApp)"]
+    end
+
+    subgraph SharedInfra["Shared Infrastructure Layer"]
+        TM["ThemeManager<br/>(Theme & ARIA Sync)"]
+        MN["MobileNavigation<br/>(Drawer Navigation)"]
+        OI["OfflineIndicator<br/>(Network & SW Sentinel)"]
+        LGA["LiquidGlassAdapter<br/>(External: @kennejunior/liquidglass)"]
+        A11y["Accessibility & Utils<br/>(SmoothScroll, Focus, Springs)"]
+    end
+
+    subgraph DataLayer["Canonical Data Layer (src/data/)"]
+        DATA_Profile["collegeProfile.ts"]
+        DATA_Fees["tuitionFees.ts"]
+        DATA_Programs["academicPrograms.ts"]
+        DATA_Admissions["admissionRequirements.ts"]
+        DATA_Calendar["academicCalendar.ts"]
+        DATA_FAQ["faqData.ts"]
+    end
+
+    subgraph PWALayer["PWA & Offline Subsystem"]
+        SW_Register["src/sw-register.ts / serviceWorker.ts"]
+        SW_Core["src/sw.ts<br/>(Service Worker Core)"]
+        Cache_Storage[("Cache Storage<br/>(Precache + Runtime)")]
+        Manifest["public/manifest.json"]
+    end
+
+    HTML_Home --> Entry_Home
+    HTML_Prospectus --> Entry_Prospectus
+
+    Entry_Home --> SharedInfra
+    Entry_Prospectus --> SharedInfra
+
+    Entry_Home --> DataLayer
+    Entry_Prospectus -.->|Re-exports & Validates| DataLayer
+
+    Entry_Home --> SW_Register
+    Entry_Prospectus --> SW_Register
+
+    SW_Register --> SW_Core
+    SW_Core --> Cache_Storage
+    HTML_Home -.-> Manifest
+    HTML_Prospectus -.-> Manifest
