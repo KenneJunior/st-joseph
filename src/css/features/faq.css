@@ -360,13 +360,13 @@ body.dark-mode .faq-search-input {
   gap: 14px;
   opacity: 1;
   transition: opacity 180ms var(--ease-cinematic, cubic-bezier(0.25, 1, 0.35, 1));
-  will-change: opacity;
 }
 
 .faq-list.is-filtering {
   opacity: 0;
   pointer-events: none;
   transition: opacity 100ms ease-out;
+  will-change: opacity;
 }
 
 /* FAQ Item gentle slide-in animation on category filter change and search update */
@@ -401,7 +401,8 @@ body.dark-mode .faq-search-input {
               box-shadow var(--duration-fast, 200ms) ease;
   position: relative;
   overflow: hidden;
-  will-change: transform, opacity;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 76px;
 }
 
 .faq-item.is-filtered-out {

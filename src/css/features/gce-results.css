@@ -1112,6 +1112,13 @@ body.dark-mode .gce-card-footer-note i,
     padding: 24px 10px;
   }
 
+  .gce-meta-bar,
+  .gce-rate-card,
+  .gce-status-badge {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
   .gce-results-header {
     margin-bottom: 14px;
   }
