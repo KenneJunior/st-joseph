@@ -1,0 +1,188 @@
+/* ==========================================================================
+   SJCCC — PROGRESSIVE BLURRED-IMAGE LOADING COMPONENT
+   Displays low-resolution placeholders with optical blur effect until
+   full-resolution images are fetched, then smoothly unblurs and dissolves.
+   ========================================================================== */
+
+/* The image container wrapper */
+.blurred-img-container {
+  position: relative;
+  overflow: hidden;
+  background-color: #07182E;
+}
+
+/* Low-resolution placeholder image (LQIP) */
+.blurred-img-placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: blur(18px);
+  -webkit-filter: blur(18px);
+  transform: scale(1.12);
+  transform-origin: center center;
+  opacity: 1;
+  transition: opacity 0.55s cubic-bezier(0.2, 0.8, 0.25, 1),
+              filter 0.55s cubic-bezier(0.2, 0.8, 0.25, 1);
+  pointer-events: none;
+  z-index: 1;
+  display: block;
+}
+
+/* Full-resolution image initially transparent with gentle blur */
+.blurred-img-full {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+  transform-origin: center center;
+  transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.25, 1),
+              filter 0.6s cubic-bezier(0.2, 0.8, 0.25, 1),
+              transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+  display: block;
+}
+
+/* Loaded state: full image fades in, unblurs to razor-sharp crispness */
+.blurred-img-container.is-loaded .blurred-img-full,
+.blurred-img-full.is-loaded {
+  opacity: 1;
+  filter: blur(0);
+  -webkit-filter: blur(0);
+}
+
+/* Placeholder gracefully dissolves */
+.blurred-img-container.is-loaded .blurred-img-placeholder {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Carousel Specific Adaptations */
+.carousel-image-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.carousel-image-placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  filter: blur(20px);
+  -webkit-filter: blur(20px);
+  transform: scale(1.15);
+  z-index: 1;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.65s cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+
+.carousel-slide .carousel-image.blurred-img-full {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  opacity: 0;
+  filter: blur(10px);
+  -webkit-filter: blur(10px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.carousel-slide .carousel-image.blurred-img-full.is-loaded,
+.carousel-slide .carousel-image-container.is-loaded .carousel-image {
+  opacity: 1;
+}
+
+.carousel-slide:not(.is-active):not(.active) .carousel-image.blurred-img-full.is-loaded {
+  filter: brightness(0.80) contrast(1.06);
+  -webkit-filter: brightness(0.80) contrast(1.06);
+}
+
+.carousel-slide.is-active .carousel-image.blurred-img-full.is-loaded,
+.carousel-slide.active .carousel-image.blurred-img-full.is-loaded,
+.carousel-slide[data-distance="0"] .carousel-image.blurred-img-full.is-loaded {
+  filter: brightness(1) contrast(1);
+  -webkit-filter: brightness(1) contrast(1);
+}
+
+.carousel-slide .carousel-image-container.is-loaded .carousel-image-placeholder {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Carousel Thumbnails Specific Adaptations */
+.carousel-thumb-img-wrap.blurred-img-container {
+  position: relative;
+  overflow: hidden;
+  background-color: #07182E;
+}
+
+.carousel-thumb-placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+  transform: scale(1.15);
+  opacity: 1;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.carousel-thumb-img.blurred-img-full {
+  position: relative;
+  opacity: 0;
+  filter: blur(4px);
+  -webkit-filter: blur(4px);
+  z-index: 2;
+  transition: opacity 0.45s ease, filter 0.45s ease;
+}
+
+.carousel-thumb-img.blurred-img-full.is-loaded,
+.carousel-thumb-img-wrap.is-loaded .carousel-thumb-img {
+  opacity: 1;
+  filter: blur(0);
+  -webkit-filter: blur(0);
+}
+
+.carousel-thumb-img-wrap.is-loaded .carousel-thumb-placeholder {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Reduced Motion Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .blurred-img-placeholder,
+  .carousel-image-placeholder,
+  .carousel-thumb-placeholder {
+    filter: none !important;
+    -webkit-filter: none !important;
+    transition: none !important;
+  }
+
+  .blurred-img-full,
+  .carousel-slide .carousel-image.blurred-img-full,
+  .carousel-thumb-img.blurred-img-full {
+    filter: none !important;
+    -webkit-filter: none !important;
+    transition: opacity 0.15s ease !important;
+    transform: none !important;
+  }
+}

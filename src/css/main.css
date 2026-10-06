@@ -29,6 +29,7 @@
 @import './components/dialog.css';
 @import './components/offline-indicator.css';
 @import './components/search-history.css';
+@import './components/blurred-images.css';
 
 /* Features */
 @import './features/preloader.css';

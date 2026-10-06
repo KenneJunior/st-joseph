@@ -1003,15 +1003,23 @@
 
         <!-- News Story 1 (Featured: Historic GCE Results) -->
         <article class="event-card stagger-card news-card news-card--featured" data-story-id="story-gce-2026" role="region" aria-label="Historic 2026 GCE Results: 100% Ordinary Level Pass Rate">
-          <div class="news-card__media">
+          <div class="news-card__media blurred-img-container">
+            <img
+              src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAQABgDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAIB/8QAGxABAAMAAwEAAAAAAAAAAAAAAQACEQMhMRP/xAAWAQEBAQAAAAAAAAAAAAAAAAABAAL/xAAXEQEBAQEAAAAAAAAAAAAAAAAAEQES/9oADAMBAAIRAxEAPwCvoHU1v1IqNj0MlNtyh7MzDWUQ3NiBeMTSI8qv/9k="
+              alt=""
+              aria-hidden="true"
+              class="blurred-img-placeholder"
+              loading="eager"
+            />
             <img
               src="/assets/sjccc-trophies.jpg"
               alt="SJCCC academic and athletic achievement trophies on display"
-              class="news-card__img"
+              class="news-card__img blurred-img-full"
               loading="lazy"
               width="480"
               height="280"
-              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';"
+              onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
+              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
             />
             <span class="news-card__category-badge">Academic Excellence</span>
             <span class="news-card__featured-badge"><i class="bi bi-star-fill" aria-hidden="true"></i> Featured Milestone</span>
@@ -1103,15 +1111,23 @@
 
         <!-- News Story 2 (Convocation) -->
         <article class="event-card stagger-card news-card" data-story-id="story-graduation-2026" role="region" aria-label="Class of 2026 Valedictory Service & Convocation Honors">
-          <div class="news-card__media">
+          <div class="news-card__media blurred-img-container">
+            <img
+              src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAQABgDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAMEAQL/xAAdEAEAAgICAwAAAAAAAAAAAAABAAIDMQQhERIi/8QAFwEAAwEAAAAAAAAAAAAAAAAAAAECA//EABgRAAMBAQAAAAAAAAAAAAAAAAABEQIx/9oADAMBAAIRAxEAPwCcqr1qd2Qfl7mntZ8VI+nFNu5o1ldEqLw5b12wlRhqaISbkIz/2Q=="
+              alt=""
+              aria-hidden="true"
+              class="blurred-img-placeholder"
+              loading="eager"
+            />
             <img
               src="/assets/sjccc-graduants-0.jpg"
               alt="SJCCC Class of 2026 graduands in formal academic robes and convocation caps"
-              class="news-card__img"
+              class="news-card__img blurred-img-full"
               loading="lazy"
               width="480"
               height="280"
-              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';"
+              onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
+              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
             />
             <span class="news-card__category-badge">Convocation</span>
           </div>
@@ -1202,15 +1218,23 @@
 
         <!-- News Story 3 (Campus Development) -->
         <article class="event-card stagger-card news-card" data-story-id="story-technical-workshop-2026" role="region" aria-label="Electrical Power Systems & ICT Laboratory Expansion">
-          <div class="news-card__media">
+          <div class="news-card__media blurred-img-container">
+            <img
+              src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAQABgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAMEAf/EAB8QAAIBBAIDAAAAAAAAAAAAAAECAAMREiEEMRNRgf/EABQBAQAAAAAAAAAAAAAAAAAAAAH/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCebe4UXPl39ikOfXc0KyMSYFS1ZTyAb6EJFldoRD//2Q=="
+              alt=""
+              aria-hidden="true"
+              class="blurred-img-placeholder"
+              loading="eager"
+            />
             <img
               src="/assets/sjccc-Electricity.jpeg"
               alt="SJCCC students engaged in technical electrical engineering workshop training"
-              class="news-card__img"
+              class="news-card__img blurred-img-full"
               loading="lazy"
               width="480"
               height="280"
-              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';"
+              onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
+              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
             />
             <span class="news-card__category-badge">Campus Development</span>
           </div>
@@ -1301,15 +1325,23 @@
 
         <!-- News Story 4 (Faith & Community) -->
         <article class="event-card stagger-card news-card" data-story-id="story-patronal-feast-2026" role="region" aria-label="Solemnity of Saint Joseph: College Patronal Feast Celebrations">
-          <div class="news-card__media">
+          <div class="news-card__media blurred-img-container">
+            <img
+              src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAQABgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAEDAv/EAB0QAAIDAAIDAAAAAAAAAAAAAAEDAAIRBCESFDH/xAAWAQEBAQAAAAAAAAAAAAAAAAACAAH/xAAZEQACAwEAAAAAAAAAAAAAAAAAAQIRIRL/2gAMAwEAAhEDEQA/AEUsNcGmsz6luzuSCeY1XW6JXkcuzVVqOpcm2OyGrzT9hIFjCR5EnIQvBxprT//Z"
+              alt=""
+              aria-hidden="true"
+              class="blurred-img-placeholder"
+              loading="eager"
+            />
             <img
               src="/assets/sjccc-student-in-chapel-1.png"
               alt="Eucharistic and liturgical procession during the Feast of Saint Joseph on campus grounds"
-              class="news-card__img"
+              class="news-card__img blurred-img-full"
               loading="lazy"
               width="480"
               height="280"
-              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';"
+              onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
+              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
             />
             <span class="news-card__category-badge">Faith &amp; Community</span>
           </div>

@@ -7,6 +7,8 @@
  */
 
 import { NEWS_STORIES, type NewsStory } from '../../data/newsStories.ts';
+import { getBlurredPlaceholder } from '../../data/imagePlaceholders.ts';
+import { initAllBlurredImages } from '../../ui/utils/BlurredImageLoader.ts';
 import type { ScrollReveal } from '../../ui/utils/ScrollReveal.ts';
 
 export interface RenderNewsOptions {
@@ -50,17 +52,27 @@ export function createNewsCardHTML(story: NewsStory): string {
           `).join('')}
         </div>` : '';
 
+    const placeholder = getBlurredPlaceholder(story.imageSrc);
+
     return `
     <article class="event-card stagger-card news-card${featuredClass}" data-story-id="${story.id}" role="region" aria-label="${story.title}">
-      <div class="news-card__media">
+      <div class="news-card__media blurred-img-container">
+        <img
+          src="${placeholder}"
+          alt=""
+          aria-hidden="true"
+          class="blurred-img-placeholder"
+          loading="eager"
+        />
         <img
           src="${story.imageSrc}"
           alt="${story.imageAlt}"
-          class="news-card__img"
+          class="news-card__img blurred-img-full"
           loading="lazy"
           width="480"
           height="280"
-          onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMAGE}'; this.dataset.fallbackApplied='true';"
+          onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
+          onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMAGE}'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
         />
         <span class="news-card__category-badge">${story.category}</span>
         ${story.featured ? '<span class="news-card__featured-badge"><i class="bi bi-star-fill" aria-hidden="true"></i> Featured Milestone</span>' : ''}
@@ -240,6 +252,9 @@ export function renderNewsStories(
 
     // Wire up interactive smooth card height expansion handlers
     initNewsCardInteractions(container);
+
+    // Wire up progressive blurred-image placeholders
+    initAllBlurredImages(container);
 
     // Properly wire ScrollReveal animations
     if (options.scrollReveal) {

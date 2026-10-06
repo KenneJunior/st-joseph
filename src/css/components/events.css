@@ -73,7 +73,7 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: #07182E url('/assets/Error-Image.jpeg') center/cover no-repeat;
+  background-color: #07182E;
 }
 
 .news-card__img {

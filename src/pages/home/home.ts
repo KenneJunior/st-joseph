@@ -36,6 +36,7 @@ import { PwaInstallPrompt } from '../../features/pwa/PwaInstallPrompt.ts';
 import { OfflineIndicator } from '../../features/offline/OfflineIndicator.ts';
 import { LiquidGlassAdapter } from '../../ui/effects/LiquidGlassAdapter.ts';
 import { CardSplitter } from '../../ui/utils/CardSplitter.ts';
+import { initAllBlurredImages } from '../../ui/utils/BlurredImageLoader.ts';
 
 export class HomeApp {
     constructor() {
@@ -247,6 +248,9 @@ export class HomeApp {
 
         // 21. Interactive card splitters & visual feedback boundaries
         new CardSplitter();
+
+        // 22. Progressive blurred-image placeholders initialization
+        initAllBlurredImages();
     }
 
     /**
