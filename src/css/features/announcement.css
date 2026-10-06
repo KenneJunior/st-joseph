@@ -1713,6 +1713,9 @@ body.dark-mode .announcement-bar,
 @media (max-width: 768px) {
   .announcement-bar {
     max-height: 280px;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: linear-gradient(90deg, rgba(7, 24, 46, 0.98) 0%, rgba(12, 36, 68, 0.98) 50%, rgba(7, 24, 46, 0.98) 100%);
   }
 
   .announcement-bar__inner {

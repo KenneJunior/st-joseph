@@ -1114,7 +1114,9 @@ body.dark-mode .gce-card-footer-note i,
 
   .gce-meta-bar,
   .gce-rate-card,
-  .gce-status-badge {
+  .gce-status-badge,
+  html.dark-mode .gce-summary-card,
+  body.dark-mode .gce-summary-card {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }

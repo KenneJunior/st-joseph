@@ -461,7 +461,7 @@ body.drawer-open {
   /* Progressive Enhancement: True Frosted Glass Surface when backdrop-filter is supported */
   @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .mobile-bottom-bar {
-      --dock-bg: rgba(248, 250, 254, 0.72);
+      --dock-bg: rgba(248, 250, 254, 0.3);
       --dock-border: rgba(10, 31, 63, 0.13);
       -webkit-backdrop-filter: blur(var(--dock-blur)) saturate(160%);
       backdrop-filter: blur(var(--dock-blur)) saturate(160%);
@@ -469,7 +469,7 @@ body.drawer-open {
 
     html.dark-mode .mobile-bottom-bar,
     body.dark-mode .mobile-bottom-bar {
-      --dock-bg: rgba(7, 24, 46, 0.64);
+      --dock-bg: rgba(7, 24, 46, 0.24);
       --dock-border: rgba(201, 162, 41, 0.28);
     }
   }
