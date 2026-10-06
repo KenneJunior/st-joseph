@@ -55,6 +55,13 @@ body {
     margin: 1.25rem auto 2.5rem auto;
 }
 
+@media (max-width: 768px) {
+    .prospectus-container {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+}
+
 /* Focus Visibility & Accessibility */
 :focus-visible {
     outline: 2px solid var(--color-brand-accent, #C9A229);
