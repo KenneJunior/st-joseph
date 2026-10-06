@@ -7,6 +7,7 @@
  */
 
 import { HOME_SELECTORS } from '../../core/config/selectors.ts';
+import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
 
 import { type CampusZone, CAMPUS_ZONES } from '../../data/campusZones.ts';
 
@@ -52,12 +53,16 @@ export class VirtualCampusMap {
     private readonly tourStatusText: HTMLElement | null;
 
     private readonly tourIntervalMs: number = 5000;
-    private isTourPlaying: boolean = true;
+    private isTourPlaying: boolean = false;
     private tourTimerId: number | null = null;
     private tourProgressStartTime: number = 0;
     private tourRafId: number | null = null;
     private isTourHoverPaused: boolean = false;
     private tourRemainingMs: number = 5000;
+    private intersectionObserver: IntersectionObserver | null = null;
+    private isNearViewport: boolean = false;
+    private unsubscribeSuspension: (() => void) | null = null;
+    private isTourWantedByUser: boolean = true;
 
     // Zoom and Pan state
     private zoomLevel: number = 1.0;
@@ -133,8 +138,46 @@ export class VirtualCampusMap {
         // Select initial zone (without transition fade-in flash on initial page load)
         this.selectZone('chapel');
 
-        // Start 5-second guided tour auto-cycle
-        this.startTour();
+        // Check smartphone profile (320px – 768px):
+        // Requirement: Disable auto-tour by default on mobile. Manual interaction remains functional.
+        const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+        if (isMobile) {
+            this.isTourWantedByUser = false;
+            this.pauseTour(false);
+        } else {
+            this.isTourWantedByUser = true;
+        }
+
+        // Gate auto-tour via IntersectionObserver so it only runs when campus map is visible
+        if (this.container && typeof IntersectionObserver !== 'undefined') {
+            this.intersectionObserver = new IntersectionObserver(
+                (entries) => {
+                    for (const entry of entries) {
+                        this.isNearViewport = entry.isIntersecting;
+                        if (this.isNearViewport) {
+                            motionSuspension.resume('campusMap', 'map-offscreen');
+                            if (this.isTourWantedByUser && !isMobile) {
+                                this.startTour();
+                            }
+                        } else {
+                            motionSuspension.suspend('campusMap', 'map-offscreen');
+                            this.pauseTour(false);
+                        }
+                    }
+                },
+                { rootMargin: '200px 0px 200px 0px' }
+            );
+            this.intersectionObserver.observe(this.container);
+        }
+
+        // Subscribe to global motion suspension (e.g., modals, tab hidden)
+        this.unsubscribeSuspension = motionSuspension.subscribe('campusMap', (suspended) => {
+            if (suspended) {
+                this.pauseTour(false);
+            } else if (this.isNearViewport && this.isTourWantedByUser && !isMobile) {
+                this.startTour();
+            }
+        });
     }
 
     private bindMarkerClicks(): void {
@@ -648,16 +691,25 @@ export class VirtualCampusMap {
 
     public toggleTour(): void {
         if (this.isTourPlaying) {
+            this.isTourWantedByUser = false;
             this.pauseTour(true);
         } else {
+            this.isTourWantedByUser = true;
             this.startTour();
         }
     }
 
     public startTour(): void {
+        this.isTourWantedByUser = true;
         this.isTourPlaying = true;
         this.isTourHoverPaused = false;
         this.updateTourButtonUI();
+
+        // Do not run RAF loops or timer ticks if offscreen or suspended
+        if (motionSuspension.isSuspended('campusMap') || !this.isNearViewport) {
+            return;
+        }
+
         this.resetTourInterval();
 
         const announcerEl = this.announcer ?? document.getElementById(HOME_SELECTORS.a11yAnnouncer);
@@ -667,6 +719,9 @@ export class VirtualCampusMap {
     }
 
     public pauseTour(userInitiated: boolean = true): void {
+        if (userInitiated) {
+            this.isTourWantedByUser = false;
+        }
         this.isTourPlaying = false;
         this.isTourHoverPaused = false;
 
@@ -690,6 +745,18 @@ export class VirtualCampusMap {
             if (announcerEl) {
                 announcerEl.textContent = 'Guided tour paused.';
             }
+        }
+    }
+
+    public destroy(): void {
+        this.pauseTour(false);
+        if (this.intersectionObserver) {
+            this.intersectionObserver.disconnect();
+            this.intersectionObserver = null;
+        }
+        if (this.unsubscribeSuspension) {
+            this.unsubscribeSuspension();
+            this.unsubscribeSuspension = null;
         }
     }
 
