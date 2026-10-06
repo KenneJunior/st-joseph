@@ -155,11 +155,13 @@ export class VirtualCampusMap {
                     for (const entry of entries) {
                         this.isNearViewport = entry.isIntersecting;
                         if (this.isNearViewport) {
+                            this.container?.removeAttribute('data-map-offscreen');
                             motionSuspension.resume('campusMap', 'map-offscreen');
                             if (this.isTourWantedByUser && !isMobile) {
                                 this.startTour();
                             }
                         } else {
+                            this.container?.setAttribute('data-map-offscreen', 'true');
                             motionSuspension.suspend('campusMap', 'map-offscreen');
                             this.pauseTour(false);
                         }

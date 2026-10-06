@@ -1288,6 +1288,16 @@ body.dark-mode .map-detail-actions {
     padding: 26px 12px;
   }
 
+  .map-floating-badge,
+  .map-pan-hint,
+  .map-zoom-controls,
+  .map-active-zone-bar,
+  .map-detail-category-badge {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(7, 24, 46, 0.94);
+  }
+
   .campus-map-header {
     margin-bottom: 14px;
   }
@@ -1483,4 +1493,13 @@ body.dark-mode .map-detail-actions {
     padding: 4px 6px;
   }
 }
+
+/* Pause continuous pulse animations and release layer promotion when campus map is offscreen */
+#campusMapContainer[data-map-offscreen="true"] .map-pin.active .map-pin-pulse,
+#campusMapContainer[data-map-offscreen="true"] .map-tour-toggle-btn.is-playing i,
+#campusMapContainer[data-map-offscreen="true"] .map-canvas-content {
+  animation-play-state: paused !important;
+  will-change: auto !important;
+}
+
 
