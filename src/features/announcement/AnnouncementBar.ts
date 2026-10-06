@@ -51,10 +51,6 @@ export interface AnnouncementBarOptions {
      */
     markReadBtnSelector?: string;
     /**
-     * Selector for the sound alert toggle button. Default: `#announcementSoundBtn, .announcement-bar__sound-btn`
-     */
-    soundBtnSelector?: string;
-    /**
      * Selector for the "View past announcements" button. Default: `#viewPastAnnouncementsBtn, .announcement-bar__past-btn`
      */
     pastAnnouncementsBtnSelector?: string;
@@ -62,10 +58,6 @@ export interface AnnouncementBarOptions {
      * Selector for the past announcements modal dialog. Default: `pastAnnouncementsModal`
      */
     pastModalId?: string;
-    /**
-     * Whether notification audio chime is allowed. Default: true
-     */
-    enableSound?: boolean;
     /**
      * Optional ISO publication timestamp string (e.g. '2026-08-21T08:00:00Z')
      * or milliseconds epoch to identify when this notice was published.
@@ -102,7 +94,6 @@ export class AnnouncementBar {
     private readonly toggleBtn: HTMLButtonElement | null;
     private readonly moreContent: HTMLElement | null;
     private readonly markReadBtn: HTMLButtonElement | null;
-    private readonly soundBtn: HTMLButtonElement | null;
     private readonly priorityEl: HTMLElement | null;
     private readonly storageKey: string;
     private readonly dismissDurationMs: number;
@@ -114,7 +105,6 @@ export class AnnouncementBar {
     private readonly onShow?: () => void;
     private readonly onMarkRead?: (isRead: boolean) => void;
 
-    private isSoundMuted: boolean = false;
     private pastModal: PastAnnouncementsModal | null = null;
     private resizeObserver: ResizeObserver | null = null;
     private rAFId: number | null = null;
@@ -130,7 +120,6 @@ export class AnnouncementBar {
     private readonly boundKeydown = (e: KeyboardEvent) => this.handleKeydown(e);
     private readonly boundToggleReadMore = () => this.toggleReadMore();
     private readonly boundToggleMarkAsRead = () => this.toggleMarkAsRead();
-    private readonly boundToggleSound = () => this.toggleSound();
 
     constructor(options: AnnouncementBarOptions) {
         this.bar = document.querySelector(options.barSelector);
@@ -145,9 +134,6 @@ export class AnnouncementBar {
 
         const markReadSelector = options.markReadBtnSelector ?? '#announcementMarkReadBtn, .announcement-bar__mark-read-btn';
         this.markReadBtn = this.bar?.querySelector(markReadSelector) ?? null;
-
-        const soundSelector = options.soundBtnSelector ?? '#announcementSoundBtn, .announcement-bar__sound-btn';
-        this.soundBtn = this.bar?.querySelector(soundSelector) ?? null;
 
         this.priorityEl = this.bar?.querySelector('.announcement-priority, .announcement-bar__priority') ?? null;
 
@@ -171,13 +157,6 @@ export class AnnouncementBar {
             this.publishedTimestamp = new Date(pubAttr).getTime();
         } else {
             this.publishedTimestamp = Date.parse('2026-08-21T08:00:00Z');
-        }
-
-        // Sound preferences
-        try {
-            this.isSoundMuted = localStorage.getItem('sjccc_announcement_sound_muted') === 'true';
-        } catch {
-            this.isSoundMuted = false;
         }
 
         // Determine priority level ('urgent' | 'important' | 'info')
@@ -226,9 +205,6 @@ export class AnnouncementBar {
 
         // Apply initial visual priority
         this.setPriority(this.currentPriority);
-
-        // Update sound button UI
-        this.updateSoundButtonUI();
 
         this.observeSizeChanges();
         this.scheduleLayoutUpdate();
@@ -317,10 +293,7 @@ export class AnnouncementBar {
                 priorityEl.insertAdjacentElement('afterend', beaconPill);
             }
 
-            // 4. Play gentle audio chime
-            this.playUrgentNotificationSound();
-
-            // 5. Update session tracking in localStorage
+            // 4. Update session tracking in localStorage
             try {
                 localStorage.setItem('sjccc_last_seen_urgent_notice_id', this.announcementId);
                 localStorage.setItem('sjccc_last_visit_timestamp', Date.now().toString());
@@ -340,7 +313,6 @@ export class AnnouncementBar {
         this.bar?.addEventListener('keydown', this.boundKeydown);
         this.toggleBtn?.addEventListener('click', this.boundToggleReadMore);
         this.markReadBtn?.addEventListener('click', this.boundToggleMarkAsRead);
-        this.soundBtn?.addEventListener('click', this.boundToggleSound);
     }
 
     private handleKeydown(e: KeyboardEvent): void {
@@ -363,108 +335,10 @@ export class AnnouncementBar {
             // Visual shake effect
             this.bar.classList.add('urgent-alert-shake');
 
-            // Play gentle audio chime
-            this.playUrgentNotificationSound();
-
             setTimeout(() => {
                 this.bar?.classList.remove('urgent-alert-shake');
             }, 1800);
         }, 400);
-    }
-
-    /**
-     * Synthesizes a subtle, pleasant chime using the Web Audio API
-     */
-    public playUrgentNotificationSound(force = false): void {
-        if (this.isSoundMuted && !force) return;
-
-        try {
-            const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-            if (!AudioCtx) {
-                return;
-            }
-
-            const ctx = new AudioCtx();
-            if (ctx.state === 'suspended') {
-                const unlockAudio = () => {
-                    ctx.resume().then(() => {
-                        this.synthesizeChime(ctx);
-                    }).catch(() => {});
-                    window.removeEventListener('click', unlockAudio);
-                    window.removeEventListener('keydown', unlockAudio);
-                };
-                window.addEventListener('click', unlockAudio, { once: true });
-                window.addEventListener('keydown', unlockAudio, { once: true });
-                return;
-            }
-
-            this.synthesizeChime(ctx);
-        } catch {
-            // Audio context restriction fallback
-        }
-    }
-
-    private synthesizeChime(ctx: AudioContext): void {
-        const now = ctx.currentTime;
-
-        // Tone 1: 659.25 Hz (E5)
-        const osc1 = ctx.createOscillator();
-        const gain1 = ctx.createGain();
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(659.25, now);
-
-        gain1.gain.setValueAtTime(0, now);
-        gain1.gain.linearRampToValueAtTime(0.06, now + 0.03);
-        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-
-        osc1.connect(gain1);
-        gain1.connect(ctx.destination);
-        osc1.start(now);
-        osc1.stop(now + 0.45);
-
-        // Tone 2: 880 Hz (A5), delayed harmonic
-        const osc2 = ctx.createOscillator();
-        const gain2 = ctx.createGain();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(880.0, now + 0.12);
-
-        gain2.gain.setValueAtTime(0, now + 0.12);
-        gain2.gain.linearRampToValueAtTime(0.08, now + 0.15);
-        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
-
-        osc2.connect(gain2);
-        gain2.connect(ctx.destination);
-        osc2.start(now + 0.12);
-        osc2.stop(now + 0.65);
-    }
-
-    public toggleSound(): void {
-        this.isSoundMuted = !this.isSoundMuted;
-        try {
-            localStorage.setItem('sjccc_announcement_sound_muted', String(this.isSoundMuted));
-        } catch {
-            // Storage quota fallback
-        }
-        this.updateSoundButtonUI();
-
-        if (!this.isSoundMuted) {
-            this.playUrgentNotificationSound(true);
-        }
-    }
-
-    private updateSoundButtonUI(): void {
-        if (!this.soundBtn) return;
-        this.soundBtn.classList.toggle('is-muted', this.isSoundMuted);
-        const icon = this.soundBtn.querySelector('i');
-        if (this.isSoundMuted) {
-            this.soundBtn.title = 'Alert sounds muted (Click to enable)';
-            this.soundBtn.setAttribute('aria-label', 'Alert sounds muted');
-            if (icon) icon.className = 'bi bi-volume-mute-fill';
-        } else {
-            this.soundBtn.title = 'Alert sounds enabled (Click to mute)';
-            this.soundBtn.setAttribute('aria-label', 'Alert sounds enabled');
-            if (icon) icon.className = 'bi bi-volume-up-fill';
-        }
     }
 
     /**
@@ -741,7 +615,6 @@ export class AnnouncementBar {
         this.bar.removeEventListener('keydown', this.boundKeydown);
         this.toggleBtn?.removeEventListener('click', this.boundToggleReadMore);
         this.markReadBtn?.removeEventListener('click', this.boundToggleMarkAsRead);
-        this.soundBtn?.removeEventListener('click', this.boundToggleSound);
 
         this.scheduleLayoutUpdate();
         this.onDismiss?.();
@@ -856,7 +729,6 @@ export class AnnouncementBar {
         this.bar?.removeEventListener('keydown', this.boundKeydown);
         this.toggleBtn?.removeEventListener('click', this.boundToggleReadMore);
         this.markReadBtn?.removeEventListener('click', this.boundToggleMarkAsRead);
-        this.soundBtn?.removeEventListener('click', this.boundToggleSound);
         if (this.rAFId) cancelAnimationFrame(this.rAFId);
         if (this.dismissTimer) clearTimeout(this.dismissTimer);
         this.pastModal?.destroy();

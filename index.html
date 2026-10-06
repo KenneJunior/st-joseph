@@ -566,6 +566,7 @@
 
   <!-- Mobile Bottom Tab Bar (Compact mode navigation for devices < 768px) -->
   <nav class="mobile-bottom-bar" id="mobileBottomBar" aria-label="Mobile Navigation">
+    <div class="mobile-bottom-glider" id="mobileBottomGlider" aria-hidden="true"></div>
     <button type="button" class="mobile-bottom-item mobile-bottom-item--theme" id="bottomThemeToggle" data-theme-toggle aria-label="Switch theme" title="Switch theme" toolDescription="Switch the website between light and dark theme.">
       <i class="bi bi-sun-fill theme-icon-light" aria-hidden="true"></i>
       <i class="bi bi-moon-stars-fill theme-icon-dark" aria-hidden="true"></i>
@@ -603,7 +604,8 @@
   <!-- Announcement Bar -->
   <aside id="announcementBar" class="announcement-bar" role="region" aria-label="Important school announcement" data-announcement-id="school-resumption-2026" data-priority="urgent" data-published-at="2026-08-21T08:00:00Z">
     <div class="announcement-bar__inner">
-      <div class="announcement-bar__content">
+      <!-- Column 1: Urgent Message, Read More & Close -->
+      <div class="announcement-bar__col announcement-bar__col--primary announcement-bar__content">
         <span class="announcement-priority priority-urgent" data-priority="urgent" role="status" aria-label="Priority: Urgent Notice">
           <span class="priority-dot" aria-hidden="true"></span>
           <i class="bi bi-exclamation-triangle-fill priority-icon" aria-hidden="true"></i>
@@ -619,15 +621,21 @@
             </span>
           </div>
         </div>
-        <button type="button" class="announcement-bar__toggle-btn" id="announcementToggleBtn" aria-expanded="false" aria-controls="announcementMoreContent" data-tooltip="Toggle full announcement details" title="Toggle full notice details" toolDescription="Expand or collapse the full announcement text details.">
-          <span class="toggle-text">Read more</span>
-          <i class="bi bi-chevron-down" aria-hidden="true"></i>
-        </button>
+        <div class="announcement-bar__content-actions">
+          <button type="button" class="announcement-bar__toggle-btn" id="announcementToggleBtn" aria-expanded="false" aria-controls="announcementMoreContent" data-tooltip="Toggle full announcement details" title="Toggle full notice details" toolDescription="Expand or collapse the full announcement text details.">
+            <span class="toggle-text">Read more</span>
+            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="announcement-bar__action-btn announcement-bar__close" id="announcementClose" data-tooltip="Dismiss notice banner" aria-label="Dismiss announcement" title="Dismiss notice" toolDescription="Dismiss this important announcement banner from the page.">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
+        </div>
       </div>
-      <div class="announcement-bar__actions" role="toolbar" aria-label="Announcement actions">
+      <!-- Column 2: Resumption Schedule, Mark as Read & Historical Announcements Archive -->
+      <div class="announcement-bar__col announcement-bar__col--secondary announcement-bar__actions" role="toolbar" aria-label="Announcement actions">
         <a href="#schoolDatesSection" class="announcement-bar__action-btn announcement-bar__link announcement-bar__cta" data-tooltip="View resumption dates &amp; schedule" title="View detailed resumption schedule" toolDescription="View detailed dates and academic schedule.">
           <i class="bi bi-calendar2-week cta-icon" aria-hidden="true"></i>
-          <span class="action-btn-text cta-text">Resumption Schedule</span>
+          <span class="action-btn-text cta-text"><span class="cta-text-prefix">Resumption </span>Schedule</span>
           <i class="bi bi-arrow-right cta-arrow" aria-hidden="true"></i>
         </a>
         <div class="announcement-bar__secondary-actions" role="group" aria-label="Secondary announcement actions">
@@ -638,12 +646,6 @@
           <button type="button" class="announcement-bar__action-btn announcement-bar__past-btn" id="viewPastAnnouncementsBtn" aria-haspopup="dialog" aria-controls="pastAnnouncementsModal" data-tooltip="Historical announcements archive" title="View historical school notices archive" toolDescription="Open the historical school announcements modal archive.">
             <i class="bi bi-clock-history" aria-hidden="true"></i>
             <span class="action-btn-text past-btn-text">Past Notices</span>
-          </button>
-          <button type="button" class="announcement-bar__action-btn announcement-bar__sound-btn" id="announcementSoundBtn" data-tooltip="Toggle alert audio chime" title="Announcement alert sounds enabled (Click to mute)" aria-label="Toggle alert sound" toolDescription="Enable or mute the gentle chime sound for high priority notifications.">
-            <i class="bi bi-volume-up-fill" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="announcement-bar__action-btn announcement-bar__close" id="announcementClose" data-tooltip="Dismiss notice banner" aria-label="Dismiss announcement" title="Dismiss notice" toolDescription="Dismiss this important announcement banner from the page.">
-            <i class="bi bi-x-lg" aria-hidden="true"></i>
           </button>
         </div>
       </div>

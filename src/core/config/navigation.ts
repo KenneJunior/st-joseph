@@ -108,6 +108,7 @@ export function getCanonicalTargetForSection(sectionId: string): string | null {
  * Theme (1) -> Home (2) -> Academics (3) -> Dates (4) -> Results (5) -> Map (6) -> Menu (7)
  */
 export const DOCK_CANONICAL_ORDER: readonly string[] = [
+    'mobileBottomGlider',
     'bottomThemeToggle',
     'heroSection',
     'academics',

@@ -11,6 +11,7 @@
  */
 
 import { ScrollSpy } from './ScrollSpy.ts';
+import { DockGlider } from './DockGlider.ts';
 
 export interface MobileNavigationOptions {
     menuToggleId?: string;
@@ -30,6 +31,7 @@ export class MobileNavigation {
     private readonly header: HTMLElement | null;
     private readonly bottomBar: HTMLElement | null;
     private readonly linkSelector: string;
+    private dockGlider: DockGlider | null = null;
 
     constructor(
         menuToggleId: string = 'menuToggle',
@@ -48,6 +50,11 @@ export class MobileNavigation {
 
     private init(): void {
         if (!this.navMenu) return;
+
+        // Initialize gliding active pill for floating bottom dock
+        if (this.bottomBar) {
+            this.dockGlider = new DockGlider(this.bottomBar.id || 'mobileBottomBar');
+        }
 
         // Establish initial accessibility state for mobile drawer/dropdown
         this.navMenu.setAttribute('aria-hidden', 'true');
@@ -173,15 +180,16 @@ export class MobileNavigation {
                 this.closeMenu();
                 const target = link.getAttribute('data-nav-target') || link.getAttribute('href')?.replace(/^#/, '');
                 if (target) {
+                    bottomLinks.forEach((l) => {
+                        l.classList.remove('active');
+                        l.removeAttribute('aria-current');
+                    });
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'location');
+                    this.dockGlider?.update(link);
+
                     if (ScrollSpy.instance) {
                         ScrollSpy.instance.lockActiveTarget(target);
-                    } else {
-                        bottomLinks.forEach((l) => {
-                            l.classList.remove('active');
-                            l.removeAttribute('aria-current');
-                        });
-                        link.classList.add('active');
-                        link.setAttribute('aria-current', 'location');
                     }
                 }
             });
@@ -197,16 +205,19 @@ export class MobileNavigation {
         }
 
         const bottomLinks = this.bottomBar.querySelectorAll<HTMLAnchorElement>('a.mobile-bottom-item');
+        let matchedLink: HTMLElement | null = null;
         bottomLinks.forEach((link) => {
             const isMatch = link.getAttribute('href') === targetHref || link.getAttribute('data-nav-target') === cleanTarget;
             if (isMatch) {
                 link.classList.add('active');
                 link.setAttribute('aria-current', 'location');
+                matchedLink = link;
             } else {
                 link.classList.remove('active');
                 link.removeAttribute('aria-current');
             }
         });
+        this.dockGlider?.update(matchedLink);
     }
 
     private bindOutsideClick(): void {

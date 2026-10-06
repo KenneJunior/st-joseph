@@ -89,8 +89,7 @@
 .gce-action-buttons,
 .faq-help-actions,
 .modal-actions,
-.dialog-footer,
-.announcement-bar__actions {
+.dialog-footer {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -103,8 +102,7 @@
   .gce-action-buttons,
   .faq-help-actions,
   .modal-actions,
-  .dialog-footer,
-  .announcement-bar__actions {
+  .dialog-footer {
     display: flex !important;
     flex-wrap: wrap !important;
     flex-direction: column !important;

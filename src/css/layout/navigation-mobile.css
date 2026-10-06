@@ -409,8 +409,8 @@ body.drawer-open {
     --dock-item-color: #465368;
     --dock-item-hover-bg: rgba(7, 24, 46, 0.05);
     --dock-item-press-bg: rgba(7, 24, 46, 0.09);
-    --dock-active-bg: rgba(201, 162, 41, 0.14);
-    --dock-active-border: rgba(201, 162, 41, 0.30);
+    --dock-active-bg: rgba(201, 162, 41, 0.18);
+    --dock-active-border: rgba(201, 162, 41, 0.36);
     --dock-active-color: #8c6a21;
     --dock-active-dot: var(--accent, #c9a229);
 
@@ -452,8 +452,8 @@ body.drawer-open {
     --dock-item-color: rgba(232, 238, 248, 0.76);
     --dock-item-hover-bg: rgba(255, 255, 255, 0.06);
     --dock-item-press-bg: rgba(255, 255, 255, 0.10);
-    --dock-active-bg: rgba(201, 162, 41, 0.17);
-    --dock-active-border: rgba(243, 215, 121, 0.34);
+    --dock-active-bg: rgba(201, 162, 41, 0.22);
+    --dock-active-border: rgba(243, 215, 121, 0.40);
     --dock-active-color: var(--accent-glow, #f3d779);
     --dock-active-dot: var(--accent-glow, #f3d779);
   }
@@ -498,12 +498,13 @@ body.drawer-open {
     border: 1px solid transparent;
     border-radius: var(--radius-pill, 9999px);
     cursor: pointer;
-    transition: color 180ms ease,
+    transition: color 240ms cubic-bezier(0.25, 1, 0.35, 1),
                 background-color 180ms ease,
                 border-color 180ms ease,
-                transform 150ms ease;
+                transform 240ms cubic-bezier(0.25, 1, 0.35, 1);
     -webkit-tap-highlight-color: transparent;
     position: relative;
+    z-index: 2;
     box-sizing: border-box;
     user-select: none;
   }
@@ -536,8 +537,8 @@ body.drawer-open {
     font-size: 0.98rem;
     line-height: 1;
     color: inherit;
-    transition: transform 180ms var(--ease-standard),
-                color 180ms ease;
+    transition: transform 240ms cubic-bezier(0.25, 1, 0.35, 1),
+                color 240ms ease;
   }
 
   .mobile-bottom-label {
@@ -551,28 +552,71 @@ body.drawer-open {
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 240ms ease, font-weight 240ms ease;
   }
 
-  /* Active Destination Treatment: Subtle inner glass capsule & restrained gold accent */
+  /* ─── Gliding Active Pill Indicator (Smooth Sliding Motion) ─── */
+  .mobile-bottom-glider {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 0;
+    height: calc(100% - 8px);
+    border-radius: var(--radius-pill, 9999px);
+    background: var(--dock-active-bg);
+    border: 1px solid var(--dock-active-border);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65),
+                0 2px 10px rgba(201, 162, 41, 0.20),
+                0 0 14px rgba(201, 162, 41, 0.12);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+    transition: transform 380ms cubic-bezier(0.25, 1, 0.35, 1),
+                width 380ms cubic-bezier(0.25, 1, 0.35, 1),
+                opacity 200ms ease;
+    will-change: transform, width;
+    box-sizing: border-box;
+  }
+
+  html.dark-mode .mobile-bottom-glider,
+  body.dark-mode .mobile-bottom-glider,
+  [data-theme='dark'] .mobile-bottom-glider {
+    background: var(--dock-active-bg);
+    border-color: var(--dock-active-border);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18),
+                0 2px 14px rgba(0, 0, 0, 0.45),
+                0 0 16px rgba(201, 162, 41, 0.28);
+  }
+
+  /* Gliding Gold Dot Indicator at bottom of the sliding capsule */
+  .mobile-bottom-glider::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 2.5px;
+    background: var(--dock-active-dot);
+    border-radius: 999px;
+    opacity: 0.95;
+    box-shadow: 0 0 8px var(--dock-active-dot);
+    transition: background-color 200ms ease, box-shadow 200ms ease;
+  }
+
+  /* Active Destination Treatment: Clean typographic & icon elevation (Pill handled by Glider) */
   .mobile-bottom-item.active,
   .mobile-bottom-item[aria-current="location"] {
     color: var(--dock-active-color) !important;
-    background: var(--dock-active-bg);
-    border-color: var(--dock-active-border);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
-  }
-
-  html.dark-mode .mobile-bottom-item.active,
-  body.dark-mode .mobile-bottom-item.active,
-  html.dark-mode .mobile-bottom-item[aria-current="location"],
-  body.dark-mode .mobile-bottom-item[aria-current="location"] {
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10),
-                0 2px 8px rgba(0, 0, 0, 0.22);
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
   }
 
   .mobile-bottom-item.active i,
   .mobile-bottom-item[aria-current="location"] i {
-    transform: translateY(-0.5px) scale(1.06);
+    transform: translateY(-1px) scale(1.10);
     color: var(--dock-active-color);
   }
 
@@ -582,18 +626,10 @@ body.drawer-open {
     color: var(--dock-active-color);
   }
 
+  /* Per-item static dot removed in favor of the gliding indicator dot */
   .mobile-bottom-item.active::after,
   .mobile-bottom-item[aria-current="location"]::after {
-    content: '';
-    position: absolute;
-    bottom: 3px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 12px;
-    height: 2px;
-    background: var(--dock-active-dot);
-    border-radius: 999px;
-    opacity: 0.9;
+    display: none !important;
   }
 
   /* Theme Toggle Icon & Name Switching in Dock Bar */
@@ -830,6 +866,12 @@ body.drawer-open {
     --dock-bottom-offset: calc(8px + env(safe-area-inset-bottom, 0px));
   }
 
+  .mobile-bottom-glider {
+    top: 3px;
+    bottom: 3px;
+    height: calc(100% - 6px);
+  }
+
   .mobile-bottom-item {
     height: 40px;
     min-height: 40px;
@@ -850,6 +892,12 @@ body.drawer-open {
     width: min(358px, calc(100vw - 20px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
     height: 50px;
     padding: 3px 5px;
+  }
+
+  .mobile-bottom-glider {
+    top: 3px;
+    bottom: 3px;
+    height: calc(100% - 6px);
   }
 
   .mobile-bottom-item {
@@ -885,6 +933,7 @@ body.drawer-open {
 /* Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
   .mobile-bottom-bar,
+  .mobile-bottom-glider,
   .mobile-bottom-item,
   .mobile-bottom-item i {
     transition: none !important;

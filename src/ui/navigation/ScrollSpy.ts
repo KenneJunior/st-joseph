@@ -15,6 +15,7 @@ import {
     getCanonicalTargetForSection,
     enforceDockOrder,
 } from '../../core/config/navigation.ts';
+import { DockGlider } from './DockGlider.ts';
 
 interface TrackedSection {
     section: HTMLElement;
@@ -241,6 +242,7 @@ export class ScrollSpy {
         });
 
         // 2. Update Mobile Bottom Dock (#mobileBottomBar)
+        let activeBottomLink: HTMLElement | null = null;
         if (this.bottomLinks) {
             const canonicalDockTarget = getCanonicalTargetForSection(cleanId);
 
@@ -251,10 +253,18 @@ export class ScrollSpy {
                 bLink.classList.toggle('active', isMatch);
                 if (isMatch) {
                     bLink.setAttribute('aria-current', 'location');
+                    activeBottomLink = bLink;
                 } else {
                     bLink.removeAttribute('aria-current');
                 }
             });
+        }
+
+        // 3. Gliding Active Pill Transition for Mobile Bottom Dock
+        if (activeBottomLink) {
+            DockGlider.instance?.update(activeBottomLink);
+        } else {
+            DockGlider.instance?.update(null);
         }
     }
 

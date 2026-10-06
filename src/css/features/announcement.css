@@ -27,7 +27,9 @@
   overflow: visible;
 }
 
-body.dark-mode .announcement-bar {
+html.dark-mode .announcement-bar,
+body.dark-mode .announcement-bar,
+[data-theme='dark'] .announcement-bar {
   background: linear-gradient(90deg, rgba(2, 12, 26, 0.98) 0%, rgba(7, 24, 46, 0.97) 50%, rgba(2, 12, 26, 0.98) 100%);
   border-bottom: 1px solid rgba(201, 162, 41, 0.45);
   box-shadow: 0 4px 25px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(251, 227, 161, 0.15) inset;
@@ -236,15 +238,16 @@ body.dark-mode .announcement-bar {
   border-bottom-color: rgba(201, 162, 41, 0.45);
 }
 
-/* Inner Container */
+/* Inner Container - Strict 2-Column Architecture */
 .announcement-bar__inner {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   justify-content: space-between;
-  max-width: 1480px;
+  max-width: 1520px;
   margin: 0 auto;
   padding: 6px 18px;
-  gap: 12px;
+  gap: 16px;
   position: relative;
 }
 
@@ -367,13 +370,21 @@ body.dark-mode .announcement-bar {
   filter: saturate(1) !important;
 }
 
-/* Left Content Area */
+/* Column 1: Primary announcement content (Urgent message, Read more & Close) */
+.announcement-bar__col--primary,
 .announcement-bar__content {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex: 1 1 auto;
   min-width: 0;
+  width: 100%;
+}
+
+.announcement-bar__content-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 /* ============================================================
@@ -596,19 +607,25 @@ body.dark-mode .announcement-bar {
   transition: transform 0.2s ease;
 }
 
-/* Actions Group */
+/* Column 2: Actions toolbar (Resumption Schedule, Mark as Read & Historical Announcements Archive) */
+.announcement-bar__col--secondary,
 .announcement-bar__actions {
   display: flex;
+  flex-direction: row;
   align-items: center;
+  flex-wrap: nowrap;
   gap: 8px;
   flex-shrink: 0;
+  justify-content: flex-end;
 }
 
 .announcement-bar__secondary-actions {
-  display: flex;
+  display: inline-flex;
+  flex-direction: row;
   align-items: center;
+  flex-wrap: nowrap;
   gap: 6px;
-  flex-shrink: 0;
+  flex: 0 0 auto;
 }
 
 /* Base style for action buttons with data-tooltip */
@@ -747,6 +764,7 @@ body.dark-mode .announcement-bar {
 .announcement-bar__cta {
   display: inline-flex;
   align-items: center;
+  flex: 0 1 auto;
   gap: 6px;
   padding: 4px 14px;
   background: linear-gradient(135deg, rgba(201, 162, 41, 0.22) 0%, rgba(251, 227, 161, 0.12) 100%);
@@ -767,6 +785,10 @@ body.dark-mode .announcement-bar {
   transition: transform 0.2s ease;
 }
 
+.announcement-bar__cta .cta-text-prefix {
+  display: inline;
+}
+
 .announcement-bar__cta:hover,
 .announcement-bar__cta:focus-visible {
   background: linear-gradient(135deg, var(--sj-gold-500, #c9a229) 0%, var(--sj-gold-400, #d4a85a) 100%);
@@ -781,63 +803,35 @@ body.dark-mode .announcement-bar {
   transform: translateX(3px);
 }
 
-/* Sound Alert Toggle Button */
-.announcement-bar__sound-btn {
+/* Close / Dismiss Button (In-flow flex child in Column 1) */
+.announcement-bar__close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 26px;
   height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 50%;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.76rem;
   cursor: pointer;
   padding: 0;
   line-height: 1;
   flex-shrink: 0;
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
-}
-
-.announcement-bar__sound-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.35);
-  transform: scale(1.08);
-}
-
-.announcement-bar__sound-btn.is-muted {
-  color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-/* Close / Dismiss Button */
-.announcement-bar__close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.78rem;
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
-  flex-shrink: 0;
-  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.25, 1);
+  position: relative;
+  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.25, 1);
 }
 
 .announcement-bar__close:hover,
 .announcement-bar__close:focus-visible {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(239, 68, 68, 0.25);
   color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1) rotate(90deg);
+  border-color: rgba(239, 68, 68, 0.6);
+  transform: scale(1.08) rotate(90deg);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
   outline: none;
 }
 
@@ -1623,104 +1617,68 @@ body.dark-mode .announcement-bar {
   }
 }
 
-/* Tablet & Mobile Breakpoint: Two-Tier Stacked Layout (<= 1024px down to 320px) */
-@media (max-width: 1024px) {
-  .announcement-bar {
-    max-height: 480px;
-    overflow: visible;
-  }
-
+/* ============================================================
+   RESPONSIVE ADAPTATIONS: TABLETS (769px - 1024px)
+   Maintains a streamlined single-row or ultra-compact flex layout
+   without multi-tier vertical control panel expansion.
+   ============================================================ */
+@media (max-width: 1024px) and (min-width: 769px) {
   .announcement-bar__inner {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 6px 12px 8px;
-    gap: 6px;
+    padding: 5px 14px;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .announcement-bar__content {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 8px;
-    min-width: 0;
-  }
-
-  .announcement-priority,
-  .announcement-bar__badge {
-    padding: 2px 7px;
-    font-size: 0.68rem;
-    letter-spacing: 0.4px;
-    flex-shrink: 0;
-  }
-
-  .announcement-bar__text-wrap {
     flex: 1 1 auto;
     min-width: 0;
-    overflow: hidden;
+    gap: 8px;
   }
 
   .announcement-bar__message {
-    font-size: 0.82rem;
-    gap: 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 0.84rem;
   }
 
-  .announcement-bar__toggle-btn {
-    padding: 2px 8px;
-    font-size: 0.74rem;
-    flex-shrink: 0 !important;
-    white-space: nowrap !important;
-  }
-
-  /* Bottom Actions Toolbar on Tablets */
   .announcement-bar__actions {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding-top: 5px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin-top: 2px;
+    flex-shrink: 0;
+    gap: 6px;
   }
 
   .announcement-bar__cta {
-    padding: 4px 12px;
+    padding: 3px 10px;
     font-size: 0.76rem;
-    min-width: 0;
-    flex-shrink: 1;
   }
 
-  .announcement-bar__secondary-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
+  .announcement-bar__secondary-actions .action-btn-text {
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    transition: max-width 0.25s ease, opacity 0.2s ease;
+    margin-left: 0;
+    pointer-events: none;
   }
 
-  .announcement-bar__mark-read-btn {
-    padding: 3px 8px;
-    font-size: 0.72rem;
-    min-width: 0;
+  .announcement-bar__mark-read-btn:hover .action-btn-text,
+  .announcement-bar__mark-read-btn:focus-visible .action-btn-text,
+  .announcement-bar__past-btn:hover .action-btn-text,
+  .announcement-bar__past-btn:focus-visible .action-btn-text {
+    max-width: 100px;
+    opacity: 1;
+    margin-left: 4px;
+    pointer-events: auto;
   }
 
-  .announcement-bar__past-btn {
-    padding: 3px 8px;
-    font-size: 0.72rem;
-    min-width: 0;
+  .announcement-bar__secondary-actions .announcement-bar__action-btn {
+    padding: 3px 6px;
+    min-height: 28px;
   }
+}
 
-  .announcement-bar__sound-btn,
-  .announcement-bar__close {
-    width: 28px;
-    height: 28px;
-    font-size: 0.75rem;
-    flex-shrink: 0;
-  }
-
+/* Modal sizing for tablets & mobile */
+@media (max-width: 1024px) {
   .past-modal-dialog {
     width: 96%;
     max-height: 92vh;
@@ -1745,134 +1703,369 @@ body.dark-mode .announcement-bar {
   }
 }
 
-/* ---------- MAX 480px (Mobile Screens: Vertical Stacked Primary CTA & Accessible Icon-Only Secondary Actions) ---------- */
-@media (max-width: 480px) {
+/* ============================================================
+   RESPONSIVE ADAPTATIONS: MOBILE (<= 768px down to 320px)
+   Compact 2-line information-first layout with high visual density:
+   - Line 1 (Column 1): [Badge] [Message text] [Read more toggle] [Close button]
+   - Line 2 (Column 2): [CTA Resumption Schedule] [Mark as read] [Past Notices]
+   Strictly in-flow elements with zero overlay between dismissal and archive buttons.
+   ============================================================ */
+@media (max-width: 768px) {
+  .announcement-bar {
+    max-height: 280px;
+  }
+
   .announcement-bar__inner {
-    padding: 6px 10px 8px;
-    gap: 6px;
-  }
-
-  /* Primary & secondary button group vertical stacking */
-  .announcement-bar__actions {
-    display: flex !important;
-    flex-direction: column !important;
-    flex-wrap: wrap !important;
-    width: 100% !important;
-    gap: 8px !important;
-    padding-top: 6px !important;
-    margin-top: 2px !important;
-  }
-
-  /* Prominent single primary Call-to-Action stacked vertically */
-  .announcement-bar__cta {
-    width: 100% !important;
-    min-height: 44px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 0.85rem !important;
-    font-weight: 700 !important;
-    box-sizing: border-box !important;
-    text-align: center !important;
-    order: 1 !important;
-    border-radius: 50px !important;
-    padding: 10px 16px !important;
-    box-shadow: 0 4px 14px rgba(201, 162, 41, 0.35) !important;
-  }
-
-  .announcement-bar__cta .cta-arrow {
-    display: inline-block !important;
-    margin-left: 6px !important;
-  }
-
-  /* Secondary actions: mix of accessible icon-only buttons with full 44px touch targets */
-  .announcement-bar__secondary-actions {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    align-items: center !important;
-    justify-content: space-around !important;
-    width: 100% !important;
-    gap: 10px !important;
-    order: 2 !important;
-  }
-
-  /* Hide text labels in secondary buttons on mobile, leaving clear, accessible icon buttons */
-  .announcement-bar__secondary-actions .action-btn-text {
-    display: none !important;
-  }
-
-  .announcement-bar__secondary-actions .announcement-bar__action-btn {
-    min-width: 44px !important;
-    min-height: 44px !important;
-    width: 44px !important;
-    height: 44px !important;
-    padding: 0 !important;
-    border-radius: 50% !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex-shrink: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  .announcement-bar__secondary-actions .announcement-bar__action-btn i {
-    font-size: 1.15rem !important;
-    margin: 0 !important;
-  }
-}
-
-/* Micro-screen optimization (e.g. 320x906 and narrow viewports <= 360px) */
-@media (max-width: 360px) {
-  .announcement-bar__inner {
-    padding: 5px 8px 7px;
-    gap: 4px;
-  }
-
-  .announcement-bar__content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 5px 12px 6px;
     gap: 5px;
+    position: relative;
+  }
+
+  /* Column 1: Primary announcement content (Urgent Message, Read More & Close) */
+  .announcement-bar__col--primary,
+  .announcement-bar__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+    padding-right: 0;
+  }
+
+  .announcement-priority,
+  .announcement-bar__badge {
+    padding: 2px 7px;
+    font-size: 0.65rem;
+    letter-spacing: 0.35px;
+    flex-shrink: 0;
+    line-height: 1.2;
+  }
+
+  .announcement-bar__text-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .announcement-bar__message {
+    font-size: 0.78rem;
+    gap: 5px;
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .announcement-bar__title {
     font-size: 0.78rem;
+    letter-spacing: 0.1px;
   }
 
   .announcement-bar__date {
     font-size: 0.74rem;
+    opacity: 0.9;
   }
 
+  .announcement-bar__content-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .announcement-bar__toggle-btn {
+    padding: 2px 7px;
+    font-size: 0.70rem;
+    flex-shrink: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  /* In-flow Close Button in Column 1 */
+  .announcement-bar__close {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    font-size: 0.72rem;
+    flex-shrink: 0;
+  }
+
+  /* Column 2: Actions toolbar (Resumption Schedule, Mark as Read & Historical Archive) */
+  .announcement-bar__col--secondary,
   .announcement-bar__actions {
-    gap: 6px !important;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    flex-wrap: nowrap;
+    width: 100%;
+    min-width: 0;
+    padding-top: 1px;
+    margin: 0;
+    border-top: none;
+    box-sizing: border-box;
   }
 
+  /* Compact primary CTA button alongside secondary actions */
   .announcement-bar__cta {
-    min-height: 42px !important;
-    font-size: 0.80rem !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    gap: 4px;
+    width: auto;
+    flex: 0 1 auto;
+    min-width: 0;
+    height: 24px;
+    min-height: 24px;
+    max-height: 24px;
+    padding: 0 9px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+    border-radius: 50px;
+    white-space: nowrap;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    margin: 0;
   }
 
+  .announcement-bar__cta .cta-icon {
+    font-size: 0.72rem;
+    flex-shrink: 0;
+  }
+
+  .announcement-bar__cta .cta-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .announcement-bar__cta .cta-arrow {
+    display: inline-block;
+    font-size: 0.70rem;
+    flex-shrink: 0;
+  }
+
+  /* Secondary actions toolbar (Mark as Read & Historical Archive) */
   .announcement-bar__secondary-actions {
-    gap: 8px !important;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    align-self: center;
+    flex-wrap: nowrap;
+    gap: 5px;
+    flex: 0 0 auto;
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
+  /* Hide verbose text labels in secondary buttons on mobile */
+  .announcement-bar__secondary-actions .action-btn-text {
+    display: none;
+  }
+
+  /* Accessible compact icon buttons matching CTA height and vertical alignment */
   .announcement-bar__secondary-actions .announcement-bar__action-btn {
-    min-width: 42px !important;
-    min-height: 42px !important;
-    width: 42px !important;
-    height: 42px !important;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    max-height: 24px;
+    padding: 0;
+    margin: 0;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    flex-shrink: 0;
+    font-size: 0.76rem;
+    line-height: 1;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  /* WCAG touch target extension without expanding visual container */
+  .announcement-bar__secondary-actions .announcement-bar__action-btn::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    bottom: -6px;
+    left: -4px;
+    right: -4px;
+    pointer-events: auto;
+  }
+
+  /* Expanded state: compact typography and controlled layout */
+  .announcement-bar.is-expanded {
+    max-height: 240px;
+  }
+
+  .announcement-bar.is-expanded .announcement-bar__content {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .announcement-bar.is-expanded .announcement-bar__message {
+    white-space: normal;
+    display: block;
+    line-height: 1.35;
+    font-size: 0.75rem;
+    max-height: 100px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 4px;
+  }
+
+  .announcement-bar.is-expanded .announcement-bar__more-content {
+    display: inline;
+    font-size: 0.74rem;
+    line-height: 1.35;
+    padding: 1px 5px;
+    margin-top: 2px;
   }
 }
 
-/* Ultra-narrow devices (<= 300px) */
-@media (max-width: 300px) {
+/* ============================================================
+   RESPONSIVE ADAPTATIONS: MOBILE SCREENS (<= 375px)
+   Reduces horizontal padding on CTA & condenses label to 'Schedule →'
+   to ensure the action rail remains compact and prevent third-row wrapping
+   ============================================================ */
+@media (max-width: 375px) {
+  .announcement-bar__actions {
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
   .announcement-bar__cta {
-    font-size: 0.75rem !important;
-    padding: 8px !important;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 0;
+    padding-bottom: 0;
+    gap: 3px;
+    font-size: 0.70rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .announcement-bar__cta .cta-text-prefix {
+    display: none;
+  }
+
+  .announcement-bar__secondary-actions {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE ADAPTATIONS: NARROW PHONES (<= 360px)
+   ============================================================ */
+@media (max-width: 360px) {
+  .announcement-bar__inner {
+    padding: 3px 6px 4px;
+    gap: 3px;
+  }
+
+  .announcement-bar__content {
+    gap: 4px;
+    padding-right: 0;
+  }
+
+  .announcement-priority,
+  .announcement-bar__badge {
+    padding: 1px 5px;
+    font-size: 0.60rem;
+  }
+
+  .announcement-bar__message {
+    font-size: 0.72rem;
+  }
+
+  .announcement-bar__title {
+    font-size: 0.72rem;
+  }
+
+  .announcement-bar__date {
+    font-size: 0.70rem;
+  }
+
+  .announcement-bar__toggle-btn {
+    padding: 1px 5px;
+    font-size: 0.68rem;
+  }
+
+  .announcement-bar__actions {
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .announcement-bar__cta {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 0.68rem;
+    height: 22px;
+    min-height: 22px;
+    max-height: 22px;
+    gap: 3px;
+    line-height: 1;
+    margin: 0;
+  }
+
+  .announcement-bar__cta .cta-icon {
+    font-size: 0.68rem;
+  }
+
+  .announcement-bar__secondary-actions {
+    gap: 4px;
+    height: 22px;
+    flex-wrap: nowrap;
   }
 
   .announcement-bar__secondary-actions .announcement-bar__action-btn {
-    min-width: 38px !important;
-    min-height: 38px !important;
-    width: 38px !important;
-    height: 38px !important;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    min-height: 22px;
+    max-height: 22px;
+    font-size: 0.70rem;
+    line-height: 1;
+    margin: 0;
+  }
+
+  .announcement-bar__close {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    min-height: 22px;
+    font-size: 0.68rem;
+  }
+}
+
+/* Ultra-narrow phones (<= 330px): hide decorative calendar icon to maximize readable label */
+@media (max-width: 330px) {
+  .announcement-bar__cta {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .announcement-bar__cta .cta-icon {
+    display: none;
   }
 }
 
