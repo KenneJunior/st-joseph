@@ -53,10 +53,9 @@ export class HomeApp {
         // 2. Theme Manager (Animated multi-shape overlay)
         new ThemeManager(HOME_SELECTORS.themeToggle);
 
-        // 3. Header scroll & back to top with progressive blur
+        // 3. Header scroll with progressive blur
         const headerEl = document.getElementById(HOME_SELECTORS.mainHeader);
-        const backToTopEl = document.getElementById(HOME_SELECTORS.backToTop);
-        if (headerEl) new HeaderScroll(headerEl, backToTopEl);
+        if (headerEl) new HeaderScroll(headerEl);
 
         // 4. Mobile navigation
         new MobileNavigation(

@@ -155,39 +155,14 @@ export class LiquidGlassAdapter {
     /**
      * Initializes targeted high-impact glass elements on the SJCCC Homepage:
      * 1. `#enquiryFab`: Sticky enquiry action button
-     * 2. `#backToTop`: Floating scroll-to-top button
-     * 3. `#getInTouchBtn`: Hero section interactive contact CTA
+     * 2. `#getInTouchBtn`: Hero section interactive contact CTA
      */
     public initHomepageSurfaces(): void {
         if (typeof window === 'undefined' || this.isDestroyed) return;
 
-        // Targeted selection: Sticky enquiry FAB
-        this.enhanceSurface('#enquiryFab', {
-            refractiveIndex: 1.52,
-            glassThickness: 70,
-            bezelWidth: 18,
-            maxTilt: 1,
-            rippleColor: 'rgba(255, 255, 255, 0.45)',
-        });
-
-        // Targeted selection: Floating Back-to-Top button
-        this.enhanceSurface('#backToTop', {
-            refractiveIndex: 1.48,
-            glassThickness: 60,
-            bezelWidth: 16,
-            maxTilt: 1,
-            rippleColor: 'rgba(201, 162, 41, 0.35)',
-        });
         this.enhanceSurface('.map-tour-btn');
         this.enhanceSurface(".campus-map-zoom-controls");
         this.enhanceSurface(".news-card__category-badge");
-        this.enhanceSurface(".stat-card", {
-            refractiveIndex: 1.8,
-            glassThickness: 90,
-            bezelWidth: 16,
-            maxTilt: 1,
-            rippleColor: 'rgba(201, 162, 41, 0.35)',
-        });
 
         // Targeted selection: Hero interactive outline button
     }

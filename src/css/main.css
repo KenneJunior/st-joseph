@@ -45,13 +45,11 @@
 @import './features/enquiry-typing.css';
 @import './features/faq.css';
 @import './features/pwa-wco.css';
+@import './features/ai-assistant.css';
 
 /* Motion */
 @import './motion/keyframes.css';
 @import './motion/scroll-reveal.css';
-
-/* UI */
-@import './ui/back-to-top.css';
 
 /* Responsive */
 @import './layout/responsive-legacy.css';

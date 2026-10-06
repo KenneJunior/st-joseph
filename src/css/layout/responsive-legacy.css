@@ -961,14 +961,6 @@
   }
 
   /* Floating UI */
-  #backToTop {
-    bottom: 10px;
-    right: 10px;
-    width: 34px;
-    height: 34px;
-    font-size: 0.9rem;
-  }
-
   .enquiry-fab {
     bottom: 50px;
     right: 10px;

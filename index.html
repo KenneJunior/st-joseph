@@ -2350,16 +2350,20 @@
     <p class="copyright">© 2026 St. Joseph's Catholic Comprehensive College, Mbengwi. All Rights Reserved.</p>
   </footer>
 
-  <!-- ==================== BACK TO TOP ==================== -->
-  <button id="backToTop" aria-label="Back to top"
-    toolDescription="Return to the top of the page for easier navigation."><i class="bi bi-arrow-up"></i></button>
-
-  <!-- Sticky Enquiry Button -->
-  <button class="enquiry-fab" id="enquiryFab" aria-label="Open enquiry form" title="Send us a message"
-    toolDescription="Open the enquiry form so visitors can send a message or ask about admissions.">
-    <i class="bi bi-chat-dots-fill fab-icon"></i>
-    <span class="fab-label">Enquire</span>
-  </button>
+  <!-- Unified Assistance & Enquiry Dock (Combined to prevent screen clutter) -->
+  <div class="unified-action-dock" id="unifiedAssistanceDock" role="region" aria-label="Assistance and Enquiry Actions">
+    <button type="button" class="unified-dock-btn unified-dock-btn--ai" id="sjcccAiFab" aria-label="Open SJCCC AI Guidance Assistant" title="Ask AI Assistant (Gemini 2.5 Flash)"
+      toolDescription="Open the SJCCC AI Guidance Assistant to ask questions about admissions, fees, and programs.">
+      <i class="bi bi-stars" aria-hidden="true"></i>
+      <span class="dock-btn-label">Ask AI</span>
+    </button>
+    <span class="unified-dock-divider" aria-hidden="true"></span>
+    <button type="button" class="unified-dock-btn unified-dock-btn--enquiry" id="enquiryFab" aria-label="Open enquiry form" title="Send us an enquiry message"
+      toolDescription="Open the enquiry form so visitors can send an official message or ask about admissions.">
+      <i class="bi bi-chat-dots-fill fab-icon" aria-hidden="true"></i>
+      <span class="dock-btn-label">Enquire</span>
+    </button>
+  </div>
 
   <!-- Enquiry Modal -->
   <div class="modal-overlay" id="enquiryModal" role="dialog" aria-modal="true" aria-labelledby="enquiryTitle" hidden="">
@@ -2369,6 +2373,13 @@
         <i class="bi bi-x-lg"></i>
       </button>
       <h2 id="enquiryTitle">Send Us an Enquiry</h2>
+      <div class="enquiry-ai-bridge">
+        <i class="bi bi-stars" aria-hidden="true"></i>
+        <span>Need instant answers?</span>
+        <button type="button" id="enquirySwitchToAiBtn" class="enquiry-ai-bridge-btn" title="Open AI Guidance Assistant for instant answers">
+          Ask AI Guidance Assistant
+        </button>
+      </div>
       <form action="https://formspree.io/f/xnjkgpgg" data-whatsapp-phone="237672829014" id="enquiryForm" method="POST"
         novalidate="">
         <div class="form-group">

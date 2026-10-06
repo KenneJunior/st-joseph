@@ -4,7 +4,6 @@
  * Manages:
  * - Sticky header blur & dynamic blur intensity
  * - Dynamic --header-height CSS variable
- * - Back-to-top button visibility
  * - Mobile bottom bar scroll-direction hide/reveal with directional hysteresis:
  *   12px downward and 8px upward thresholds to ensure stability during small movements,
  *   user-gesture discrimination to eliminate phantom hiding while reading,
@@ -40,7 +39,6 @@ export class HeaderScroll {
 
     constructor(
         private header: HTMLElement,
-        private backToTopBtn: HTMLElement | null = null,
         bottomBar: HTMLElement | null = null
     ) {
         this.bottomBar = bottomBar ?? document.getElementById('mobileBottomBar');
@@ -74,11 +72,6 @@ export class HeaderScroll {
         window.addEventListener('keydown', this.onKeyDown, { passive: true });
 
         this.onScroll();
-
-        this.backToTopBtn?.addEventListener('click', () => {
-            this.notifyProgrammaticScroll();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
 
         // Guard anchor link clicks in bottom bar from triggering downward hide
         this.bottomBar?.querySelectorAll('a').forEach((anchor) => {
@@ -221,9 +214,6 @@ export class HeaderScroll {
                 const maxBlur = isMobile ? 10 : 15;
                 const blurIntensity = Math.min(maxBlur, (isMobile ? 4 : 5) + (this.lastScrollY / 500));
                 this.header.style.setProperty('--blur-intensity', `${blurIntensity}px`);
-
-                // Back to top button visibility
-                this.backToTopBtn?.classList.toggle('visible', this.lastScrollY > 500);
 
                 // Mobile bottom bar visibility class
                 if (this.bottomBar) {

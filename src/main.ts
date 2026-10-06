@@ -12,6 +12,7 @@ import './css/scrollEffect.css';
 import { initServiceWorker } from './services/serviceWorker.ts';
 import { initHomePage } from './pages/home/home.ts';
 import { motionSuspension } from './core/physics/MotionSuspension.ts';
+import { AiAssistantWidget } from './features/ai-assistant/AiAssistantWidget.ts';
 import { logger } from './core/logger/index.ts';
 import './core/diagnostics/index.ts';
 
@@ -87,6 +88,7 @@ initServiceWorker();
 const boot = () => {
     initHomePage();
     initHeroViewportObserver();
+    new AiAssistantWidget().init();
     log.info('SJCCC Digital Campus initialized');
 };
 

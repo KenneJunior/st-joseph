@@ -7,7 +7,6 @@
 export const HOME_SELECTORS = {
     // Header & Navigation
     mainHeader: 'mainHeader',
-    backToTop: 'backToTop',
     menuToggle: 'menuToggle',
     navMenu: 'navMenu',
     themeToggle: 'themeToggle',

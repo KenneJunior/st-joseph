@@ -683,13 +683,9 @@ body.drawer-open {
   }
 
   /* Floating Controls: Coordinated clearance above the floating glass pill dock */
-  #backToTop {
+  .enquiry-fab,
+  .unified-action-dock {
     bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
-    right: 14px !important;
-  }
-
-  .enquiry-fab {
-    bottom: calc(128px + env(safe-area-inset-bottom, 0px)) !important;
     right: 14px !important;
   }
 

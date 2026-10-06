@@ -64,8 +64,7 @@
     .wco-titlebar,
     .offline-indicator,
     #offlineIndicator,
-    #offline-banner,
-    .back-to-top {
+    #offline-banner {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
