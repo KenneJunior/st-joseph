@@ -17,6 +17,8 @@
  * ============================================================================
  */
 
+import { getBlurredPlaceholder } from '../../data/imagePlaceholders.ts';
+
 export interface CarouselMotionConfig {
     /**
      * Autoplay delay in milliseconds.
@@ -478,19 +480,41 @@ export class Carousel {
                 btn.title = `View Gallery: ${title}`;
 
                 const imgWrap = document.createElement('div');
-                imgWrap.className = 'carousel-thumb-img-wrap';
+                imgWrap.className = 'carousel-thumb-img-wrap blurred-img-container';
+
+                const fullSrc = img?.getAttribute('src') || '';
+                const placeholderSrc = getBlurredPlaceholder(fullSrc);
+
+                const thumbPlaceholder = document.createElement('img');
+                thumbPlaceholder.src = placeholderSrc;
+                thumbPlaceholder.alt = '';
+                thumbPlaceholder.setAttribute('aria-hidden', 'true');
+                thumbPlaceholder.className = 'carousel-thumb-placeholder blurred-img-placeholder';
+                thumbPlaceholder.loading = 'eager';
 
                 const thumbImg = document.createElement('img');
-                thumbImg.src = img?.getAttribute('src') || '';
+                thumbImg.src = fullSrc;
                 thumbImg.alt = `Thumbnail for ${title}`;
-                thumbImg.className = 'carousel-thumb-img';
+                thumbImg.className = 'carousel-thumb-img blurred-img-full';
                 thumbImg.loading = 'lazy';
+
+                const markLoaded = () => {
+                    thumbImg.classList.add('is-loaded');
+                    imgWrap.classList.add('is-loaded');
+                };
+
+                thumbImg.addEventListener('load', markLoaded, { once: true });
+                thumbImg.addEventListener('error', markLoaded, { once: true });
+                if (thumbImg.complete && thumbImg.naturalWidth > 0) {
+                    markLoaded();
+                }
 
                 const hoverBadge = document.createElement('span');
                 hoverBadge.className = 'carousel-thumb-badge';
                 hoverBadge.setAttribute('aria-hidden', 'true');
                 hoverBadge.innerHTML = '<i class="bi bi-zoom-in" aria-hidden="true"></i> View Gallery';
 
+                imgWrap.appendChild(thumbPlaceholder);
                 imgWrap.appendChild(thumbImg);
                 imgWrap.appendChild(hoverBadge);
 

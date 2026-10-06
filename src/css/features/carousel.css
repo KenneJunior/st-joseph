@@ -415,12 +415,12 @@
     }
 }
 
-/* Strictly disable blur on touch and mobile devices to protect frame rates */
+/* Strictly disable 3D distance blur on touch and mobile devices to protect frame rates */
 @media (max-width: 1024px), (hover: none), (pointer: coarse) {
-    .carousel-slide,
-    .carousel-slide *,
-    .carousel-slide .carousel-image {
+    .carousel-slide {
         --slide-blur: 0px !important;
+    }
+    .carousel-slide:not(.carousel-image-placeholder):not(.blurred-img-placeholder) {
         filter: none !important;
         -webkit-filter: none !important;
     }

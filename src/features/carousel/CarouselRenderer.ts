@@ -7,6 +7,7 @@
  */
 
 import { type CampusSlide, CAMPUS_SLIDES } from '../../data/campusSlides.ts';
+import { getBlurredPlaceholder } from '../../data/imagePlaceholders.ts';
 
 export function renderCarouselSlides(
     trackEl: HTMLElement | null,
@@ -21,10 +22,14 @@ export function renderCarouselSlides(
     const markup = slides.map((slide, index) => {
         const isActive = index === 0 ? ' active' : '';
         const slideNum = index + 1;
+        const placeholderSrc = getBlurredPlaceholder(slide.imageSrc);
 
         return `
             <div class="carousel-slide${isActive}" role="group" aria-roledescription="slide" aria-label="${slideNum} of ${total}: ${slide.title}" data-short-caption="${slide.shortCaption}" id="${slide.id}">
-              <img alt="${slide.altText}" class="carousel-image" loading="lazy" src="${slide.imageSrc}" onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';">
+              <div class="carousel-image-container blurred-img-container">
+                <img alt="" aria-hidden="true" class="carousel-image-placeholder blurred-img-placeholder" src="${placeholderSrc}" loading="eager">
+                <img alt="${slide.altText}" class="carousel-image blurred-img-full" loading="lazy" src="${slide.imageSrc}" onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');" onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');">
+              </div>
               <div class="carousel-overlay"></div>
               <div class="carousel-caption">
                 <span class="carousel-kicker">${slide.kicker}</span>
