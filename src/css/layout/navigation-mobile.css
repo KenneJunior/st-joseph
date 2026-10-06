@@ -417,7 +417,7 @@ body.drawer-open {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2px;
+    gap: 8px;
     position: fixed;
     left: 50%;
     right: auto;
@@ -469,7 +469,7 @@ body.drawer-open {
 
     html.dark-mode .mobile-bottom-bar,
     body.dark-mode .mobile-bottom-bar {
-      --dock-bg: rgba(7, 24, 46, 0.64);
+      --dock-bg: rgba(7, 24, 46, 0.34);
       --dock-border: rgba(201, 162, 41, 0.28);
     }
   }
