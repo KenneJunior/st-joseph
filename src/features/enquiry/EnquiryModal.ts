@@ -6,6 +6,8 @@
  * ============================================================================
  */
 
+import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
+
 export class EnquiryModal {
     private fabElements: HTMLElement[];
     private modal: HTMLElement | null;
@@ -61,6 +63,9 @@ export class EnquiryModal {
         document.body.style.overflow = 'hidden';
         document.body.style.paddingRight = `${this.getScrollbarWidth()}px`;
 
+        // Suspend background animations (ScrollEngine, ParticleSystem, VirtualCampusMap, DOM particles)
+        motionSuspension.suspendAll('modal');
+
         setTimeout(() => {
             const firstInput = this.modal?.querySelector<HTMLInputElement>('input');
             firstInput?.focus();
@@ -71,6 +76,9 @@ export class EnquiryModal {
         if (!this.modal || !this.isOpen) return;
 
         this.isOpen = false;
+
+        // Resume background animations if no other suspension reason is active
+        motionSuspension.resumeAll('modal');
 
         const content = this.modal.querySelector('.modal-content');
         content?.classList.add('closing');

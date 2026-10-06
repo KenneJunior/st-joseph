@@ -11,6 +11,7 @@
 
 import { PAST_ANNOUNCEMENTS, type SchoolAnnouncement, type AnnouncementPriorityLevel } from '../../data/pastAnnouncements.ts';
 import { announcementState, announcementEventBus, type NoticeReadPayload } from './announcementState.ts';
+import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
 
 export class PastAnnouncementsModal {
     private readonly modal: HTMLElement | null;
@@ -467,6 +468,9 @@ export class PastAnnouncementsModal {
         document.body.style.overflow = 'hidden';
         document.body.style.paddingRight = `${this.getScrollbarWidth()}px`;
 
+        // Suspend background animations while modal is open
+        motionSuspension.suspendAll('modal');
+
         setTimeout(() => {
             this.searchInput?.focus();
         }, 150);
@@ -476,6 +480,10 @@ export class PastAnnouncementsModal {
         if (!this.modal || !this.isOpen) return;
 
         this.isOpen = false;
+
+        // Resume background animations if no other suspension reasons remain
+        motionSuspension.resumeAll('modal');
+
         const dialog = this.modal.querySelector('.past-modal-dialog');
         dialog?.classList.add('closing');
 

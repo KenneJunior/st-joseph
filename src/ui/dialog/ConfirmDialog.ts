@@ -8,6 +8,7 @@
 // ─── Stylesheet import ───────────────────────────────────────────────────
 
 import '../../css/components/dialog.css';
+import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
 
 // ─── Type definitions ──────────────────────────────────────────────────────
 
@@ -213,6 +214,7 @@ export class ConfirmDialog {
 
         this.#clearTimeouts();
         this.#isOpen = false;
+        motionSuspension.resumeAll('modal');
         this.#cleanupEvents();
         this.#animateClose();
 
@@ -392,6 +394,7 @@ export class ConfirmDialog {
         void this.#overlay!.offsetHeight;
         this.#overlay!.classList.add('cd-visible');
         this.#card!.classList.add('cd-visible');
+        motionSuspension.suspendAll('modal');
         opts.onOpen?.();
     }
 
