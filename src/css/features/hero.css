@@ -203,3 +203,13 @@
   transform: translateX(-50%);
   animation: scrollDot 2s ease-in-out infinite;
 }
+
+/* Pause continuous hero CSS animations when hero section is scrolled offscreen */
+#heroSection[data-hero-offscreen="true"] .hero-bg-img,
+#heroSection[data-hero-offscreen="true"] .hero-scroll-indicator,
+#heroSection[data-hero-offscreen="true"] .hero-scroll-indicator span::after,
+#heroSection[data-hero-offscreen="true"] .gold-shimmer,
+#heroSection[data-hero-offscreen="true"] .hero-particle {
+  animation-play-state: paused !important;
+  will-change: auto !important;
+}

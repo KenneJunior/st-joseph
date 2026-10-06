@@ -450,6 +450,10 @@ export class ParticleSystem {
             const delta = currentScrollY - lastScrollY;
             lastScrollY = currentScrollY;
 
+            if (this.isHeroOffscreen || !this.isRunning || motionSuspension.isSuspended('particleSystem')) {
+                return;
+            }
+
             // Subtle inertial nudge scaled by particle inverse radius
             const impulse = Math.max(Math.min(delta * 0.08, 8), -8);
             for (let i = 0; i < this.particles.length; i++) {
@@ -460,6 +464,33 @@ export class ParticleSystem {
 
         window.addEventListener('scroll', this.scrollHandler, { passive: true });
         this.scrollListenerAttached = true;
+    }
+
+    private isHeroOffscreen = false;
+
+    /**
+     * Releases the GPU pixel backing store while the hero section is offscreen.
+     * Collapses the drawing buffer to 1x1 and hides visibility so the compositor
+     * skips the full-viewport layer while preserving logical dimensions and particle state.
+     */
+    private hibernateBackingStore(): void {
+        if (this.isHeroOffscreen) return;
+        this.isHeroOffscreen = true;
+        this.stopAnimationLoop();
+        this.canvas.width = 1;
+        this.canvas.height = 1;
+        this.canvas.style.visibility = 'hidden';
+    }
+
+    /**
+     * Restores the full-resolution canvas backing store, DPR transform,
+     * and immediate particle rendering when the hero section approaches the viewport.
+     */
+    private restoreBackingStore(): void {
+        if (!this.isHeroOffscreen) return;
+        this.isHeroOffscreen = false;
+        this.canvas.style.visibility = 'visible';
+        this.resize();
     }
 
     /**
@@ -477,6 +508,22 @@ export class ParticleSystem {
         this.width = width;
         this.height = height;
 
+        // Clamp existing particles to updated bounds if viewport shrank
+        for (let i = 0; i < this.particles.length; i++) {
+            const p = this.particles[i];
+            if (p.x > width + 20) p.x = Math.random() * width;
+            if (p.y > height + 20) p.y = Math.random() * height;
+        }
+
+        this.syncParticleCount(true);
+
+        // If hero is currently offscreen, keep backing store collapsed at 1x1 to avoid allocating GPU memory
+        if (this.isHeroOffscreen) {
+            this.canvas.style.width = `${width}px`;
+            this.canvas.style.height = `${height}px`;
+            return;
+        }
+
         // Size DOM element and drawing buffer
         this.canvas.width = Math.round(width * dpr);
         this.canvas.height = Math.round(height * dpr);
@@ -487,14 +534,6 @@ export class ParticleSystem {
             this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
 
-        // Clamp existing particles to updated bounds if viewport shrank
-        for (let i = 0; i < this.particles.length; i++) {
-            const p = this.particles[i];
-            if (p.x > width + 20) p.x = Math.random() * width;
-            if (p.y > height + 20) p.y = Math.random() * height;
-        }
-
-        this.syncParticleCount(true);
         this.clear();
         this.render();
     }
@@ -585,22 +624,33 @@ export class ParticleSystem {
 
         // 5. Hero Viewport Gating via IntersectionObserver
         const heroEl = document.getElementById('heroSection') || document.querySelector('.hero-section');
-        if (heroEl && typeof IntersectionObserver !== 'undefined') {
-            this.heroObserver = new IntersectionObserver(
-                (entries) => {
-                    for (const entry of entries) {
-                        if (entry.isIntersecting) {
-                            motionSuspension.resume('particleSystem', 'hero-offscreen');
-                            this.startAnimationLoop();
-                        } else {
-                            motionSuspension.suspend('particleSystem', 'hero-offscreen');
-                            this.stopAnimationLoop();
+        if (heroEl) {
+            if (heroEl.getAttribute('data-hero-offscreen') === 'true' || motionSuspension.isSuspended('particleSystem')) {
+                const rect = heroEl.getBoundingClientRect();
+                const vh = window.visualViewport?.height ?? window.innerHeight ?? 720;
+                if (rect.bottom < -200 || rect.top > vh + 200) {
+                    motionSuspension.suspend('particleSystem', 'hero-offscreen');
+                    this.hibernateBackingStore();
+                }
+            }
+            if (typeof IntersectionObserver !== 'undefined') {
+                this.heroObserver = new IntersectionObserver(
+                    (entries) => {
+                        for (const entry of entries) {
+                            if (entry.isIntersecting) {
+                                this.restoreBackingStore();
+                                motionSuspension.resume('particleSystem', 'hero-offscreen');
+                                this.startAnimationLoop();
+                            } else {
+                                motionSuspension.suspend('particleSystem', 'hero-offscreen');
+                                this.hibernateBackingStore();
+                            }
                         }
-                    }
-                },
-                { rootMargin: '200px 0px 200px 0px' }
-            );
-            this.heroObserver.observe(heroEl);
+                    },
+                    { rootMargin: '200px 0px 200px 0px' }
+                );
+                this.heroObserver.observe(heroEl);
+            }
         }
 
         // 6. Page visibility handling (resets lastTime to prevent delta jumps)
@@ -614,7 +664,13 @@ export class ParticleSystem {
         document.addEventListener('visibilitychange', this.visibilityHandler);
 
         // 7. Subscribe to global motion suspension
-        this.unsubscribeSuspension = motionSuspension.subscribe('particleSystem', (suspended) => {
+        this.unsubscribeSuspension = motionSuspension.subscribe('particleSystem', (suspended, reasons) => {
+            if (reasons.includes('hero-offscreen')) {
+                this.hibernateBackingStore();
+            } else if (this.isHeroOffscreen) {
+                this.restoreBackingStore();
+            }
+
             if (suspended) {
                 this.stopAnimationLoop();
             } else {
