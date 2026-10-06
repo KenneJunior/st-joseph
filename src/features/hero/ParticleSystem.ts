@@ -474,9 +474,11 @@ export class ParticleSystem {
      * skips the full-viewport layer while preserving logical dimensions and particle state.
      */
     private hibernateBackingStore(): void {
-        if (this.isHeroOffscreen) return;
+        if (this.isHeroOffscreen && this.canvas.width === 1 && this.canvas.height === 1) return;
         this.isHeroOffscreen = true;
         this.stopAnimationLoop();
+        this.canvas.classList?.add('is-low-resource');
+        this.canvas.setAttribute?.('data-low-resource', 'true');
         this.canvas.width = 1;
         this.canvas.height = 1;
         this.canvas.style.visibility = 'hidden';
@@ -487,8 +489,10 @@ export class ParticleSystem {
      * and immediate particle rendering when the hero section approaches the viewport.
      */
     private restoreBackingStore(): void {
-        if (!this.isHeroOffscreen) return;
+        if (!this.isHeroOffscreen && this.canvas.width > 1 && this.canvas.style.visibility !== 'hidden') return;
         this.isHeroOffscreen = false;
+        this.canvas.classList?.remove('is-low-resource');
+        this.canvas.removeAttribute?.('data-low-resource');
         this.canvas.style.visibility = 'visible';
         this.resize();
     }

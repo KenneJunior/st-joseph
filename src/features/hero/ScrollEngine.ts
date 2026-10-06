@@ -301,6 +301,7 @@ export class ScrollEngine {
                 for (const entry of entries) {
                     this.isNearViewport = entry.isIntersecting;
                     if (this.isNearViewport) {
+                        this.refs.hero.classList.remove('is-offscreen');
                         this.refs.hero.removeAttribute('data-hero-offscreen');
                         motionSuspension.resume('scrollEngine', 'hero-offscreen');
                         motionSuspension.resume('particleSystem', 'hero-offscreen');
@@ -310,6 +311,7 @@ export class ScrollEngine {
                         if (this.heroScrollEngaged) {
                             this.heroScrollEngaged = false;
                         }
+                        this.refs.hero.classList.add('is-offscreen');
                         this.refs.hero.setAttribute('data-hero-offscreen', 'true');
                         motionSuspension.suspend('scrollEngine', 'hero-offscreen');
                         motionSuspension.suspend('particleSystem', 'hero-offscreen');

@@ -204,12 +204,41 @@
   animation: scrollDot 2s ease-in-out infinite;
 }
 
-/* Pause continuous hero CSS animations when hero section is scrolled offscreen */
+/* Pause continuous hero CSS animations and release hardware-accelerated layers when hero section is scrolled offscreen */
+#heroSection.is-offscreen .hero-bg-img,
+#heroSection.is-offscreen .hero-scroll-indicator,
+#heroSection.is-offscreen .hero-scroll-indicator span::after,
+#heroSection.is-offscreen .gold-shimmer,
+#heroSection.is-offscreen .hero-particle,
+#heroSection.is-offscreen .hero-typing-caret,
 #heroSection[data-hero-offscreen="true"] .hero-bg-img,
 #heroSection[data-hero-offscreen="true"] .hero-scroll-indicator,
 #heroSection[data-hero-offscreen="true"] .hero-scroll-indicator span::after,
 #heroSection[data-hero-offscreen="true"] .gold-shimmer,
-#heroSection[data-hero-offscreen="true"] .hero-particle {
+#heroSection[data-hero-offscreen="true"] .hero-particle,
+#heroSection[data-hero-offscreen="true"] .hero-typing-caret {
   animation-play-state: paused !important;
+  will-change: auto !important;
+}
+
+#heroSection.is-offscreen .scroll-message-wrapper,
+#heroSection[data-hero-offscreen="true"] .scroll-message-wrapper {
+  perspective: none !important;
+  transform: none !important;
+  will-change: auto !important;
+}
+
+#heroSection.is-offscreen .message-face,
+#heroSection.is-offscreen .progress-fill,
+#heroSection[data-hero-offscreen="true"] .message-face,
+#heroSection[data-hero-offscreen="true"] .progress-fill {
+  filter: none !important;
+  will-change: auto !important;
+}
+
+#dustCanvas.is-low-resource,
+#dustCanvas[data-low-resource="true"],
+body.hero-is-offscreen #dustCanvas {
+  visibility: hidden !important;
   will-change: auto !important;
 }
