@@ -46,6 +46,13 @@
   display: inline;
 }
 
+@media (max-width: 768px) {
+  .enquiry-fab {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 /* ============================================
    BOOK PAGE MODAL - ENQUIRY FORM
    ============================================ */

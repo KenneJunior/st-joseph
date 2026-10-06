@@ -107,6 +107,14 @@
   -webkit-backdrop-filter: blur(8px);
 }
 
+@media (max-width: 768px) {
+  .news-card__category-badge {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(7, 24, 46, 0.88);
+  }
+}
+
 .news-card__featured-badge {
   position: absolute;
   top: clamp(6px, 1vw, 14px);
@@ -262,7 +270,6 @@
               margin-top 0.42s cubic-bezier(0.16, 1, 0.3, 1);
   opacity: 0;
   margin-top: 0;
-  will-change: grid-template-rows, opacity;
 }
 
 .news-card.is-expanded .news-card__expandable {

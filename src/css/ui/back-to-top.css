@@ -37,3 +37,11 @@
   border-color: var(--accent);
   transform: translateY(-4px);
 }
+
+@media (max-width: 768px) {
+  #backToTop {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
