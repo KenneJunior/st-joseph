@@ -7,6 +7,7 @@
  */
 
 import { gaussianRandom } from '../../core/physics/spring.ts';
+import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
 
 export interface Particle {
     x: number;
@@ -112,6 +113,8 @@ export class ParticleSystem {
     private scrollHandler: (() => void) | null = null;
     private visibilityHandler: (() => void) | null = null;
     private loadHandler: (() => void) | null = null;
+    private heroObserver: IntersectionObserver | null = null;
+    private unsubscribeSuspension: (() => void) | null = null;
 
     constructor(canvas: HTMLCanvasElement, options?: ParticleSystemConfig) {
         this.canvas = canvas;
@@ -306,8 +309,9 @@ export class ParticleSystem {
         this.ctx.fillStyle = `rgba(${p.color}, ${p.alpha.toFixed(3)})`;
         this.ctx.fill();
 
-        // Subtle, delicate ambient halo for larger floating motes
-        if (p.radius > 1.8) {
+        // Subtle ambient halo for larger motes on desktop; disabled on smartphone (<= 768px) to reduce GPU fill rate
+        const isMobile = this.width <= 768;
+        if (!isMobile && p.radius > 1.8) {
             this.ctx.beginPath();
             this.ctx.arc(p.x, p.y, p.radius * 2.3, 0, Math.PI * 2);
             this.ctx.fillStyle = `rgba(${p.color}, ${(p.alpha * 0.18).toFixed(3)})`;
@@ -320,11 +324,15 @@ export class ParticleSystem {
     }
 
     private readonly animate = (time: number): void => {
-        if (!this.isRunning || !this.ctx) return;
+        if (!this.isRunning || !this.ctx || motionSuspension.isSuspended('particleSystem')) {
+            this.stopAnimationLoop();
+            return;
+        }
 
         if (this.prefersReducedMotion()) {
             this.clear();
             this.render();
+            this.stopAnimationLoop();
             return;
         }
 
@@ -344,7 +352,11 @@ export class ParticleSystem {
             this.drawParticle(p);
         }
 
-        this.animFrameId = requestAnimationFrame(this.animate);
+        if (this.isRunning && !motionSuspension.isSuspended('particleSystem')) {
+            this.animFrameId = requestAnimationFrame(this.animate);
+        } else {
+            this.stopAnimationLoop();
+        }
     };
 
     private terminalVelocity(r: number): number {
@@ -356,11 +368,18 @@ export class ParticleSystem {
     }
 
     /**
-     * Determines particle count adaptively based on viewport area and density setting.
+     * Determines particle count adaptively based on viewport area, density setting, and device profile.
+     * On smartphone screens (<= 768px), strictly caps particle count to <= 16 to conserve mobile CPU/battery.
      */
     private getDesiredParticleCount(): number {
         if (this.config.count !== undefined && this.config.count > 0) {
             return this.config.count;
+        }
+
+        const isMobile = this.width <= 768;
+        if (isMobile) {
+            // Strict smartphone cap: <= 16 motes
+            return Math.min(16, Math.max(6, Math.round(14 * this.config.density)));
         }
 
         const area = this.width * this.height;
@@ -446,10 +465,14 @@ export class ParticleSystem {
     /**
      * Sizes the canvas buffer accurately to the viewport, applies devicePixelRatio,
      * clears the full pixel buffer, and updates particle bounds.
+     * Applies Smartphone Profile (<= 768px) with DPR capped at 1.0–1.25.
      */
     public resize(): void {
         const { width, height } = this.getViewportDimensions();
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const isMobile = width <= 768;
+        const dpr = isMobile
+            ? Math.min(window.devicePixelRatio || 1, 1.25)
+            : Math.min(window.devicePixelRatio || 1, 2.0);
 
         this.width = width;
         this.height = height;
@@ -477,6 +500,33 @@ export class ParticleSystem {
     }
 
     /**
+     * Starts the canvas particle animation loop with safe time reset.
+     */
+    public startAnimationLoop(): void {
+        if (this.isRunning || motionSuspension.isSuspended('particleSystem') || this.prefersReducedMotion()) return;
+        this.isRunning = true;
+        this.lastTime = 0; // safe reset: zero delta jump
+        if (this.animFrameId !== null) {
+            cancelAnimationFrame(this.animFrameId);
+            this.animFrameId = null;
+        }
+        this.animFrameId = requestAnimationFrame(this.animate);
+    }
+
+    /**
+     * Completely stops active RAF execution and resets timing state.
+     */
+    public stopAnimationLoop(): void {
+        if (!this.isRunning && this.animFrameId === null) return;
+        this.isRunning = false;
+        if (this.animFrameId !== null) {
+            cancelAnimationFrame(this.animFrameId);
+            this.animFrameId = null;
+        }
+        this.lastTime = 0;
+    }
+
+    /**
      * Fully initializes the particle system:
      * Sizing canvas to viewport, clearing, scattering particles across viewport,
      * immediately drawing the first frame, and binding lifecycle listeners.
@@ -495,7 +545,10 @@ export class ParticleSystem {
 
         // 1. Initial size and coordinate mapping across the viewport
         const { width, height } = this.getViewportDimensions();
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const isMobile = width <= 768;
+        const dpr = isMobile
+            ? Math.min(window.devicePixelRatio || 1, 1.25)
+            : Math.min(window.devicePixelRatio || 1, 2.0);
 
         this.width = width;
         this.height = height;
@@ -525,38 +578,56 @@ export class ParticleSystem {
             this.resize();
         };
         if (document.readyState === 'complete') {
-            // Already loaded, trigger a check
             this.resize();
         } else {
             window.addEventListener('load', this.loadHandler, { passive: true, once: true });
         }
 
-        // 5. Page visibility handling (resets lastTime to prevent delta jumps)
+        // 5. Hero Viewport Gating via IntersectionObserver
+        const heroEl = document.getElementById('heroSection') || document.querySelector('.hero-section');
+        if (heroEl && typeof IntersectionObserver !== 'undefined') {
+            this.heroObserver = new IntersectionObserver(
+                (entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting) {
+                            motionSuspension.resume('particleSystem', 'hero-offscreen');
+                            this.startAnimationLoop();
+                        } else {
+                            motionSuspension.suspend('particleSystem', 'hero-offscreen');
+                            this.stopAnimationLoop();
+                        }
+                    }
+                },
+                { rootMargin: '200px 0px 200px 0px' }
+            );
+            this.heroObserver.observe(heroEl);
+        }
+
+        // 6. Page visibility handling (resets lastTime to prevent delta jumps)
         this.visibilityHandler = () => {
             if (document.hidden) {
-                this.isRunning = false;
-                if (this.animFrameId !== null) {
-                    cancelAnimationFrame(this.animFrameId);
-                    this.animFrameId = null;
-                }
+                motionSuspension.suspendAll('page-hidden');
             } else {
-                this.lastTime = 0;
-                if (!this.isRunning && !this.prefersReducedMotion()) {
-                    this.isRunning = true;
-                    this.animFrameId = requestAnimationFrame(this.animate);
-                }
+                motionSuspension.resumeAll('page-hidden');
             }
         };
         document.addEventListener('visibilitychange', this.visibilityHandler);
 
-        // 6. Setup scroll reaction
+        // 7. Subscribe to global motion suspension
+        this.unsubscribeSuspension = motionSuspension.subscribe('particleSystem', (suspended) => {
+            if (suspended) {
+                this.stopAnimationLoop();
+            } else {
+                this.startAnimationLoop();
+            }
+        });
+
+        // 8. Setup scroll reaction
         this.setupScrollReaction();
 
-        // 7. Start animation loop if motion is permitted
-        if (!this.prefersReducedMotion()) {
-            this.isRunning = true;
-            this.lastTime = 0;
-            this.animFrameId = requestAnimationFrame(this.animate);
+        // 9. Start animation loop if motion is permitted and not suspended
+        if (!this.prefersReducedMotion() && !motionSuspension.isSuspended('particleSystem')) {
+            this.startAnimationLoop();
         }
     }
 
@@ -564,10 +635,16 @@ export class ParticleSystem {
      * Cleans up animation loops, observers, and event listeners.
      */
     public destroy(): void {
-        this.isRunning = false;
-        if (this.animFrameId !== null) {
-            cancelAnimationFrame(this.animFrameId);
-            this.animFrameId = null;
+        this.stopAnimationLoop();
+
+        if (this.heroObserver) {
+            this.heroObserver.disconnect();
+            this.heroObserver = null;
+        }
+
+        if (this.unsubscribeSuspension) {
+            this.unsubscribeSuspension();
+            this.unsubscribeSuspension = null;
         }
 
         if (this.resizeHandler) {

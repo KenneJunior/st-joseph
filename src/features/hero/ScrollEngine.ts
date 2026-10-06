@@ -7,6 +7,7 @@
  */
 
 import { omegaFromResponseTime, springStep } from '../../core/physics/spring.ts';
+import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
 import { TextSplitter } from '../../ui/utils/TextSplitter.ts';
 import { ParticleSystem, type ParticleSystemConfig } from './ParticleSystem.ts';
 
@@ -61,6 +62,8 @@ export class ScrollEngine {
 
     private syncRafId: number | null = null;
     private renderRafId: number | null = null;
+    private isLoopRunning = false;
+    private unsubscribeSuspension: (() => void) | null = null;
     private resizeObserver: ResizeObserver | null = null;
     private intersectionObserver: IntersectionObserver | null = null;
     private isNearViewport = false;
@@ -183,7 +186,18 @@ export class ScrollEngine {
         this.setupIntersectionObserver();
         this.syncHeroScrollBudget();
         this.renderActiveSlide(0);
-        this.renderRafId = requestAnimationFrame(this.renderLoop);
+
+        this.unsubscribeSuspension = motionSuspension.subscribe('scrollEngine', (suspended) => {
+            if (suspended) {
+                this.stopRenderLoop();
+            } else if (this.isNearViewport) {
+                this.startRenderLoop();
+            }
+        });
+
+        if (this.isNearViewport && !motionSuspension.isSuspended('scrollEngine')) {
+            this.startRenderLoop();
+        }
     }
 
     /**
@@ -286,15 +300,24 @@ export class ScrollEngine {
             (entries) => {
                 for (const entry of entries) {
                     this.isNearViewport = entry.isIntersecting;
-                    if (!this.isNearViewport && this.heroScrollEngaged) {
-                        this.heroScrollEngaged = false;
+                    if (this.isNearViewport) {
+                        motionSuspension.resume('scrollEngine', 'hero-offscreen');
+                        motionSuspension.resume('particleSystem', 'hero-offscreen');
+                        this.startRenderLoop();
+                    } else {
+                        if (this.heroScrollEngaged) {
+                            this.heroScrollEngaged = false;
+                        }
+                        motionSuspension.suspend('scrollEngine', 'hero-offscreen');
+                        motionSuspension.suspend('particleSystem', 'hero-offscreen');
+                        this.stopRenderLoop();
                     }
                 }
             },
             { rootMargin: '200px 0px 200px 0px' }
         );
 
-        this.intersectionObserver.observe(this.refs.container);
+        this.intersectionObserver.observe(this.refs.hero);
     }
 
     /**
@@ -406,7 +429,41 @@ export class ScrollEngine {
         }
     }
 
+    /**
+     * Starts the animation loop if eligible and not suspended.
+     * Safely resets timing delta to prevent physics jumps.
+     */
+    public startRenderLoop(): void {
+        if (this.isLoopRunning || motionSuspension.isSuspended('scrollEngine')) return;
+        this.isLoopRunning = true;
+        this.state.lastTime = 0;
+        this.accumulator = 0;
+        if (this.renderRafId !== null) {
+            cancelAnimationFrame(this.renderRafId);
+            this.renderRafId = null;
+        }
+        this.renderRafId = requestAnimationFrame(this.renderLoop);
+    }
+
+    /**
+     * Completely stops active RAF execution and resets timing state.
+     */
+    public stopRenderLoop(): void {
+        if (!this.isLoopRunning && this.renderRafId === null) return;
+        this.isLoopRunning = false;
+        if (this.renderRafId !== null) {
+            cancelAnimationFrame(this.renderRafId);
+            this.renderRafId = null;
+        }
+        this.state.lastTime = 0;
+    }
+
     private renderLoop(time: number): void {
+        if (!this.isLoopRunning || motionSuspension.isSuspended('scrollEngine')) {
+            this.stopRenderLoop();
+            return;
+        }
+
         if (this.state.lastTime === 0) this.state.lastTime = time;
         let frameTime = (time - this.state.lastTime) / 1000;
         this.state.lastTime = time;
@@ -422,7 +479,11 @@ export class ScrollEngine {
         this.applyVisualTransforms();
         this.updateSlideTracking();
 
-        requestAnimationFrame(this.renderLoop);
+        if (this.isLoopRunning && !motionSuspension.isSuspended('scrollEngine')) {
+            this.renderRafId = requestAnimationFrame(this.renderLoop);
+        } else {
+            this.stopRenderLoop();
+        }
     }
 
     private stepPhysics(dt: number): void {
@@ -637,6 +698,11 @@ export class ScrollEngine {
      * Cleans up all observers, animation loops, and event listeners.
      */
     public destroy(): void {
+        this.stopRenderLoop();
+        if (this.unsubscribeSuspension) {
+            this.unsubscribeSuspension();
+            this.unsubscribeSuspension = null;
+        }
         if (this.syncRafId !== null) {
             cancelAnimationFrame(this.syncRafId);
             this.syncRafId = null;

@@ -14,15 +14,24 @@
  * ============================================================================
  */
 
+import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
+
 export class HeroParticles {
     private idleHandle: number | null = null;
     private timerHandle: ReturnType<typeof setTimeout> | null = null;
+    private unsubscribeSuspension: (() => void) | null = null;
 
     constructor(containerId: string = 'heroParticles', count = 40) {
         if (typeof window === 'undefined') return;
 
         // Skip immediately if reduced motion is requested
         if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            return;
+        }
+
+        // On smartphone screens (<= 768px), disable redundant DOM particles entirely:
+        // The regulated lightweight canvas provides sufficient ambient depth without redundant DOM layer pressure.
+        if (window.innerWidth <= 768) {
             return;
         }
 
@@ -43,13 +52,10 @@ export class HeroParticles {
         const container = document.getElementById(containerId);
         if (!container) return;
 
-        // Adapt particle count for mobile screens to minimize layout work
-        const effectiveCount = window.innerWidth <= 768 ? Math.min(count, 24) : count;
-
         // Batch all DOM particle additions using a DocumentFragment (single reflow)
         const fragment = document.createDocumentFragment();
 
-        for (let i = 0; i < effectiveCount; i++) {
+        for (let i = 0; i < count; i++) {
             const particle = document.createElement('div');
             particle.className = 'hero-particle';
             const size = (Math.random() * 3 + 1.5).toFixed(1);
@@ -63,9 +69,21 @@ export class HeroParticles {
         }
 
         container.appendChild(fragment);
+
+        // Suspend DOM CSS animation when modal is open or hero is offscreen
+        this.unsubscribeSuspension = motionSuspension.subscribe('heroParticles', (suspended) => {
+            const particles = container.querySelectorAll<HTMLElement>('.hero-particle');
+            particles.forEach((p) => {
+                p.style.animationPlayState = suspended ? 'paused' : 'running';
+            });
+        });
     }
 
     public destroy(): void {
+        if (this.unsubscribeSuspension) {
+            this.unsubscribeSuspension();
+            this.unsubscribeSuspension = null;
+        }
         if (this.idleHandle !== null && 'cancelIdleCallback' in window) {
             (window as Window & { cancelIdleCallback: (handle: number) => void }).cancelIdleCallback(this.idleHandle);
             this.idleHandle = null;
