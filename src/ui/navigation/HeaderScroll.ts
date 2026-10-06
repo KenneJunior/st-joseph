@@ -34,6 +34,10 @@ export class HeaderScroll {
     private isUserGesture: boolean = false;
     private userGestureTimer: number | null = null;
 
+    // Cached layout geometry to eliminate forced reflows during scrolling
+    private cachedHeaderHeight: number = 0;
+    private resizeObserver: ResizeObserver | null = null;
+
     constructor(
         private header: HTMLElement,
         private backToTopBtn: HTMLElement | null = null,
@@ -47,6 +51,20 @@ export class HeaderScroll {
         const initialScrollY = Math.max(0, window.scrollY);
         this.lastScrollY = initialScrollY;
         this.scrollPivotY = initialScrollY;
+
+        // Event-driven geometry observer: caches header height and mutates --header-height
+        // ONLY upon genuine element size changes, eliminating forced reflows on scroll events
+        if (typeof ResizeObserver !== 'undefined') {
+            this.resizeObserver = new ResizeObserver(() => {
+                this.syncHeaderHeight();
+            });
+            this.resizeObserver.observe(this.header);
+            const announcementEl = document.getElementById('announcementBar');
+            if (announcementEl) {
+                this.resizeObserver.observe(announcementEl);
+            }
+        }
+        this.syncHeaderHeight();
 
         window.addEventListener('scroll', this.onScroll, { passive: true });
         window.addEventListener('touchstart', this.onTouchStart, { passive: true });
@@ -198,8 +216,10 @@ export class HeaderScroll {
                 // Progressive blur - add/remove scrolled class
                 this.header.classList.toggle('scrolled', this.lastScrollY > 60);
 
-                // Dynamic blur intensity based on scroll position
-                const blurIntensity = Math.min(15, 5 + (this.lastScrollY / 500));
+                // Dynamic blur intensity based on scroll position (capped at 10px on mobile to preserve GPU performance)
+                const isMobile = window.innerWidth <= 768;
+                const maxBlur = isMobile ? 10 : 15;
+                const blurIntensity = Math.min(maxBlur, (isMobile ? 4 : 5) + (this.lastScrollY / 500));
                 this.header.style.setProperty('--blur-intensity', `${blurIntensity}px`);
 
                 // Back to top button visibility
@@ -214,13 +234,30 @@ export class HeaderScroll {
             });
             this.ticking = true;
         }
-
-        // Update header height CSS variable for layout calculations
-        this.updateHeaderHeight();
     };
 
-    private updateHeaderHeight(): void {
-        const headerHeight = this.header.offsetHeight;
-        document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+    /**
+     * Synchronizes cached header height and sets --header-height
+     * ONLY when the measured height genuinely changes.
+     */
+    public syncHeaderHeight(): void {
+        const headerHeight = Math.round(this.header.offsetHeight);
+        if (headerHeight > 0 && headerHeight !== this.cachedHeaderHeight) {
+            this.cachedHeaderHeight = headerHeight;
+            document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+        }
+    }
+
+    public destroy(): void {
+        window.removeEventListener('scroll', this.onScroll);
+        window.removeEventListener('touchstart', this.onTouchStart);
+        window.removeEventListener('touchmove', this.onTouchMove);
+        window.removeEventListener('touchend', this.onTouchEnd);
+        window.removeEventListener('wheel', this.onWheel);
+        window.removeEventListener('keydown', this.onKeyDown);
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+            this.resizeObserver = null;
+        }
     }
 }
