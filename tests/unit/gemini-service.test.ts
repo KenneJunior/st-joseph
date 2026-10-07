@@ -77,7 +77,8 @@ describe('Gemini AI Service & Server Proxy Integration', () => {
             const result = await service.sendMessage('How much are school fees?');
             expect(result.isFallback).toBe(true);
             expect(result.error).toBe('RATE_LIMIT');
-            expect(result.text).toContain('high inquiry volume');
+            expect(result.text).toContain('temporarily busy');
+            expect(result.text).toContain('193,000 FCFA');
         });
 
         it('should map HTTP 401/403 to AUTH and cleanly fall back to local knowledge', async () => {

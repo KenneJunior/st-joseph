@@ -132,12 +132,11 @@ export class GeminiService {
                 const errorType = this.mapHttpStatusToError(status);
 
                 if (status === 429) {
-                    return {
-                        text: 'The guidance assistant is currently handling high inquiry volume. Please try again shortly, or call the college office at **+237 682 760 271**.',
-                        isFallback: true,
-                        source: 'offline',
-                        error: 'RATE_LIMIT',
-                    };
+                    return this.generateOfflineFallback(
+                        trimmedPrompt,
+                        "The AI service is temporarily busy. I'm using SJCCC's verified local information instead:",
+                        'RATE_LIMIT'
+                    );
                 }
 
                 // If authentication/server configuration error occurs, fall back to offline engine cleanly
