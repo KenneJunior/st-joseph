@@ -162,11 +162,11 @@ export class AiAssistantWidget {
                     </div>
                     <div class="sjccc-ai-header__info">
                         <h2 id="sjcccAiTitle" class="sjccc-ai-header__title" title="SJCCC Guidance Assistant">
-                            SJCCC Guidance Assistant
+                            <span class="sjccc-ai-header__title-text">SJCCC Guidance Assistant</span>
                         </h2>
                         <span class="sjccc-ai-header__subtitle">
                             <span class="sjccc-ai-header__badge">gemini-3.8</span>
-                            <span>Official Q&amp;A</span>
+                            <span class="sjccc-ai-header__subtitle-text">Official Q&amp;A</span>
                         </span>
                     </div>
                 </div>

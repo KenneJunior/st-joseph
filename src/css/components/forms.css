@@ -64,7 +64,7 @@ body.dark-mode .form-group textarea {
 .form-group textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(200,150,62,0.2);
+  box-shadow: 0 0 0 3px rgba(201, 162, 41, 0.2);
 }
 
 .form-note {
@@ -148,12 +148,12 @@ body.dark-mode .form-group.form-toggle {
 }
 
 .form-group input#whatsappRoutingToggle:checked {
-  background-color: #25D366;
+  background-color: var(--color-status-success, #25D366);
   opacity: 1;
 }
 
 body.dark-mode .form-group input#whatsappRoutingToggle:checked {
-  background-color: #20ba5a;
+  background-color: var(--color-status-success-hover, #20ba5a);
 }
 
 .form-group input#whatsappRoutingToggle:checked::before {
@@ -175,5 +175,5 @@ body.dark-mode .form-group input#whatsappRoutingToggle:checked {
 
 .form-group input#whatsappRoutingToggle:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.35);
+  box-shadow: 0 0 0 3px var(--color-status-success-soft, rgba(37, 211, 102, 0.35));
 }

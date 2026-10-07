@@ -2,7 +2,7 @@
  * ============================================================================
  * SJCCC – Enquiry Modal Controller
  * Handles book-page enquiry modal opening/closing, body scroll locking,
- * scrollbar width compensation, and auto-focusing inputs
+ * scrollbar width compensation, focus restoration, and accessibility
  * ============================================================================
  */
 
@@ -13,6 +13,8 @@ export class EnquiryModal {
     private modal: HTMLElement | null;
     private closeBtn: HTMLButtonElement | null;
     private isOpen: boolean = false;
+    private lastActiveElement: HTMLElement | null = null;
+    private abortController: AbortController = new AbortController();
 
     constructor(
         fabSelectors: string[] = ['#enquiryFab', '#enquire-btn', '#pMan', '.announcement-bar__link', '#getInTouchBtn', '#faqEnquiryBtn'],
@@ -28,35 +30,38 @@ export class EnquiryModal {
     }
 
     private init(): void {
+        const { signal } = this.abortController;
+
         this.fabElements.forEach((fab) => {
-            fab.addEventListener('click', () => this.open());
+            fab.addEventListener('click', () => this.open(fab), { signal });
         });
 
-        this.closeBtn?.addEventListener('click', () => this.close());
+        this.closeBtn?.addEventListener('click', () => this.close(), { signal });
 
         this.modal?.addEventListener('click', (e: MouseEvent) => {
             if (e.target === this.modal) {
                 this.close();
             }
-        });
+        }, { signal });
 
         document.addEventListener('keydown', (e: KeyboardEvent) => {
             if (e.key === 'Escape' && this.isOpen) {
                 this.close();
             }
-        });
+        }, { signal });
 
         this.modal?.addEventListener('wheel', (e: WheelEvent) => {
             const content = this.modal?.querySelector('.modal-content');
             if (this.isOpen && content && !content.contains(e.target as Node)) {
                 e.preventDefault();
             }
-        }, { passive: false });
+        }, { passive: false, signal });
     }
 
-    public open(): void {
+    public open(triggerEl?: HTMLElement): void {
         if (!this.modal || this.isOpen) return;
 
+        this.lastActiveElement = triggerEl || (document.activeElement as HTMLElement | null);
         this.isOpen = true;
         this.modal.removeAttribute('hidden');
 
@@ -67,9 +72,9 @@ export class EnquiryModal {
         motionSuspension.suspendAll('modal');
 
         setTimeout(() => {
-            const firstInput = this.modal?.querySelector<HTMLInputElement>('input');
+            const firstInput = this.modal?.querySelector<HTMLInputElement>('input:not([type="checkbox"])');
             firstInput?.focus();
-        }, 400);
+        }, 220);
     }
 
     public close(): void {
@@ -90,15 +95,21 @@ export class EnquiryModal {
             document.body.style.overflow = '';
             document.body.style.paddingRight = '';
 
-            this.fabElements[0]?.focus();
-        }, 500);
+            const returnTarget = this.lastActiveElement || this.fabElements[0];
+            returnTarget?.focus();
+        }, 400);
     }
 
     private getScrollbarWidth(): number {
+        if (typeof document === 'undefined' || !document.documentElement) return 0;
         return window.innerWidth - document.documentElement.clientWidth;
     }
 
     public isModalOpen(): boolean {
         return this.isOpen;
+    }
+
+    public destroy(): void {
+        this.abortController.abort();
     }
 }

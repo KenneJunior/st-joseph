@@ -29,6 +29,11 @@
   --color-border-subtle: rgba(7, 24, 46, 0.08);
   --color-border-brand: rgba(201, 162, 41, 0.35);
 
+  /* Status Colors */
+  --color-status-success: #25d366;
+  --color-status-success-hover: #20ba5a;
+  --color-status-success-soft: rgba(37, 211, 102, 0.15);
+
   /* Spacing Scale (4px base) */
   --space-1: 0.25rem;  /* 4px */
   --space-2: 0.50rem;  /* 8px */

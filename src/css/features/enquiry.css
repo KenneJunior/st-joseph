@@ -1,12 +1,15 @@
 /* ============================================
    ENQUIRY FAB & MODAL
+   St. Joseph's Catholic Comprehensive College (SJCCC)
    ============================================ */
+
+/* Floating Enquiry FAB */
 .enquiry-fab {
   position: fixed;
   bottom: 70px;
   right: 20px;
   z-index: var(--z-hud, 2000);
-  background: var( --color-border-brand);
+  background: var(--color-border-brand);
   color: var(--primary-dark);
   border: none;
   border-radius: 50px;
@@ -18,7 +21,7 @@
   font-size: 0.95rem;
   font-family: var(--font-body);
   cursor: pointer;
-  box-shadow: 0 8px 28px rgba(200,150,62,0.45);
+  box-shadow: 0 8px 28px rgba(201, 162, 41, 0.45);
   transition: transform var(--duration-fast, 200ms) var(--ease-standard),
               box-shadow var(--duration-fast, 200ms) var(--ease-standard);
   backdrop-filter: blur(4px);
@@ -31,7 +34,7 @@
 
 .enquiry-fab:hover {
   transform: translateY(-3px);
-  box-shadow: 0 14px 36px rgba(200,150,62,0.6);
+  box-shadow: 0 14px 36px rgba(201, 162, 41, 0.6);
 }
 
 .enquiry-fab:hover i {
@@ -54,14 +57,16 @@
 }
 
 /* ============================================
-   BOOK PAGE MODAL - ENQUIRY FORM
+   BOOK PAGE MODAL — REFINED ACADEMIC METAPHOR
+   Preserves academic ledger spine, crease, gold accents,
+   and editorial form hierarchy with high performance
    ============================================ */
 
-/* Modal Overlay - fades in */
+/* Modal Backdrop */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(7, 24, 46, 0.7), rgba(2, 12, 26, 0.92));
+  background: radial-gradient(circle at 50% 50%, rgba(7, 24, 46, 0.72), rgba(2, 12, 26, 0.92));
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   z-index: var(--z-modal, 5000);
@@ -71,198 +76,296 @@
   padding: 20px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-  visibility 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  /* Perspective for 3D book effect */
+  transition: opacity 0.35s cubic-bezier(0.2, 0, 0, 1),
+              visibility 0.35s cubic-bezier(0.2, 0, 0, 1);
+  box-sizing: border-box;
   perspective: 1500px;
 }
+
 .modal-overlay:not([hidden]) {
   opacity: 1;
   visibility: visible;
 }
 
-/* Modal Content - the book page */
+/* Modal Content Container — The Academic Book Page */
 .modal-content {
   position: relative;
-  background: var(--surface-card);
-  border-radius: var(--radius-lg);
-  padding: 36px 32px;
+  background:
+    linear-gradient(
+      180deg,
+      var(--sj-gold-500, #c9a229) 0%,
+      var(--sj-gold-300, #f3d779) 35%,
+      var(--sj-gold-500, #c9a229) 70%,
+      var(--sj-gold-600, #8c6a21) 100%
+    ) left top / 4px 100% no-repeat,
+    var(--surface-card);
+  border-radius: var(--radius-lg, 20px);
+  padding: 32px 30px 28px 34px;
   max-width: 520px;
   width: 100%;
-  position: relative;
-  box-shadow:
-          0 20px 60px rgba(0, 0, 0, 0.3),
-          0 0 0 1px var(--border-light);
-  max-height: 90vh;
+  box-shadow: 0 24px 64px -12px rgba(2, 12, 26, 0.45),
+              0 0 0 1px var(--border-light, rgba(255, 255, 255, 0.08));
+  max-height: min(90vh, 90dvh);
   overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-brand, rgba(201, 162, 41, 0.35)) transparent;
+  box-sizing: border-box;
 
-  /* Book page opening animation */
+  /* Book Page Flip Opening Animation */
   transform-origin: left center;
   transform: rotateY(-90deg);
   opacity: 0;
-  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-  opacity 0.3s ease 0.1s;
-}
-.modal-content .page-fold {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(
-          135deg,
-          transparent 50%,
-          rgba(200, 150, 62, 0.08) 50%,
-          rgba(200, 150, 62, 0.12) 100%
-  );
-  border-radius: 0 var(--radius-lg) 0 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease 0.5s;
+  transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.25s ease 0.05s;
 }
 
-.modal-overlay:not([hidden]) .page-fold {
-  opacity: 1;
-}
-
-/* When modal is open - page flips open */
 .modal-overlay:not([hidden]) .modal-content {
   transform: rotateY(0deg);
   opacity: 1;
 }
 
-.modal-content button[type="submit"],
-.modal-content .btn-primary {
-  width: 100%;
-  margin-top: 8px;
+.modal-content.closing {
+  transform: rotateY(-90deg);
   opacity: 0;
-  transform: translateY(10px);
-  animation: formItemSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.55s forwards;
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.22s ease;
 }
 
-
-/* Book spine effect on the left edge */
+/* Book Spine (Left Edge) — Refined Gold Academic Binding */
 .modal-content::before {
   content: '';
   position: absolute;
   top: 0;
+  bottom: 0;
   left: 0;
   width: 4px;
-  height: 100%;
+  height: auto;
   background: linear-gradient(
-          to right,
-          rgba(200, 150, 62, 0.4) 0%,
-          rgba(200, 150, 62, 0.1) 50%,
-          transparent 100%
+    180deg,
+    var(--sj-gold-500, #c9a229) 0%,
+    var(--sj-gold-300, #f3d779) 35%,
+    var(--sj-gold-500, #c9a229) 70%,
+    var(--sj-gold-600, #8c6a21) 100%
   );
-  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  border-radius: var(--radius-lg, 20px) 0 0 var(--radius-lg, 20px);
   pointer-events: none;
 }
 
-/* Page shadow on the left side */
+/* Page Crease & Depth Shadow (Left Inner Edge) */
 .modal-content::after {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  width: 30px;
-  height: 100%;
+  bottom: 0;
+  left: 4px;
+  width: 24px;
+  height: auto;
   background: linear-gradient(
-          to right,
-          rgba(0, 0, 0, 0.08) 0%,
-          rgba(0, 0, 0, 0.03) 40%,
-          transparent 100%
+    to right,
+    rgba(2, 12, 26, 0.08) 0%,
+    rgba(2, 12, 26, 0.02) 50%,
+    transparent 100%
   );
-  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease 0.3s;
-}
-
-.modal-overlay:not([hidden]) .modal-content::after {
   opacity: 1;
 }
 
-/* Close button */
+body.dark-mode .modal-content::after {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.35) 0%,
+    rgba(0, 0, 0, 0.08) 50%,
+    transparent 100%
+  );
+}
+
+/* Academic Page Fold (Top Right Corner Accent) */
+.modal-content .page-fold {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(
+    135deg,
+    transparent 50%,
+    rgba(201, 162, 41, 0.10) 50%,
+    rgba(201, 162, 41, 0.18) 100%
+  );
+  border-radius: 0 var(--radius-lg, 20px) 0 0;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* Modal Close Button Affordance */
 .modal-close {
   position: absolute;
-  top: 16px;
-  right: 20px;
-  background: var(--bg-off-white);
-  border: 1px solid var(--border-light);
-  font-size: 1.5rem;
+  top: 14px;
+  right: 16px;
+  background: var(--bg-off-white, #f8f9fc);
+  border: 1px solid var(--border-light, rgba(7, 24, 46, 0.1));
+  font-size: 1rem;
   cursor: pointer;
   color: var(--text-muted);
-  transition: all 0.3s ease;
+  transition: color var(--duration-fast, 200ms) ease,
+              background var(--duration-fast, 200ms) ease,
+              border-color var(--duration-fast, 200ms) ease,
+              transform var(--duration-fast, 200ms) ease;
   line-height: 1;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
+  box-sizing: border-box;
+}
+
+body.dark-mode .modal-close {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--text-muted);
 }
 
 .modal-close:hover {
-  color: var(--text-body);
-  background: var(--border-light);
-  transform: rotate(90deg);
+  color: var(--text-dark);
+  background: var(--border-light, rgba(7, 24, 46, 0.08));
+  transform: scale(1.05);
 }
 
-/* Form heading */
+body.dark-mode .modal-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.modal-close:focus-visible {
+  outline: 2px solid var(--color-brand-accent, #c9a229);
+  outline-offset: 2px;
+}
+
+/* Heading Typography */
 .modal-content h2 {
-  font-family: var(--font-heading);
-  font-size: 1.6rem;
+  font-family: var(--font-heading, inherit);
+  font-size: 1.45rem;
   font-weight: 700;
   color: var(--text-dark);
-  margin-bottom: 8px;
-  padding-right: 40px;
+  margin-top: 0;
+  margin-bottom: 4px;
+  padding-right: 36px;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
 }
 
 .modal-content .form-subtitle {
   color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-bottom: 24px;
-  padding-right: 40px;
+  font-size: 0.86rem;
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding-right: 36px;
+  line-height: 1.4;
 }
 
-/* Staggered form group animations */
+/* ============================================
+   AI GUIDANCE ASSISTANT BRIDGE BANNER
+   Compact institutional bridge connecting enquiry to instant AI Q&A
+   ============================================ */
+.enquiry-ai-bridge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 4px 0 16px 0;
+  padding: 8px 12px;
+  background: rgba(201, 162, 41, 0.08);
+  border: 1px solid rgba(201, 162, 41, 0.30);
+  border-radius: var(--radius-sm, 8px);
+  box-sizing: border-box;
+}
+
+body.dark-mode .enquiry-ai-bridge {
+  background: rgba(201, 162, 41, 0.12);
+  border-color: rgba(243, 215, 121, 0.35);
+}
+
+.enquiry-ai-bridge i {
+  color: var(--color-brand-accent, #c9a229);
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+body.dark-mode .enquiry-ai-bridge i {
+  color: var(--sj-gold-300, #f3d779);
+}
+
+.enquiry-ai-bridge span {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-body);
+  flex: 1;
+  line-height: 1.3;
+}
+
+.enquiry-ai-bridge-btn {
+  background: rgba(201, 162, 41, 0.16);
+  border: 1px solid rgba(201, 162, 41, 0.42);
+  color: var(--color-brand-accent, #c9a229);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-body, inherit);
+  transition: background var(--duration-fast, 200ms) ease,
+              border-color var(--duration-fast, 200ms) ease,
+              color var(--duration-fast, 200ms) ease;
+  flex-shrink: 0;
+}
+
+body.dark-mode .enquiry-ai-bridge-btn {
+  color: var(--sj-gold-300, #f3d779);
+  border-color: rgba(243, 215, 121, 0.40);
+}
+
+.enquiry-ai-bridge-btn:hover {
+  background: var(--sj-gold-500, #c9a229);
+  border-color: var(--sj-gold-500, #c9a229);
+  color: #020c1a;
+}
+
+.enquiry-ai-bridge-btn:focus-visible {
+  outline: 2px solid var(--sj-gold-400, #d4a85a);
+  outline-offset: 1px;
+}
+
+/* Form Items Immediate Readability (No Artificial Delays) */
 .modal-overlay:not([hidden]) .form-group {
-  animation: formItemSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  opacity: 0;
-  transform: translateX(-20px);
+  opacity: 1;
+  transform: none;
 }
 
-.modal-overlay:not([hidden]) .form-group:nth-child(1) { animation-delay: 0.3s; }
-.modal-overlay:not([hidden]) .form-group:nth-child(2) { animation-delay: 0.35s; }
-.modal-overlay:not([hidden]) .form-group:nth-child(3) { animation-delay: 0.4s; }
-.modal-overlay:not([hidden]) .form-group:nth-child(4) { animation-delay: 0.45s; }
-.modal-overlay:not([hidden]) .form-group:nth-child(5) { animation-delay: 0.5s; }
-
-
-/* Submit button */
-.modal-content .btn-primary {
+/* Submit Button Placement */
+.modal-content .btn-primary,
+.modal-content button[type="submit"] {
   width: 100%;
-  margin-top: 8px;
-  opacity: 0;
-  transform: translateY(10px);
-  animation: formItemSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.55s forwards;
+  margin-top: 10px;
+  opacity: 1;
+  transform: none;
 }
 
-/* Page curl effect on hover */
+/* Subtle Page Depth on Hover (Desktop) */
 @media (hover: hover) {
   .modal-content:hover {
-    box-shadow:
-            0 24px 70px rgba(0, 0, 0, 0.35),
-            -8px 0 20px rgba(0, 0, 0, 0.1),
-            0 0 0 1px var(--border-light);
+    box-shadow: 0 28px 72px -10px rgba(2, 12, 26, 0.50),
+                0 0 0 1px var(--color-border-brand, rgba(201, 162, 41, 0.35));
   }
 }
 
-
 /* ============================================
-   RESPONSIVE BOOK MODAL
+   RESPONSIVE MODAL GEOMETRY & MOBILE VIEWPORTS
    ============================================ */
 @media (max-width: 768px) {
   .enquiry-fab {
@@ -273,69 +376,93 @@
   }
 
   .modal-overlay {
-    perspective: 1000px;
     padding: 12px;
   }
 
   .modal-content {
-    padding: 20px 16px;
-    border-radius: var(--radius-sm);
-    transform-origin: bottom center;
-    transform: rotateX(-90deg);
-    max-width: 94vw;
+    background:
+      linear-gradient(
+        180deg,
+        var(--sj-gold-500, #c9a229) 0%,
+        var(--sj-gold-300, #f3d779) 35%,
+        var(--sj-gold-500, #c9a229) 70%,
+        var(--sj-gold-600, #8c6a21) 100%
+      ) left top / 3px 100% no-repeat,
+      var(--surface-card);
+    padding: 24px 18px 20px 22px;
+    border-radius: var(--radius-md, 14px);
+    max-width: 100%;
+    width: 100%;
+    max-height: min(92vh, 92dvh);
+  }
+
+  /* Left spine remains sleek and non-obstructive on mobile */
+  .modal-content::before {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 3px;
+    height: auto;
+    border-radius: var(--radius-md, 14px) 0 0 var(--radius-md, 14px);
+  }
+
+  /* Subtle inner crease shadow on mobile */
+  .modal-content::after {
+    top: 0;
+    bottom: 0;
+    left: 3px;
+    width: 16px;
+    height: auto;
   }
 
   .modal-content h2 {
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     margin-bottom: 4px;
+    padding-right: 32px;
   }
 
   .modal-content .form-subtitle {
-    font-size: 0.76rem;
+    font-size: 0.78rem;
     margin-bottom: 12px;
+    padding-right: 32px;
   }
 
   .modal-close {
-    width: 32px;
-    height: 32px;
-    font-size: 1.1rem;
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
     top: 10px;
     right: 12px;
   }
+}
 
-  .modal-overlay:not([hidden]) .modal-content {
-    transform: rotateX(0deg);
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 8px;
   }
 
-  /* Change spine to bottom on mobile */
+  .modal-content {
+    padding: 20px 14px 18px 18px;
+    border-radius: var(--radius-sm, 10px);
+  }
+
   .modal-content::before {
-    top: auto;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 50px;
-    background: linear-gradient(
-            to top,
-            rgba(200, 150, 62, 0.4) 0%,
-            rgba(200, 150, 62, 0.1) 50%,
-            transparent 100%
-    );
-    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    border-radius: var(--radius-sm, 10px) 0 0 var(--radius-sm, 10px);
   }
 
-  .modal-content::after {
-    top: auto;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(
-            to top,
-            rgba(0, 0, 0, 0.08) 0%,
-            rgba(0, 0, 0, 0.03) 40%,
-            transparent 100%
-    );
-    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  .enquiry-ai-bridge {
+    padding: 6px 9px;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .enquiry-ai-bridge span {
+    font-size: 0.72rem;
+  }
+
+  .enquiry-ai-bridge-btn {
+    padding: 4px 7px;
+    font-size: 0.66rem;
   }
 }
 
@@ -347,7 +474,27 @@
     font-size: 0.72rem;
   }
 
-  .modal-content {
-    padding: 16px 12px;
+  .modal-content h2 {
+    font-size: 1.12rem;
+  }
+
+  .modal-close {
+    width: 30px;
+    height: 30px;
+    font-size: 0.88rem;
+    top: 8px;
+    right: 8px;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY: PREFERS-REDUCED-MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal-content,
+  .modal-content.closing {
+    transition: opacity 0.1s ease !important;
+    transform: none !important;
   }
 }

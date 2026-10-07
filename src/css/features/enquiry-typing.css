@@ -1,208 +1,258 @@
 /* ============================================
-   SMOOTH CARET INPUT ANIMATION
+   ENQUIRY TYPING & FORM FIELD ENHANCEMENTS
+   High-performance micro-interactions:
+   Caret accents, character counter & typing indicator
+   Strict local positioning contexts & responsive geometry
    ============================================ */
 
-/* Apply to all input and textarea fields */
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid var(--border-light);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  background: var(--bg-white);
-  color: var(--text-dark);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
-  /* Smooth caret */
-  caret-color: var(--accent);
-  caret-shape: bar;
-
-  /* Letter spacing for typewriter feel */
-  letter-spacing: 0.5px;
-
-  /* Smooth text appearance */
-  position: relative;
-}
-
-/* Focus state */
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(200, 150, 62, 0.15);
-}
-
-/* ============================================
-   TYPEWRITER CHARACTER REVEAL EFFECT
-   ============================================ */
-
+/* Applied to input and textarea fields */
 .typewriter-input {
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  background: var(--bg-white);
-  transform-origin: center center; /* Ensures the scale happens from the middle */
+  border-radius: var(--radius-sm, 8px);
+  caret-color: var(--color-brand-accent, #c9a229);
+  letter-spacing: 0.3px;
+  box-sizing: border-box;
 }
-/* Container for the typewriter effect */
+
+/* Character reveal layer (if used) */
 .typewriter-input-wrapper {
   position: relative;
   display: block;
 }
 
-/* The actual input stays transparent, we show a visual layer on top */
 .typewriter-input-wrapper input.typewriter,
 .typewriter-input-wrapper textarea.typewriter {
   position: relative;
   z-index: 1;
   background: transparent;
-
-  /* Each character animates in */
   animation: none;
 }
 
-/* Character reveal animation - applied via JS */
-.typewriter-char {
-  display: inline;
-  animation: charReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  opacity: 0;
+/* Local Positioning Context for Single-Line Form Inputs */
+.field-wrapper {
+  position: relative;
+  width: 100%;
+  display: block;
 }
 
-.typewriter-char.deleting {
-  animation: charDelete 0.5s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+.field-wrapper input {
+  padding-right: 38px; /* Clearance so typed text never collides with typing indicator */
+  box-sizing: border-box;
 }
 
+/* Dedicated Message Field Wrapper — Strict Local Positioning Context */
+.message-field-wrapper {
+  position: relative;
+  width: 100%;
+  display: block;
+}
 
-
-
+/* Ensure textarea provides clearance for internal counter and typing indicator */
+.message-field-wrapper textarea {
+  display: block;
+  width: 100%;
+  min-height: 90px;
+  max-height: 190px;
+  resize: vertical;
+  padding: 10px 38px 26px 14px; /* Clearance: right for indicator, bottom for char-counter */
+  box-sizing: border-box;
+}
 
 /* ============================================
-   SMOOTH CARET BLINK (Pure CSS)
+   STATIC FOCUS STATE (NO INFINITE GLOW LOOP)
    ============================================ */
-
-/* Custom caret animation */
-
-
-/* Fancy caret effect using box-shadow */
 .form-group input:focus,
 .form-group textarea:focus {
-  animation: inputGlow 2s ease-in-out infinite;
-}
-
-
-/* ============================================
-   PLACEHOLDER ANIMATION
-   ============================================ */
-
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-  color: var(--text-muted);
-  opacity: 0.6;
-  transition: all 0.3s ease;
-  transform: translateX(0);
-}
-
-.form-group input:focus::placeholder,
-.form-group textarea:focus::placeholder {
-  opacity: 0.3;
-  transform: translateX(8px);
-}
-
-.form-group {
-  position: relative;
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: left top;
-}
-
-/* When input has value, scale label up slightly */
-.form-group input:not(:placeholder-shown) + label,
-.form-group textarea:not(:placeholder-shown) + label,
-.form-group input:focus + label,
-.form-group textarea:focus + label {
-  transform: translateY(-2px) scale(1.02);
-  color: var(--accent);
-  font-weight: 600;
+  outline: none;
+  border-color: var(--color-brand-accent, #c9a229);
+  box-shadow: 0 0 0 3px rgba(201, 162, 41, 0.18);
+  transition: border-color var(--duration-fast, 200ms) ease,
+              box-shadow var(--duration-fast, 200ms) ease;
 }
 
 /* ============================================
-   TYPING INDICATOR BELOW INPUT
+   TYPING INDICATOR
+   Finite localized indicator (active only when typing/focused)
    ============================================ */
-
+/* Default / Single-line input indicator: vertically centered */
+.field-wrapper .typing-indicator,
 .typing-indicator {
   position: absolute;
-  right: 16px;
+  right: 14px;
   top: 50%;
+  bottom: auto;
   transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 3px;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--duration-fast, 200ms) ease;
   pointer-events: none;
+  z-index: 2;
+}
+
+/* Textarea typing indicator: anchored top-right of dedicated message field wrapper */
+.message-field-wrapper .typing-indicator {
+  top: 10px;
+  right: 14px;
+  bottom: auto;
+  left: auto;
+  transform: none;
 }
 
 .typing-indicator.active {
   opacity: 1;
-  animation: typingPulse 1s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .typing-dot {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--accent);
-  animation: typingDotBounce 0.6s ease-in-out infinite;
+  background: var(--color-brand-accent, #c9a229);
+  animation: typingDotBounce 0.7s ease-in-out infinite;
 }
 
-.typing-dot:nth-child(2) { animation-delay: 0.1s; }
-.typing-dot:nth-child(3) { animation-delay: 0.2s; }
+body.dark-mode .typing-dot {
+  background: var(--sj-gold-300, #f3d779);
+}
 
+.typing-dot:nth-child(2) { animation-delay: 0.12s; }
+.typing-dot:nth-child(3) { animation-delay: 0.24s; }
 
+@keyframes typingDotBounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
 
 /* ============================================
-   CHARACTER COUNT WITH SMOOTH TRANSITION
+   CHARACTER COUNTER
+   Anchored strictly inside bottom-right of message field wrapper
    ============================================ */
+.message-field-wrapper .char-count {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  top: auto;
+  left: auto;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-family: var(--font-body, inherit);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  z-index: 2;
+  transition: color var(--duration-fast, 200ms) ease;
+}
 
+/* Fallback if rendered outside dedicated wrapper */
 .char-count {
   position: absolute;
-  bottom: -20px;
-  right: 0;
-  font-size: 0.75rem;
+  bottom: 8px;
+  right: 12px;
+  font-size: 0.72rem;
+  font-weight: 500;
   color: var(--text-muted);
-  transition: color 0.3s ease;
+  font-family: var(--font-body, inherit);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  z-index: 2;
+  transition: color var(--duration-fast, 200ms) ease;
 }
 
-.form-group textarea:focus ~ .char-count {
-  opacity: 1;
-  transform: translateY(0);
+body.dark-mode .char-count,
+body.dark-mode .message-field-wrapper .char-count {
+  color: rgba(255, 255, 255, 0.45);
 }
 
-.char-count.near-limit {
-  color: var(--accent);
+.char-count.near-limit,
+.message-field-wrapper .char-count.near-limit {
+  color: var(--color-brand-accent, #c9a229);
   font-weight: 600;
 }
 
-.char-count.at-limit {
-  color: #e94560;
-  font-weight: 800;
-  animation: limitShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-}
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-  color: var(--text-muted);
-  opacity: 0.5;
-  transition: all 0.3s ease;
+body.dark-mode .char-count.near-limit,
+body.dark-mode .message-field-wrapper .char-count.near-limit {
+  color: var(--sj-gold-300, #f3d779);
 }
 
-.form-group input:focus::placeholder,
-.form-group textarea:focus::placeholder {
-  opacity: 0.25;
-  transform: translateX(6px);
+.char-count.at-limit,
+.message-field-wrapper .char-count.at-limit {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+/* ============================================
+   RESPONSIVE GEOMETRY & VIEWPORTS
+   ============================================ */
+@media (max-width: 768px) {
+  .field-wrapper input {
+    padding-right: 32px;
+  }
+
+  .message-field-wrapper textarea {
+    padding: 8px 32px 22px 10px;
+    font-size: 0.82rem;
+    min-height: 76px;
+  }
+
+  .field-wrapper .typing-indicator {
+    right: 10px;
+  }
+
+  .message-field-wrapper .typing-indicator {
+    top: 8px;
+    right: 10px;
+  }
+
+  .message-field-wrapper .char-count,
+  .char-count {
+    bottom: 6px;
+    right: 10px;
+    font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .field-wrapper input {
+    padding-right: 28px;
+  }
+
+  .message-field-wrapper textarea {
+    padding: 7px 28px 20px 8px;
+    font-size: 0.78rem;
+    min-height: 70px;
+  }
+
+  .field-wrapper .typing-indicator {
+    right: 8px;
+  }
+
+  .message-field-wrapper .typing-indicator {
+    top: 7px;
+    right: 8px;
+  }
+
+  .message-field-wrapper .char-count,
+  .char-count {
+    bottom: 5px;
+    right: 8px;
+    font-size: 0.65rem;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY: PREFERS-REDUCED-MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .typing-dot {
+    animation: none !important;
+  }
 }

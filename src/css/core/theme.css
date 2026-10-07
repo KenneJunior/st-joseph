@@ -14,6 +14,9 @@ body.dark-mode {
   --color-brand-accent-soft: #f0d28b;
   --color-border-subtle: rgba(255, 255, 255, 0.08);
   --color-border-brand: rgba(212, 168, 90, 0.40);
+  --color-status-success: #25d366;
+  --color-status-success-hover: #20ba5a;
+  --color-status-success-soft: rgba(37, 211, 102, 0.20);
   --text-dark: #e0e0f0;
   --text-body: #c0c0d4;
   --text-light: #ffffff;

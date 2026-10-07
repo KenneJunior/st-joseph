@@ -1,12 +1,14 @@
 /**
  * ============================================================================
  * SJCCC – Smooth Typing Effect
- * Dynamic micro-transform spring bounce and character counting for form inputs
+ * Clean character counting and typing state management for form inputs
+ * Zero layout thrashing, zero continuous RAF, zero inline scale mutations
  * ============================================================================
  */
 
 export class SmoothTypingEffect {
     private inputs: NodeListOf<HTMLInputElement | HTMLTextAreaElement>;
+    private abortController: AbortController = new AbortController();
 
     constructor(selector: string = '.form-group input, .form-group textarea') {
         this.inputs = document.querySelectorAll(selector);
@@ -14,55 +16,27 @@ export class SmoothTypingEffect {
     }
 
     private init(): void {
+        const { signal } = this.abortController;
+
         this.inputs.forEach((input) => {
             input.classList.add('typewriter-input');
-            input.style.willChange = 'transform';
 
-            input.addEventListener('input', (e) => this.handleInput(e));
-            input.addEventListener('keydown', (e) => this.handleKeyDown(e as KeyboardEvent));
-            input.addEventListener('focus', () => this.handleFocus(input));
-            input.addEventListener('blur', () => this.handleBlur(input));
+            input.addEventListener('input', () => this.handleInput(input), { signal });
+            input.addEventListener('focus', () => this.handleFocus(input), { signal });
+            input.addEventListener('blur', () => this.handleBlur(input), { signal });
 
             this.updateCharCount(input);
         });
     }
 
-    private handleInput(e: Event): void {
-        const input = e.target as HTMLInputElement | HTMLTextAreaElement;
-
-        input.style.transition = 'none';
-        input.style.transform = 'scale(1.005)';
-
-        void input.offsetWidth;
-
-        requestAnimationFrame(() => {
-            input.style.transition = 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
-            input.style.transform = 'scale(1)';
-        });
-
+    private handleInput(input: HTMLInputElement | HTMLTextAreaElement): void {
         this.updateCharCount(input);
-    }
-
-    private handleKeyDown(e: KeyboardEvent): void {
-        const input = e.target as HTMLInputElement | HTMLTextAreaElement;
-
-        if (e.key === 'Backspace' || e.key === 'Delete') {
-            input.style.transition = 'none';
-            input.style.transform = 'scale(0.995)';
-
-            void input.offsetWidth;
-
-            requestAnimationFrame(() => {
-                input.style.transition = 'transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                input.style.transform = 'scale(1)';
-            });
-        }
     }
 
     private handleFocus(input: HTMLInputElement | HTMLTextAreaElement): void {
         const formGroup = input.closest('.form-group');
         if (formGroup) {
-            const indicator = formGroup.querySelector('.typing-indicator') as HTMLElement;
+            const indicator = formGroup.querySelector('.typing-indicator') as HTMLElement | null;
             if (indicator) {
                 indicator.classList.add('active');
             }
@@ -72,7 +46,7 @@ export class SmoothTypingEffect {
     private handleBlur(input: HTMLInputElement | HTMLTextAreaElement): void {
         const formGroup = input.closest('.form-group');
         if (formGroup) {
-            const indicator = formGroup.querySelector('.typing-indicator') as HTMLElement;
+            const indicator = formGroup.querySelector('.typing-indicator') as HTMLElement | null;
             if (indicator) {
                 indicator.classList.remove('active');
             }
@@ -93,5 +67,9 @@ export class SmoothTypingEffect {
         charCount.textContent = `${current}/${max}`;
         charCount.classList.toggle('near-limit', current >= max * 0.8 && current < max);
         charCount.classList.toggle('at-limit', current >= max);
+    }
+
+    public destroy(): void {
+        this.abortController.abort();
     }
 }

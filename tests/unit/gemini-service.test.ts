@@ -307,14 +307,20 @@ describe('Gemini AI Service & Server Proxy Integration', () => {
         });
 
         it('should return 503 AUTH when server API key is not configured', async () => {
-            const result = await processGeminiQuery(
-                { prompt: 'What are the fees?' },
-                '' // empty API key override
-            );
+            const savedKey = process.env.GEMINI_API_KEY;
+            delete process.env.GEMINI_API_KEY;
+            try {
+                const result = await processGeminiQuery(
+                    { prompt: 'What are the fees?' },
+                    { apiKeyOverride: '' }
+                );
 
-            expect(result.statusCode).toBe(503);
-            if ('error' in result.body) {
-                expect(result.body.error).toBe('AUTH');
+                expect(result.statusCode).toBe(503);
+                if ('error' in result.body) {
+                    expect(result.body.error).toBe('AUTH');
+                }
+            } finally {
+                if (savedKey) process.env.GEMINI_API_KEY = savedKey;
             }
         });
     });
