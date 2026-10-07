@@ -22,6 +22,16 @@ export default defineConfig({
                             return;
                         }
                     }
+                    if (req.url === '/api/gemini' || req.url?.startsWith('/api/gemini?')) {
+                        import('./api/gemini.ts').then(({ default: handler }) => {
+                            handler(req, res);
+                        }).catch((err) => {
+                            res.statusCode = 500;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.end(JSON.stringify({ error: 'SERVER', message: String(err) }));
+                        });
+                        return;
+                    }
                     next();
                 });
             }
