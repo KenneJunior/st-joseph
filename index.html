@@ -899,10 +899,13 @@
               </p>
             </div>
             <div class="next-milestone-banner__action">
-              <button class="btn btn-primary btn-download-ics" data-milestone-id="midterm-break-t1-2026"
+              <button type="button" class="btn btn-primary btn-calendar-action" data-milestone-id="midterm-break-t1-2026"
+                aria-haspopup="dialog"
+                aria-expanded="false"
                 title="Add First Term Mid-Term Break to Calendar"
-                toolDescription="Download an iCalendar (.ics) file to save this academic milestone to Google Calendar, Apple Calendar, or Outlook.">
-                <i class="bi bi-calendar-plus-fill"></i> Add to Calendar
+                toolDescription="Choose Google Calendar, Outlook, or download calendar file (.ics).">
+                <i class="bi bi-calendar-plus-fill" aria-hidden="true"></i>
+                <span>Add to Calendar</span>
               </button>
             </div>
           </div>
@@ -2535,6 +2538,86 @@
       }
     })();
   </script>
+  <!-- Calendar Action Sheet Dialog (Accessible & Truthful UX) -->
+  <div id="calendarActionDialog" class="calendar-action-overlay" role="dialog" aria-modal="true" aria-labelledby="calDialogTitle" aria-describedby="calDialogDesc" hidden>
+    <div class="calendar-action-backdrop" data-action="close"></div>
+    <div class="calendar-action-sheet" tabindex="-1">
+      <div class="calendar-action-header">
+        <div class="calendar-action-title-group">
+          <span class="calendar-action-kicker"><i class="bi bi-calendar-plus" aria-hidden="true"></i> Add to Calendar</span>
+          <h3 id="calDialogTitle" class="calendar-action-title">Select Calendar</h3>
+          <p id="calDialogDesc" class="calendar-action-event-info"></p>
+        </div>
+        <button type="button" class="calendar-action-close-btn" data-action="close" aria-label="Close calendar options dialog">
+          <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="calendar-action-body">
+        <div class="calendar-provider-list" role="menu">
+          <!-- Google Calendar -->
+          <button type="button" class="calendar-provider-btn" data-provider="google" role="menuitem">
+            <div class="calendar-provider-icon google-icon">
+              <i class="bi bi-google" aria-hidden="true"></i>
+            </div>
+            <div class="calendar-provider-details">
+              <span class="calendar-provider-name">Google Calendar</span>
+              <span class="calendar-provider-desc">Opens Google Calendar in a new browser tab</span>
+            </div>
+            <i class="bi bi-box-arrow-up-right calendar-provider-arrow" aria-hidden="true"></i>
+          </button>
+
+          <!-- Outlook / Microsoft 365 -->
+          <button type="button" class="calendar-provider-btn" data-provider="outlook" role="menuitem">
+            <div class="calendar-provider-icon outlook-icon">
+              <i class="bi bi-microsoft" aria-hidden="true"></i>
+            </div>
+            <div class="calendar-provider-details">
+              <span class="calendar-provider-name">Outlook / Microsoft 365</span>
+              <span class="calendar-provider-desc">Opens Outlook Web compose page</span>
+            </div>
+            <i class="bi bi-box-arrow-up-right calendar-provider-arrow" aria-hidden="true"></i>
+          </button>
+
+          <!-- Apple Calendar / Other Apps (.ics) -->
+          <button type="button" class="calendar-provider-btn" data-provider="ics" role="menuitem">
+            <div class="calendar-provider-icon ics-icon">
+              <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i>
+            </div>
+            <div class="calendar-provider-details">
+              <span class="calendar-provider-name">Apple Calendar / Other Apps</span>
+              <span class="calendar-provider-desc">Downloads calendar file (.ics)</span>
+            </div>
+            <i class="bi bi-download calendar-provider-arrow" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <!-- Offline notice if offline -->
+        <div class="calendar-offline-hint" id="calOfflineHint" hidden>
+          <i class="bi bi-wifi-off" aria-hidden="true"></i>
+          <span>You are currently offline. Web calendar links may not load until connection is restored; calendar file (.ics) download is fully available.</span>
+        </div>
+
+        <!-- Feedback & Guidance Box -->
+        <div class="calendar-action-guidance" id="calActionGuidance" hidden>
+          <div class="calendar-guidance-content">
+            <i class="bi bi-info-circle-fill" id="calGuidanceIcon" aria-hidden="true"></i>
+            <div id="calGuidanceText"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="calendar-action-footer">
+        <button type="button" class="btn btn-outline calendar-action-dismiss-btn" data-action="close">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Polite live region for screen readers -->
+  <div id="calendarStatusLive" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
 </body>
 
 </html>

@@ -714,9 +714,11 @@
     padding-top: 8px;
   }
 
+  .btn-calendar-action,
   .btn-download-ics {
-    padding: 3px 7px;
-    font-size: 0.70rem;
+    min-height: 38px;
+    padding: 6px 12px;
+    font-size: 0.78rem;
   }
 
   .timeline-card-notice {

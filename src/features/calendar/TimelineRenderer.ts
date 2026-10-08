@@ -84,10 +84,13 @@ export function renderTimelineMilestones(
                 </p>
                 ${highlightsHtml}
                 <div class="timeline-card-footer">
-                  <button class="btn-download-ics" data-milestone-id="${m.id}"
-                    title="Save ${m.title} to Calendar"
-                    toolDescription="Download iCalendar file to add this date to your personal calendar.">
-                    <i class="bi bi-calendar-plus"></i> Add to Calendar (.ics)
+                  <button type="button" class="btn btn-outline btn-calendar-action" data-milestone-id="${m.id}"
+                    aria-haspopup="dialog"
+                    aria-expanded="false"
+                    title="Add ${m.title} to Calendar"
+                    toolDescription="Choose Google Calendar, Outlook, or download calendar file (.ics).">
+                    <i class="bi bi-calendar-plus" aria-hidden="true"></i>
+                    <span>Add to Calendar</span>
                   </button>
                   ${noticeHtml}
                 </div>

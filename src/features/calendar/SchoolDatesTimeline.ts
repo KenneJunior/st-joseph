@@ -12,6 +12,7 @@ import {
 } from '../../data/academicCalendar.ts';
 import { STORAGE_KEYS } from '../../core/storage/storageKeys.ts';
 import { SearchHistoryDropdown } from '../../ui/utils/SearchHistoryDropdown.ts';
+import { CalendarActionSheet } from './CalendarActionSheet.ts';
 
 export type { AcademicMilestone };
 export { ACADEMIC_MILESTONES_2026_2027 };
@@ -338,8 +339,8 @@ export class SchoolDatesTimeline {
     }
 
     private bindCalendarExports(): void {
-        // Individual calendar downloads for cards and banner
-        const calendarButtons = this.container?.querySelectorAll<HTMLButtonElement>('.btn-download-ics');
+        // Individual calendar action buttons for cards and banner
+        const calendarButtons = this.container?.querySelectorAll<HTMLButtonElement>('.btn-calendar-action, .btn-download-ics');
         calendarButtons?.forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -347,32 +348,12 @@ export class SchoolDatesTimeline {
                 const milestoneId = btn.dataset.milestoneId;
                 if (!milestoneId) return;
 
-                const milestone = ACADEMIC_MILESTONES_2026_2027.find((m) => 
-                    m.id === milestoneId ||
-                    (milestoneId === 'term1-exams-2026' && m.id === 'exams-t1-2026') ||
-                    (milestoneId === 'christmas-break-2026' && m.id === 'christmas-vacation-2026') ||
-                    (milestoneId === 'patronal-feast-2027' && m.id === 'feast-st-joseph-2027') ||
-                    (milestoneId === 'term2-exams-2027' && m.id === 'exams-t2-2027') ||
-                    (milestoneId === 'easter-break-2027' && m.id === 'midterm-break-t2-2027') ||
-                    (milestoneId === 'holy-spirit-mass-2026' && m.id === 'resumption-old-2026')
-                );
+                const milestone = ACADEMIC_MILESTONES_2026_2027.find((m) => m.id === milestoneId);
                 if (!milestone) return;
 
-                this.downloadICS(milestone);
-                this.provideButtonFeedback(btn);
+                CalendarActionSheet.getInstance().open(milestone, btn);
             });
         });
-    }
-
-    private provideButtonFeedback(btn: HTMLButtonElement): void {
-        const originalContent = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-check-lg"></i> Saved (.ics)';
-        btn.classList.add('btn-saved');
-
-        setTimeout(() => {
-            btn.innerHTML = originalContent;
-            btn.classList.remove('btn-saved');
-        }, 2000);
     }
 
     /**
@@ -386,7 +367,7 @@ export class SchoolDatesTimeline {
         const titleElem = banner.querySelector<HTMLElement>('.banner-milestone-title');
         const dateElem = banner.querySelector<HTMLElement>('.banner-milestone-date');
         const descElem = banner.querySelector<HTMLElement>('.banner-milestone-desc');
-        const actionBtn = banner.querySelector<HTMLButtonElement>('.btn-download-ics');
+        const actionBtn = banner.querySelector<HTMLButtonElement>('.btn-calendar-action, .btn-download-ics');
 
         const now = new Date();
         // Find the first upcoming milestone whose end date is in the future
@@ -429,47 +410,5 @@ export class SchoolDatesTimeline {
                 }
             }
         }
-    }
-
-    /**
-     * Creates and triggers a single .ics calendar invite download
-     */
-    private downloadICS(milestone: AcademicMilestone): void {
-        const icsContent = [
-            'BEGIN:VCALENDAR',
-            'VERSION:2.0',
-            'PRODID:-//SJCCC Mbengwi//Academic Calendar 2026-2027//EN',
-            'CALSCALE:GREGORIAN',
-            'METHOD:PUBLISH',
-            'BEGIN:VEVENT',
-            `UID:${milestone.id}-sjccc-2026-2027@sjccc.edu.cm`,
-            `DTSTAMP:${this.getNowISO()}`,
-            `DTSTART:${milestone.startDateISO}`,
-            `DTEND:${milestone.endDateISO}`,
-            `SUMMARY:SJCCC: ${this.escapeICS(milestone.title)}`,
-            `DESCRIPTION:${this.escapeICS(`${milestone.description} | Academic Year 2026/2027`)}`,
-            `LOCATION:${this.escapeICS(milestone.location)}`,
-            'STATUS:CONFIRMED',
-            'END:VEVENT',
-            'END:VCALENDAR',
-        ].join('\r\n');
-
-        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `SJCCC-${milestone.id}.ics`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    private escapeICS(str: string): string {
-        return str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
-    }
-
-    private getNowISO(): string {
-        return new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
     }
 }

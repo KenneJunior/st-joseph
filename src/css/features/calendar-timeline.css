@@ -650,49 +650,62 @@ body.dark-mode .timeline-card-footer {
   border-top-color: rgba(255, 255, 255, 0.08);
 }
 
+.timeline-card .btn-calendar-action,
 .timeline-card .btn-download-ics,
+.btn-calendar-action,
 .btn-download-ics {
   background: transparent;
   border: 1px solid var(--border-light);
   color: var(--primary);
-  padding: 7px 16px;
+  min-height: 40px;
+  padding: 8px 16px;
   border-radius: 8px;
   font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition: all 0.25s ease;
+  touch-action: manipulation;
 }
 
+.next-milestone-banner .btn-calendar-action,
 .next-milestone-banner .btn-download-ics {
   color: var(--primary-dark);
 }
 
+.btn-calendar-action i,
 .btn-download-ics i {
   color: var(--accent);
   transition: transform 0.2s ease;
 }
 
+.btn-calendar-action:hover,
 .btn-download-ics:hover {
   background: rgba(200, 150, 62, 0.12);
   border-color: var(--accent);
   color: var(--primary);
 }
 
+.btn-calendar-action:hover i,
 .btn-download-ics:hover i {
   transform: translateY(-2px);
 }
 
+body.dark-mode .timeline-card .btn-calendar-action,
 body.dark-mode .timeline-card .btn-download-ics,
+body.dark-mode .btn-calendar-action,
 body.dark-mode .btn-download-ics {
   color: var(--text-light);
   border-color: rgba(255, 255, 255, 0.15);
 }
 
+body.dark-mode .timeline-card .btn-calendar-action:hover,
 body.dark-mode .timeline-card .btn-download-ics:hover,
+body.dark-mode .btn-calendar-action:hover,
 body.dark-mode .btn-download-ics:hover {
   background: rgba(201, 162, 41, 0.18);
   border-color: var(--accent-glow);
@@ -1151,9 +1164,11 @@ body.dark-mode .timeline-empty-notice h3 {
     padding-top: 8px;
   }
 
+  .btn-calendar-action,
   .btn-download-ics {
-    padding: 3px 7px;
-    font-size: 0.70rem;
+    min-height: 38px;
+    padding: 6px 12px;
+    font-size: 0.78rem;
   }
 
   .timeline-card-notice {

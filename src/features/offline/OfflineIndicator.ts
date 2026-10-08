@@ -1,8 +1,9 @@
 /**
  * ============================================================================
  * SJCCC – Offline Status Indicator
- * Monitors network status and queries the Service Worker to verify cache
- * availability for key sections (Academics, FAQ, Prospectus, Campus Map).
+ * Monitors network status by listening directly to window 'online' and 'offline'
+ * events. Queries the Service Worker to verify cache availability for key
+ * sections (Academics, FAQ, Prospectus, Campus Map).
  * Displays a subtle, non-intrusive status pill with an expandable detail card.
  * ============================================================================
  */
@@ -17,7 +18,6 @@ export interface OfflineIndicatorOptions {
 export class OfflineIndicator {
     private container: HTMLElement | null = null;
     private isExpanded = false;
-    private isOnline: boolean;
     private currentReport: CacheAvailabilityReport | null = null;
     private onlineDismissTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -25,8 +25,6 @@ export class OfflineIndicator {
     private readonly offlineHandler: () => void;
 
     constructor(options: OfflineIndicatorOptions = {}) {
-        this.isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
-
         this.onlineHandler = () => this.handleOnline();
         this.offlineHandler = () => this.handleOffline();
 
@@ -41,15 +39,13 @@ export class OfflineIndicator {
     }
 
     public async init(): Promise<void> {
-        // If already offline on page boot, immediately verify cache and display indicator
-        if (!this.isOnline) {
+        // Only trigger offline status on initialization if browser explicitly reports offline
+        if (typeof navigator !== 'undefined' && navigator.onLine === false) {
             await this.handleOffline();
         }
     }
 
     private async handleOffline(): Promise<void> {
-        this.isOnline = false;
-
         if (this.onlineDismissTimer) {
             clearTimeout(this.onlineDismissTimer);
             this.onlineDismissTimer = null;
@@ -61,8 +57,6 @@ export class OfflineIndicator {
     }
 
     private handleOnline(): void {
-        this.isOnline = true;
-
         if (!this.container) return;
 
         // Transition indicator to show restored connectivity
@@ -80,8 +74,6 @@ export class OfflineIndicator {
     }
 
     public render(): void {
-        if (this.isOnline && !this.container) return;
-
         if (!this.container) {
             this.container = document.createElement('aside');
             this.container.id = 'offlineStatusIndicator';
