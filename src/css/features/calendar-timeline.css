@@ -657,7 +657,7 @@ body.dark-mode .timeline-card-footer {
   background: transparent;
   border: 1px solid var(--border-light);
   color: var(--primary);
-  min-height: 40px;
+  min-height: 44px;
   padding: 8px 16px;
   border-radius: 8px;
   font-family: var(--font-body);
@@ -1166,9 +1166,9 @@ body.dark-mode .timeline-empty-notice h3 {
 
   .btn-calendar-action,
   .btn-download-ics {
-    min-height: 38px;
-    padding: 6px 12px;
-    font-size: 0.78rem;
+    min-height: 44px;
+    padding: 8px 14px;
+    font-size: 0.80rem;
   }
 
   .timeline-card-notice {
