@@ -102,9 +102,9 @@ describe('Authoritative SJCCC Institutional Knowledge Dataset', () => {
             expect(disc.uniform.footwear).toContain('sandals');
         });
 
-        it('should have valid academic milestones with ISO dates', () => {
+        it('should have valid academic milestones with ISO dates (all 14 canonical milestones)', () => {
             const milestones = SJCCC_KNOWLEDGE.schedule.milestones;
-            expect(milestones.length).toBeGreaterThanOrEqual(10);
+            expect(milestones.length).toBe(14);
             for (const m of milestones) {
                 expect(m.id).toBeTruthy();
                 expect(m.title).toBeTruthy();

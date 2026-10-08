@@ -32,13 +32,28 @@ describe('Canonical Data Integrity', () => {
         }
     });
 
-    it('should verify academic calendar milestones structure', () => {
-        expect(ACADEMIC_MILESTONES_2026_2027.length).toBeGreaterThanOrEqual(4);
+    it('should verify academic calendar milestones structure (exactly 14 canonical items)', () => {
+        expect(ACADEMIC_MILESTONES_2026_2027.length).toBe(14);
         for (const event of ACADEMIC_MILESTONES_2026_2027) {
             expect(event.id).toBeTruthy();
             expect(event.title).toBeTruthy();
             expect(event.dateText).toBeTruthy();
             expect(event.category).toBeTruthy();
+            expect(event.term).toMatch(/^term-[123]$/);
+            expect(event.location).toBeTruthy();
+            expect(event.description).toBeTruthy();
+            expect(event.localStartDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+            expect(event.localEndDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+            expect(event.localEndDate >= event.localStartDate).toBe(true);
+            expect(['timed', 'all-day', 'multi-day-all-day', 'multi-day-timed']).toContain(event.temporalType);
+
+            if (event.temporalType === 'timed' || event.temporalType === 'multi-day-timed') {
+                expect(event.localStartTime).toMatch(/^\d{2}:\d{2}$/);
+                expect(event.localEndTime).toMatch(/^\d{2}:\d{2}$/);
+            } else {
+                expect(event.localStartTime).toBeUndefined();
+                expect(event.localEndTime).toBeUndefined();
+            }
         }
     });
 });
