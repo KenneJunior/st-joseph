@@ -38,13 +38,11 @@ export class CalendarActionSheet {
     }
 
     private ensureDomElements(): void {
-        let existing = document.getElementById('calendarActionDialog');
+        let existing = document.getElementById('calendarActionSheet');
         if (!existing) {
-            const overlay = document.createElement('div');
-            overlay.id = 'calendarActionDialog';
+            const overlay = document.createElement('dialog');
+            overlay.id = 'calendarActionSheet';
             overlay.className = 'calendar-action-overlay';
-            overlay.setAttribute('role', 'dialog');
-            overlay.setAttribute('aria-modal', 'true');
             overlay.setAttribute('aria-labelledby', 'calDialogTitle');
             overlay.setAttribute('aria-describedby', 'calDialogDesc');
             overlay.hidden = true;
@@ -95,55 +93,63 @@ export class CalendarActionSheet {
             const body = document.createElement('div');
             body.className = 'calendar-action-body';
 
-            const providerList = document.createElement('div');
+            const providerList = document.createElement('ul');
             providerList.className = 'calendar-provider-list';
-            providerList.setAttribute('role', 'menu');
 
+            // Google Calendar
+            const googleLi = document.createElement('li');
+            googleLi.className = 'calendar-provider-item';
             const googleBtn = document.createElement('button');
             googleBtn.type = 'button';
             googleBtn.className = 'calendar-provider-btn';
             googleBtn.dataset.provider = 'google';
-            googleBtn.setAttribute('role', 'menuitem');
             googleBtn.innerHTML = `
               <div class="calendar-provider-icon google-icon"><i class="bi bi-google" aria-hidden="true"></i></div>
               <div class="calendar-provider-details">
                 <span class="calendar-provider-name">Google Calendar</span>
-                <span class="calendar-provider-desc">Opens Google Calendar in a new browser tab</span>
+                <span class="calendar-provider-desc">Opens Google Calendar with event details filled in</span>
               </div>
               <i class="bi bi-box-arrow-up-right calendar-provider-arrow" aria-hidden="true"></i>
             `;
+            googleLi.appendChild(googleBtn);
 
+            // Outlook Web
+            const outlookLi = document.createElement('li');
+            outlookLi.className = 'calendar-provider-item';
             const outlookBtn = document.createElement('button');
             outlookBtn.type = 'button';
             outlookBtn.className = 'calendar-provider-btn';
             outlookBtn.dataset.provider = 'outlook';
-            outlookBtn.setAttribute('role', 'menuitem');
             outlookBtn.innerHTML = `
               <div class="calendar-provider-icon outlook-icon"><i class="bi bi-microsoft" aria-hidden="true"></i></div>
               <div class="calendar-provider-details">
                 <span class="calendar-provider-name">Outlook / Microsoft 365</span>
-                <span class="calendar-provider-desc">Opens Outlook Web compose page</span>
+                <span class="calendar-provider-desc">Opens Outlook Web with event details filled in</span>
               </div>
               <i class="bi bi-box-arrow-up-right calendar-provider-arrow" aria-hidden="true"></i>
             `;
+            outlookLi.appendChild(outlookBtn);
 
+            // Calendar file (.ics)
+            const icsLi = document.createElement('li');
+            icsLi.className = 'calendar-provider-item';
             const icsBtn = document.createElement('button');
             icsBtn.type = 'button';
             icsBtn.className = 'calendar-provider-btn';
             icsBtn.dataset.provider = 'ics';
-            icsBtn.setAttribute('role', 'menuitem');
             icsBtn.innerHTML = `
               <div class="calendar-provider-icon ics-icon"><i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i></div>
               <div class="calendar-provider-details">
-                <span class="calendar-provider-name">Apple Calendar / Other Apps</span>
-                <span class="calendar-provider-desc">Downloads calendar file (.ics)</span>
+                <span class="calendar-provider-name">Calendar File (.ics)</span>
+                <span class="calendar-provider-desc">Works with Apple Calendar and other calendar apps</span>
               </div>
               <i class="bi bi-download calendar-provider-arrow" aria-hidden="true"></i>
             `;
+            icsLi.appendChild(icsBtn);
 
-            providerList.appendChild(googleBtn);
-            providerList.appendChild(outlookBtn);
-            providerList.appendChild(icsBtn);
+            providerList.appendChild(googleLi);
+            providerList.appendChild(outlookLi);
+            providerList.appendChild(icsLi);
             body.appendChild(providerList);
 
             const offlineHint = document.createElement('div');
@@ -203,7 +209,7 @@ export class CalendarActionSheet {
                 document.body.appendChild(live);
             }
         }
-        this.dialogEl = document.getElementById('calendarActionDialog');
+        this.dialogEl = document.getElementById('calendarActionSheet');
     }
 
     private bindEvents(): void {
@@ -274,14 +280,21 @@ export class CalendarActionSheet {
 
         this.updateConnectivityHints();
 
-        // Reveal dialog
+        // Reveal dialog (using showModal if available on native dialog)
         this.dialogEl.hidden = false;
         this.dialogEl.classList.add('is-open');
+        if (typeof (this.dialogEl as HTMLDialogElement).showModal === 'function') {
+            try {
+                (this.dialogEl as HTMLDialogElement).showModal();
+            } catch {
+                // Ignore if already open or mock environment
+            }
+        }
         document.body.classList.add('calendar-modal-open');
 
         // Focus first actionable element inside sheet
         setTimeout(() => {
-            const firstActionable = this.dialogEl?.querySelector<HTMLElement>('[data-provider="google"], button[data-action="close"]');
+            const firstActionable = this.dialogEl?.querySelector<HTMLElement>('[data-provider="google"]:not([disabled]), [data-provider="ics"], button[data-action="close"]');
             firstActionable?.focus();
         }, 50);
 
@@ -292,6 +305,13 @@ export class CalendarActionSheet {
         if (!this.dialogEl || this.dialogEl.hidden) return;
 
         this.dialogEl.classList.remove('is-open');
+        if (typeof (this.dialogEl as HTMLDialogElement).close === 'function') {
+            try {
+                (this.dialogEl as HTMLDialogElement).close();
+            } catch {
+                // Ignore fallback
+            }
+        }
         this.dialogEl.hidden = true;
         document.body.classList.remove('calendar-modal-open');
 
@@ -306,14 +326,20 @@ export class CalendarActionSheet {
 
     private handleProviderAction(provider: 'google' | 'outlook' | 'ics'): void {
         if (!this.currentMilestone) return;
-        this.isActionPending = true;
 
+        const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+        if (isOffline && provider !== 'ics') {
+            this.showGuidance('Web calendar links require an active internet connection. Please download the calendar file (.ics) instead.', 'error');
+            return;
+        }
+
+        this.isActionPending = true;
         const m = this.currentMilestone;
 
         if (provider === 'google') {
             const url = buildGoogleCalendarUrl(m);
             this.announceToScreenReader(`Opening Google Calendar in a new tab for ${m.title}.`);
-            this.showGuidance('Opening Google Calendar in a new tab. Please confirm and save the event in Google Calendar.', 'info');
+            this.showGuidance('Opening Google Calendar with event details filled in. Please review and save the event in Google Calendar.', 'info');
             window.open(url, '_blank', 'noopener,noreferrer');
             setTimeout(() => {
                 this.isActionPending = false;
@@ -321,13 +347,13 @@ export class CalendarActionSheet {
         } else if (provider === 'outlook') {
             const url = buildOutlookUrl(m);
             this.announceToScreenReader(`Opening Outlook Web in a new tab for ${m.title}.`);
-            this.showGuidance('Opening Outlook in a new tab. Please verify and save the event in Outlook Web.', 'info');
+            this.showGuidance('Opening Outlook Web with event details filled in. Please review and save the event in Outlook Web.', 'info');
             window.open(url, '_blank', 'noopener,noreferrer');
             setTimeout(() => {
                 this.isActionPending = false;
             }, 600);
         } else if (provider === 'ics') {
-            this.announceToScreenReader(`Generating calendar file for ${m.title}.`);
+            this.announceToScreenReader(`Calendar file downloaded. Open the file from your Downloads folder to add it to your calendar.`);
             this.showGuidance('Generating calendar file...', 'info');
 
             try {
@@ -358,11 +384,11 @@ export class CalendarActionSheet {
                     }
                 }, 2000);
 
-                const msg = 'Calendar file download started. Open the file from your Downloads folder or notification to add it to Apple Calendar or your default calendar app.';
+                const msg = 'Calendar file downloaded. Open the file from your Downloads folder to add it to your calendar.';
                 this.showGuidance(msg, 'success');
                 this.announceToScreenReader(msg);
             } catch (err) {
-                const errMsg = 'Unable to prepare calendar file. Please use Google Calendar or Outlook web instead.';
+                const errMsg = 'Unable to prepare calendar file. Please try again.';
                 this.showGuidance(errMsg, 'error');
                 this.announceToScreenReader(errMsg);
             } finally {
@@ -394,10 +420,15 @@ export class CalendarActionSheet {
 
     private updateConnectivityHints(): void {
         const hintEl = document.getElementById('calOfflineHint');
-        if (!hintEl) return;
-        // Only show offline warning if navigator.onLine is explicitly false
         const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
-        hintEl.hidden = !isOffline;
+        if (hintEl) {
+            hintEl.hidden = !isOffline;
+        }
+
+        const googleBtn = this.dialogEl?.querySelector<HTMLButtonElement>('[data-provider="google"]');
+        const outlookBtn = this.dialogEl?.querySelector<HTMLButtonElement>('[data-provider="outlook"]');
+        if (googleBtn) googleBtn.disabled = isOffline;
+        if (outlookBtn) outlookBtn.disabled = isOffline;
     }
 
     private trapFocus(e: KeyboardEvent): void {

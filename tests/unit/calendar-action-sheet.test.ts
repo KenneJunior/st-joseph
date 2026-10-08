@@ -120,6 +120,14 @@ class MockElement {
         (globalThis as any).document.activeElement = this;
     }
 
+    public showModal(): void {
+        this.hidden = false;
+    }
+
+    public close(): void {
+        this.hidden = true;
+    }
+
     public click(): void {
         this.dispatchEvent({ type: 'click', target: this, preventDefault: () => {}, stopPropagation: () => {} });
     }
@@ -226,7 +234,7 @@ describe('CalendarActionSheet Accessibility & Lifecycle', () => {
         const sheet = CalendarActionSheet.getInstance();
         sheet.open(testMilestone, triggerBtn as any);
 
-        const dialog = (globalThis as any).document.getElementById('calendarActionDialog');
+        const dialog = (globalThis as any).document.getElementById('calendarActionSheet');
         expect(dialog).not.toBeNull();
         expect(dialog?.hidden).toBe(false);
         expect(dialog?.classList.contains('is-open')).toBe(true);
@@ -242,10 +250,34 @@ describe('CalendarActionSheet Accessibility & Lifecycle', () => {
         sheet.open(testMilestone, triggerBtn as any);
         sheet.close();
 
-        const dialog = (globalThis as any).document.getElementById('calendarActionDialog');
+        const dialog = (globalThis as any).document.getElementById('calendarActionSheet');
         expect(dialog?.hidden).toBe(true);
         expect(dialog?.classList.contains('is-open')).toBe(false);
         expect(triggerBtn.getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('restores focus to originating trigger button on close', () => {
+        const sheet = CalendarActionSheet.getInstance();
+        sheet.open(testMilestone, triggerBtn as any);
+        sheet.close();
+
+        expect((globalThis as any).document.activeElement).toBe(triggerBtn);
+    });
+
+    it('closes dialog on Escape keypress and restores focus to trigger button', () => {
+        const sheet = CalendarActionSheet.getInstance();
+        sheet.open(testMilestone, triggerBtn as any);
+
+        const dialog = (globalThis as any).document.getElementById('calendarActionSheet');
+        dialog.dispatchEvent({
+            type: 'keydown',
+            key: 'Escape',
+            preventDefault: () => {},
+        });
+
+        expect(dialog?.hidden).toBe(true);
+        expect(triggerBtn.getAttribute('aria-expanded')).toBe('false');
+        expect((globalThis as any).document.activeElement).toBe(triggerBtn);
     });
 
     it('handles Google Calendar provider action by opening web composer with safe parameters', () => {
@@ -284,7 +316,41 @@ describe('CalendarActionSheet Accessibility & Lifecycle', () => {
 
         expect((globalThis as any).URL.createObjectURL).toHaveBeenCalled();
         const guidanceText = (globalThis as any).document.getElementById('calGuidanceText');
-        expect(guidanceText?.textContent).toContain('Calendar file download started');
-        expect(guidanceText?.textContent).not.toContain('Saved (.ics)');
+        expect(guidanceText?.textContent).toContain('Calendar file downloaded');
+        expect(guidanceText?.textContent).not.toContain('Saved');
+    });
+
+    it('handles offline mode: blocks Google/Outlook while keeping ICS fully functional', () => {
+        // Simulate offline
+        Object.defineProperty(globalThis, 'navigator', {
+            value: { onLine: false },
+            configurable: true,
+            writable: true,
+        });
+
+        const sheet = CalendarActionSheet.getInstance();
+        sheet.open(testMilestone, triggerBtn as any);
+
+        // Google action blocked when offline
+        const windowOpenSpy = (globalThis as any).window.open;
+        windowOpenSpy.mockClear();
+
+        (sheet as any).handleProviderAction('google');
+        expect(windowOpenSpy).not.toHaveBeenCalled();
+
+        const guidanceText = (globalThis as any).document.getElementById('calGuidanceText');
+        expect(guidanceText?.textContent).toContain('active internet connection');
+
+        // ICS still generates when offline
+        (sheet as any).handleProviderAction('ics');
+        expect((globalThis as any).URL.createObjectURL).toHaveBeenCalled();
+        expect(guidanceText?.textContent).toContain('Calendar file downloaded');
+
+        // Restore online
+        Object.defineProperty(globalThis, 'navigator', {
+            value: { onLine: true },
+            configurable: true,
+            writable: true,
+        });
     });
 });
