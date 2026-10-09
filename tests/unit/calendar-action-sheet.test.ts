@@ -353,4 +353,21 @@ describe('CalendarActionSheet Accessibility & Lifecycle', () => {
             writable: true,
         });
     });
+
+    it('correctly hides offline hint when online and reveals it when offline', () => {
+        (globalThis as any).navigator.onLine = true;
+        const sheet = CalendarActionSheet.getInstance();
+        sheet.open(testMilestone, triggerBtn as any);
+
+        const hintEl = (globalThis as any).document.getElementById('calOfflineHint');
+        expect(hintEl).not.toBeNull();
+        expect(hintEl?.hidden).toBe(true);
+        expect(hintEl?.style.display).toBe('none');
+
+        // Transition offline
+        (globalThis as any).navigator.onLine = false;
+        (sheet as any).updateConnectivityHints();
+        expect(hintEl?.hidden).toBe(false);
+        expect(hintEl?.style.display).toBe('flex');
+    });
 });

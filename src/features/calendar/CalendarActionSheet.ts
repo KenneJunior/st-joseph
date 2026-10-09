@@ -420,10 +420,13 @@ export class CalendarActionSheet {
 
     private updateConnectivityHints(): void {
         const hintEl = document.getElementById('calOfflineHint');
+        if (!hintEl) return;
+        // Strictly evaluate connectivity - only show offline warning if navigator.onLine is explicitly false
         const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
         if (hintEl) {
             hintEl.hidden = !isOffline;
-        }
+        hintEl.style.display = isOffline ? 'flex' : 'none';
+    }
 
         const googleBtn = this.dialogEl?.querySelector<HTMLButtonElement>('[data-provider="google"]');
         const outlookBtn = this.dialogEl?.querySelector<HTMLButtonElement>('[data-provider="outlook"]');

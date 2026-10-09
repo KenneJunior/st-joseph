@@ -16,8 +16,11 @@ export interface OfflineIndicatorOptions {
 }
 
 export class OfflineIndicator {
+    private static instance: OfflineIndicator | null = null;
+
     private container: HTMLElement | null = null;
     private isExpanded = false;
+    private isOnline: boolean = typeof navigator !== 'undefined' ? (navigator.onLine !== false) : true;
     private currentReport: CacheAvailabilityReport | null = null;
     private onlineDismissTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -25,6 +28,11 @@ export class OfflineIndicator {
     private readonly offlineHandler: () => void;
 
     constructor(options: OfflineIndicatorOptions = {}) {
+        if (OfflineIndicator.instance) {
+            OfflineIndicator.instance.destroy();
+        }
+        OfflineIndicator.instance = this;
+
         this.onlineHandler = () => this.handleOnline();
         this.offlineHandler = () => this.handleOffline();
 
@@ -38,53 +46,89 @@ export class OfflineIndicator {
         }
     }
 
+    public static getInstance(options?: OfflineIndicatorOptions): OfflineIndicator {
+        if (!OfflineIndicator.instance) {
+            OfflineIndicator.instance = new OfflineIndicator(options);
+        }
+        return OfflineIndicator.instance;
+    }
+
     public async init(): Promise<void> {
-        // Only trigger offline status on initialization if browser explicitly reports offline
+        // Strictly listen to window events. Only trigger on initialization if browser explicitly reports offline.
         if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-            await this.handleOffline();
+            this.handleOffline();
         }
     }
 
-    private async handleOffline(): Promise<void> {
+    public handleOffline(): void {
+        this.isOnline = false;
         if (this.onlineDismissTimer) {
             clearTimeout(this.onlineDismissTimer);
             this.onlineDismissTimer = null;
         }
 
-        // Query the Service Worker / CacheStorage to evaluate section readiness
-        this.currentReport = await checkCacheAvailability();
+        // Render immediately without waiting for async cache queries
         this.render();
+
+        // Query the Service Worker in the background and only update if still offline
+        checkCacheAvailability()
+            .then((report) => {
+                if (!this.isOnline) {
+                    this.currentReport = report;
+                    this.render();
+                }
+            })
+            .catch(() => {
+                // Ignore cache availability probe errors in offline mode
+            });
     }
 
-    private handleOnline(): void {
-        if (!this.container) return;
+    public handleOnline(): void {
+        this.isOnline = true;
+        if (this.onlineDismissTimer) {
+            clearTimeout(this.onlineDismissTimer);
+            this.onlineDismissTimer = null;
+        }
 
-        // Transition indicator to show restored connectivity
-        this.container.classList.add('online');
-        const titleEl = this.container.querySelector('.offline-indicator-title');
-        const textEl = this.container.querySelector('.offline-indicator-text');
+        // If the indicator is currently mounted and visible, transition smoothly to "Back Online"
+        if (this.container && this.container.classList.contains('visible')) {
+            this.container.classList.add('online');
+            const titleEl = this.container.querySelector('.offline-indicator-title');
+            const textEl = this.container.querySelector('.offline-indicator-text');
 
-        if (titleEl) titleEl.textContent = 'Back Online';
-        if (textEl) textEl.textContent = '· Connection restored';
+            if (titleEl) titleEl.textContent = 'Back Online';
+            if (textEl) textEl.textContent = '· Connection restored';
 
-        // Auto-dismiss smoothly after 2.8 seconds
-        this.onlineDismissTimer = setTimeout(() => {
+            // Auto-dismiss smoothly after 2.5 seconds
+            this.onlineDismissTimer = setTimeout(() => {
+                this.hide();
+            }, 2500);
+        } else {
+            // Already hidden or unmounted
             this.hide();
-        }, 2800);
+        }
     }
 
     public render(): void {
         if (!this.container) {
-            this.container = document.createElement('aside');
-            this.container.id = 'offlineStatusIndicator';
-            this.container.className = 'offline-status-indicator';
-            this.container.setAttribute('role', 'status');
-            this.container.setAttribute('aria-live', 'polite');
-            this.container.setAttribute('aria-label', 'Network connectivity status');
-            document.body.appendChild(this.container);
+            this.container = document.getElementById('offlineStatusIndicator');
+            if (!this.container) {
+                this.container = document.createElement('aside');
+                this.container.id = 'offlineStatusIndicator';
+                this.container.className = 'offline-status-indicator';
+                this.container.setAttribute('role', 'status');
+                this.container.setAttribute('aria-live', 'polite');
+                this.container.setAttribute('aria-label', 'Network connectivity status');
+                document.body.appendChild(this.container);
+            }
         }
 
-        this.container.classList.remove('online');
+        if (this.isOnline) {
+            this.container.classList.add('online');
+        } else {
+            this.container.classList.remove('online');
+        }
+
         if (this.isExpanded) {
             this.container.classList.add('expanded');
         } else {
@@ -110,6 +154,9 @@ export class OfflineIndicator {
         } else if (faqCached) {
             summaryText = 'FAQ section cached';
         }
+
+        const titleText = this.isOnline ? 'Back Online' : 'Offline Mode';
+        const subtitleText = this.isOnline ? '· Connection restored' : `· ${summaryText}`;
 
         this.container.innerHTML = `
             <div class="offline-card-panel" id="offlineCardPanel" aria-hidden="${!this.isExpanded}">
@@ -189,8 +236,8 @@ export class OfflineIndicator {
                 aria-expanded="${this.isExpanded}" aria-controls="offlineCardPanel" title="Click to view cached sections">
                 <span class="offline-indicator-dot" aria-hidden="true"></span>
                 <div class="offline-indicator-summary">
-                    <span class="offline-indicator-title">Offline Mode</span>
-                    <span class="offline-indicator-text">· ${summaryText}</span>
+                    <span class="offline-indicator-title">${titleText}</span>
+                    <span class="offline-indicator-text">${subtitleText}</span>
                 </div>
                 <i class="bi bi-chevron-up offline-toggle-icon" aria-hidden="true"></i>
             </div>
@@ -199,9 +246,13 @@ export class OfflineIndicator {
         this.bindEvents();
 
         // Reveal with smooth entry animation
-        requestAnimationFrame(() => {
+        if (typeof requestAnimationFrame !== 'undefined') {
+            requestAnimationFrame(() => {
+                this.container?.classList.add('visible');
+            });
+        } else {
             this.container?.classList.add('visible');
-        });
+        }
     }
 
     private bindEvents(): void {
@@ -212,7 +263,6 @@ export class OfflineIndicator {
         const recheckBtn = this.container.querySelector('#offlineRecheckBtn');
 
         pill?.addEventListener('click', (e) => {
-            // Prevent close button from double triggering
             if ((e.target as HTMLElement).closest('#offlineCardClose')) return;
             this.toggleExpanded();
         });
@@ -282,6 +332,9 @@ export class OfflineIndicator {
         if (this.container) {
             this.container.remove();
             this.container = null;
+        }
+        if (OfflineIndicator.instance === this) {
+            OfflineIndicator.instance = null;
         }
     }
 }

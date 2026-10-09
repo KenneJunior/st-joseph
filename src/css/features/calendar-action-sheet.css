@@ -8,9 +8,18 @@
  * ============================================================================
  */
 
-/* Modal state on body to prevent background scrolling traps */
+/* Modal state on body to prevent background scrolling traps & demote overlapping floating HUDs */
 body.calendar-modal-open {
   overflow: hidden;
+}
+
+body.calendar-modal-open .announcement-bar,
+body.calendar-modal-open .unified-action-dock,
+body.calendar-modal-open .sjccc-ai-fab,
+body.calendar-modal-open .mobile-bottom-bar,
+body.calendar-modal-open .offline-status-indicator {
+  z-index: 1 !important;
+  pointer-events: none;
 }
 
 /* Dialog Overlay & Native Dialog Reset */
@@ -18,7 +27,7 @@ body.calendar-modal-open {
 dialog.calendar-action-overlay {
   position: fixed;
   inset: 0;
-  z-index: var(--z-dialog, 6000);
+  z-index: 10000 !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,6 +56,7 @@ dialog.calendar-action-overlay:not([open]) {
 dialog.calendar-action-overlay::backdrop {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: rgba(10, 25, 47, 0.65);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -61,7 +71,7 @@ body.dark-mode dialog.calendar-action-overlay::backdrop {
 /* Action Sheet Card */
 .calendar-action-sheet {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: 100%;
   max-width: 480px;
   background: var(--surface-card, #ffffff);
@@ -362,6 +372,11 @@ body.dark-mode .calendar-provider-desc {
   color: #92400e;
   font-size: 0.78rem;
   line-height: 1.4;
+}
+
+.calendar-offline-hint[hidden],
+.calendar-action-guidance[hidden] {
+  display: none !important;
 }
 
 body.dark-mode .calendar-offline-hint {
