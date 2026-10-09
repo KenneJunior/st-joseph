@@ -395,9 +395,10 @@ export class CalendarActionSheet {
     private updateConnectivityHints(): void {
         const hintEl = document.getElementById('calOfflineHint');
         if (!hintEl) return;
-        // Only show offline warning if navigator.onLine is explicitly false
+        // Strictly evaluate connectivity - only show offline warning if navigator.onLine is explicitly false
         const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
         hintEl.hidden = !isOffline;
+        hintEl.style.display = isOffline ? 'flex' : 'none';
     }
 
     private trapFocus(e: KeyboardEvent): void {

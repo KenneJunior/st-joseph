@@ -397,22 +397,22 @@ body.drawer-open {
 
   /* ─── Mobile Bottom Floating Glass Pill Dock ─── */
   .mobile-bottom-bar {
-    --dock-bg: rgba(255, 255, 255, 0.92);
-    --dock-border: rgba(7, 24, 46, 0.12);
-    --dock-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.78),
-                            inset 0 -1px 0 rgba(7, 24, 46, 0.04);
-    --dock-shadow: 0 10px 28px -6px rgba(7, 24, 46, 0.18),
-                   0 3px 10px -2px rgba(7, 24, 46, 0.10);
-    --dock-blur: 10px;
+    --dock-bg: #ffffff;
+    --dock-border: rgba(7, 24, 46, 0.18);
+    --dock-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 1),
+                            inset 0 -1px 0 rgba(7, 24, 46, 0.06);
+    --dock-shadow: 0 14px 38px -4px rgba(2, 12, 26, 0.42),
+                   0 4px 16px -2px rgba(7, 24, 46, 0.22);
+    --dock-blur: 16px;
     --dock-radius: var(--radius-pill, 9999px);
     --dock-bottom-offset: calc(10px + env(safe-area-inset-bottom, 0px));
-    --dock-item-color: #465368;
-    --dock-item-hover-bg: rgba(7, 24, 46, 0.05);
-    --dock-item-press-bg: rgba(7, 24, 46, 0.09);
-    --dock-active-bg: rgba(201, 162, 41, 0.18);
-    --dock-active-border: rgba(201, 162, 41, 0.36);
-    --dock-active-color: #8c6a21;
-    --dock-active-dot: var(--accent, #c9a229);
+    --dock-item-color: #07182e;
+    --dock-item-hover-bg: rgba(7, 24, 46, 0.08);
+    --dock-item-press-bg: rgba(7, 24, 46, 0.14);
+    --dock-active-bg: rgba(201, 162, 41, 0.24);
+    --dock-active-border: rgba(184, 134, 11, 0.52);
+    --dock-active-color: #785005;
+    --dock-active-dot: #8c6a21;
 
     display: flex;
     align-items: center;
@@ -429,6 +429,7 @@ body.drawer-open {
     border-radius: var(--dock-radius);
     z-index: var(--z-drawer, 3000);
     background: var(--dock-bg);
+    background-color: #ffffff;
     border: 1px solid var(--dock-border);
     box-shadow: var(--dock-shadow), var(--dock-inner-highlight);
     box-sizing: border-box;
@@ -440,37 +441,40 @@ body.drawer-open {
     will-change: transform;
   }
 
-  /* Dark theme fallback surface (before backdrop-filter enhancement) */
+  /* Dark theme surface */
   html.dark-mode .mobile-bottom-bar,
   body.dark-mode .mobile-bottom-bar {
-    --dock-bg: rgba(7, 24, 46, 0.90);
-    --dock-border: rgba(201, 162, 41, 0.30);
+    --dock-bg: rgba(7, 24, 46, 0.95);
+    --dock-border: rgba(201, 162, 41, 0.35);
     --dock-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.12),
                             inset 0 -1px 0 rgba(201, 162, 41, 0.10);
-    --dock-shadow: 0 14px 34px -6px rgba(2, 8, 18, 0.62),
-                   0 4px 12px -2px rgba(0, 0, 0, 0.42);
-    --dock-item-color: rgba(232, 238, 248, 0.76);
-    --dock-item-hover-bg: rgba(255, 255, 255, 0.06);
-    --dock-item-press-bg: rgba(255, 255, 255, 0.10);
-    --dock-active-bg: rgba(201, 162, 41, 0.22);
-    --dock-active-border: rgba(243, 215, 121, 0.40);
+    --dock-shadow: 0 14px 34px -6px rgba(2, 8, 18, 0.65),
+                   0 4px 12px -2px rgba(0, 0, 0, 0.45);
+    --dock-item-color: rgba(232, 238, 248, 0.92);
+    --dock-item-hover-bg: rgba(255, 255, 255, 0.08);
+    --dock-item-press-bg: rgba(255, 255, 255, 0.12);
+    --dock-active-bg: rgba(201, 162, 41, 0.28);
+    --dock-active-border: rgba(243, 215, 121, 0.48);
     --dock-active-color: var(--accent-glow, #f3d779);
     --dock-active-dot: var(--accent-glow, #f3d779);
+    background-color: rgba(7, 24, 46, 0.95);
   }
 
-  /* Progressive Enhancement: True Frosted Glass Surface when backdrop-filter is supported */
+  /* Progressive Enhancement: Frosted Glass in dark mode, crisp opaque in light mode */
   @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .mobile-bottom-bar {
-      --dock-bg: rgba(248, 250, 254, 0.3);
-      --dock-border: rgba(10, 31, 63, 0.13);
-      -webkit-backdrop-filter: blur(var(--dock-blur)) saturate(160%);
-      backdrop-filter: blur(var(--dock-blur)) saturate(160%);
+      --dock-bg: #ffffff;
+      --dock-border: rgba(7, 24, 46, 0.18);
+      background-color: #ffffff;
     }
 
     html.dark-mode .mobile-bottom-bar,
     body.dark-mode .mobile-bottom-bar {
-      --dock-bg: rgba(7, 24, 46, 0.24);
-      --dock-border: rgba(201, 162, 41, 0.28);
+      --dock-bg: rgba(7, 24, 46, 0.88);
+      --dock-border: rgba(201, 162, 41, 0.35);
+      background-color: rgba(7, 24, 46, 0.88);
+      -webkit-backdrop-filter: blur(var(--dock-blur)) saturate(180%);
+      backdrop-filter: blur(var(--dock-blur)) saturate(180%);
     }
   }
 
@@ -512,7 +516,7 @@ body.drawer-open {
   @media (hover: hover) {
     .mobile-bottom-item:hover:not(.active):not([aria-current="location"]) {
       background: var(--dock-item-hover-bg);
-      color: var(--primary, #0a1f3f);
+      color: var(--dock-item-color);
     }
 
     html.dark-mode .mobile-bottom-item:hover:not(.active):not([aria-current="location"]),
