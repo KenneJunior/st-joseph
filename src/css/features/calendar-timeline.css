@@ -674,7 +674,7 @@ body.dark-mode .timeline-card-footer {
 
 .next-milestone-banner .btn-calendar-action,
 .next-milestone-banner .btn-download-ics {
-  color: var(--primary-dark);
+  color: var(--text-light);
 }
 
 .btn-calendar-action i,

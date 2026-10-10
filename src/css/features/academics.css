@@ -135,6 +135,7 @@ body.dark-mode .pillar:hover {
 
 .pillar__title {
   font-family: var(--font-heading);
+  color: var(--text-light);
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 6px;
