@@ -17,6 +17,9 @@ import { CounterAnimation } from '../../ui/utils/CounterAnimation.ts';
 import { HeroParticles } from '../../features/hero/HeroParticles.ts';
 import { HeroTitleTyping } from '../../features/hero/HeroTitleTyping.ts';
 import { ScrollEngine } from '../../features/hero/ScrollEngine.ts';
+import { TimedHeroRotator } from '../../features/hero/TimedHeroRotator.ts';
+import { HERO_MESSAGES } from '../../features/hero/heroMessages.ts';
+import { isApplePlatform } from '../../core/platform/platformDetection.ts';
 import { Carousel } from '../../features/carousel/Carousel.ts';
 import { renderCarouselSlides } from '../../features/carousel/CarouselRenderer.ts';
 import { AnnouncementBar } from '../../features/announcement/AnnouncementBar.ts';
@@ -190,37 +193,38 @@ export class HomeApp {
         // 16. Smooth typing micro-interactions
         new SmoothTypingEffect(HOME_SELECTORS.formInputs);
 
-        // 17. Kinetic ScrollEngine messages
-        const messages = [
-            'Nurturing <span class="message-highlight">MINDS</span> & <span class="message-highlight">HANDS</span><br>for a better future',
-            'Where <span class="message-highlight">FAITH</span> meets<br><span class="message-highlight">EXCELLENCE</span> in education',
-            'Rigorous <span class="message-highlight">ACADEMICS</span><br>& industrial training',
-            'Building <span class="message-highlight">CHARACTER</span><br>since 6th SEPT 1999',
-            'Empowering students to<br><span class="message-highlight">LEAD</span> & <span class="message-highlight">SERVE</span>',
-            'A community of<br><span class="message-highlight">DISCIPLINE</span> & integrity',
-            'Your journey to<br><span class="message-highlight">SUCCESS</span> starts here',
-        ];
-
-        new ScrollEngine({
-            heroId: HOME_SELECTORS.heroSection,
-            containerId: HOME_SELECTORS.messageContainer,
-            navId: HOME_SELECTORS.scrollProgress,
-            fillId: HOME_SELECTORS.progressFill,
-            counterId: HOME_SELECTORS.hudCounter,
-            a11yId: HOME_SELECTORS.a11yAnnouncer,
-            canvasId: HOME_SELECTORS.dustCanvas,
-            dustConfig: {
-                density: 0.65,
-                speed: 0.55,
-                opacity: 0.42,
-                minOpacity: 0.08,
-                maxOpacity: 0.48,
-                scrollReactive: true,
-            },
-            messages,
-            scrollResponse: 0.1,
-            snapResponse: 0.1,
-        });
+        // 17. Hero Message Presentation
+        // Mode A (Apple devices: iOS / iPadOS / macOS): Lightweight timed message rotator, no scroll-driven engine or listeners
+        // Mode B (Desktop / Non-Apple): Kinetic 3D physics ScrollEngine with scroll-driven progression
+        if (isApplePlatform()) {
+            new TimedHeroRotator({
+                heroId: HOME_SELECTORS.heroSection,
+                containerId: HOME_SELECTORS.messageContainer,
+                messages: HERO_MESSAGES,
+                intervalMs: 5000,
+            });
+        } else {
+            new ScrollEngine({
+                heroId: HOME_SELECTORS.heroSection,
+                containerId: HOME_SELECTORS.messageContainer,
+                navId: HOME_SELECTORS.scrollProgress,
+                fillId: HOME_SELECTORS.progressFill,
+                counterId: HOME_SELECTORS.hudCounter,
+                a11yId: HOME_SELECTORS.a11yAnnouncer,
+                canvasId: HOME_SELECTORS.dustCanvas,
+                dustConfig: {
+                    density: 0.65,
+                    speed: 0.55,
+                    opacity: 0.42,
+                    minOpacity: 0.08,
+                    maxOpacity: 0.48,
+                    scrollReactive: true,
+                },
+                messages: [...HERO_MESSAGES],
+                scrollResponse: 0.1,
+                snapResponse: 0.1,
+            });
+        }
 
         // 18. PWA installation prompt
         new PwaInstallPrompt({
