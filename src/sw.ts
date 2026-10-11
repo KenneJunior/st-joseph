@@ -83,6 +83,7 @@ const OPTIONAL_PRECACHE_URLS: string[] = [
     '/assets/stJoseph.jpg',
     '/assets/sjccc-campus.jpg',
     '/assets/sjccc-Classroom.jpg',
+    '/assets/mbengwi-map.svg',
 ];
 
 // Approved external CDN hosts (Fonts & Icons only)

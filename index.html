@@ -2291,37 +2291,14 @@
           <!-- Left: High-performance Static Map Facade with on-demand interactive embed -->
           <div class="location-map-wrapper" id="locationMapWrapper">
             <div class="location-facade" id="locationFacade">
-              <!-- Topographic and road vector styling -->
+              <!-- Authentic Mbengwi Regional Map Vector -->
               <div class="location-facade__art">
-                <svg class="location-topo-svg" viewBox="0 0 600 400" preserveAspectRatio="none" aria-hidden="true"
-                  role="presentation">
-                  <defs>
-                    <linearGradient id="topoBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#07182E" />
-                      <stop offset="100%" stop-color="#0d2444" />
-                    </linearGradient>
-                    <pattern id="topoGrid" width="30" height="30" patternUnits="userSpaceOnUse">
-                      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(201, 162, 41, 0.08)" stroke-width="0.8" />
-                    </pattern>
-                  </defs>
-                  <rect width="600" height="400" fill="url(#topoBgGrad)" />
-                  <rect width="600" height="400" fill="url(#topoGrid)" />
-                  <!-- Topographic contour curves -->
-                  <path d="M-50,120 Q120,40 300,100 T650,70" fill="none" stroke="rgba(243, 215, 121, 0.12)"
-                    stroke-width="1.5" />
-                  <path d="M-50,180 Q150,100 320,160 T650,130" fill="none" stroke="rgba(243, 215, 121, 0.14)"
-                    stroke-width="1.5" />
-                  <path d="M-50,240 Q160,180 300,220 T650,190" fill="none" stroke="rgba(201, 162, 41, 0.16)"
-                    stroke-width="1.5" />
-                  <path d="M-50,300 Q180,250 330,280 T650,260" fill="none" stroke="rgba(201, 162, 41, 0.14)"
-                    stroke-width="1.5" />
-                  <!-- Main Arterial Road (Bamenda-Mbengwi corridor) -->
-                  <path d="M-20,380 C180,340 260,260 300,200 C340,140 440,60 620,30" fill="none"
-                    stroke="rgba(201, 162, 41, 0.45)" stroke-width="4" stroke-linecap="round" />
-                  <!-- College Access Boulevard -->
-                  <path d="M300,200 L380,240 L350,290" fill="none" stroke="rgba(243, 215, 121, 0.65)" stroke-width="2.5"
-                    stroke-dasharray="4,4" />
-                </svg>
+                <img src="/assets/mbengwi-map.svg"
+                  alt="Detailed regional map of Mbengwi showing Saint Joseph Catholic Comprehensive College location"
+                  class="location-topo-svg location-map-svg-img"
+                  loading="lazy"
+                  width="742"
+                  height="850" />
               </div>
 
               <!-- Overlay elements -->
