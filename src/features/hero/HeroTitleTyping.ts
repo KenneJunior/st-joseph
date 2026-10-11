@@ -8,7 +8,7 @@
  */
 
 export class HeroTitleTyping {
-    private heading: HTMLElement | null;
+    private readonly heading: HTMLElement | null;
     private hasAnimated: boolean = false;
 
     constructor(selector: string = 'main#main-content section#heroSection .school-name') {

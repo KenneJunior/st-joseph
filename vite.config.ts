@@ -42,7 +42,7 @@ export default defineConfig({
         emptyOutDir: true,
         target: 'esnext',
         manifest: true,
-        cssMinify: false,
+        cssMinify: true,
         rollupOptions: {
             input: {
                 main: resolve(import.meta.dirname, 'index.html'),

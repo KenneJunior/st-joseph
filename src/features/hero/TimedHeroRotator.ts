@@ -33,8 +33,8 @@ export class TimedHeroRotator {
     private static readonly TRANSITION_DURATION_MS = 320;
 
     private config: Required<TimedHeroRotatorConfig>;
-    private heroEl: HTMLElement;
-    private containerEl: HTMLElement;
+    private readonly heroEl: HTMLElement;
+    private readonly containerEl: HTMLElement;
     private faces: HTMLElement[] = [];
     private currentIndex = 0;
 
@@ -48,7 +48,6 @@ export class TimedHeroRotator {
     private isReducedMotion = false;
     private isSuspendedBySystem = false;
 
-    private pauseBtn: HTMLButtonElement | null = null;
     private controlContainer: HTMLElement | null = null;
 
     private intersectionObserver: IntersectionObserver | null = null;
@@ -78,7 +77,9 @@ export class TimedHeroRotator {
         this.containerEl = container;
 
         // Clean up any existing rotator attached to this container
-        const existingRotator = (this.containerEl as HTMLElement & { __timedRotator?: TimedHeroRotator }).__timedRotator;
+        const existingRotator = (this.containerEl as HTMLElement & {
+            __timedRotator?: TimedHeroRotator
+        }).__timedRotator;
         if (existingRotator && typeof existingRotator.destroy === 'function') {
             existingRotator.destroy();
         }
@@ -106,8 +107,6 @@ export class TimedHeroRotator {
             this.faces.push(face);
         });
 
-        // 3. Inject accessible pause/resume control into hero
-        this.setupAccessibleControls();
 
         // 4. Setup listeners & observers
         this.setupReducedMotion();
@@ -121,64 +120,6 @@ export class TimedHeroRotator {
         this.scheduleNext();
     }
 
-    private setupAccessibleControls(): void {
-        // Find hero-buttons container to neatly append the rotation toggle
-        const heroButtons = this.heroEl.querySelector('.hero-buttons');
-        if (!heroButtons) return;
-
-        this.controlContainer = document.createElement('div');
-        this.controlContainer.id = this.config.rotationControlContainerId;
-        this.controlContainer.className = 'hero-rotation-control';
-
-        this.pauseBtn = document.createElement('button');
-        this.pauseBtn.type = 'button';
-        this.pauseBtn.className = 'hero-pause-btn';
-        this.pauseBtn.setAttribute('aria-label', 'Pause hero message rotation');
-        this.pauseBtn.setAttribute('aria-pressed', 'false');
-        this.pauseBtn.title = 'Pause automatic message rotation';
-        this.pauseBtn.innerHTML = `
-            <i class="bi bi-pause-fill" aria-hidden="true"></i>
-            <span class="hero-pause-label">Pause</span>
-            <span class="sr-only">Pause automatic hero message rotation</span>
-        `;
-
-        this.pauseBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.toggleManualPause();
-        });
-
-        this.controlContainer.appendChild(this.pauseBtn);
-        // Insert right after the hero buttons
-        heroButtons.parentNode?.insertBefore(this.controlContainer, heroButtons.nextSibling);
-    }
-
-    private updatePauseButtonUI(): void {
-        if (!this.pauseBtn) return;
-        const paused = this.isManuallyPaused;
-        this.pauseBtn.setAttribute('aria-pressed', paused ? 'true' : 'false');
-        this.pauseBtn.setAttribute('aria-label', paused ? 'Resume hero message rotation' : 'Pause hero message rotation');
-        this.pauseBtn.title = paused ? 'Resume message rotation' : 'Pause message rotation';
-
-        const icon = this.pauseBtn.querySelector('i');
-        const label = this.pauseBtn.querySelector('.hero-pause-label');
-        if (icon) {
-            icon.className = paused ? 'bi bi-play-fill' : 'bi bi-pause-fill';
-        }
-        if (label) {
-            label.textContent = paused ? 'Play' : 'Pause';
-        }
-    }
-
-    private toggleManualPause(): void {
-        this.isManuallyPaused = !this.isManuallyPaused;
-        this.updatePauseButtonUI();
-
-        if (this.isManuallyPaused) {
-            this.clearTimer();
-        } else {
-            this.scheduleNext();
-        }
-    }
 
     private setupReducedMotion(): void {
         if (typeof window !== 'undefined' && window.matchMedia) {
@@ -229,7 +170,7 @@ export class TimedHeroRotator {
                     }
                 }
             },
-            { rootMargin: '100px 0px 100px 0px' }
+            {rootMargin: '100px 0px 100px 0px'}
         );
 
         this.intersectionObserver.observe(this.heroEl);
@@ -258,10 +199,10 @@ export class TimedHeroRotator {
             el.addEventListener('mouseleave', onInteractionEnd);
 
             this.boundInteractionHandlers.push(
-                { target: el, event: 'focusin', handler: onInteractionStart },
-                { target: el, event: 'focusout', handler: onInteractionEnd },
-                { target: el, event: 'mouseenter', handler: onInteractionStart },
-                { target: el, event: 'mouseleave', handler: onInteractionEnd }
+                {target: el, event: 'focusin', handler: onInteractionStart},
+                {target: el, event: 'focusout', handler: onInteractionEnd},
+                {target: el, event: 'mouseenter', handler: onInteractionStart},
+                {target: el, event: 'mouseleave', handler: onInteractionEnd}
             );
         });
     }
@@ -396,7 +337,7 @@ export class TimedHeroRotator {
             this.unsubscribeSuspension = null;
         }
 
-        this.boundInteractionHandlers.forEach(({ target, event, handler }) => {
+        this.boundInteractionHandlers.forEach(({target, event, handler}) => {
             target.removeEventListener(event, handler);
         });
         this.boundInteractionHandlers = [];
@@ -404,7 +345,6 @@ export class TimedHeroRotator {
         if (this.controlContainer && this.controlContainer.parentNode) {
             this.controlContainer.parentNode.removeChild(this.controlContainer);
             this.controlContainer = null;
-            this.pauseBtn = null;
         }
 
         if (this.containerEl) {
