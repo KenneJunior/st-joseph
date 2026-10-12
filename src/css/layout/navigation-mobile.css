@@ -36,8 +36,8 @@ body.drawer-open {
 
   /* Stable logo icon: fixed usable dimensions, never shrinks independently */
   .logo-icon {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     min-width: 40px;
     min-height: 40px;
     font-size: 0.9rem;
@@ -56,7 +56,7 @@ body.drawer-open {
     justify-content: center;
     margin: 0;
     padding: 0;
-    font-size: clamp(0.98rem, 0.86rem + 0.42vw, 1.20rem);
+    font-size: clamp(1.58rem, 0.86rem + 0.42vw, 1.20rem);
     line-height: 1.15;
     white-space: nowrap;
     overflow: hidden;
@@ -68,7 +68,7 @@ body.drawer-open {
     min-width: 0;
     margin: 0;
     padding: 0;
-    font-size: clamp(0.64rem, 0.56rem + 0.22vw, 0.74rem);
+    font-size: clamp(0.94rem, 0.56rem + 0.22vw, 0.74rem);
     line-height: 1.15;
     white-space: nowrap;
     overflow: hidden;
@@ -81,7 +81,7 @@ body.drawer-open {
     min-width: 0;
     margin: 1px 0 0 0;
     padding: 0;
-    font-size: clamp(0.54rem, 0.46rem + 0.22vw, 0.68rem);
+    font-size: clamp(0.74rem, 0.46rem + 0.22vw, 0.68rem);
     line-height: 1.15;
     white-space: nowrap;
     overflow: hidden;
@@ -403,16 +403,16 @@ body.drawer-open {
                             inset 0 -1px 0 rgba(7, 24, 46, 0.06);
     --dock-shadow: 0 14px 38px -4px rgba(2, 12, 26, 0.42),
                    0 4px 16px -2px rgba(7, 24, 46, 0.22);
-    --dock-blur: 16px;
+    --dock-blur: 5px;
     --dock-radius: var(--radius-pill, 9999px);
     --dock-bottom-offset: calc(10px + env(safe-area-inset-bottom, 0px));
-    --dock-item-color: #07182e;
+    --dock-item-color: #dbdde0;
     --dock-item-hover-bg: rgba(7, 24, 46, 0.08);
     --dock-item-press-bg: rgba(7, 24, 46, 0.14);
     --dock-active-bg: rgba(201, 162, 41, 0.24);
     --dock-active-border: rgba(184, 134, 11, 0.52);
-    --dock-active-color: #785005;
-    --dock-active-dot: #8c6a21;
+    --dock-active-color: #926209;
+    --dock-active-dot: #8c6a21;    
 
     display: flex;
     align-items: center;
@@ -461,18 +461,22 @@ body.drawer-open {
   }
 
   /* Progressive Enhancement: Frosted Glass in dark mode, crisp opaque in light mode */
-  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @supports((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .mobile-bottom-bar {
       --dock-bg: #ffffff;
       --dock-border: rgba(7, 24, 46, 0.18);
-      background-color: #ffffff;
+      backdrop-filter: blur(var(--dock-blur)) saturate(180%);
+      -webkit-backdrop-filter: blur(var(--dock-blur)) saturate(180%);
+       background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.28) 0%, transparent 80%),
+              linear-gradient(135deg, rgba(7, 24, 46, 0.5) 10%, rgba(10, 31, 63, 0.74) 100%);
+;
     }
 
     html.dark-mode .mobile-bottom-bar,
     body.dark-mode .mobile-bottom-bar {
       --dock-bg: rgba(7, 24, 46, 0.88);
       --dock-border: rgba(201, 162, 41, 0.35);
-      background-color: rgba(7, 24, 46, 0.88);
+      background-color: rgba(7, 24, 46, 0.5);
       -webkit-backdrop-filter: blur(var(--dock-blur)) saturate(180%);
       backdrop-filter: blur(var(--dock-blur)) saturate(180%);
     }
@@ -746,8 +750,8 @@ body.drawer-open {
   }
 
   .logo-icon {
-    width: 38px;
-    height: 38px;
+    width: 46px;
+    height: 46px;
     min-width: 38px;
     min-height: 38px;
     font-size: 0.86rem;
@@ -816,8 +820,8 @@ body.drawer-open {
   }
 
   .logo-icon {
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
     min-width: 36px;
     min-height: 36px;
     font-size: 0.82rem;

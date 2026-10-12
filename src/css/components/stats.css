@@ -57,6 +57,7 @@ body.dark-mode .stats-section::before {
 .stat-card {
   text-align: center;
   padding: 32px 20px;
+  width: 100%;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   border-radius: var(--radius-md);
@@ -67,6 +68,12 @@ body.dark-mode .stats-section::before {
               border-color var(--duration-fast, 200ms) var(--ease-standard);
   position: relative;
   overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: var(--card-shadow-hover);
+  border-color: var(--color-border-brand, rgba(201, 162, 41, 0.4));
 }
 
 @media (max-width: 1024px) {
@@ -89,7 +96,7 @@ body.dark-mode .stats-section::before {
   }
 
   body.dark-mode .stat-card {
-    background: rgba(26, 37, 56, 0.94);
+    background: rgba(26, 37, 56, 0.2);
   }
 }
 

@@ -11,7 +11,7 @@
 /* Section Container & Themed Background */
 .gce-results-section {
   position: relative;
-  background: var(--bg-off-white);
+  background: var(--bg-cream, #ede9e4);
   color: var(--text-body);
   padding: 90px 24px;
   overflow: hidden;

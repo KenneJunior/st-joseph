@@ -4,7 +4,7 @@
 
 .location-section {
   position: relative;
-  background: var(--surface-ground, #f8f9fa);
+  background-color: var(--bg-cream, #f8f9fa);
   padding: 80px 20px;
 }
 

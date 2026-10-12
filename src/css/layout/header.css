@@ -159,14 +159,15 @@ body.dark-mode #mainHeader.scrolled::before {
 }
 
 .logo-icon {
-  width: 48px;
-  height: 48px;
+  width: 58px;
+  height: 58px;
   background: var(--gold-gradient);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.05rem;
+  padding: 5px;
   font-weight: 900;
   color: var(--primary-dark);
   font-family: var(--font-heading);

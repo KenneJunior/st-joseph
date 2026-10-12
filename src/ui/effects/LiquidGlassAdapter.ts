@@ -163,7 +163,13 @@ export class LiquidGlassAdapter {
         this.enhanceSurface('.map-tour-btn');
         this.enhanceSurface(".campus-map-zoom-controls");
         this.enhanceSurface(".news-card__category-badge");
-
+        this.enhanceSurface(".unified-action-dock", {
+            refractiveIndex: 1.55,
+            glassThickness: 80,
+            bezelWidth: 20,
+            maxTilt: 1,
+            rippleColor: 'rgba(255, 255, 255, 0.5)',
+        });
         // Targeted selection: Hero interactive outline button
     }
 

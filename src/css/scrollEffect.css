@@ -325,7 +325,7 @@
    ========================================= */
 
 /* --- Tablet / Medium Viewports (769px - 1024px) --- */
-@media (max-width: 1024px) and (min-width: 769px) {
+@media (max-width: 1024px) {
     .sticky-container {
         justify-content: space-around;
         padding-top: clamp(4.0rem, 7vh, 5.0rem);
@@ -339,9 +339,18 @@
         font-size: clamp(0.76rem, 1.8vw, 0.82rem);
         padding: 5px 16px;
     }
-    .message-face {
-        font-size: clamp(1.8rem, 3.0vw, 2.4rem);
+
+    .message-face{
+        font-size: clamp(2.5rem, 5.0vw, 3.4rem);
+
     }
+
+    .scroll-progress-hud {
+        bottom: 18px;
+        padding: 6px 20px;
+        gap: 12px;
+    }
+
     .hero-buttons {
         gap: 12px;
     }
@@ -368,7 +377,7 @@
         padding: 4px 14px;
     }
     .message-face {
-        font-size: clamp(1.55rem, 3.0vh, 2.05rem);
+        font-size: clamp(2.3rem, 5.0vh, 3.05rem);
     }
     .hero-buttons {
         gap: 10px;
@@ -404,11 +413,10 @@
     .school-name,
     .school-header .school-name,
     .sticky-container .school-name {
-        font-size: clamp(1.77rem, 0.85rem + 4.16vw, 3.0rem);
-        font-weight: 700;
+        font-size: clamp(3.54rem, 1.7rem + 8.32vw, 2.0rem);        font-weight: 700;
         line-height: 1.15;
         margin-top: 0;
-        margin-bottom: clamp(0.35rem, 1vh, 0.65rem);
+        margin-bottom: clamp(1.95rem, 6vh, 3.9rem);
         letter-spacing: -0.015em;
         text-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
         text-wrap: balance;
@@ -429,10 +437,10 @@
     /* Group 2: Kinetic Focal Message */
     .scroll-message-wrapper {
         max-width: 580px;
-        margin: 0 auto;
+        margin: 50px;
     }
     .message-face {
-        font-size: clamp(1.35rem, 1.08rem + 1.25vw, 2.10rem);
+        font-size: clamp(1.85rem, 1.58rem + 1.75vw, 2.50rem);
         line-height: 1.22;
         padding: 0 clamp(6px, 2vw, 14px);
         font-weight: 700;
@@ -441,10 +449,10 @@
     }
     /* Safe mobile 3D exits: prevent intrusion into header or buttons */
     .message-face.exit-up {
-        transform: rotateX(25deg) translateY(-50px) translateZ(-160px);
+        transform: rotateX(40deg) translateY(-100px) translateZ(-160px);
     }
     .message-face.exit-down {
-        transform: rotateX(-25deg) translateY(50px) translateZ(-160px);
+        transform: rotateX(-40deg) translateY(100px) translateZ(-160px);
     }
 
     /* Group 3: Secondary Action Controls */
@@ -533,6 +541,11 @@
         padding: 7px 12px;
         min-height: 44px;
     }
+    .message-face{
+        font-size: clamp(1.55rem, 1.35rem + 1.5vw, 2.10rem);
+        line-height: 1.18;
+    }
+    
     .scroll-progress-hud {
         bottom: 10px;
         padding: 3px 10px;

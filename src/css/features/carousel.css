@@ -534,12 +534,12 @@
 
     background: linear-gradient(
         135deg,
-        rgba(6, 16, 34, 0.88) 0%,
-        rgba(4, 11, 24, 0.76) 100%
+        rgba(6, 16, 34, 0.68) 0%,
+        rgba(4, 11, 24, 0.56) 100%
     );
 
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 
     border: 1px solid rgba(255, 255, 255, 0.16);
 
@@ -862,7 +862,7 @@
 
     color: #ffffff;
 
-    background: rgba(7, 18, 36, 0.92);
+    background: rgba(7, 18, 36, 0.2);
 
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -1047,7 +1047,7 @@
         border-radius: 16px;
         backdrop-filter: blur(6px);
         -webkit-backdrop-filter: blur(6px);
-        background: rgba(7, 24, 46, 0.88);
+        background: rgba(7, 24, 46, 0.7);
     }
 
     .carousel-btn {

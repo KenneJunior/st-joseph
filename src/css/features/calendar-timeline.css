@@ -4,7 +4,7 @@
 .school-dates-section {
   position: relative;
   z-index: 1;
-  background: var(--bg-off-white);
+  background: var(--bg-cream);
   padding: 100px 24px;
   box-sizing: border-box;
   width: 100%;
@@ -47,7 +47,7 @@ body.dark-mode .school-dates-section {
 
 /* ─── Immediate Next Milestone Banner ─── */
 .next-milestone-banner {
-  background: linear-gradient(135deg, rgba(7, 24, 46, 0.91) 0%, rgba(13, 43, 82, 0.88) 100%),
+  background: linear-gradient(135deg, rgba(7, 24, 46, 0.71) 0%, rgba(13, 43, 82, 0.88) 100%),
               url('/assets/sjccc-campus.jpg') center/cover no-repeat;
   border: 1px solid rgba(201, 162, 41, 0.45);
   border-radius: var(--radius-lg, 20px);
@@ -654,7 +654,6 @@ body.dark-mode .timeline-card-footer {
 .timeline-card .btn-download-ics,
 .btn-calendar-action,
 .btn-download-ics {
-  background: transparent;
   border: 1px solid var(--border-light);
   color: var(--primary);
   min-height: 44px;
@@ -679,11 +678,15 @@ body.dark-mode .timeline-card-footer {
 
 .btn-calendar-action i,
 .btn-download-ics i {
-  color: var(--accent);
+  color: var(--primary);
   transition: transform 0.2s ease;
 }
 
-.btn-calendar-action:hover,
+.btn-calendar-action:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
 .btn-download-ics:hover {
   background: rgba(200, 150, 62, 0.12);
   border-color: var(--accent);
@@ -692,7 +695,16 @@ body.dark-mode .timeline-card-footer {
 
 .btn-calendar-action:hover i,
 .btn-download-ics:hover i {
-  transform: translateY(-2px);
+  transform: translateY(-2px) rotate(10deg);
+}
+
+#calendarEnquiryBtn{
+  color: var(--accent);
+  border-color:var(--border-light)
+}
+
+#calendarEnquiryBtn:hover{
+  border-color: var(--accent);
 }
 
 body.dark-mode .timeline-card .btn-calendar-action,
