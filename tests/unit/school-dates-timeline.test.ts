@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 import { SchoolDatesTimeline } from '../../src/features/calendar/SchoolDatesTimeline';
 import { renderTimelineMilestones } from '../../src/features/calendar/TimelineRenderer';
+import { ACADEMIC_MILESTONES_2026_2027 } from '../../src/data/academicCalendar';
 
 const TIMELINE_HTML_FIXTURE = `
 <!DOCTYPE html>
@@ -318,5 +319,74 @@ describe('SchoolDatesTimeline - Multi-Select Category Checkboxes & Search Synerg
 
         // 3 spiritual + 4 resumptions = 7 milestones
         expect(visibleItems.length).toBe(7);
+    });
+
+    it('synchronizes DOM total and category counts dynamically (REC-07)', () => {
+        const timeline = new SchoolDatesTimeline('schoolDatesSection');
+
+        // Verify total count in All Milestones tab
+        const allBtn = document.querySelector<HTMLButtonElement>('.timeline-tab-btn[data-timeline-filter="all"]')!;
+        expect(allBtn).toBeDefined();
+        expect(allBtn.textContent).toContain('(14)');
+
+        // Verify icons in button remain intact
+        const icon = allBtn.querySelector('i');
+        expect(allBtn.innerHTML).toContain('All Milestones');
+
+        // Verify individual category counts
+        const examCount = document.querySelector('[data-category-count="exam"]');
+        const breakCount = document.querySelector('[data-category-count="break"]');
+        const spiritualCount = document.querySelector('[data-category-count="spiritual"]');
+        const resumptionCount = document.querySelector('[data-category-count="resumption"]');
+
+        expect(examCount?.textContent).toBe('(4)');
+        expect(breakCount?.textContent).toBe('(3)');
+        expect(spiritualCount?.textContent).toBe('(3)');
+        expect(resumptionCount?.textContent).toBe('(4)');
+    });
+
+    it('defensively renders chronological order when passed an unsorted milestone array (REC-01)', () => {
+        const listContainer = document.getElementById('timelineMilestonesList')!;
+
+        // Intentionally reverse or scramble the milestone array
+        const scrambled = [...ACADEMIC_MILESTONES_2026_2027].reverse();
+        const originalFirstId = scrambled[0].id;
+
+        renderTimelineMilestones(listContainer, scrambled);
+
+        // Verify input array was not mutated
+        expect(scrambled[0].id).toBe(originalFirstId);
+
+        // Verify rendered cards in DOM follow strict chronological localStartDate order
+        const renderedArticles = Array.from(listContainer.querySelectorAll<HTMLElement>('.timeline-milestone'));
+        expect(renderedArticles.length).toBe(14);
+
+        const renderedIds = renderedArticles.map((a) => a.dataset.milestoneId);
+        expect(renderedIds[0]).toBe('resumption-new-2026'); // 2026-08-21
+
+        const examsT2Idx = renderedIds.indexOf('exams-t2-2027');
+        const feastIdx = renderedIds.indexOf('feast-st-joseph-2027');
+        expect(examsT2Idx).toBeLessThan(feastIdx);
+    });
+
+    it('correctly calculates deterministic milestone term range (REC-07)', async () => {
+        const { getTermMilestoneSpan } = await import('../../src/data/academicCalendar');
+        const term1Span = getTermMilestoneSpan('term-1');
+        expect(term1Span).toEqual({
+            start: '2026-08-21',
+            end: '2027-01-03',
+        });
+
+        const term2Span = getTermMilestoneSpan('term-2');
+        expect(term2Span).toEqual({
+            start: '2027-01-04',
+            end: '2027-03-26',
+        });
+
+        const term3Span = getTermMilestoneSpan('term-3');
+        expect(term3Span).toEqual({
+            start: '2027-04-12',
+            end: '2027-06-25',
+        });
     });
 });

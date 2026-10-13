@@ -69,6 +69,7 @@ export class SchoolDatesTimeline {
     }
 
     private init(): void {
+        this.syncDomCounts();
         this.bindTermFilterEvents();
         this.bindCategoryFilterEvents();
         this.bindSearchEvent();
@@ -587,6 +588,39 @@ export class SchoolDatesTimeline {
 
     public getDragScroller(): TimelineDragScroller | null {
         return this.dragScroller;
+    }
+
+    /**
+     * Synchronizes DOM milestone and category counts from the canonical milestone array
+     * without replacing button elements or mutating inner icon markup.
+     */
+    public syncDomCounts(milestones: readonly AcademicMilestone[] = ACADEMIC_MILESTONES_2026_2027): void {
+        const total = milestones.length;
+
+        // Total count in All Milestones tab
+        const allCountEl = document.querySelector<HTMLElement>('[data-term-count="all"], [data-category-count="all"]');
+        if (allCountEl) {
+            allCountEl.textContent = `(${total})`;
+        } else {
+            const allBtn = document.querySelector<HTMLButtonElement>('.timeline-tab-btn[data-timeline-filter="all"]');
+            if (allBtn) {
+                allBtn.childNodes.forEach((node) => {
+                    if (node.nodeType === 3 && node.nodeValue && /\(\d+\)/.test(node.nodeValue)) {
+                        node.nodeValue = node.nodeValue.replace(/\(\d+\)/, `(${total})`);
+                    }
+                });
+            }
+        }
+
+        // Supported category counts
+        const categories = ['exam', 'break', 'spiritual', 'resumption'] as const;
+        for (const cat of categories) {
+            const count = milestones.filter((m) => m.category === cat).length;
+            const el = document.querySelector<HTMLElement>(`[data-category-count="${cat}"]`);
+            if (el) {
+                el.textContent = `(${count})`;
+            }
+        }
     }
 
     public destroy(): void {

@@ -19,10 +19,21 @@ export function renderTimelineMilestones(
         return;
     }
 
-    const markup = milestones.map((m) => {
-        const day = String(m.startDate.getUTCDate()).padStart(2, '0');
-        const month = MONTH_NAMES[m.startDate.getUTCMonth()];
-        const year = String(m.startDate.getUTCFullYear());
+    // Defensive chronological sort on a cloned array using canonical local dates
+    const sortedMilestones = [...milestones].sort((a, b) => {
+        const cmp = a.localStartDate.localeCompare(b.localStartDate);
+        if (cmp !== 0) return cmp;
+        const endCmp = a.localEndDate.localeCompare(b.localEndDate);
+        if (endCmp !== 0) return endCmp;
+        return a.id.localeCompare(b.id);
+    });
+
+    const markup = sortedMilestones.map((m) => {
+        const [yearStr, monthStr, dayStr] = m.localStartDate.split('-');
+        const day = dayStr;
+        const monthIndex = parseInt(monthStr, 10) - 1;
+        const month = MONTH_NAMES[monthIndex] || 'JAN';
+        const year = yearStr;
 
         const markerIcon = m.markerIcon || (
             m.category === 'resumption' ? 'bi-door-open-fill' :
