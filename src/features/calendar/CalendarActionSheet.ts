@@ -5,8 +5,12 @@
  * Accessible, lightweight, mobile-responsive dialog for choosing calendar
  * destination (Google Calendar, Outlook / M365, or Apple / .ics download).
  *
- * Truthful UX:
- *  - Never falsely claims "Saved" or "Added" to a calendar.
+ * Enhanced with Intelligent Platform & Capability Detection:
+ *  - Tailored provider recommendations (Apple Calendar on iOS/macOS, Google Calendar
+ *    on Android, Outlook on Windows).
+ *  - In-app browser detection and download restriction warning.
+ *  - OS-specific post-download next steps for .ics files.
+ *  - Truthful UX: Never falsely claims "Saved" or "Added" to a calendar.
  *  - Full focus trapping & restoration to originating button.
  *  - Handles Escape, backdrop clicks, keyboard navigation, and live ARIA announcements.
  *  - Robust object URL lifecycle and rapid-click protection.
@@ -16,6 +20,11 @@
 
 import type { AcademicMilestone } from '../../data/academicCalendar';
 import { buildGoogleCalendarUrl, buildOutlookUrl, generateIcs } from './CalendarSerializer';
+import {
+    detectPlatform,
+    getCalendarExportGuidance,
+    type DevicePlatformInfo,
+} from '../../core/platform/platformDetection';
 
 export class CalendarActionSheet {
     private static instance: CalendarActionSheet | null = null;
@@ -24,6 +33,7 @@ export class CalendarActionSheet {
     private originatingBtn: HTMLElement | null = null;
     private isActionPending = false;
     private activeObjectUrl: string | null = null;
+    private platformInfo: DevicePlatformInfo | null = null;
 
     private constructor() {
         this.ensureDomElements();
@@ -93,6 +103,13 @@ export class CalendarActionSheet {
             const body = document.createElement('div');
             body.className = 'calendar-action-body';
 
+            // In-app browser warning banner
+            const inAppAlert = document.createElement('div');
+            inAppAlert.id = 'calInAppAlert';
+            inAppAlert.className = 'calendar-inapp-alert';
+            inAppAlert.hidden = true;
+            body.appendChild(inAppAlert);
+
             const providerList = document.createElement('ul');
             providerList.className = 'calendar-provider-list';
 
@@ -103,14 +120,39 @@ export class CalendarActionSheet {
             googleBtn.type = 'button';
             googleBtn.className = 'calendar-provider-btn';
             googleBtn.dataset.provider = 'google';
-            googleBtn.innerHTML = `
-              <div class="calendar-provider-icon google-icon"><i class="bi bi-google" aria-hidden="true"></i></div>
-              <div class="calendar-provider-details">
-                <span class="calendar-provider-name">Google Calendar</span>
-                <span class="calendar-provider-desc">Opens Google Calendar with event details filled in</span>
-              </div>
-              <i class="bi bi-box-arrow-up-right calendar-provider-arrow" aria-hidden="true"></i>
-            `;
+
+            const googleIcon = document.createElement('div');
+            googleIcon.className = 'calendar-provider-icon google-icon';
+            googleIcon.innerHTML = '<i class="bi bi-google" aria-hidden="true"></i>';
+
+            const googleDetails = document.createElement('div');
+            googleDetails.className = 'calendar-provider-details';
+
+            const googleName = document.createElement('span');
+            googleName.className = 'calendar-provider-name';
+            googleName.textContent = 'Google Calendar';
+
+            const googleBadge = document.createElement('span');
+            googleBadge.id = 'calBadge_google';
+            googleBadge.className = 'calendar-provider-badge';
+            googleBadge.hidden = true;
+
+            const googleDesc = document.createElement('span');
+            googleDesc.id = 'calDesc_google';
+            googleDesc.className = 'calendar-provider-desc';
+            googleDesc.textContent = 'Opens Google Calendar with event details filled in';
+
+            googleDetails.appendChild(googleName);
+            googleDetails.appendChild(googleBadge);
+            googleDetails.appendChild(googleDesc);
+
+            const googleArrow = document.createElement('i');
+            googleArrow.className = 'bi bi-box-arrow-up-right calendar-provider-arrow';
+            googleArrow.setAttribute('aria-hidden', 'true');
+
+            googleBtn.appendChild(googleIcon);
+            googleBtn.appendChild(googleDetails);
+            googleBtn.appendChild(googleArrow);
             googleLi.appendChild(googleBtn);
 
             // Outlook Web
@@ -120,14 +162,39 @@ export class CalendarActionSheet {
             outlookBtn.type = 'button';
             outlookBtn.className = 'calendar-provider-btn';
             outlookBtn.dataset.provider = 'outlook';
-            outlookBtn.innerHTML = `
-              <div class="calendar-provider-icon outlook-icon"><i class="bi bi-microsoft" aria-hidden="true"></i></div>
-              <div class="calendar-provider-details">
-                <span class="calendar-provider-name">Outlook / Microsoft 365</span>
-                <span class="calendar-provider-desc">Opens Outlook Web with event details filled in</span>
-              </div>
-              <i class="bi bi-box-arrow-up-right calendar-provider-arrow" aria-hidden="true"></i>
-            `;
+
+            const outlookIcon = document.createElement('div');
+            outlookIcon.className = 'calendar-provider-icon outlook-icon';
+            outlookIcon.innerHTML = '<i class="bi bi-microsoft" aria-hidden="true"></i>';
+
+            const outlookDetails = document.createElement('div');
+            outlookDetails.className = 'calendar-provider-details';
+
+            const outlookName = document.createElement('span');
+            outlookName.className = 'calendar-provider-name';
+            outlookName.textContent = 'Outlook / Microsoft 365';
+
+            const outlookBadge = document.createElement('span');
+            outlookBadge.id = 'calBadge_outlook';
+            outlookBadge.className = 'calendar-provider-badge';
+            outlookBadge.hidden = true;
+
+            const outlookDesc = document.createElement('span');
+            outlookDesc.id = 'calDesc_outlook';
+            outlookDesc.className = 'calendar-provider-desc';
+            outlookDesc.textContent = 'Opens Outlook Web with event details filled in';
+
+            outlookDetails.appendChild(outlookName);
+            outlookDetails.appendChild(outlookBadge);
+            outlookDetails.appendChild(outlookDesc);
+
+            const outlookArrow = document.createElement('i');
+            outlookArrow.className = 'bi bi-box-arrow-up-right calendar-provider-arrow';
+            outlookArrow.setAttribute('aria-hidden', 'true');
+
+            outlookBtn.appendChild(outlookIcon);
+            outlookBtn.appendChild(outlookDetails);
+            outlookBtn.appendChild(outlookArrow);
             outlookLi.appendChild(outlookBtn);
 
             // Calendar file (.ics)
@@ -137,14 +204,39 @@ export class CalendarActionSheet {
             icsBtn.type = 'button';
             icsBtn.className = 'calendar-provider-btn';
             icsBtn.dataset.provider = 'ics';
-            icsBtn.innerHTML = `
-              <div class="calendar-provider-icon ics-icon"><i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i></div>
-              <div class="calendar-provider-details">
-                <span class="calendar-provider-name">Calendar File (.ics)</span>
-                <span class="calendar-provider-desc">Works with Apple Calendar and other calendar apps</span>
-              </div>
-              <i class="bi bi-download calendar-provider-arrow" aria-hidden="true"></i>
-            `;
+
+            const icsIcon = document.createElement('div');
+            icsIcon.className = 'calendar-provider-icon ics-icon';
+            icsIcon.innerHTML = '<i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i>';
+
+            const icsDetails = document.createElement('div');
+            icsDetails.className = 'calendar-provider-details';
+
+            const icsName = document.createElement('span');
+            icsName.className = 'calendar-provider-name';
+            icsName.textContent = 'Calendar File (.ics)';
+
+            const icsBadge = document.createElement('span');
+            icsBadge.id = 'calBadge_ics';
+            icsBadge.className = 'calendar-provider-badge';
+            icsBadge.hidden = true;
+
+            const icsDesc = document.createElement('span');
+            icsDesc.id = 'calDesc_ics';
+            icsDesc.className = 'calendar-provider-desc';
+            icsDesc.textContent = 'Works with Apple Calendar and other calendar apps';
+
+            icsDetails.appendChild(icsName);
+            icsDetails.appendChild(icsBadge);
+            icsDetails.appendChild(icsDesc);
+
+            const icsArrow = document.createElement('i');
+            icsArrow.className = 'bi bi-download calendar-provider-arrow';
+            icsArrow.setAttribute('aria-hidden', 'true');
+
+            icsBtn.appendChild(icsIcon);
+            icsBtn.appendChild(icsDetails);
+            icsBtn.appendChild(icsArrow);
             icsLi.appendChild(icsBtn);
 
             providerList.appendChild(googleLi);
@@ -181,8 +273,15 @@ export class CalendarActionSheet {
             guidanceContent.appendChild(guidanceIcon);
             guidanceContent.appendChild(guidanceText);
             guidance.appendChild(guidanceContent);
-            body.appendChild(guidance);
 
+            // Container for platform-tailored next steps
+            const guidanceSteps = document.createElement('div');
+            guidanceSteps.id = 'calGuidanceSteps';
+            guidanceSteps.className = 'calendar-guidance-steps';
+            guidanceSteps.hidden = true;
+            guidance.appendChild(guidanceSteps);
+
+            body.appendChild(guidance);
             sheet.appendChild(body);
 
             const footer = document.createElement('div');
@@ -252,13 +351,21 @@ export class CalendarActionSheet {
         window.addEventListener('offline', () => this.updateConnectivityHints());
     }
 
-    public open(milestone: AcademicMilestone, triggerBtn: HTMLElement): void {
+    /**
+     * Opens the Calendar Action Sheet dialog with adaptive platform recommendations.
+     * 
+     * @param milestone The academic milestone to add to the calendar.
+     * @param triggerBtn The button that triggered opening, for focus restoration.
+     * @param platformOverride Optional pre-computed platform info (useful for testing).
+     */
+    public open(milestone: AcademicMilestone, triggerBtn: HTMLElement, platformOverride?: DevicePlatformInfo): void {
         this.ensureDomElements();
         if (!this.dialogEl) return;
 
         this.currentMilestone = milestone;
         this.originatingBtn = triggerBtn;
         this.isActionPending = false;
+        this.platformInfo = platformOverride ?? detectPlatform();
 
         // Set aria-expanded on trigger button
         this.originatingBtn.setAttribute('aria-expanded', 'true');
@@ -267,6 +374,7 @@ export class CalendarActionSheet {
         const titleEl = document.getElementById('calDialogTitle');
         const descEl = document.getElementById('calDialogDesc');
         const guidanceEl = document.getElementById('calActionGuidance');
+        const stepsEl = document.getElementById('calGuidanceSteps');
 
         if (titleEl) {
             titleEl.textContent = 'Add to Calendar';
@@ -277,24 +385,32 @@ export class CalendarActionSheet {
         if (guidanceEl) {
             guidanceEl.hidden = true;
         }
+        if (stepsEl) {
+            stepsEl.hidden = true;
+            stepsEl.innerHTML = '';
+        }
 
+        // Apply platform adaptations (in-app warnings & recommendations)
+        this.applyPlatformAdaptations(this.platformInfo);
         this.updateConnectivityHints();
 
-        // Reveal dialog (using showModal if available on native dialog)
+        // Reveal dialog
         this.dialogEl.hidden = false;
         this.dialogEl.classList.add('is-open');
         if (typeof (this.dialogEl as HTMLDialogElement).showModal === 'function') {
             try {
                 (this.dialogEl as HTMLDialogElement).showModal();
             } catch {
-                // Ignore if already open or mock environment
+                // Ignore fallback
             }
         }
         document.body.classList.add('calendar-modal-open');
 
         // Focus first actionable element inside sheet
         setTimeout(() => {
-            const firstActionable = this.dialogEl?.querySelector<HTMLElement>('[data-provider="google"]:not([disabled]), [data-provider="ics"], button[data-action="close"]');
+            const firstActionable = this.dialogEl?.querySelector<HTMLElement>(
+                '[data-provider="google"]:not([disabled]), [data-provider="ics"], button[data-action="close"]'
+            );
             firstActionable?.focus();
         }, 50);
 
@@ -324,6 +440,85 @@ export class CalendarActionSheet {
         this.isActionPending = false;
     }
 
+    /**
+     * Adapts modal UI elements based on the client's platform, browser, and capabilities.
+     */
+    private applyPlatformAdaptations(info: DevicePlatformInfo): void {
+        // 1. In-App Browser Warning Alert
+        const inAppAlert = document.getElementById('calInAppAlert');
+        if (inAppAlert) {
+            if (info.isInAppBrowser) {
+                inAppAlert.hidden = false;
+                inAppAlert.innerHTML = `
+                  <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                  <div class="calendar-inapp-alert-text">
+                    <strong>In-App Browser Detected</strong>
+                    <span>Direct calendar downloads may be restricted here. If downloading doesn't work, tap the menu (•••) and choose <strong>"Open in Browser"</strong> (Safari or Chrome), or use Google Calendar below.</span>
+                  </div>
+                `;
+            } else {
+                inAppAlert.hidden = true;
+                inAppAlert.innerHTML = '';
+            }
+        }
+
+        // 2. Clear previous recommendation states
+        const badges = ['calBadge_google', 'calBadge_outlook', 'calBadge_ics'];
+        badges.forEach((id) => {
+            const badge = document.getElementById(id);
+            if (badge) {
+                badge.hidden = true;
+                badge.textContent = '';
+            }
+        });
+
+        const buttons = this.dialogEl?.querySelectorAll<HTMLButtonElement>('.calendar-provider-btn');
+        buttons?.forEach((btn) => btn.classList.remove('is-recommended'));
+
+        // 3. Highlight recommended provider
+        let recommendedBadgeId: string | null = null;
+        let badgeLabel = '';
+
+        if (info.recommendedProvider === 'ics') {
+            recommendedBadgeId = 'calBadge_ics';
+            badgeLabel = info.os === 'ios' ? 'Recommended for Apple Devices' : 'Recommended for Apple Calendar';
+            const icsDesc = document.getElementById('calDesc_ics');
+            if (icsDesc) {
+                icsDesc.textContent = info.os === 'ios'
+                    ? '1-tap addition to Apple Calendar on iPhone & iPad'
+                    : 'Works natively with Apple Calendar on macOS';
+            }
+        } else if (info.recommendedProvider === 'google') {
+            recommendedBadgeId = 'calBadge_google';
+            badgeLabel = info.os === 'android' ? 'Recommended for Android' : 'Recommended';
+            const googleDesc = document.getElementById('calDesc_google');
+            if (googleDesc) {
+                googleDesc.textContent = info.os === 'android'
+                    ? 'Opens Google Calendar directly on your device'
+                    : 'Opens Google Calendar with event details filled in';
+            }
+        } else if (info.recommendedProvider === 'outlook') {
+            recommendedBadgeId = 'calBadge_outlook';
+            badgeLabel = 'Recommended for Windows';
+            const outlookDesc = document.getElementById('calDesc_outlook');
+            if (outlookDesc) {
+                outlookDesc.textContent = 'Opens Outlook / Microsoft 365 on Windows';
+            }
+        }
+
+        if (recommendedBadgeId) {
+            const badgeEl = document.getElementById(recommendedBadgeId);
+            if (badgeEl) {
+                badgeEl.hidden = false;
+                badgeEl.innerHTML = `<i class="bi bi-star-fill" aria-hidden="true"></i> ${badgeLabel}`;
+            }
+            const recBtn = this.dialogEl?.querySelector<HTMLButtonElement>(`[data-provider="${info.recommendedProvider}"]`);
+            if (recBtn) {
+                recBtn.classList.add('is-recommended');
+            }
+        }
+    }
+
     private handleProviderAction(provider: 'google' | 'outlook' | 'ics'): void {
         if (!this.currentMilestone) return;
 
@@ -335,6 +530,7 @@ export class CalendarActionSheet {
 
         this.isActionPending = true;
         const m = this.currentMilestone;
+        const platform = this.platformInfo ?? detectPlatform();
 
         if (provider === 'google') {
             const url = buildGoogleCalendarUrl(m);
@@ -353,8 +549,7 @@ export class CalendarActionSheet {
                 this.isActionPending = false;
             }, 600);
         } else if (provider === 'ics') {
-            this.announceToScreenReader(`Calendar file downloaded. Open the file from your Downloads folder to add it to your calendar.`);
-            this.showGuidance('Generating calendar file...', 'info');
+            const guidance = getCalendarExportGuidance(platform, m.title);
 
             try {
                 const icsContent = generateIcs(m);
@@ -384,9 +579,17 @@ export class CalendarActionSheet {
                     }
                 }, 2000);
 
-                const msg = 'Calendar file downloaded. Open the file from your Downloads folder to add it to your calendar.';
-                this.showGuidance(msg, 'success');
-                this.announceToScreenReader(msg);
+                // Format platform-tailored next steps
+                const stepsHtml = `
+                  <div class="calendar-steps-heading">Next steps for ${platform.osLabel}:</div>
+                  <ol class="calendar-steps-list">
+                    ${guidance.steps.map((s) => `<li>${s}</li>`).join('')}
+                  </ol>
+                `;
+
+                const fullMsg = `${guidance.headline} ${guidance.instructions}`;
+                this.showGuidance(fullMsg, 'success', stepsHtml);
+                this.announceToScreenReader(fullMsg);
             } catch (err) {
                 const errMsg = 'Unable to prepare calendar file. Please try again.';
                 this.showGuidance(errMsg, 'error');
@@ -399,15 +602,26 @@ export class CalendarActionSheet {
         }
     }
 
-    private showGuidance(text: string, type: 'info' | 'success' | 'error'): void {
+    private showGuidance(text: string, type: 'info' | 'success' | 'error', stepsHtml?: string): void {
         const guidanceEl = document.getElementById('calActionGuidance');
         const textEl = document.getElementById('calGuidanceText');
         const iconEl = document.getElementById('calGuidanceIcon');
+        const stepsEl = document.getElementById('calGuidanceSteps');
         if (!guidanceEl || !textEl || !iconEl) return;
 
         guidanceEl.hidden = false;
         guidanceEl.className = `calendar-action-guidance is-${type}`;
         textEl.textContent = text;
+
+        if (stepsEl) {
+            if (stepsHtml) {
+                stepsEl.hidden = false;
+                stepsEl.innerHTML = stepsHtml;
+            } else {
+                stepsEl.hidden = true;
+                stepsEl.innerHTML = '';
+            }
+        }
 
         if (type === 'success') {
             iconEl.className = 'bi bi-check-circle-fill';
@@ -421,12 +635,11 @@ export class CalendarActionSheet {
     private updateConnectivityHints(): void {
         const hintEl = document.getElementById('calOfflineHint');
         if (!hintEl) return;
-        // Strictly evaluate connectivity - only show offline warning if navigator.onLine is explicitly false
         const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
         if (hintEl) {
             hintEl.hidden = !isOffline;
-        hintEl.style.display = isOffline ? 'flex' : 'none';
-    }
+            hintEl.style.display = isOffline ? 'flex' : 'none';
+        }
 
         const googleBtn = this.dialogEl?.querySelector<HTMLButtonElement>('[data-provider="google"]');
         const outlookBtn = this.dialogEl?.querySelector<HTMLButtonElement>('[data-provider="outlook"]');
@@ -457,7 +670,6 @@ export class CalendarActionSheet {
         const liveRegion = document.getElementById('calendarStatusLive');
         if (liveRegion) {
             liveRegion.textContent = '';
-            // Allow DOM to cycle
             setTimeout(() => {
                 liveRegion.textContent = message;
             }, 30);

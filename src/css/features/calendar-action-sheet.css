@@ -224,6 +224,50 @@ body.dark-mode .calendar-action-close-btn:hover {
   overflow-y: auto;
 }
 
+/* In-App Browser Warning Alert */
+.calendar-inapp-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #fefce8;
+  border: 1px solid #fde047;
+  border-radius: 10px;
+  color: #854d0e;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  margin-bottom: 2px;
+}
+
+.calendar-inapp-alert[hidden] {
+  display: none !important;
+}
+
+.calendar-inapp-alert i {
+  font-size: 1.1rem;
+  color: #ca8a04;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.calendar-inapp-alert-text strong {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+  color: #713f12;
+}
+
+body.dark-mode .calendar-inapp-alert {
+  background: rgba(133, 77, 14, 0.25);
+  border-color: rgba(234, 179, 8, 0.35);
+  color: #fef08a;
+}
+
+body.dark-mode .calendar-inapp-alert-text strong {
+  color: #fef9c3;
+}
+
 .calendar-provider-list {
   display: flex;
   flex-direction: column;
@@ -349,6 +393,43 @@ body.dark-mode .calendar-provider-desc {
   color: #94a3b8;
 }
 
+/* Recommendation Badge */
+.calendar-provider-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent, #c8963e);
+  background: rgba(200, 150, 62, 0.12);
+  border: 1px solid rgba(200, 150, 62, 0.35);
+  border-radius: 9999px;
+  padding: 2px 8px;
+  margin-top: 3px;
+  width: fit-content;
+  letter-spacing: 0.02em;
+}
+
+.calendar-provider-badge[hidden] {
+  display: none !important;
+}
+
+body.dark-mode .calendar-provider-badge {
+  color: #fcd34d;
+  background: rgba(200, 150, 62, 0.22);
+  border-color: rgba(252, 211, 77, 0.4);
+}
+
+.calendar-provider-btn.is-recommended {
+  border-color: var(--accent, #c8963e);
+  background: rgba(200, 150, 62, 0.06);
+}
+
+body.dark-mode .calendar-provider-btn.is-recommended {
+  border-color: rgba(200, 150, 62, 0.5);
+  background: rgba(200, 150, 62, 0.12);
+}
+
 .calendar-provider-arrow {
   color: var(--text-muted, #94a3b8);
   font-size: 0.9rem;
@@ -434,6 +515,54 @@ body.dark-mode .calendar-action-guidance.is-error {
   background: rgba(153, 27, 27, 0.25);
   border-color: rgba(248, 113, 113, 0.3);
   color: #fecaca;
+}
+
+/* Platform Step-by-Step Instructions */
+.calendar-guidance-steps {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(6, 95, 70, 0.25);
+}
+
+.calendar-guidance-steps[hidden] {
+  display: none !important;
+}
+
+body.dark-mode .calendar-guidance-steps {
+  border-top-color: rgba(52, 211, 153, 0.3);
+}
+
+.calendar-steps-heading {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #065f46;
+  margin-bottom: 6px;
+}
+
+body.dark-mode .calendar-steps-heading {
+  color: #a7f3d0;
+}
+
+.calendar-steps-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: #064e3b;
+}
+
+body.dark-mode .calendar-steps-list {
+  color: #d1fae5;
+}
+
+.calendar-steps-list li {
+  margin-bottom: 3px;
+}
+
+.calendar-steps-list li:last-child {
+  margin-bottom: 0;
 }
 
 /* Footer */

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { CalendarActionSheet } from '../../src/features/calendar/CalendarActionSheet';
 import { ACADEMIC_MILESTONES_2026_2027 } from '../../src/data/academicCalendar';
+import type { DevicePlatformInfo } from '../../src/core/platform/platformDetection';
 
 class MockElement {
     public id: string = '';
@@ -369,5 +370,141 @@ describe('CalendarActionSheet Accessibility & Lifecycle', () => {
         (sheet as any).updateConnectivityHints();
         expect(hintEl?.hidden).toBe(false);
         expect(hintEl?.style.display).toBe('flex');
+    });
+
+    it('adapts provider recommendations for Apple devices with badge on ICS button', () => {
+        const sheet = CalendarActionSheet.getInstance();
+        const applePlatform: DevicePlatformInfo = {
+            os: 'ios',
+            deviceCategory: 'mobile',
+            browser: 'safari',
+            isInAppBrowser: false,
+            isApple: true,
+            isMobileOrTablet: true,
+            supportsBlobDownload: true,
+            supportsTouch: true,
+            recommendedProvider: 'ics',
+            osLabel: 'Apple iOS',
+            browserLabel: 'Safari',
+        };
+
+        sheet.open(testMilestone, triggerBtn as any, applePlatform);
+
+        const icsBadge = (globalThis as any).document.getElementById('calBadge_ics');
+        const googleBadge = (globalThis as any).document.getElementById('calBadge_google');
+        const outlookBadge = (globalThis as any).document.getElementById('calBadge_outlook');
+
+        expect(icsBadge?.hidden).toBe(false);
+        expect(icsBadge?.textContent).toContain('Recommended for Apple Devices');
+        expect(googleBadge?.hidden).toBe(true);
+        expect(outlookBadge?.hidden).toBe(true);
+    });
+
+    it('adapts provider recommendations for Android with badge on Google Calendar button', () => {
+        const sheet = CalendarActionSheet.getInstance();
+        const androidPlatform: DevicePlatformInfo = {
+            os: 'android',
+            deviceCategory: 'mobile',
+            browser: 'chrome',
+            isInAppBrowser: false,
+            isApple: false,
+            isMobileOrTablet: true,
+            supportsBlobDownload: true,
+            supportsTouch: true,
+            recommendedProvider: 'google',
+            osLabel: 'Android',
+            browserLabel: 'Google Chrome',
+        };
+
+        sheet.open(testMilestone, triggerBtn as any, androidPlatform);
+
+        const googleBadge = (globalThis as any).document.getElementById('calBadge_google');
+        const icsBadge = (globalThis as any).document.getElementById('calBadge_ics');
+        const outlookBadge = (globalThis as any).document.getElementById('calBadge_outlook');
+
+        expect(googleBadge?.hidden).toBe(false);
+        expect(googleBadge?.textContent).toContain('Recommended for Android');
+        expect(icsBadge?.hidden).toBe(true);
+        expect(outlookBadge?.hidden).toBe(true);
+    });
+
+    it('adapts provider recommendations for Windows with badge on Outlook button', () => {
+        const sheet = CalendarActionSheet.getInstance();
+        const windowsPlatform: DevicePlatformInfo = {
+            os: 'windows',
+            deviceCategory: 'desktop',
+            browser: 'edge',
+            isInAppBrowser: false,
+            isApple: false,
+            isMobileOrTablet: false,
+            supportsBlobDownload: true,
+            supportsTouch: false,
+            recommendedProvider: 'outlook',
+            osLabel: 'Windows',
+            browserLabel: 'Microsoft Edge',
+        };
+
+        sheet.open(testMilestone, triggerBtn as any, windowsPlatform);
+
+        const outlookBadge = (globalThis as any).document.getElementById('calBadge_outlook');
+        const googleBadge = (globalThis as any).document.getElementById('calBadge_google');
+        const icsBadge = (globalThis as any).document.getElementById('calBadge_ics');
+
+        expect(outlookBadge?.hidden).toBe(false);
+        expect(outlookBadge?.textContent).toContain('Recommended for Windows');
+        expect(googleBadge?.hidden).toBe(true);
+        expect(icsBadge?.hidden).toBe(true);
+    });
+
+    it('displays warning banner when user opens calendar modal in an in-app browser', () => {
+        const sheet = CalendarActionSheet.getInstance();
+        const inAppPlatform: DevicePlatformInfo = {
+            os: 'ios',
+            deviceCategory: 'mobile',
+            browser: 'safari',
+            isInAppBrowser: true,
+            isApple: true,
+            isMobileOrTablet: true,
+            supportsBlobDownload: true,
+            supportsTouch: true,
+            recommendedProvider: 'ics',
+            osLabel: 'Apple iOS',
+            browserLabel: 'In-App Browser',
+        };
+
+        sheet.open(testMilestone, triggerBtn as any, inAppPlatform);
+
+        const alertEl = (globalThis as any).document.getElementById('calInAppAlert');
+        expect(alertEl?.hidden).toBe(false);
+        expect(alertEl?.textContent).toContain('In-App Browser Detected');
+        expect(alertEl?.textContent).toContain('Open in Browser');
+    });
+
+    it('renders platform-tailored next steps upon downloading .ics file', () => {
+        const sheet = CalendarActionSheet.getInstance();
+        const iosPlatform: DevicePlatformInfo = {
+            os: 'ios',
+            deviceCategory: 'mobile',
+            browser: 'safari',
+            isInAppBrowser: false,
+            isApple: true,
+            isMobileOrTablet: true,
+            supportsBlobDownload: true,
+            supportsTouch: true,
+            recommendedProvider: 'ics',
+            osLabel: 'Apple iOS',
+            browserLabel: 'Safari',
+        };
+
+        sheet.open(testMilestone, triggerBtn as any, iosPlatform);
+        (sheet as any).handleProviderAction('ics');
+
+        const stepsEl = (globalThis as any).document.getElementById('calGuidanceSteps');
+        expect(stepsEl?.hidden).toBe(false);
+        expect(stepsEl?.textContent).toContain('Next steps for Apple iOS');
+        expect(stepsEl?.textContent).toContain('Safari');
+
+        const guidanceText = (globalThis as any).document.getElementById('calGuidanceText');
+        expect(guidanceText?.textContent).toContain('Apple Calendar');
     });
 });
