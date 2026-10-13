@@ -136,12 +136,41 @@ describe('Calendar Serializer & Provider URLs', () => {
         expect(ics.endsWith('\r\n')).toBe(true);
     });
 
-    it('generates all-day event ICS with DATE value types', () => {
+    it('explicitly defines Africa/Douala VTIMEZONE and RFC 5545 VALARM structures', () => {
+        const fixedNow = new Date('2026-08-01T12:00:00Z');
+        const ics = generateIcs(sampleTimedMilestone, fixedNow);
+
+        // VTIMEZONE with explicit TZID and UTC+1 offsets
+        expect(ics).toContain('X-WR-TIMEZONE:Africa/Douala\r\n');
+        expect(ics).toContain('BEGIN:VTIMEZONE\r\n');
+        expect(ics).toContain('TZID:Africa/Douala\r\n');
+        expect(ics).toContain('X-LIC-LOCATION:Africa/Douala\r\n');
+        expect(ics).toContain('BEGIN:STANDARD\r\n');
+        expect(ics).toContain('TZOFFSETFROM:+0100\r\n');
+        expect(ics).toContain('TZOFFSETTO:+0100\r\n');
+        expect(ics).toContain('TZNAME:WAT\r\n');
+        expect(ics).toContain('END:STANDARD\r\n');
+        expect(ics).toContain('END:VTIMEZONE\r\n');
+
+        // VALARM reminder structures (15 minutes before, 2 hours before, and 1 day before)
+        expect(ics).toContain('BEGIN:VALARM\r\n');
+        expect(ics).toContain('ACTION:DISPLAY\r\n');
+        expect(ics).toContain(`DESCRIPTION:SJCCC: ${sampleTimedMilestone.title}\r\n`);
+        expect(ics).toContain('TRIGGER:-PT15M\r\n');
+        expect(ics).toContain('TRIGGER:-PT2H\r\n');
+        expect(ics).toContain('TRIGGER:-P1D\r\n');
+        expect(ics).toContain('END:VALARM\r\n');
+    });
+
+    it('generates all-day event ICS with DATE value types and reminder alarms', () => {
         const fixedNow = new Date('2026-08-01T12:00:00Z');
         const ics = generateIcs(sampleAllDayMilestone, fixedNow);
 
         expect(ics).toContain('DTSTART;VALUE=DATE:20261026\r\n');
         expect(ics).toContain('DTEND;VALUE=DATE:20261031\r\n');
+        expect(ics).toContain('TZID:Africa/Douala\r\n');
+        expect(ics).toContain('BEGIN:VALARM\r\n');
+        expect(ics).toContain('TRIGGER:-P1D\r\n');
     });
 
     it('builds valid Google Calendar URL with correct encoding and Africa/Douala timezone', () => {
