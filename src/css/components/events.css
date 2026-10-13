@@ -532,10 +532,11 @@
   }
 }
 
-/* News Background Image Section Wrapper (Theme-Responsive Light & Dark Mode) */
+/* News Background Section Wrapper (Theme-Responsive Light & Dark Mode) */
 .bg-image-news {
   position: relative;
-  background: var(--bg-cream, #faf7f2);
+  background: var(--bg-section);
+  border-top: 1px solid var(--section-boundary);
   z-index: 1;
   color: var(--text-dark, #1a1a2e);
   max-width: 100%;
@@ -544,13 +545,7 @@
 }
 
 .bg-image-news::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(175deg, rgba(250, 247, 242, 0.94) 0%, rgba(248, 249, 252, 0.97) 100%);
-  z-index: 0;
-  pointer-events: none;
-  transition: background var(--transition-smooth, 0.4s ease);
+  display: none;
 }
 
 .bg-image-news > * {
@@ -571,13 +566,13 @@
 /* Dark Mode Section Background & Header Overrides */
 html.dark-mode .bg-image-news,
 body.dark-mode .bg-image-news {
-  background: url('/assets/sjccc-campus.jpg') no-repeat center center/cover;
+  background: var(--bg-section);
   color: #ffffff;
 }
 
 html.dark-mode .bg-image-news::before,
 body.dark-mode .bg-image-news::before {
-  background: linear-gradient(175deg, rgba(7, 24, 46, 0.92) 0%, rgba(4, 13, 26, 0.96) 100%);
+  display: none;
 }
 
 html.dark-mode .bg-image-news .section-label,
@@ -594,7 +589,7 @@ body.dark-mode .bg-image-news .section-title {
 html.dark-mode .event-card,
 body.dark-mode .event-card,
 body.dark-mode .bg-image-news .event-card {
-  background: rgba(9, 23, 44, 0.95);
+  background: var(--surface-card, #1A2D44);
   border: 1px solid rgba(201, 162, 41, 0.28);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
 }

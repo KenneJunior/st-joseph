@@ -5,7 +5,20 @@
   position: relative;
   background: url('/assets/sjccc-Students.jpeg')  fixed center center;
   background-size: cover;
+  color: #ffffff;
   z-index: 1;
+}
+
+.stats-section .section-title {
+  color: #ffffff;
+}
+
+.stats-section .section-label {
+  color: var(--accent-glow);
+}
+
+.stats-section .section-divider {
+  background: var(--accent-glow);
 }
 
 .stats-section::before {

@@ -18,8 +18,8 @@
   /* H1 / Primary Display (increased by ~30% per app specification) */
   --fluid-h1: clamp(1.625rem, 0.85rem + 3.47vw, 4.25rem);
 
-  /* H2 / Section Titles (360px: 1.05rem -> 414px: ~1.14rem -> 1200px: 2.70rem) [~61% smaller on mobile] */
-  --fluid-h2: clamp(1.05rem, 0.55rem + 2.22vw, 2.70rem);
+  /* H2 / Section Titles (increased for prominence and consistent mobile readability: 360px: 1.50rem -> 414px: ~1.53rem -> 1200px: ~2.45rem) */
+  --fluid-h2: clamp(1.50rem, 1.15rem + 1.45vw, 2.50rem);
 
   /* H3 / Sub-headings & Card Titles (360px: 0.88rem -> 414px: ~0.93rem -> 1200px: 1.75rem) [~50% smaller on mobile] */
   --fluid-h3: clamp(0.88rem, 0.62rem + 1.15vw, 1.75rem);

@@ -23,7 +23,7 @@
 
   --color-text-primary: #07182e;
   --color-text-secondary: #4a4a5e;
-  --color-text-muted: #6b7280;
+  --color-text-muted: #555770;
   --color-text-on-dark: #ffffff;
 
   --color-border-subtle: rgba(7, 24, 46, 0.08);
@@ -109,12 +109,20 @@
   --text-dark: #1a1a2e;
   --text-body: #4a4a5e;
   --text-light: #ffffff;
-  --text-muted: #7a7a96;
-  --bg-white: #ffffff;
+  --text-muted: #555770;
+
+  /* Semantic Surfaces & Backgrounds */
+  --bg-canvas: #F4F1EA;
+  --bg-white: #F4F1EA;
+  --bg-section: #F4F1EA;
+  --bg-section-alt: #E8EDF3;
+  --bg-section-feature: #EDE5D8;
   --bg-off-white: #f8f9fc;
-  --bg-cream: #ede9e4;
-  --surface-card: #ffffff;
+  --bg-cream: #EDE5D8;
+  --surface-card: #FAF7F0;
+  --surface-card-hover: #FFFFFF;
   --surface-footer: #050e1c;
+  --section-boundary: rgba(7, 24, 46, 0.06);
 
   /* Glass & shadows */
   --glass-bg: rgba(255,255,255,0.08);
