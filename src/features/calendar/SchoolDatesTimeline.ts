@@ -13,6 +13,7 @@ import {
 import { STORAGE_KEYS } from '../../core/storage/storageKeys.ts';
 import { SearchHistoryDropdown } from '../../ui/utils/SearchHistoryDropdown.ts';
 import { CalendarActionSheet } from './CalendarActionSheet.ts';
+import { TimelineDragScroller } from './TimelineDragScroller.ts';
 
 export type { AcademicMilestone };
 export { ACADEMIC_MILESTONES_2026_2027 };
@@ -21,6 +22,11 @@ export class SchoolDatesTimeline {
     private readonly container: HTMLElement | null;
     private readonly termTabs: NodeListOf<HTMLButtonElement>;
     private readonly categoryButtons: NodeListOf<HTMLButtonElement>;
+    private readonly categoryCheckboxes: NodeListOf<HTMLInputElement>;
+    private readonly categoryLabels: NodeListOf<HTMLLabelElement>;
+    private readonly allCategoryCheckbox: HTMLInputElement | null;
+    private readonly resetFiltersBtn: HTMLButtonElement | null;
+    private readonly emptyNoticeText: HTMLElement | null;
     private readonly searchInput: HTMLInputElement | null;
     private readonly searchBox: HTMLElement | null;
     private readonly timelineItems: NodeListOf<HTMLElement>;
@@ -30,9 +36,11 @@ export class SchoolDatesTimeline {
     private readonly disclosureText: HTMLElement | null;
     private readonly disclosureCount: HTMLElement | null;
     private searchHistoryDropdown: SearchHistoryDropdown | null = null;
+    private dragScroller: TimelineDragScroller | null = null;
 
     private currentTerm: string = 'all';
     private currentCategory: string = 'all';
+    private readonly selectedCategories: Set<string> = new Set();
     private searchQuery: string = '';
     private showAllMilestones: boolean = false;
     private readonly DEFAULT_VISIBLE_COUNT: number = 4;
@@ -41,6 +49,11 @@ export class SchoolDatesTimeline {
         this.container = document.getElementById(containerId);
         this.termTabs = document.querySelectorAll<HTMLButtonElement>('.timeline-tab-btn');
         this.categoryButtons = document.querySelectorAll<HTMLButtonElement>('.timeline-category-btn');
+        this.categoryCheckboxes = document.querySelectorAll<HTMLInputElement>('.timeline-category-checkbox');
+        this.categoryLabels = document.querySelectorAll<HTMLLabelElement>('.timeline-category-checkbox-label');
+        this.allCategoryCheckbox = document.getElementById('categoryFilterAll') as HTMLInputElement | null;
+        this.resetFiltersBtn = document.getElementById('timelineResetFiltersBtn') as HTMLButtonElement | null;
+        this.emptyNoticeText = document.getElementById('timelineEmptyNoticeText');
         this.searchInput = document.getElementById('timelineSearchInput') as HTMLInputElement | null;
         this.searchBox = this.searchInput?.closest<HTMLElement>('.timeline-search-box') ?? null;
         this.timelineItems = document.querySelectorAll<HTMLElement>('.timeline-milestone');
@@ -62,7 +75,9 @@ export class SchoolDatesTimeline {
         this.bindDisclosureEvents();
         this.bindCalendarExports();
         this.updateNextMilestoneBanner();
+        this.initDragScroller();
         this.checkDeepLinkTarget();
+        this.syncCategoryCheckboxVisuals();
         this.applyFilters();
 
         window.addEventListener('hashchange', () => this.checkDeepLinkTarget());
@@ -89,6 +104,20 @@ export class SchoolDatesTimeline {
     }
 
     private bindCategoryFilterEvents(): void {
+        // Multi-select category checkboxes
+        this.categoryCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', () => {
+                this.handleCategoryCheckboxChange(checkbox);
+            });
+        });
+
+        // Reset filters button in empty notice
+        this.resetFiltersBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.clearAllFilters();
+        });
+
+        // Backward compatibility for any legacy category button controls
         this.categoryButtons.forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -96,6 +125,110 @@ export class SchoolDatesTimeline {
                 this.setCategoryFilter(category, btn);
             });
         });
+    }
+
+    private handleCategoryCheckboxChange(changedCheckbox: HTMLInputElement): void {
+        const value = changedCheckbox.value;
+
+        if (value === 'all') {
+            if (changedCheckbox.checked) {
+                this.selectedCategories.clear();
+                this.categoryCheckboxes.forEach((cb) => {
+                    if (cb !== changedCheckbox) cb.checked = false;
+                });
+            } else {
+                // Prevent unchecking "All" without selecting an alternative category
+                changedCheckbox.checked = true;
+                return;
+            }
+        } else {
+            if (changedCheckbox.checked) {
+                this.selectedCategories.add(value);
+                if (this.allCategoryCheckbox) {
+                    this.allCategoryCheckbox.checked = false;
+                }
+            } else {
+                this.selectedCategories.delete(value);
+            }
+
+            const specificCheckboxes = Array.from(this.categoryCheckboxes).filter((cb) => cb.value !== 'all');
+            const allSpecificSelected = specificCheckboxes.length > 0 && specificCheckboxes.every((cb) => cb.checked);
+
+            if (this.selectedCategories.size === 0 || allSpecificSelected) {
+                // If nothing or everything is selected, restore "All Categories" as active
+                this.selectedCategories.clear();
+                if (this.allCategoryCheckbox) {
+                    this.allCategoryCheckbox.checked = true;
+                }
+                if (!allSpecificSelected) {
+                    specificCheckboxes.forEach((cb) => { cb.checked = false; });
+                }
+            }
+        }
+
+        this.syncCategoryCheckboxVisuals();
+        this.applyFilters();
+    }
+
+    private syncCategoryCheckboxVisuals(): void {
+        this.categoryLabels.forEach((label) => {
+            const input = label.querySelector<HTMLInputElement>('.timeline-category-checkbox');
+            if (input) {
+                label.classList.toggle('is-checked', input.checked);
+            }
+        });
+    }
+
+    public getSelectedCategories(): string[] {
+        if (this.selectedCategories.size === 0) {
+            return ['all'];
+        }
+        return Array.from(this.selectedCategories);
+    }
+
+    public getCurrentCategory(): string {
+        return this.currentCategory;
+    }
+
+    public setSelectedCategories(categories: string[]): void {
+        this.selectedCategories.clear();
+        const hasAll = categories.includes('all') || categories.length === 0;
+
+        if (hasAll) {
+            if (this.allCategoryCheckbox) this.allCategoryCheckbox.checked = true;
+            this.categoryCheckboxes.forEach((cb) => {
+                if (cb.value !== 'all') cb.checked = false;
+            });
+        } else {
+            if (this.allCategoryCheckbox) this.allCategoryCheckbox.checked = false;
+            categories.forEach((cat) => this.selectedCategories.add(cat));
+            this.categoryCheckboxes.forEach((cb) => {
+                if (cb.value !== 'all') {
+                    cb.checked = this.selectedCategories.has(cb.value);
+                }
+            });
+        }
+
+        this.syncCategoryCheckboxVisuals();
+        this.applyFilters();
+    }
+
+    public clearCategoryFilters(): void {
+        this.setSelectedCategories(['all']);
+    }
+
+    public clearAllFilters(): void {
+        if (this.searchInput) {
+            this.searchInput.value = '';
+        }
+        this.searchQuery = '';
+        this.clearCategoryFilters();
+        const allTermBtn = Array.from(this.termTabs).find((b) => (b.dataset.timelineFilter || 'all') === 'all');
+        if (allTermBtn) {
+            this.setTermFilter('all', allTermBtn);
+        } else {
+            this.applyFilters();
+        }
     }
 
     private bindSearchEvent(): void {
@@ -155,7 +288,11 @@ export class SchoolDatesTimeline {
             btn.setAttribute('aria-pressed', String(isActive));
         });
 
-        this.applyFilters();
+        if (category === 'all') {
+            this.clearCategoryFilters();
+        } else {
+            this.setSelectedCategories([category]);
+        }
     }
 
     /**
@@ -185,8 +322,9 @@ export class SchoolDatesTimeline {
     }
 
     private applyFilters(): void {
-        // Stage 1: Evaluate existing filters (term, category, search)
+        // Stage 1: Evaluate existing filters (term, multi-select categories, search query)
         const matchingItems: HTMLElement[] = [];
+        const isCategoryFiltered = this.selectedCategories.size > 0;
 
         this.timelineItems.forEach((item) => {
             const itemTerm = item.dataset.term || '';
@@ -194,7 +332,7 @@ export class SchoolDatesTimeline {
             const textContent = (item.textContent || '').toLowerCase();
 
             const matchesTerm = this.currentTerm === 'all' || itemTerm === this.currentTerm;
-            const matchesCategory = this.currentCategory === 'all' || itemCategory === this.currentCategory;
+            const matchesCategory = !isCategoryFiltered || this.selectedCategories.has(itemCategory);
             const matchesSearch = !this.searchQuery || textContent.includes(this.searchQuery);
 
             if (matchesTerm && matchesCategory && matchesSearch) {
@@ -206,7 +344,7 @@ export class SchoolDatesTimeline {
 
         // Stage 2: Progressive disclosure rules
         const isSearchActive = this.searchQuery.length > 0;
-        const isSpecificFilter = this.currentTerm !== 'all' || this.currentCategory !== 'all';
+        const isSpecificFilter = this.currentTerm !== 'all' || isCategoryFiltered;
         const hasFewMatches = matchingItems.length <= this.DEFAULT_VISIBLE_COUNT;
 
         // Progressive disclosure is only applied when on the unfiltered overview (all terms, all categories, no search, showAll is false, and > 4 matches)
@@ -265,11 +403,28 @@ export class SchoolDatesTimeline {
 
         // Update empty notice
         if (this.emptyNotice) {
-            this.emptyNotice.style.display = matchingItems.length === 0 ? 'flex' : 'none';
+            const isEmpty = matchingItems.length === 0;
+            this.emptyNotice.style.display = isEmpty ? 'flex' : 'none';
+
+            if (isEmpty && this.emptyNoticeText) {
+                if (isSearchActive && isCategoryFiltered) {
+                    this.emptyNoticeText.textContent = `No milestones match "${this.searchQuery}" across your selected category filters. Try expanding your categories or clearing the search.`;
+                } else if (isCategoryFiltered) {
+                    this.emptyNoticeText.textContent = 'No milestones match the selected categories for this term. Try checking additional categories or selecting "All Categories".';
+                } else if (isSearchActive) {
+                    this.emptyNoticeText.textContent = `No milestones match "${this.searchQuery}". Try selecting "All Categories" or clearing your search.`;
+                } else {
+                    this.emptyNoticeText.textContent = 'No milestones found for this selection.';
+                }
+            }
         }
 
         // Update disclosure button state
         this.updateDisclosureButton(matchingItems.length, shouldApplyDisclosure, isSearchActive, isSpecificFilter);
+
+        // Update drag-to-scroll indicators and spine line alignment
+        this.dragScroller?.updateScrollIndicators();
+        this.dragScroller?.syncSpineLine();
     }
 
     private updateDisclosureButton(
@@ -333,7 +488,11 @@ export class SchoolDatesTimeline {
             this.applyFilters();
 
             setTimeout(() => {
-                targetItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (this.dragScroller) {
+                    this.dragScroller.scrollToMilestone(targetItem);
+                } else {
+                    targetItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             }, 150);
         }
     }
@@ -409,6 +568,31 @@ export class SchoolDatesTimeline {
                     countdownElem.textContent = `Scheduled: ${targetMilestone.dateText}`;
                 }
             }
+        }
+    }
+
+    private initDragScroller(): void {
+        const trackContainer = this.container?.querySelector<HTMLElement>('.timeline-track-container') ??
+            document.querySelector<HTMLElement>('.timeline-track-container');
+
+        if (trackContainer) {
+            this.dragScroller = new TimelineDragScroller({
+                container: trackContainer,
+                dragThreshold: 5,
+                friction: 0.94,
+                enableKeyboard: true,
+            });
+        }
+    }
+
+    public getDragScroller(): TimelineDragScroller | null {
+        return this.dragScroller;
+    }
+
+    public destroy(): void {
+        if (this.dragScroller) {
+            this.dragScroller.destroy();
+            this.dragScroller = null;
         }
     }
 }

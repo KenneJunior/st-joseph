@@ -666,16 +666,9 @@
           </button>
         </div>
       </div>
-      <!-- Column 2: Resumption Schedule, Mark as Read & Historical Announcements Archive -->
+      <!-- Column 2: Mark as Read & Historical Announcements Archive -->
       <div class="announcement-bar__col announcement-bar__col--secondary announcement-bar__actions" role="toolbar"
         aria-label="Announcement actions">
-        <a href="#schoolDatesSection" class="announcement-bar__action-btn announcement-bar__link announcement-bar__cta"
-          data-tooltip="View resumption dates &amp; schedule" title="View detailed resumption schedule"
-          toolDescription="View detailed dates and academic schedule.">
-          <i class="bi bi-calendar2-week cta-icon" aria-hidden="true"></i>
-          <span class="action-btn-text cta-text"><span class="cta-text-prefix">Resumption </span>Schedule</span>
-          <i class="bi bi-arrow-right cta-arrow" aria-hidden="true"></i>
-        </a>
         <div class="announcement-bar__secondary-actions" role="group" aria-label="Secondary announcement actions">
           <button type="button" class="announcement-bar__action-btn announcement-bar__mark-read-btn notice-read-receipt"
             id="announcementMarkReadBtn" aria-pressed="false" data-tooltip="Mark notice as read"
@@ -746,11 +739,11 @@
     </nav>
 
     <!-- ==================== STATS SECTION ==================== -->
-    <section id="about" class="stats-section section-padding" style="color:#fff;">
+    <section id="about" class="stats-section section-padding">
       <div class="content">
-        <span class="section-label" style="color:var(--accent-glow);">Proven Excellence</span>
-        <h2 class="section-title" style="color:#fff;">Academic Rigor &amp; Caring Community</h2>
-        <div class="section-divider" style="background:var(--accent-glow);"></div>
+        <span class="section-label">Proven Excellence</span>
+        <h2 class="section-title">Academic Rigor &amp; Caring Community</h2>
+        <div class="section-divider"></div>
         <div class="stats-row">
           <div class="stat-card reveal">
             <div class="stat-icon"><i class="bi bi-award-fill"></i></div>
@@ -979,18 +972,54 @@
           </div>
 
           <div class="timeline-secondary-controls">
-            <div class="timeline-category-filters" role="group" aria-label="Filter timeline by category">
-              <button class="timeline-category-btn active" data-filter-type="category" data-timeline-filter="all">All
-                Types</button>
-              <button class="timeline-category-btn" data-filter-type="category"
-                data-timeline-filter="resumption">Resumptions</button>
-              <button class="timeline-category-btn" data-filter-type="category"
-                data-timeline-filter="exam">Examinations</button>
-              <button class="timeline-category-btn" data-filter-type="category" data-timeline-filter="break">Breaks
-                &amp; Holidays</button>
-              <button class="timeline-category-btn" data-filter-type="category" data-timeline-filter="spiritual">College
-                Events</button>
-            </div>
+            <fieldset class="timeline-category-filters" role="group" aria-label="Filter timeline by event category">
+              <legend class="timeline-category-legend visually-hidden">Event Categories</legend>
+              <div class="timeline-checkbox-group">
+                <label class="timeline-category-checkbox-label is-checked" for="categoryFilterAll">
+                  <input type="checkbox" id="categoryFilterAll" class="timeline-category-checkbox" data-timeline-filter="all" value="all" checked>
+                  <span class="timeline-custom-checkbox" aria-hidden="true">
+                    <i class="bi bi-check2"></i>
+                  </span>
+                  <span class="timeline-category-label-text">All Categories</span>
+                </label>
+
+                <label class="timeline-category-checkbox-label" for="categoryFilterExams">
+                  <input type="checkbox" id="categoryFilterExams" class="timeline-category-checkbox" data-timeline-filter="exam" value="exam">
+                  <span class="timeline-custom-checkbox" aria-hidden="true">
+                    <i class="bi bi-check2"></i>
+                  </span>
+                  <span class="timeline-category-label-text">Exams</span>
+                  <span class="timeline-category-count" data-category-count="exam">(4)</span>
+                </label>
+
+                <label class="timeline-category-checkbox-label" for="categoryFilterHolidays">
+                  <input type="checkbox" id="categoryFilterHolidays" class="timeline-category-checkbox" data-timeline-filter="break" value="break">
+                  <span class="timeline-custom-checkbox" aria-hidden="true">
+                    <i class="bi bi-check2"></i>
+                  </span>
+                  <span class="timeline-category-label-text">Holidays</span>
+                  <span class="timeline-category-count" data-category-count="break">(3)</span>
+                </label>
+
+                <label class="timeline-category-checkbox-label" for="categoryFilterReligious">
+                  <input type="checkbox" id="categoryFilterReligious" class="timeline-category-checkbox" data-timeline-filter="spiritual" value="spiritual">
+                  <span class="timeline-custom-checkbox" aria-hidden="true">
+                    <i class="bi bi-check2"></i>
+                  </span>
+                  <span class="timeline-category-label-text">Religious</span>
+                  <span class="timeline-category-count" data-category-count="spiritual">(3)</span>
+                </label>
+
+                <label class="timeline-category-checkbox-label" for="categoryFilterResumptions">
+                  <input type="checkbox" id="categoryFilterResumptions" class="timeline-category-checkbox" data-timeline-filter="resumption" value="resumption">
+                  <span class="timeline-custom-checkbox" aria-hidden="true">
+                    <i class="bi bi-check2"></i>
+                  </span>
+                  <span class="timeline-category-label-text">Resumptions</span>
+                  <span class="timeline-category-count" data-category-count="resumption">(4)</span>
+                </label>
+              </div>
+            </fieldset>
 
             <div class="timeline-search-box">
               <i class="bi bi-search" aria-hidden="true"></i>
@@ -1002,7 +1031,12 @@
         </div>
 
         <!-- Vertical Chronological Timeline Track -->
-        <div class="timeline-track-container">
+        <div class="timeline-track-container" id="timelineTrackContainer" tabindex="0" role="region"
+          aria-label="Academic milestones timeline (drag or scroll to navigate)">
+          <div class="timeline-drag-hint" id="timelineDragHint" aria-hidden="true">
+            <i class="bi bi-arrows-expand-vertical"></i>
+            <span>Drag or scroll to explore milestones</span>
+          </div>
           <div class="timeline-track-line" aria-hidden="true"></div>
 
           <div class="timeline-milestones-list" id="timelineMilestonesList"></div>
@@ -1021,7 +1055,10 @@
           <div class="timeline-empty-notice" id="timelineEmptyNotice">
             <i class="bi bi-calendar-x"></i>
             <h3>No milestones match your search</h3>
-            <p>Try selecting "All Milestones" or clearing your search term to see the complete academic calendar.</p>
+            <p id="timelineEmptyNoticeText">Try selecting "All Categories" or clearing your search term to see the complete academic calendar.</p>
+            <button type="button" class="btn btn-outline btn-sm timeline-reset-filters-btn" id="timelineResetFiltersBtn">
+              <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i> Reset Filters
+            </button>
           </div>
         </div>
 
@@ -2402,7 +2439,7 @@
     </section>
 
     <!-- ==================== CTA BANNER ==================== -->
-    <section class="section-padding">
+    <section class="section-padding cta-section-wrapper">
       <div class="cta-banner reveal">
         <h2>Ready to Join Our Family?</h2>
         <p>Admissions are open. We're committed to developing confident, thoughtful learners prepared for meaningful
