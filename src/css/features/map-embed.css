@@ -4,7 +4,8 @@
 
 .location-section {
   position: relative;
-  background-color: var(--bg-cream, #f8f9fa);
+  background-color: var(--bg-section-alt);
+  border-top: 1px solid var(--section-boundary);
   padding: 80px 20px;
 }
 
@@ -66,23 +67,23 @@
   border-radius: var(--radius-md, 12px);
   overflow: hidden;
   min-height: 450px;
-  background: #2d453d;
-  border: 1px solid rgba(201, 162, 41, 0.25);
+  background: #1f352c;
+  border: 1px solid rgba(201, 162, 41, 0.28);
   box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.35);
   display: flex;
   contain: layout paint;
+  transition: min-height var(--duration-fast, 200ms) ease;
+}
+
+@media (max-width: 1024px) {
+  .location-map-wrapper {
+    min-height: 380px;
+  }
 }
 
 @media (max-width: 768px) {
   .location-map-wrapper {
-    min-height: 300px;
-  }
-
-  .location-pin-card,
-  .location-facade__badge {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    background: rgba(7, 24, 46, 0.96);
+    min-height: 320px;
   }
 
   .location-meta-list {
@@ -117,7 +118,7 @@
 
 @media (max-width: 480px) {
   .location-map-wrapper {
-    min-height: 200px;
+    min-height: 270px;
   }
 
   .location-meta-list {
@@ -126,6 +127,12 @@
 
   .location-meta-text {
     font-size: 0.70rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .location-map-wrapper {
+    min-height: 240px;
   }
 }
 
@@ -145,9 +152,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #2d453d;
+  background-color: #213930;
+  overflow: hidden;
 }
 
+/* Atmospheric Map Vignette to enhance zoom depth and button contrast */
+.location-facade__art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, rgba(7, 24, 46, 0.08) 0%, rgba(7, 24, 46, 0.48) 100%),
+    linear-gradient(180deg, rgba(7, 24, 46, 0.32) 0%, transparent 22%, transparent 72%, rgba(7, 24, 46, 0.6) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Map image zoomed in so it spans edge-to-edge instead of a standing rectangular block */
 .location-topo-svg,
 .location-map-svg-img {
   position: absolute;
@@ -155,9 +176,17 @@
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
+  transform: scale(1.35);
+  transform-origin: center center;
   image-rendering: auto;
+  transition: transform var(--duration-normal, 300ms) cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.location-map-wrapper:hover .location-topo-svg,
+.location-map-wrapper:hover .location-map-svg-img {
+  transform: scale(1.42);
 }
 
 .location-facade__overlay {
@@ -169,40 +198,50 @@
   padding: 20px;
   z-index: 2;
   box-sizing: border-box;
+  transition: padding var(--duration-fast, 200ms) ease;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .location-facade__overlay {
     padding: 14px;
   }
 }
 
-/* Pulsing Campus Pin Marker */
+@media (max-width: 480px) {
+  .location-facade__overlay {
+    padding: 10px;
+  }
+}
+
+/* Pulsing Campus Pin Marker (SJCCC Campus Location) */
 .location-pin-wrap {
   position: relative;
   align-self: center;
-  margin-top: 24px;
+  margin: auto 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 2;
+  transition: all var(--duration-fast, 200ms) ease;
 }
 
 .location-pin-pulse {
   position: absolute;
-  top: 12px;
+  top: 14px;
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: rgba(201, 162, 41, 0.4);
+  background: rgba(201, 162, 41, 0.45);
   transform: translateY(-50%);
   animation: pinPulse 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1);
   pointer-events: none;
+  transition: width var(--duration-fast, 200ms) ease, height var(--duration-fast, 200ms) ease;
 }
 
 @keyframes pinPulse {
   0% {
     transform: scale(0.5);
-    opacity: 0.9;
+    opacity: 0.95;
   }
   70% {
     transform: scale(2.2);
@@ -223,10 +262,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 16px rgba(243, 215, 121, 0.45);
   position: relative;
   z-index: 2;
+  transition: width var(--duration-fast, 200ms) ease, height var(--duration-fast, 200ms) ease, font-size var(--duration-fast, 200ms) ease;
 }
 
 .location-pin-card {
@@ -240,6 +280,7 @@
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   z-index: 2;
+  transition: all var(--duration-fast, 200ms) ease;
 }
 
 .location-pin-name {
@@ -248,6 +289,7 @@
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.3px;
+  transition: font-size var(--duration-fast, 200ms) ease;
 }
 
 .location-pin-coord {
@@ -255,42 +297,36 @@
   font-size: 0.70rem;
   color: var(--gold-light, #F3D779);
   font-family: monospace;
+  transition: font-size var(--duration-fast, 200ms) ease;
 }
 
-/* Distance Pill Badge */
+/* Distance Pill Badge hovering on map */
 .location-facade__badge {
   position: absolute;
   top: 16px;
   left: 16px;
-  background: rgba(4, 16, 33, 0.88);
-  border: 1px solid rgba(201, 162, 41, 0.3);
+  background: rgba(4, 16, 33, 0.9);
+  border: 1px solid rgba(201, 162, 41, 0.35);
   color: #f1f5f9;
   font-size: 0.74rem;
   font-weight: 600;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 50px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+  z-index: 2;
+  transition: all var(--duration-fast, 200ms) ease;
 }
 
 .location-facade__badge i {
   color: var(--gold-light, #F3D779);
 }
 
-@media (max-width: 480px) {
-  .location-facade__badge {
-    top: 10px;
-    left: 10px;
-    font-size: 0.68rem;
-    padding: 3px 8px;
-  }
-}
-
-/* Activation Trigger Container */
+/* Activation Trigger Container ('Load Interactive Map') */
 .location-facade__cta-overlay {
   align-self: center;
   margin-top: auto;
@@ -300,6 +336,7 @@
   gap: 6px;
   text-align: center;
   z-index: 2;
+  transition: gap var(--duration-fast, 200ms) ease;
 }
 
 .location-activate-btn {
@@ -314,9 +351,16 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   min-height: 44px;
+  white-space: nowrap;
   transition: all var(--duration-fast, 200ms) ease;
+}
+
+.location-activate-btn i {
+  font-size: 1rem;
+  transition: font-size var(--duration-fast, 200ms) ease;
 }
 
 .location-activate-btn:hover {
@@ -327,8 +371,257 @@
 
 .location-facade__hint {
   font-size: 0.70rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.8);
   letter-spacing: 0.2px;
+  transition: font-size var(--duration-fast, 200ms) ease;
+}
+
+/* ==========================================================================
+   RESPONSIVE SCALING: Hovering Elements (Pin, Card, Badge, Activate Button)
+   Ensure that as screen reduces, all map overlay elements scale down gracefully
+   ========================================================================== */
+
+/* Tablet & Medium Screens (<= 992px) */
+@media (max-width: 992px) {
+  .location-topo-svg,
+  .location-map-svg-img {
+    transform: scale(1.32);
+  }
+
+  .location-pin-pulse {
+    width: 44px;
+    height: 44px;
+    top: 13px;
+  }
+
+  .location-pin-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 1.15rem;
+  }
+
+  .location-pin-card {
+    padding: 3px 10px;
+    margin-top: 6px;
+  }
+
+  .location-pin-name {
+    font-size: 0.78rem;
+  }
+
+  .location-pin-coord {
+    font-size: 0.66rem;
+  }
+
+  .location-facade__badge {
+    top: 14px;
+    left: 14px;
+    padding: 3px 10px;
+    font-size: 0.70rem;
+  }
+
+  .location-activate-btn {
+    min-height: 40px;
+    padding: 8px 18px;
+    font-size: 0.84rem;
+    gap: 7px;
+  }
+
+  .location-activate-btn i {
+    font-size: 0.94rem;
+  }
+
+  .location-facade__hint {
+    font-size: 0.66rem;
+  }
+}
+
+/* Small Tablets & Large Phones (<= 768px) */
+@media (max-width: 768px) {
+  .location-pin-card,
+  .location-facade__badge {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(7, 24, 46, 0.96);
+  }
+
+  .location-topo-svg,
+  .location-map-svg-img {
+    transform: scale(1.3);
+  }
+
+  .location-pin-pulse {
+    width: 38px;
+    height: 38px;
+    top: 12px;
+  }
+
+  .location-pin-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.96rem;
+  }
+
+  .location-pin-card {
+    padding: 3px 9px;
+    margin-top: 5px;
+    border-radius: 6px;
+  }
+
+  .location-pin-name {
+    font-size: 0.72rem;
+  }
+
+  .location-pin-coord {
+    font-size: 0.62rem;
+  }
+
+  .location-facade__badge {
+    top: 12px;
+    left: 12px;
+    padding: 3px 9px;
+    font-size: 0.67rem;
+    gap: 5px;
+  }
+
+  .location-activate-btn {
+    min-height: 36px;
+    padding: 7px 15px;
+    font-size: 0.78rem;
+    gap: 6px;
+  }
+
+  .location-activate-btn i {
+    font-size: 0.88rem;
+  }
+
+  .location-facade__cta-overlay {
+    gap: 4px;
+  }
+
+  .location-facade__hint {
+    font-size: 0.64rem;
+  }
+}
+
+/* Mobile Screens (<= 480px) */
+@media (max-width: 480px) {
+  .location-topo-svg,
+  .location-map-svg-img {
+    transform: scale(1.28);
+  }
+
+  .location-pin-wrap {
+    margin: auto 0;
+  }
+
+  .location-pin-pulse {
+    width: 32px;
+    height: 32px;
+    top: 10px;
+  }
+
+  .location-pin-icon {
+    width: 27px;
+    height: 27px;
+    font-size: 0.82rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  .location-pin-card {
+    padding: 2px 8px;
+    margin-top: 4px;
+    border-radius: 5px;
+  }
+
+  .location-pin-name {
+    font-size: 0.66rem;
+  }
+
+  .location-pin-coord {
+    font-size: 0.56rem;
+  }
+
+  .location-facade__badge {
+    top: 8px;
+    left: 8px;
+    font-size: 0.62rem;
+    padding: 2px 7px;
+    gap: 4px;
+  }
+
+  .location-activate-btn {
+    min-height: 32px;
+    padding: 6px 13px;
+    font-size: 0.72rem;
+    gap: 5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+  }
+
+  .location-activate-btn i {
+    font-size: 0.82rem;
+  }
+
+  .location-facade__hint {
+    font-size: 0.58rem;
+  }
+}
+
+/* Ultra Compact Mobile (<= 360px) */
+@media (max-width: 360px) {
+  .location-topo-svg,
+  .location-map-svg-img {
+    transform: scale(1.24);
+  }
+
+  .location-pin-pulse {
+    width: 26px;
+    height: 26px;
+    top: 9px;
+  }
+
+  .location-pin-icon {
+    width: 23px;
+    height: 23px;
+    font-size: 0.72rem;
+  }
+
+  .location-pin-card {
+    padding: 2px 6px;
+    margin-top: 3px;
+    border-radius: 4px;
+  }
+
+  .location-pin-name {
+    font-size: 0.60rem;
+  }
+
+  .location-pin-coord {
+    font-size: 0.50rem;
+  }
+
+  .location-facade__badge {
+    top: 6px;
+    left: 6px;
+    font-size: 0.56rem;
+    padding: 2px 5px;
+    gap: 3px;
+  }
+
+  .location-activate-btn {
+    min-height: 28px;
+    padding: 4px 10px;
+    font-size: 0.66rem;
+    gap: 4px;
+  }
+
+  .location-activate-btn i {
+    font-size: 0.74rem;
+  }
+
+  .location-facade__hint {
+    font-size: 0.54rem;
+  }
 }
 
 /* Dynamic Live Iframe Container */
@@ -376,6 +669,26 @@
   color: #07182E;
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(201, 162, 41, 0.4);
+}
+
+@media (max-width: 768px) {
+  .location-iframe-close-btn {
+    top: 10px;
+    right: 10px;
+    min-height: 32px;
+    padding: 5px 11px;
+    font-size: 0.72rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .location-iframe-close-btn {
+    top: 8px;
+    right: 8px;
+    min-height: 28px;
+    padding: 4px 9px;
+    font-size: 0.65rem;
+  }
 }
 
 /* Right / Location Info Panel */
@@ -510,7 +823,7 @@
 /* Dark Mode Theme Overrides */
 html.dark-mode .location-section,
 body.dark-mode .location-section {
-  background: #040d1a;
+  background: var(--bg-section-alt);
 }
 
 html.dark-mode .location-card,
