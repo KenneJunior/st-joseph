@@ -249,7 +249,7 @@ body.dark-mode .modal-close:hover {
 /* Heading Typography */
 .modal-content h2 {
   font-family: var(--font-heading, inherit);
-  font-size: 1.45rem;
+  font-size: var(--fluid-h2);
   font-weight: 700;
   color: var(--text-dark);
   margin-top: 0;
@@ -416,7 +416,7 @@ body.dark-mode .enquiry-ai-bridge-btn {
   }
 
   .modal-content h2 {
-    font-size: 1.25rem;
+    font-size: var(--fluid-h2);
     margin-bottom: 4px;
     padding-right: 32px;
   }
@@ -475,7 +475,7 @@ body.dark-mode .enquiry-ai-bridge-btn {
   }
 
   .modal-content h2 {
-    font-size: 1.12rem;
+    font-size: var(--fluid-h2);
   }
 
   .modal-close {

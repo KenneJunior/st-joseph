@@ -17,7 +17,7 @@ export class EnquiryModal {
     private abortController: AbortController = new AbortController();
 
     constructor(
-        fabSelectors: string[] = ['#enquiryFab', '#enquire-btn', '#pMan', '.announcement-bar__link', '#getInTouchBtn', '#faqEnquiryBtn'],
+        fabSelectors: string[] = ['#enquiryFab', '#enquire-btn', '#pMan', '#getInTouchBtn', '#faqEnquiryBtn'],
         modalId: string = 'enquiryModal',
         closeBtnId: string = 'modalClose'
     ) {
