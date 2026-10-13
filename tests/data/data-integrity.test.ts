@@ -34,6 +34,26 @@ describe('Canonical Data Integrity', () => {
 
     it('should verify academic calendar milestones structure (exactly 14 canonical items)', () => {
         expect(ACADEMIC_MILESTONES_2026_2027.length).toBe(14);
+
+        const expectedIds = [
+            'resumption-new-2026',
+            'resumption-old-2026',
+            'midterm-break-t1-2026',
+            'exams-t1-2026',
+            'christmas-vacation-2026',
+            'resumption-t2-2027',
+            'youth-day-2027',
+            'midterm-break-t2-2027',
+            'exams-t2-2027',
+            'feast-st-joseph-2027',
+            'resumption-t3-2027',
+            'gce-national-exams-2027',
+            'promotional-exams-2027',
+            'valedictory-graduation-2027',
+        ];
+
+        expect(ACADEMIC_MILESTONES_2026_2027.map((m) => m.id)).toEqual(expectedIds);
+
         for (const event of ACADEMIC_MILESTONES_2026_2027) {
             expect(event.id).toBeTruthy();
             expect(event.title).toBeTruthy();
@@ -47,13 +67,43 @@ describe('Canonical Data Integrity', () => {
             expect(event.localEndDate >= event.localStartDate).toBe(true);
             expect(['timed', 'all-day', 'multi-day-all-day', 'multi-day-timed']).toContain(event.temporalType);
 
-            if (event.temporalType === 'timed' || event.temporalType === 'multi-day-timed') {
+            // Discriminant temporal contract runtime validation
+            if (event.temporalType === 'timed') {
+                expect(event.localStartDate).toBe(event.localEndDate);
                 expect(event.localStartTime).toMatch(/^\d{2}:\d{2}$/);
                 expect(event.localEndTime).toMatch(/^\d{2}:\d{2}$/);
-            } else {
+                expect(event.localStartTime! < event.localEndTime!).toBe(true);
+            } else if (event.temporalType === 'all-day') {
+                expect(event.localStartDate).toBe(event.localEndDate);
                 expect(event.localStartTime).toBeUndefined();
                 expect(event.localEndTime).toBeUndefined();
+            } else if (event.temporalType === 'multi-day-all-day') {
+                expect(event.localEndDate > event.localStartDate).toBe(true);
+                expect(event.localStartTime).toBeUndefined();
+                expect(event.localEndTime).toBeUndefined();
+            } else if (event.temporalType === 'multi-day-timed') {
+                expect(event.localEndDate > event.localStartDate).toBe(true);
+                expect(event.localStartTime).toMatch(/^\d{2}:\d{2}$/);
+                expect(event.localEndTime).toMatch(/^\d{2}:\d{2}$/);
+                expect(event.localStartTime! < event.localEndTime!).toBe(true);
             }
         }
+    });
+
+    it('should verify chronological ordering of ACADEMIC_MILESTONES_2026_2027 (REC-01)', () => {
+        for (let i = 0; i < ACADEMIC_MILESTONES_2026_2027.length - 1; i++) {
+            const current = ACADEMIC_MILESTONES_2026_2027[i];
+            const next = ACADEMIC_MILESTONES_2026_2027[i + 1];
+            expect(
+                current.localStartDate <= next.localStartDate,
+                `Milestone ${current.id} (${current.localStartDate}) must precede or equal ${next.id} (${next.localStartDate})`
+            ).toBe(true);
+        }
+
+        const examsT2Index = ACADEMIC_MILESTONES_2026_2027.findIndex((m) => m.id === 'exams-t2-2027');
+        const feastIndex = ACADEMIC_MILESTONES_2026_2027.findIndex((m) => m.id === 'feast-st-joseph-2027');
+        expect(examsT2Index).toBeGreaterThanOrEqual(0);
+        expect(feastIndex).toBeGreaterThanOrEqual(0);
+        expect(examsT2Index).toBeLessThan(feastIndex);
     });
 });
