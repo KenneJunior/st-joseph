@@ -1,8 +1,14 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import { existsSync, readFileSync } from 'fs';
 
 export default defineConfig({
+    test: {
+        environmentMatchGlobs: [
+            ['tests/unit/school-dates-timeline.test.ts', 'jsdom'],
+        ],
+    },
     root: './',
     server: {
         host: '0.0.0.0',
