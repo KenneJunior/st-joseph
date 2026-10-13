@@ -49,6 +49,7 @@ export class TimedHeroRotator {
     private isSuspendedBySystem = false;
 
     private controlContainer: HTMLElement | null = null;
+    private pauseBtn: HTMLButtonElement | null = null;
 
     private intersectionObserver: IntersectionObserver | null = null;
     private unsubscribeSuspension: (() => void) | null = null;
@@ -107,6 +108,9 @@ export class TimedHeroRotator {
             this.faces.push(face);
         });
 
+
+        // 3. Setup accessible controls
+        this.setupControls();
 
         // 4. Setup listeners & observers
         this.setupReducedMotion();
@@ -217,6 +221,53 @@ export class TimedHeroRotator {
                 this.scheduleNext();
             }
         });
+    }
+
+    private setupControls(): void {
+        let container = document.getElementById(this.config.rotationControlContainerId);
+        if (!container) {
+            container = document.createElement('div');
+            container.id = this.config.rotationControlContainerId;
+            container.className = 'hero-rotation-control';
+            this.heroEl.appendChild(container);
+        }
+        this.controlContainer = container;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'hero-rotation-pause-btn';
+        btn.setAttribute('aria-pressed', 'false');
+        btn.setAttribute('aria-label', 'Pause hero announcement rotation');
+        btn.innerHTML = '<i class="bi bi-pause-fill" aria-hidden="true"></i>';
+
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.togglePause();
+        });
+
+        this.controlContainer.appendChild(btn);
+        this.pauseBtn = btn;
+    }
+
+    public togglePause(): void {
+        this.isManuallyPaused = !this.isManuallyPaused;
+        if (this.pauseBtn) {
+            this.pauseBtn.setAttribute('aria-pressed', String(this.isManuallyPaused));
+            this.pauseBtn.setAttribute(
+                'aria-label',
+                this.isManuallyPaused ? 'Resume hero announcement rotation' : 'Pause hero announcement rotation'
+            );
+            const icon = this.pauseBtn.querySelector('i');
+            if (icon) {
+                icon.className = this.isManuallyPaused ? 'bi bi-play-fill' : 'bi bi-pause-fill';
+            }
+        }
+
+        if (this.isManuallyPaused) {
+            this.clearTimer();
+        } else if (!this.shouldBePaused()) {
+            this.scheduleNext();
+        }
     }
 
     private shouldBePaused(): boolean {
