@@ -91,7 +91,10 @@ export function generateIcs(milestone: AcademicMilestone, now = new Date()): str
 
     const nowCompact = now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
     const summary = `SJCCC: ${escapeIcsText(milestone.title)}`;
-    const description = `${escapeIcsText(milestone.description)} | Academic Year 2026/2027 | St. Joseph Catholic Comprehensive College, Mbengwi`;
+    const scheduleNotice = milestone.temporalType === 'multi-day-timed' && milestone.localStartTime && milestone.localEndTime
+        ? `Daily schedule: ${milestone.localStartTime}–${milestone.localEndTime} WAT | `
+        : '';
+    const description = `${scheduleNotice}${escapeIcsText(milestone.description)} | Academic Year 2026/2027 | St. Joseph Catholic Comprehensive College, Mbengwi`;
     const location = escapeIcsText(milestone.location);
     const uid = `${milestone.id}-sjccc-2026-2027@sjccc.edu.cm`;
 
@@ -130,11 +133,15 @@ export function buildGoogleCalendarUrl(milestone: AcademicMilestone): string {
         milestone.temporalType
     );
 
+    const scheduleNotice = milestone.temporalType === 'multi-day-timed' && milestone.localStartTime && milestone.localEndTime
+        ? `Daily schedule: ${milestone.localStartTime}–${milestone.localEndTime} WAT\n\n`
+        : '';
+
     const params = new URLSearchParams({
         action: 'TEMPLATE',
         text: `SJCCC: ${milestone.title}`,
         dates: dates.googleDates,
-        details: `${milestone.description}\n\nAcademic Year 2026/2027\nSt. Joseph Catholic Comprehensive College, Mbengwi, Cameroon`,
+        details: `${scheduleNotice}${milestone.description}\n\nAcademic Year 2026/2027\nSt. Joseph Catholic Comprehensive College, Mbengwi, Cameroon`,
         location: milestone.location,
         ctz: SJCCC_TIMEZONE,
     });
@@ -155,7 +162,14 @@ export function buildOutlookUrl(milestone: AcademicMilestone): string {
         milestone.temporalType
     );
 
-    const isAllDay = milestone.temporalType === 'all-day' || milestone.temporalType === 'multi-day-all-day';
+    const isAllDay =
+        milestone.temporalType === 'all-day' ||
+        milestone.temporalType === 'multi-day-all-day' ||
+        milestone.temporalType === 'multi-day-timed';
+
+    const scheduleNotice = milestone.temporalType === 'multi-day-timed' && milestone.localStartTime && milestone.localEndTime
+        ? `Daily schedule: ${milestone.localStartTime}–${milestone.localEndTime} WAT\n\n`
+        : '';
 
     const params = new URLSearchParams({
         path: '/calendar/action/compose',
@@ -163,7 +177,7 @@ export function buildOutlookUrl(milestone: AcademicMilestone): string {
         subject: `SJCCC: ${milestone.title}`,
         startdt: dates.outlookStartISO,
         enddt: dates.outlookEndISO,
-        body: `${milestone.description}\n\nAcademic Year 2026/2027\nSt. Joseph Catholic Comprehensive College, Mbengwi, Cameroon`,
+        body: `${scheduleNotice}${milestone.description}\n\nAcademic Year 2026/2027\nSt. Joseph Catholic Comprehensive College, Mbengwi, Cameroon`,
         location: milestone.location,
         allday: isAllDay ? 'true' : 'false',
     });

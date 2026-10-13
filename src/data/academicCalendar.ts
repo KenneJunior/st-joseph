@@ -4,11 +4,37 @@
  * Single source of truth for academic milestones, resumption dates, examinations,
  * breaks, and calendar export metadata.
  * ============================================================================
+ *
+ * TEMPORAL CONTRACT & INCLUSIVITY SPECIFICATION:
+ * 1. Timezone Baseline:
+ *    West Africa Time (WAT) / Africa/Douala (UTC+01:00, constant year-round, zero DST).
+ * 2. Local Date Representation:
+ *    `localStartDate` and `localEndDate` follow strict ISO 8601 calendar date format (YYYY-MM-DD).
+ * 3. Local Time Representation:
+ *    `localStartTime` and `localEndTime` follow 24-hour military format (HH:mm) in WAT.
+ * 4. End-Date Inclusivity Invariant:
+ *    - In the SJCCC canonical data model, `localEndDate` is strictly INCLUSIVE.
+ *      For example, Mid-Term Break (2026-10-26 to 2026-10-30) means students remain on break
+ *      through the entire day of Friday 30 October 2026.
+ * 5. RFC 5545 / iCalendar DTEND Exclusivity:
+ *    - In RFC 5545 §3.6.1, the DTEND property for date-valued (`VALUE=DATE`) events is EXCLUSIVE.
+ *    - Therefore, calendar serializers MUST mathematically add +1 day to `localEndDate`
+ *      when serializing all-day or multi-day date spans (e.g., local 2026-10-30 -> DTEND:20261031)
+ *      so that consumer calendar applications (Apple Calendar, Google Calendar, Outlook) display
+ *      the final day correctly without cutting the event off at 00:00 on the last day.
+ * 6. Multi-Day Timed Milestone Serialization:
+ *    - Multi-day examination windows (`multi-day-timed`) are serialized as all-day date ranges
+ *      to avoid blocking users 24/7 across multiple days, while daily school hours
+ *      (e.g., 07:30–16:00 WAT) are prominently communicated in the event description and details.
+ * ============================================================================
  */
 
 export type MilestoneTemporalType = 'timed' | 'all-day' | 'multi-day-all-day' | 'multi-day-timed';
 
-export interface AcademicMilestone {
+/**
+ * Shared base attributes common to all academic milestone variants.
+ */
+export interface BaseMilestone {
     id: string;
     term: 'term-1' | 'term-2' | 'term-3';
     termLabel: string;
@@ -18,13 +44,6 @@ export interface AcademicMilestone {
     dateText: string;
     description: string;
     location: string;
-
-    // Temporal classification & canonical local date/time (WAT / Africa/Douala)
-    temporalType: MilestoneTemporalType;
-    localStartDate: string; // YYYY-MM-DD
-    localEndDate: string;   // YYYY-MM-DD
-    localStartTime?: string; // HH:mm in WAT (UTC+1)
-    localEndTime?: string;   // HH:mm in WAT (UTC+1)
 
     // Backward-compatible JavaScript Date and ISO fields
     startDate: Date;
@@ -39,6 +58,87 @@ export interface AcademicMilestone {
     cardNotice?: string;
     markerIcon?: string;
     markerTitle?: string;
+}
+
+/**
+ * Single-day event with specific start and end wall-clock times in WAT.
+ * localStartDate and localEndDate represent the same calendar day.
+ */
+export interface TimedMilestone extends BaseMilestone {
+    temporalType: 'timed';
+    localStartDate: string; // YYYY-MM-DD
+    localEndDate: string;   // YYYY-MM-DD (identical to localStartDate)
+    localStartTime: string; // HH:mm in WAT (UTC+1)
+    localEndTime: string;   // HH:mm in WAT (UTC+1, end > start)
+}
+
+/**
+ * Single-day all-day observance or public holiday.
+ * localStartDate and localEndDate represent the same calendar day.
+ * Timed fields are strictly forbidden.
+ */
+export interface AllDayMilestone extends BaseMilestone {
+    temporalType: 'all-day';
+    localStartDate: string; // YYYY-MM-DD
+    localEndDate: string;   // YYYY-MM-DD (identical to localStartDate)
+    localStartTime?: never;
+    localEndTime?: never;
+}
+
+/**
+ * Multi-day continuous break or holiday (e.g. Christmas Vacation).
+ * localEndDate is strictly greater than localStartDate (inclusive).
+ * Timed fields are strictly forbidden.
+ */
+export interface MultiDayAllDayMilestone extends BaseMilestone {
+    temporalType: 'multi-day-all-day';
+    localStartDate: string; // YYYY-MM-DD
+    localEndDate: string;   // YYYY-MM-DD (inclusive, > localStartDate)
+    localStartTime?: never;
+    localEndTime?: never;
+}
+
+/**
+ * Multi-day academic evaluation or examination window.
+ * localEndDate is strictly greater than localStartDate (inclusive).
+ * daily start and end times reflect daily instructional hours in WAT.
+ */
+export interface MultiDayTimedMilestone extends BaseMilestone {
+    temporalType: 'multi-day-timed';
+    localStartDate: string; // YYYY-MM-DD
+    localEndDate: string;   // YYYY-MM-DD (inclusive, > localStartDate)
+    localStartTime: string; // HH:mm daily start in WAT (UTC+1)
+    localEndTime: string;   // HH:mm daily end in WAT (UTC+1, end > start)
+}
+
+/**
+ * Discriminated union of all supported milestone temporal representations.
+ */
+export type AcademicMilestone =
+    | TimedMilestone
+    | AllDayMilestone
+    | MultiDayAllDayMilestone
+    | MultiDayTimedMilestone;
+
+/**
+ * Computes the inclusive start and end date span for a specified academic term
+ * based on the canonical milestone records.
+ */
+export function getTermMilestoneSpan(
+    term: 'term-1' | 'term-2' | 'term-3',
+    milestones: readonly AcademicMilestone[] = ACADEMIC_MILESTONES_2026_2027
+): { start: string; end: string } | null {
+    const termMilestones = milestones.filter((m) => m.term === term);
+    if (termMilestones.length === 0) return null;
+    const start = termMilestones.reduce(
+        (min, m) => (m.localStartDate < min ? m.localStartDate : min),
+        termMilestones[0].localStartDate
+    );
+    const end = termMilestones.reduce(
+        (max, m) => (m.localEndDate > max ? m.localEndDate : max),
+        termMilestones[0].localEndDate
+    );
+    return { start, end };
 }
 
 export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
@@ -256,33 +356,6 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         markerTitle: 'Mid-Term Break',
     },
     {
-        id: 'feast-st-joseph-2027',
-        term: 'term-2',
-        termLabel: 'Second Term',
-        title: 'Feast of Saint Joseph (Patronal Feast)',
-        category: 'spiritual',
-        categoryLabel: 'Solemnity',
-        dateText: '19 Mar 2027',
-        description: 'College patronal feast celebration: Solemn High Mass presided over by Archdiocesan clergy, cultural presentations, and grand college banquet.',
-        location: 'College Chapel & Assembly Grounds',
-        temporalType: 'timed',
-        localStartDate: '2027-03-19',
-        localEndDate: '2027-03-19',
-        localStartTime: '09:00',
-        localEndTime: '18:00',
-        startDate: new Date('2027-03-19T08:00:00Z'),
-        endDate: new Date('2027-03-19T17:00:00Z'),
-        startDateISO: '20270319T080000Z',
-        endDateISO: '20270319T170000Z',
-        isKeyMilestone: true,
-        statusKicker: 'Patronal Solemnity',
-        timeOrDuration: 'Solemn Feast',
-        highlights: ['Solemn Pontifical Mass', 'Blessing of Technical Workshops', 'College Community Feast'],
-        cardNotice: 'Parents, alumni, and friends cordially invited',
-        markerIcon: 'bi-bookmark-star-fill',
-        markerTitle: 'Feast of St. Joseph',
-    },
-    {
         id: 'exams-t2-2027',
         term: 'term-2',
         termLabel: 'Second Term',
@@ -308,6 +381,33 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Easter break follows immediately on 26 March',
         markerIcon: 'bi-file-earmark-text-fill',
         markerTitle: 'Examinations',
+    },
+    {
+        id: 'feast-st-joseph-2027',
+        term: 'term-2',
+        termLabel: 'Second Term',
+        title: 'Feast of Saint Joseph (Patronal Feast)',
+        category: 'spiritual',
+        categoryLabel: 'Solemnity',
+        dateText: '19 Mar 2027',
+        description: 'College patronal feast celebration: Solemn High Mass presided over by Archdiocesan clergy, cultural presentations, and grand college banquet.',
+        location: 'College Chapel & Assembly Grounds',
+        temporalType: 'timed',
+        localStartDate: '2027-03-19',
+        localEndDate: '2027-03-19',
+        localStartTime: '09:00',
+        localEndTime: '18:00',
+        startDate: new Date('2027-03-19T08:00:00Z'),
+        endDate: new Date('2027-03-19T17:00:00Z'),
+        startDateISO: '20270319T080000Z',
+        endDateISO: '20270319T170000Z',
+        isKeyMilestone: true,
+        statusKicker: 'Patronal Solemnity',
+        timeOrDuration: 'Solemn Feast',
+        highlights: ['Solemn Pontifical Mass', 'Blessing of Technical Workshops', 'College Community Feast'],
+        cardNotice: 'Parents, alumni, and friends cordially invited',
+        markerIcon: 'bi-bookmark-star-fill',
+        markerTitle: 'Feast of St. Joseph',
     },
 
     // ─────────────── TERM 3 (THIRD TERM) 2027 ───────────────

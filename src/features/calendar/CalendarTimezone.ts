@@ -40,7 +40,7 @@ export function normalizeMilestoneDates(
     endTimeStr?: string,
     temporalType: 'timed' | 'all-day' | 'multi-day-all-day' | 'multi-day-timed' = 'all-day'
 ): NormalizedDateTimes {
-    const isAllDay = temporalType === 'all-day' || temporalType === 'multi-day-all-day';
+    const isAllDay = temporalType === 'all-day' || temporalType === 'multi-day-all-day' || temporalType === 'multi-day-timed';
 
     if (isAllDay) {
         // Date format: YYYY-MM-DD

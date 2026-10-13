@@ -317,6 +317,84 @@ describe('Black-Box Output Verification (Cases A through F)', () => {
         const parsedO = new URL(oUrl);
         expect(parsedO.searchParams.get('subject')).toContain('Célébration');
     });
+
+    it('Case G — multi-day timed examination window export (REC-03: exams-t1-2026)', () => {
+        const m = ACADEMIC_MILESTONES_2026_2027.find((item) => item.id === 'exams-t1-2026')!;
+        expect(m).toBeDefined();
+        expect(m.temporalType).toBe('multi-day-timed');
+
+        // Normalization returns all-day span with exclusive DTEND (+1 day: 11 Dec -> 12 Dec)
+        const normalized = normalizeMilestoneDates(
+            m.localStartDate,
+            m.localEndDate,
+            m.localStartTime,
+            m.localEndTime,
+            m.temporalType
+        );
+        expect(normalized.icsStart).toBe(';VALUE=DATE:20261130');
+        expect(normalized.icsEnd).toBe(';VALUE=DATE:20261212');
+        expect(normalized.googleDates).toBe('20261130/20261212');
+        expect(normalized.outlookStartISO).toBe('2026-11-30T00:00:00');
+        expect(normalized.outlookEndISO).toBe('2026-12-12T00:00:00');
+
+        // ICS output
+        const ics = generateIcs(m, new Date('2026-11-01T00:00:00Z'));
+        expect(ics).toContain('DTSTART;VALUE=DATE:20261130\r\n');
+        expect(ics).toContain('DTEND;VALUE=DATE:20261212\r\n');
+        expect(ics).toContain('Daily schedule: 07:30–16:00 WAT');
+        expect(ics).toContain(escapeIcsText(m.location));
+        expect(ics.replace(/\r\n /g, '')).toContain('Comprehensive end-of-term examinations');
+
+        // Google Calendar URL
+        const gUrl = buildGoogleCalendarUrl(m);
+        const parsedG = new URL(gUrl);
+        expect(parsedG.searchParams.get('dates')).toBe('20261130/20261212');
+        expect(parsedG.searchParams.get('details')).toContain('Daily schedule: 07:30–16:00 WAT');
+        expect(parsedG.searchParams.get('details')).toContain('Comprehensive end-of-term examinations');
+
+        // Outlook URL
+        const oUrl = buildOutlookUrl(m);
+        const parsedO = new URL(oUrl);
+        expect(parsedO.searchParams.get('allday')).toBe('true');
+        expect(parsedO.searchParams.get('startdt')).toBe('2026-11-30T00:00:00');
+        expect(parsedO.searchParams.get('enddt')).toBe('2026-12-12T00:00:00');
+        expect(parsedO.searchParams.get('body')).toContain('Daily schedule: 07:30–16:00 WAT');
+        expect(parsedO.searchParams.get('body')).toContain('Comprehensive end-of-term examinations');
+    });
+
+    it('Case H — local date badge extraction vs UTC date shift (REC-06)', () => {
+        // Event near midnight WAT: 00:30 WAT on 2027-01-04 corresponds to 2027-01-03 23:30:00Z UTC
+        const midnightFixture: AcademicMilestone = {
+            id: 'resumption-night-check-2027',
+            term: 'term-2',
+            termLabel: 'Second Term',
+            title: 'Night Check Resumption',
+            category: 'resumption',
+            categoryLabel: 'Resumption',
+            dateText: '04 Jan 2027',
+            description: 'Night inspection check.',
+            location: 'SJCCC Dormitories',
+            temporalType: 'timed',
+            localStartDate: '2027-01-04',
+            localEndDate: '2027-01-04',
+            localStartTime: '00:30',
+            localEndTime: '01:30',
+            startDate: new Date('2027-01-03T23:30:00Z'),
+            endDate: new Date('2027-01-04T00:30:00Z'),
+            startDateISO: '20270103T233000Z',
+            endDateISO: '20270104T003000Z',
+        };
+
+        // Demonstrates why legacy UTC extraction was defective:
+        const legacyUtcDay = midnightFixture.startDate.getUTCDate();
+        expect(legacyUtcDay).toBe(3); // Incorrect: shifted to previous day in UTC
+
+        // Demonstrates why canonical local parsing is safe:
+        const [year, month, day] = midnightFixture.localStartDate.split('-');
+        expect(day).toBe('04'); // Correct: reflects local calendar date
+        expect(month).toBe('01');
+        expect(year).toBe('2027');
+    });
 });
 
 describe('Canonical Dataset Completeness & Serialization Invariants', () => {
