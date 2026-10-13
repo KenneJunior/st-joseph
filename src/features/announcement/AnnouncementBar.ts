@@ -658,30 +658,18 @@ export class AnnouncementBar {
     }
 
     /**
-     * Dynamically updates the announcement text, date, and CTA link
+     * Dynamically updates the announcement text, date, and details
      */
-    public updateMessage(title: string, dateText?: string, moreDetails?: string, ctaText?: string, ctaHref?: string): void {
+    public updateMessage(title: string, dateText?: string, moreDetails?: string): void {
         if (!this.bar) return;
 
         const titleEl = this.bar.querySelector('.announcement-bar__title');
         const dateEl = this.bar.querySelector('.announcement-bar__date');
-        const ctaEl = this.bar.querySelector('.announcement-bar__cta');
 
         if (titleEl) titleEl.textContent = title;
         if (dateEl && dateText) dateEl.textContent = dateText;
         if (this.moreContent && moreDetails) {
             this.moreContent.textContent = moreDetails;
-        }
-
-        if (ctaEl) {
-            if (ctaText) {
-                const span = ctaEl.querySelector('span');
-                if (span) span.textContent = ctaText;
-                else ctaEl.textContent = ctaText;
-            }
-            if (ctaHref && ctaEl instanceof HTMLAnchorElement) {
-                ctaEl.href = ctaHref;
-            }
         }
 
         this.scheduleLayoutUpdate();

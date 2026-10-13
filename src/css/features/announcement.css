@@ -1,7 +1,7 @@
 /* ============================================================
    SJCCC ANNOUNCEMENT BAR
    Sleek glassmorphic top notification banner with regal gold accents,
-   pulsing status indicator, interactive CTA pill, and smooth exit
+   pulsing status indicator, and smooth exit
    ============================================================ */
 
 .announcement-bar {
@@ -760,49 +760,6 @@ body.dark-mode .announcement-bar,
   color: #bbf7d0;
 }
 
-/* CTA Pill Button */
-.announcement-bar__cta {
-  display: inline-flex;
-  align-items: center;
-  flex: 0 1 auto;
-  gap: 6px;
-  padding: 4px 14px;
-  background: linear-gradient(135deg, rgba(201, 162, 41, 0.22) 0%, rgba(251, 227, 161, 0.12) 100%);
-  border: 1px solid rgba(201, 162, 41, 0.6);
-  border-radius: 50px;
-  color: var(--accent-glow, #fbe3a1);
-  font-size: 0.82rem;
-  font-weight: 700;
-  text-decoration: none !important;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.25, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.announcement-bar__cta i {
-  font-size: 0.8rem;
-  transition: transform 0.2s ease;
-}
-
-.announcement-bar__cta .cta-text-prefix {
-  display: inline;
-}
-
-.announcement-bar__cta:hover,
-.announcement-bar__cta:focus-visible {
-  background: linear-gradient(135deg, var(--sj-gold-500, #c9a229) 0%, var(--sj-gold-400, #d4a85a) 100%);
-  color: #07182e;
-  border-color: #fbe3a1;
-  box-shadow: 0 0 16px rgba(201, 162, 41, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
-  transform: translateY(-1px);
-}
-
-.announcement-bar__cta:hover i,
-.announcement-bar__cta:focus-visible i {
-  transform: translateX(3px);
-}
-
 /* Close / Dismiss Button (In-flow flex child in Column 1) */
 .announcement-bar__close {
   display: inline-flex;
@@ -939,7 +896,7 @@ body.dark-mode .announcement-bar,
 
 .past-modal-title-group h2 {
   font-family: var(--font-heading, serif);
-  font-size: 1.45rem;
+  font-size: var(--fluid-h2);
   color: #ffffff;
   margin: 0 0 4px;
   display: flex;
@@ -1605,16 +1562,6 @@ body.dark-mode .announcement-bar,
     padding: 4px 8px;
     min-height: 32px;
   }
-
-  .announcement-bar__cta {
-    padding: 3px 12px;
-    font-size: 0.78rem;
-    flex-shrink: 0;
-  }
-
-  .announcement-bar__cta .cta-arrow {
-    display: inline-block;
-  }
 }
 
 /* ============================================================
@@ -1643,11 +1590,6 @@ body.dark-mode .announcement-bar,
   .announcement-bar__actions {
     flex-shrink: 0;
     gap: 6px;
-  }
-
-  .announcement-bar__cta {
-    padding: 3px 10px;
-    font-size: 0.76rem;
   }
 
   .announcement-bar__secondary-actions .action-btn-text {
@@ -1690,7 +1632,7 @@ body.dark-mode .announcement-bar,
   }
 
   .past-modal-title-group h2 {
-    font-size: 1.2rem;
+    font-size: var(--fluid-h2);
   }
 
   .past-modal-controls {
@@ -1707,7 +1649,7 @@ body.dark-mode .announcement-bar,
    RESPONSIVE ADAPTATIONS: MOBILE (<= 768px down to 320px)
    Compact 2-line information-first layout with high visual density:
    - Line 1 (Column 1): [Badge] [Message text] [Read more toggle] [Close button]
-   - Line 2 (Column 2): [CTA Resumption Schedule] [Mark as read] [Past Notices]
+   - Line 2 (Column 2): [Mark as read] [Past Notices]
    Strictly in-flow elements with zero overlay between dismissal and archive buttons.
    ============================================================ */
 @media (max-width: 768px) {
@@ -1802,7 +1744,7 @@ body.dark-mode .announcement-bar,
     flex-shrink: 0;
   }
 
-  /* Column 2: Actions toolbar (Resumption Schedule, Mark as Read & Historical Archive) */
+  /* Column 2: Actions toolbar (Mark as Read & Historical Archive) */
   .announcement-bar__col--secondary,
   .announcement-bar__actions {
     display: flex;
@@ -1817,47 +1759,6 @@ body.dark-mode .announcement-bar,
     margin: 0;
     border-top: none;
     box-sizing: border-box;
-  }
-
-  /* Compact primary CTA button alongside secondary actions */
-  .announcement-bar__cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    align-self: center;
-    gap: 4px;
-    width: auto;
-    flex: 0 1 auto;
-    min-width: 0;
-    height: 24px;
-    min-height: 24px;
-    max-height: 24px;
-    padding: 0 9px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    line-height: 1;
-    border-radius: 50px;
-    white-space: nowrap;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-    box-sizing: border-box;
-    margin: 0;
-  }
-
-  .announcement-bar__cta .cta-icon {
-    font-size: 0.72rem;
-    flex-shrink: 0;
-  }
-
-  .announcement-bar__cta .cta-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .announcement-bar__cta .cta-arrow {
-    display: inline-block;
-    font-size: 0.70rem;
-    flex-shrink: 0;
   }
 
   /* Secondary actions toolbar (Mark as Read & Historical Archive) */
@@ -1880,7 +1781,7 @@ body.dark-mode .announcement-bar,
     display: none;
   }
 
-  /* Accessible compact icon buttons matching CTA height and vertical alignment */
+  /* Accessible compact icon buttons with uniform height and vertical alignment */
   .announcement-bar__secondary-actions .announcement-bar__action-btn {
     width: 24px;
     height: 24px;
@@ -1944,28 +1845,12 @@ body.dark-mode .announcement-bar,
 
 /* ============================================================
    RESPONSIVE ADAPTATIONS: MOBILE SCREENS (<= 375px)
-   Reduces horizontal padding on CTA & condenses label to 'Schedule →'
-   to ensure the action rail remains compact and prevent third-row wrapping
+   Maintains compact action rail and prevents wrapping
    ============================================================ */
 @media (max-width: 375px) {
   .announcement-bar__actions {
     gap: 6px;
     flex-wrap: nowrap;
-  }
-
-  .announcement-bar__cta {
-    padding-left: 6px;
-    padding-right: 6px;
-    padding-top: 0;
-    padding-bottom: 0;
-    gap: 3px;
-    font-size: 0.70rem;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-
-  .announcement-bar__cta .cta-text-prefix {
-    display: none;
   }
 
   .announcement-bar__secondary-actions {
@@ -2016,24 +1901,6 @@ body.dark-mode .announcement-bar,
     flex-wrap: nowrap;
   }
 
-  .announcement-bar__cta {
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 0;
-    padding-bottom: 0;
-    font-size: 0.68rem;
-    height: 22px;
-    min-height: 22px;
-    max-height: 22px;
-    gap: 3px;
-    line-height: 1;
-    margin: 0;
-  }
-
-  .announcement-bar__cta .cta-icon {
-    font-size: 0.68rem;
-  }
-
   .announcement-bar__secondary-actions {
     gap: 4px;
     height: 22px;
@@ -2060,24 +1927,10 @@ body.dark-mode .announcement-bar,
   }
 }
 
-/* Ultra-narrow phones (<= 330px): hide decorative calendar icon to maximize readable label */
-@media (max-width: 330px) {
-  .announcement-bar__cta {
-    padding-left: 4px;
-    padding-right: 4px;
-  }
-
-  .announcement-bar__cta .cta-icon {
-    display: none;
-  }
-}
-
 /* Accessibility Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   .announcement-bar,
-  .announcement-bar__cta,
   .announcement-bar__close,
-  .announcement-bar__cta i,
   .announcement-bar__badge-dot,
   .announcement-bar.urgent-alert-shake,
   .announcement-bar.is-marking-read,

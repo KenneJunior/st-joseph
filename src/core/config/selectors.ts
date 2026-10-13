@@ -57,7 +57,6 @@ export const HOME_SELECTORS = {
         '#enquiryFab',
         '#enquire-btn',
         '#pMan',
-        '.announcement-bar__link',
         '#getInTouchBtn',
         '#faqEnquiryBtn',
         '#calendarEnquiryBtn',
