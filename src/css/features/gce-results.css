@@ -11,7 +11,8 @@
 /* Section Container & Themed Background */
 .gce-results-section {
   position: relative;
-  background: var(--bg-cream, #ede9e4);
+  background: var(--bg-section-feature);
+  border-top: 1px solid var(--section-boundary);
   color: var(--text-body);
   padding: 90px 24px;
   overflow: hidden;
@@ -32,14 +33,13 @@
 /* Dark mode section override */
 html.dark-mode .gce-results-section,
 body.dark-mode .gce-results-section {
-  background: radial-gradient(circle at 50% 20%, rgba(15, 45, 92, 0.95), rgba(7, 24, 46, 0.98)),
-              url('/assets/sjccc-view.jpg') center/cover no-repeat;
+  background: var(--bg-section-feature);
   color: var(--text-body);
 }
 
 html.dark-mode .gce-results-section::before,
 body.dark-mode .gce-results-section::before {
-  background: rgba(2, 12, 26, 0.92);
+  background: radial-gradient(circle at 50% 20%, rgba(201, 162, 41, 0.05), transparent 70%);
 }
 
 .gce-results-container {

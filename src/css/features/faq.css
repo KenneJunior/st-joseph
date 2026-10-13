@@ -631,24 +631,34 @@ body.dark-mode .faq-callout-body strong {
   margin: 0 auto 18px auto;
 }
 
-/* Still have questions CTA card */
-.faq-help-card {
+/* ============================================
+   STILL HAVE QUESTIONS CTA CARD (Theme-Responsive)
+   ============================================ */
+.faq-help-card,
+main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5) {
   margin-top: 40px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  background: var(--surface-card, #ffffff);
+  border: 1px solid var(--border-light, rgba(7, 24, 46, 0.1));
+  border-top: 3px solid var(--accent, #c9a229);
   border-radius: var(--radius-lg);
   padding: 36px 32px;
-  color: #ffffff;
+  color: var(--text-dark, #07182e);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  box-shadow: var(--card-shadow-hover);
+  box-shadow: 0 10px 30px -5px rgba(7, 24, 46, 0.08), 0 0 16px rgba(201, 162, 41, 0.08);
   position: relative;
   overflow: hidden;
+  transition: background var(--duration-fast, 200ms) ease,
+              border-color var(--duration-fast, 200ms) ease,
+              box-shadow var(--duration-fast, 200ms) ease,
+              color var(--duration-fast, 200ms) ease;
 }
 
-.faq-help-card::before {
+.faq-help-card::before,
+main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5)::before {
   content: '';
   position: absolute;
   top: -50%;
@@ -656,8 +666,9 @@ body.dark-mode .faq-callout-body strong {
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(200, 150, 62, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(200, 150, 62, 0.15) 0%, transparent 70%);
   pointer-events: none;
+  transition: background var(--duration-fast, 200ms) ease;
 }
 
 .faq-help-content {
@@ -668,15 +679,17 @@ body.dark-mode .faq-callout-body strong {
 .faq-help-title {
   font-family: var(--font-heading);
   font-size: 1.5rem;
-  color: #ffffff;
+  color: var(--text-dark, #07182e);
   margin-bottom: 8px;
+  transition: color var(--duration-fast, 200ms) ease;
 }
 
 .faq-help-desc {
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--text-body, #4a4a5e);
   font-size: 0.95rem;
   line-height: 1.6;
   margin-bottom: 0;
+  transition: color var(--duration-fast, 200ms) ease;
 }
 
 .faq-help-actions {
@@ -690,16 +703,16 @@ body.dark-mode .faq-callout-body strong {
   align-items: center;
   gap: 8px;
   background: var(--gold-gradient);
-  color: var(--primary-dark);
+  color: var(--primary-dark, #020c1a);
   font-weight: 700;
   font-size: 0.92rem;
   padding: 12px 22px;
   border-radius: var(--radius-sm);
-  border: none;
+  border: 1px solid rgba(201, 162, 41, 0.45);
   cursor: pointer;
   text-decoration: none;
   transition: all var(--transition-fast);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .faq-help-btn-primary:hover {
@@ -711,9 +724,9 @@ body.dark-mode .faq-callout-body strong {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(10, 31, 63, 0.05);
+  color: var(--primary, #0a1f3f);
+  border: 1px solid rgba(10, 31, 63, 0.18);
   font-weight: 600;
   font-size: 0.92rem;
   padding: 12px 22px;
@@ -724,9 +737,71 @@ body.dark-mode .faq-callout-body strong {
 }
 
 .faq-help-btn-secondary:hover {
+  background: rgba(10, 31, 63, 0.1);
+  border-color: var(--primary, #0a1f3f);
+  color: var(--primary-dark, #020c1a);
+  transform: translateY(-2px);
+}
+
+/* Dark Mode Overrides for FAQ Help Card */
+html.dark-mode .faq-help-card,
+body.dark-mode .faq-help-card,
+html.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5),
+body.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5) {
+  background: linear-gradient(135deg, rgba(13, 43, 82, 0.88) 0%, rgba(10, 31, 63, 0.96) 100%);
+  border: 1px solid rgba(201, 162, 41, 0.35);
+  border-top: 3px solid var(--accent, #d4a85a);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 24px rgba(201, 162, 41, 0.12);
+  color: #ffffff;
+}
+
+html.dark-mode .faq-help-card::before,
+body.dark-mode .faq-help-card::before,
+html.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5)::before,
+body.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5)::before {
+  background: radial-gradient(circle, rgba(200, 150, 62, 0.28) 0%, transparent 70%);
+}
+
+html.dark-mode .faq-help-card .faq-help-title,
+body.dark-mode .faq-help-card .faq-help-title,
+html.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5) .faq-help-title,
+body.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5) .faq-help-title {
+  color: #ffffff;
+}
+
+html.dark-mode .faq-help-card .faq-help-desc,
+body.dark-mode .faq-help-card .faq-help-desc,
+html.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5) .faq-help-desc,
+body.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5) .faq-help-desc {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+html.dark-mode .faq-help-card .faq-help-btn-primary,
+body.dark-mode .faq-help-card .faq-help-btn-primary,
+html.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5) .faq-help-btn-primary,
+body.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5) .faq-help-btn-primary {
+  background: var(--gold-gradient);
+  color: var(--primary-dark, #020c1a);
+  border-color: rgba(201, 162, 41, 0.6);
+  box-shadow: 0 4px 18px rgba(212, 168, 90, 0.35);
+}
+
+html.dark-mode .faq-help-card .faq-help-btn-secondary,
+body.dark-mode .faq-help-card .faq-help-btn-secondary,
+html.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5) .faq-help-btn-secondary,
+body.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5) .faq-help-btn-secondary {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+html.dark-mode .faq-help-card .faq-help-btn-secondary:hover,
+body.dark-mode .faq-help-card .faq-help-btn-secondary:hover,
+html.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5) .faq-help-btn-secondary:hover,
+body.dark-mode main#main-content:nth-of-type(1) > section#faq:nth-of-type(10) > div:nth-of-type(1) > div:nth-of-type(5) .faq-help-btn-secondary:hover {
   background: rgba(255, 255, 255, 0.22);
   border-color: #ffffff;
-  transform: translateY(-2px);
+  color: #ffffff;
 }
 
 @media (max-width: 1024px) {
