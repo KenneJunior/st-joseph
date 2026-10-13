@@ -343,6 +343,21 @@ describe('SchoolDatesTimeline - Multi-Select Category Checkboxes & Search Synerg
         expect(breakCount?.textContent).toBe('(3)');
         expect(spiritualCount?.textContent).toBe('(3)');
         expect(resumptionCount?.textContent).toBe('(4)');
+
+        // Test dynamic re-synchronization with custom dataset
+        const customSubset = ACADEMIC_MILESTONES_2026_2027.filter((m) => m.category === 'exam');
+        timeline.syncDomCounts(customSubset);
+
+        expect(allBtn.textContent).toContain(`(${customSubset.length})`);
+        expect(examCount?.textContent).toBe(`(${customSubset.length})`);
+        expect(breakCount?.textContent).toBe('(0)');
+        expect(spiritualCount?.textContent).toBe('(0)');
+        expect(resumptionCount?.textContent).toBe('(0)');
+
+        // Verify checkbox inputs, custom checkbox spans, and icons are still intact
+        expect(document.querySelectorAll('.timeline-category-checkbox').length).toBe(5);
+        expect(document.querySelectorAll('.timeline-custom-checkbox i').length).toBe(5);
+        expect(allBtn.textContent).toContain('All Milestones');
     });
 
     it('defensively renders chronological order when passed an unsorted milestone array (REC-01)', () => {
@@ -387,6 +402,46 @@ describe('SchoolDatesTimeline - Multi-Select Category Checkboxes & Search Synerg
         expect(term3Span).toEqual({
             start: '2027-04-12',
             end: '2027-06-25',
+        });
+    });
+
+    it('injects custom category-specific icons into milestone markers based on filtering state', () => {
+        const timeline = new SchoolDatesTimeline('schoolDatesSection');
+
+        // Check initial state: exams have book icon, breaks have sun icon
+        const examMilestones = document.querySelectorAll<HTMLElement>('.timeline-milestone[data-category="exam"]');
+        expect(examMilestones.length).toBeGreaterThan(0);
+        examMilestones.forEach((el) => {
+            const icon = el.querySelector('.timeline-node-marker i');
+            expect(icon?.className).toContain('bi-book');
+        });
+
+        const breakMilestones = document.querySelectorAll<HTMLElement>('.timeline-milestone[data-category="break"]');
+        expect(breakMilestones.length).toBeGreaterThan(0);
+        breakMilestones.forEach((el) => {
+            const icon = el.querySelector('.timeline-node-marker i');
+            expect(icon?.className).toContain('bi-sun');
+        });
+
+        // Filter specifically by exam category
+        const examCheckbox = document.getElementById('categoryFilterExams') as HTMLInputElement;
+        examCheckbox.checked = true;
+        examCheckbox.dispatchEvent(new window.Event('change'));
+
+        examMilestones.forEach((el) => {
+            const icon = el.querySelector('.timeline-node-marker i');
+            expect(icon?.className).toContain('bi-book');
+        });
+
+        // Filter specifically by break category
+        const breakCheckbox = document.getElementById('categoryFilterHolidays') as HTMLInputElement;
+        breakCheckbox.checked = true;
+        examCheckbox.checked = false;
+        breakCheckbox.dispatchEvent(new window.Event('change'));
+
+        breakMilestones.forEach((el) => {
+            const icon = el.querySelector('.timeline-node-marker i');
+            expect(icon?.className).toContain('bi-sun');
         });
     });
 });

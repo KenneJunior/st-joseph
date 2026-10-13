@@ -426,6 +426,50 @@ export class SchoolDatesTimeline {
         // Update drag-to-scroll indicators and spine line alignment
         this.dragScroller?.updateScrollIndicators();
         this.dragScroller?.syncSpineLine();
+
+        // Inject custom category-specific icons based on current filtering state
+        this.updateMilestoneCategoryIcons();
+    }
+
+    /**
+     * Updates milestone node markers with custom category-specific icons
+     * (e.g., a book for exams, a sun for breaks, door/backpack for resumptions, church/cross for spiritual)
+     * dynamically reflecting the active category filtering state.
+     */
+    public updateMilestoneCategoryIcons(): void {
+        const isExamFiltered = this.selectedCategories.has('exam') && this.selectedCategories.size === 1;
+        const isBreakFiltered = this.selectedCategories.has('break') && this.selectedCategories.size === 1;
+
+        this.timelineItems.forEach((item) => {
+            const category = item.dataset.category || '';
+            const markerEl = item.querySelector<HTMLElement>('.timeline-node-marker');
+            if (!markerEl) return;
+
+            let iconEl = markerEl.querySelector<HTMLElement>('i');
+            if (!iconEl) {
+                iconEl = document.createElement('i');
+                markerEl.appendChild(iconEl);
+            }
+
+            // Determine custom category icon class
+            // When specifically filtered by category, or generally categorized:
+            let iconClass = 'bi-circle-fill';
+            if (category === 'exam') {
+                // Book for exams (e.g. bi-book-half or bi-book)
+                iconClass = isExamFiltered ? 'bi-book-half' : 'bi-book';
+            } else if (category === 'break') {
+                // Sun for breaks (e.g. bi-sun-fill or bi-sun)
+                iconClass = isBreakFiltered ? 'bi-sun-fill' : 'bi-sun';
+            } else if (category === 'resumption') {
+                iconClass = 'bi-door-open-fill';
+            } else if (category === 'spiritual') {
+                iconClass = 'bi-bookmark-star-fill';
+            }
+
+            // Replace class list while preserving base 'bi'
+            iconEl.className = `bi ${iconClass}`;
+            markerEl.setAttribute('data-injected-category-icon', category);
+        });
     }
 
     private updateDisclosureButton(
@@ -592,35 +636,44 @@ export class SchoolDatesTimeline {
 
     /**
      * Synchronizes DOM milestone and category counts from the canonical milestone array
-     * without replacing button elements or mutating inner icon markup.
+     * based on data-category-count and data-term-count attributes,
+     * ensuring all icon elements (<i class="...">) and button structures remain completely intact.
      */
     public syncDomCounts(milestones: readonly AcademicMilestone[] = ACADEMIC_MILESTONES_2026_2027): void {
+        if (typeof document === 'undefined') return;
+
         const total = milestones.length;
 
-        // Total count in All Milestones tab
-        const allCountEl = document.querySelector<HTMLElement>('[data-term-count="all"], [data-category-count="all"]');
-        if (allCountEl) {
-            allCountEl.textContent = `(${total})`;
-        } else {
-            const allBtn = document.querySelector<HTMLButtonElement>('.timeline-tab-btn[data-timeline-filter="all"]');
-            if (allBtn) {
-                allBtn.childNodes.forEach((node) => {
+        // 1. Synchronize all dedicated data-category-count elements
+        const categoryCountEls = document.querySelectorAll<HTMLElement>('[data-category-count]');
+        categoryCountEls.forEach((el) => {
+            const cat = el.getAttribute('data-category-count');
+            if (!cat) return;
+            if (cat === 'all') {
+                el.textContent = `(${total})`;
+            } else {
+                const count = milestones.filter((m) => m.category === cat).length;
+                el.textContent = `(${count})`;
+            }
+        });
+
+        // 2. Synchronize all dedicated data-term-count="all" elements
+        const termCountEls = document.querySelectorAll<HTMLElement>('[data-term-count="all"]');
+        termCountEls.forEach((el) => {
+            el.textContent = `(${total})`;
+        });
+
+        // 3. Fallback for All Milestones tab buttons when no dedicated child count span is present
+        const allTabBtns = document.querySelectorAll<HTMLButtonElement>('.timeline-tab-btn[data-timeline-filter="all"]');
+        allTabBtns.forEach((btn) => {
+            if (!btn.querySelector('[data-term-count="all"], [data-category-count="all"]')) {
+                btn.childNodes.forEach((node) => {
                     if (node.nodeType === 3 && node.nodeValue && /\(\d+\)/.test(node.nodeValue)) {
                         node.nodeValue = node.nodeValue.replace(/\(\d+\)/, `(${total})`);
                     }
                 });
             }
-        }
-
-        // Supported category counts
-        const categories = ['exam', 'break', 'spiritual', 'resumption'] as const;
-        for (const cat of categories) {
-            const count = milestones.filter((m) => m.category === cat).length;
-            const el = document.querySelector<HTMLElement>(`[data-category-count="${cat}"]`);
-            if (el) {
-                el.textContent = `(${count})`;
-            }
-        }
+        });
     }
 
     public destroy(): void {
