@@ -567,7 +567,7 @@ body.dark-mode .timeline-track-container::-webkit-scrollbar-track {
 }
 
 .timeline-track-container::before {
-  top: 0;
+  top: -10px;
   margin-bottom: -44px;
   background: linear-gradient(
     180deg,
@@ -594,7 +594,7 @@ body.dark-mode .timeline-track-container::before {
 }
 
 .timeline-track-container::after {
-  bottom: 0;
+  bottom: -23px;
   margin-top: -44px;
   background: linear-gradient(
     0deg,
