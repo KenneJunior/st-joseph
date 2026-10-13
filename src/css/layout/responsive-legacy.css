@@ -76,7 +76,7 @@
   }
 
   .section-title {
-    font-size: clamp(1.45rem, 2.8vw, 1.95rem);
+    font-size: var(--fluid-h2);
     margin-bottom: 10px;
   }
 
@@ -130,7 +130,7 @@
   }
 
   .section-title {
-    font-size: clamp(1.12rem, 3.6vw, 1.35rem);
+    font-size: var(--fluid-h2);
     margin-bottom: 5px;
     line-height: 1.2;
   }
@@ -624,6 +624,27 @@
     gap: 4px;
   }
 
+  .timeline-checkbox-group {
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .timeline-category-checkbox-label {
+    padding: 5px 9px;
+    font-size: 0.72rem;
+    min-height: 34px;
+    gap: 6px;
+  }
+
+  .timeline-custom-checkbox {
+    width: 15px;
+    height: 15px;
+  }
+
+  .timeline-custom-checkbox i {
+    font-size: 0.68rem;
+  }
+
   .timeline-category-btn {
     padding: 3px 8px;
     font-size: 0.70rem;
@@ -904,7 +925,7 @@
   }
 
   .cta-banner h2 {
-    font-size: clamp(1.12rem, 3.8vw, 1.35rem);
+    font-size: var(--fluid-h2);
     margin-bottom: 4px;
   }
 
@@ -1010,7 +1031,7 @@
   }
 
   .section-title {
-    font-size: clamp(0.98rem, 3.8vw, 1.16rem);
+    font-size: var(--fluid-h2);
     margin-bottom: 4px;
   }
 
@@ -1294,7 +1315,7 @@
   }
 
   .cta-banner h2 {
-    font-size: clamp(0.98rem, 3.6vw, 1.15rem);
+    font-size: var(--fluid-h2);
     margin-bottom: 3px;
   }
 
@@ -1385,7 +1406,7 @@
   }
 
   .section-title {
-    font-size: clamp(0.90rem, 3.5vw, 1.05rem);
+    font-size: var(--fluid-h2);
     margin-bottom: 3px;
   }
 
@@ -1448,7 +1469,7 @@
   }
 
   .cta-banner h2 {
-    font-size: 0.94rem;
+    font-size: var(--fluid-h2);
   }
 
   .btn {
