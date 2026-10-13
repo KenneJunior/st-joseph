@@ -64,7 +64,7 @@ export class SearchHistoryDropdown {
         this.shouldSaveQuery = options.shouldSaveQuery;
         this.commitIdleMs = options.commitIdleMs ?? 1100;
 
-        if (!this.inputEl || !this.wrapperEl) return;
+        if (!this.inputEl || !this.wrapperEl || typeof document === 'undefined' || typeof document.createElement !== 'function') return;
 
         this.init();
     }
