@@ -95,14 +95,30 @@ export function renderTimelineMilestones(
                 </p>
                 ${highlightsHtml}
                 <div class="timeline-card-footer">
-                  <button type="button" class="btn btn-outline btn-calendar-action" data-milestone-id="${m.id}"
-                    aria-haspopup="dialog"
-                    aria-expanded="false"
-                    title="Add ${m.title} to Calendar"
-                    toolDescription="Choose Google Calendar, Outlook, or download calendar file (.ics).">
-                    <i class="bi bi-calendar-plus" aria-hidden="true"></i>
-                    <span>Add to Calendar</span>
-                  </button>
+                  <div class="timeline-footer-actions">
+                    <button type="button" class="btn btn-outline btn-calendar-action" data-milestone-id="${m.id}"
+                      aria-haspopup="dialog"
+                      aria-expanded="false"
+                      title="Add ${m.title} to Calendar"
+                      toolDescription="Choose Google Calendar, Outlook, or download calendar file (.ics).">
+                      <i class="bi bi-calendar-plus" aria-hidden="true"></i>
+                      <span>Add to Calendar</span>
+                    </button>
+                    <label class="timeline-remind-me-label" for="remind-me-${m.id}" title="Notify me 24 hours before ${m.title}">
+                      <input type="checkbox"
+                        id="remind-me-${m.id}"
+                        class="timeline-remind-me-checkbox"
+                        data-milestone-id="${m.id}"
+                        aria-label="Remind me 24 hours before ${m.title}">
+                      <span class="timeline-remind-me-custom-check" aria-hidden="true">
+                        <i class="bi bi-check2"></i>
+                      </span>
+                      <span class="timeline-remind-me-label-text">
+                        <i class="bi bi-bell-fill timeline-remind-bell-icon" aria-hidden="true"></i>
+                        <span>Remind me</span>
+                      </span>
+                    </label>
+                  </div>
                   ${noticeHtml}
                 </div>
               </div>

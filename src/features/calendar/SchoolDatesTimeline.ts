@@ -14,9 +14,10 @@ import { STORAGE_KEYS } from '../../core/storage/storageKeys.ts';
 import { SearchHistoryDropdown } from '../../ui/utils/SearchHistoryDropdown.ts';
 import { CalendarActionSheet } from './CalendarActionSheet.ts';
 import { TimelineDragScroller } from './TimelineDragScroller.ts';
+import { milestoneReminderService, MilestoneReminderService } from './MilestoneReminderService.ts';
 
 export type { AcademicMilestone };
-export { ACADEMIC_MILESTONES_2026_2027 };
+export { ACADEMIC_MILESTONES_2026_2027, milestoneReminderService, MilestoneReminderService };
 
 export class SchoolDatesTimeline {
     private readonly container: HTMLElement | null;
@@ -77,11 +78,16 @@ export class SchoolDatesTimeline {
         this.bindCalendarExports();
         this.updateNextMilestoneBanner();
         this.initDragScroller();
+        this.initReminders();
         this.checkDeepLinkTarget();
         this.syncCategoryCheckboxVisuals();
         this.applyFilters();
 
         window.addEventListener('hashchange', () => this.checkDeepLinkTarget());
+    }
+
+    private initReminders(): void {
+        milestoneReminderService.init(this.container);
     }
 
     private bindDisclosureEvents(): void {
@@ -91,6 +97,8 @@ export class SchoolDatesTimeline {
             e.preventDefault();
             this.showAllMilestones = !this.showAllMilestones;
             this.applyFilters();
+            milestoneReminderService.bindCheckboxEvents();
+            milestoneReminderService.syncCheckboxesFromStorage();
         });
     }
 
