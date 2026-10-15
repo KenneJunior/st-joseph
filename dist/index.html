@@ -1,0 +1,2752 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>St. Joseph's Catholic Comprehensive College | Mbengwi</title>
+
+  <!-- Theme Preference Initialization (Immediately restores saved theme on page reload without flash) -->
+  <script>
+    (function () {
+      try {
+        var storageKey = 'sjccc-theme';
+        var savedTheme = localStorage.getItem(storageKey) || localStorage.getItem('theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+        if (isDark) {
+          document.documentElement.classList.add('dark-mode');
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark-mode');
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch (e) { }
+    })();
+  </script>
+
+  <!-- Immediate Image Fallback Guard (Intercepts broken image links before paint) -->
+  <script>
+    (function () {
+      window.addEventListener('error', function (event) {
+        if (event.target && event.target.tagName === 'IMG') {
+          var img = event.target;
+          var fallback = img.classList && img.classList.contains('testimonial-avatar')
+            ? '/assets/icons/icon.svg'
+            : '/assets/Error-Image.jpeg';
+          if (!img.getAttribute('data-fallback-applied') && img.src.indexOf(fallback) === -1) {
+            img.setAttribute('data-fallback-applied', 'true');
+            img.src = fallback;
+          }
+        }
+      }, true);
+    })();
+  </script>
+
+  <!-- Immediate Stale Cache Cleanup (Clears corrupted CSS cache entries from earlier SW versions) -->
+  <script>
+    (function () {
+      if ('caches' in window) {
+        caches.keys().then(function (names) {
+          names.forEach(function (name) {
+            if (name.indexOf('v1.1') !== -1 || name.indexOf('v1.2') !== -1 || name.indexOf('v1.3') !== -1) {
+              caches.delete(name);
+            }
+          });
+        });
+      }
+    })();
+  </script>
+
+  <!-- SEO -->
+  <meta
+    content="St. Joseph's Catholic Comprehensive College Mbengwi offers a nurturing, holistic General and Technical education from Ordinary to Advanced Level. Discover a caring community in the North West Region of Cameroon."
+    name="description">
+  <meta
+    content="SJCCC Mbengwi, Catholic school Cameroon, GCE Ordinary Level, GCE Advanced Level, technical education Mbengwi, vocational training Bamenda, inclusive education"
+    name="keywords">
+  <link rel="icon" type="text/xml" href="/assets/icons/168X168.svg">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="canonical" href="https://saintjosephcollege.vercel.com">
+
+  <!-- Open Graph Base -->
+  <meta property="og:site_name" content="Saint Joseph College Mbengwi">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://saintjosephcollege.vercel.app/">
+  <meta property="og:title" content="St. Joseph's Catholic Comprehensive College – Mbengwi">
+  <meta
+    content="Explore SJCCC Mbengwi's General &amp; Technical academic curriculum (O/A-Levels &amp; 5 Technical trades) and navigate our interactive 6-zone campus map."
+    property="og:description">
+  <meta property="og:image" content="https://saintjosephcollege.vercel.app/assets/OG/SJCCC.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:alt" content="SJCCC Mbengwi academic blocks, technical workshops, and campus map">
+  <meta property="og:author" content="Kenne Boniface">
+  <meta property="og:creator" content="Kenne Boniface">
+  <meta property="og:published_time" content="2025-01-01T00:00:00Z">
+
+  <!-- Open Graph Sections Hierarchy -->
+  <meta property="og:section" content="General School">
+  <meta property="og:section" content="Academics">
+  <meta property="og:section" content="Campus Map">
+  <meta property="article:section" content="General School">
+  <meta property="article:section" content="Academics">
+  <meta property="article:section" content="Campus Map">
+
+  <!-- Open Graph Section: General School -->
+  <meta property="og:section:general-school" content="https://saintjosephcollege.vercel.app/">
+  <meta property="og:section:general-school:title" content="SJCCC Mbengwi – Holistic Catholic Education">
+  <meta property="og:section:general-school:description"
+    content="St. Joseph's Catholic Comprehensive College Mbengwi offers holistic moral, academic, and technical education in a disciplined Christian environment in Cameroon.">
+  <meta property="og:section:general-school:image"
+    content="https://saintjosephcollege.vercel.app/assets/sjccc-campus.jpg">
+  <meta property="og:section:general-school:image:width" content="1200">
+  <meta property="og:section:general-school:image:height" content="630">
+  <meta property="og:section:general-school:image:type" content="image/jpeg">
+  <meta property="og:section:general-school:image:alt"
+    content="St. Joseph Catholic Comprehensive College Mbengwi campus grounds and main buildings">
+  <meta property="og:section:general-school:url" content="https://saintjosephcollege.vercel.app/">
+  <meta property="og:section:school" content="https://saintjosephcollege.vercel.app/">
+  <meta property="og:section:general" content="https://saintjosephcollege.vercel.app/">
+
+  <!-- Open Graph Section: Academics -->
+  <meta property="og:section:academics" content="https://saintjosephcollege.vercel.app/#academics">
+  <meta property="og:section:academics:title" content="SJCCC Mbengwi – Academic Curriculum &amp; Technical Training">
+  <meta property="og:section:academics:description"
+    content="Explore SJCCC Mbengwi's dual-track academic excellence: General Education (O/A-Levels in Arts &amp; Sciences) and Technical Education (Building Construction, Electrical Power Systems, Fashion Design, Automobile Mechanics, and Home Economics).">
+  <meta property="og:section:academics:image"
+    content="https://saintjosephcollege.vercel.app/assets/sjccc-Classroom.jpg">
+  <meta property="og:section:academics:image:width" content="1200">
+  <meta property="og:section:academics:image:height" content="630">
+  <meta property="og:section:academics:image:type" content="image/jpeg">
+  <meta property="og:section:academics:image:alt"
+    content="SJCCC Mbengwi students engaged in academic study and vocational workshops">
+  <meta property="og:section:academics:url" content="https://saintjosephcollege.vercel.app/#academics">
+
+  <!-- Open Graph Section: Campus Map -->
+  <meta property="og:section:campus-map" content="https://saintjosephcollege.vercel.app/#campus-map">
+  <meta property="og:section:campus-map:title" content="SJCCC Mbengwi – Interactive Campus Map &amp; Facilities">
+  <meta property="og:section:campus-map:description"
+    content="Navigate SJCCC Mbengwi's 6-zone campus grounds: Saint Joseph Jubilee Hall, Administrative Block, Science &amp; Technical Workshops, Sacred Heart Chapel, Boarding Dormitories, and Athletic Grounds.">
+  <meta property="og:section:campus-map:image" content="https://saintjosephcollege.vercel.app/assets/campus_map.jpg">
+  <meta property="og:section:campus-map:image:width" content="1200">
+  <meta property="og:section:campus-map:image:height" content="630">
+  <meta property="og:section:campus-map:image:type" content="image/jpeg">
+  <meta property="og:section:campus-map:image:alt"
+    content="Illustrated Campus Map of St. Joseph Catholic Comprehensive College Mbengwi">
+  <meta property="og:section:campus-map:url" content="https://saintjosephcollege.vercel.app/#campus-map">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SJCCC Mbengwi – Academics &amp; Interactive Campus Map">
+  <meta
+    content="Tour SJCCC Mbengwi: General and Technical academic tracks (O/A-Levels, vocational workshops) plus our interactive 6-zone campus map. Enroll today."
+    name="twitter:description">
+  <meta name="twitter:image" content="https://saintjosephcollege.vercel.app/assets/OG/SJCCC.jpg">
+  <meta name="twitter:image:alt" content="SJCCC Mbengwi academic blocks, technical workshops, and campus map">
+  <meta name="twitter:section:general-school:title" content="SJCCC Mbengwi – Holistic Catholic Education">
+  <meta name="twitter:section:general-school:description"
+    content="Discover SJCCC Mbengwi: Premier Catholic boarding college in Cameroon offering holistic moral, academic, and technical education.">
+  <meta name="twitter:section:general-school:image"
+    content="https://saintjosephcollege.vercel.app/assets/sjccc-campus.jpg">
+  <meta name="twitter:section:academics:title" content="SJCCC Mbengwi – Academic Curriculum &amp; Technical Training">
+  <meta name="twitter:section:academics:description"
+    content="Explore SJCCC Mbengwi's dual-track academic excellence: General O/A-Levels &amp; 5 Technical trades in a serene boarding environment.">
+  <meta name="twitter:section:academics:image"
+    content="https://saintjosephcollege.vercel.app/assets/sjccc-Classroom.jpg">
+  <meta name="twitter:section:campus-map:title" content="SJCCC Mbengwi – Interactive Campus Map &amp; Facilities">
+  <meta name="twitter:section:campus-map:description"
+    content="Navigate SJCCC Mbengwi's peaceful 6-zone boarding campus: Academic blocks, technical workshops, chapel, dormitories, and athletic fields.">
+  <meta name="twitter:section:campus-map:image" content="https://saintjosephcollege.vercel.app/assets/campus_map.jpg">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Saint Joseph College Mbengwi">
+
+  <!-- Structured Data: FAQPage (Build-Time Generated from Canonical faqData) -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What are the admission requirements for Form One (First Cycle)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Admission into Form One at SJCCC Mbengwi is open to pupils completing primary education with strong moral standing and academic readiness. The formal entry requirements include: Government Common Entrance Examination: A verifiable pass in the National Common Entrance Examination. Birth Certificate: A clear photocopy of the applicant's official birth certificate. Progress Card: A recent progress card (school booklet/report card) certifying completion of Class Six with satisfactory academic performance and conduct. Transfer Certificate: For pupils coming from outside institutions, an official transfer certificate from the previous school head. Entrance Interview: Attendance at the annual Form One interviews held on campus in early August. Interviews Date: Form One interviews take place on Tuesday, 4th August 2026 at 9:00 AM on the college campus in Mbengwi. Early registrations can be initiated online through our enquiry portal."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the entry criteria for Lower Sixth (Second Cycle Arts, Science & Commercial)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Admission to the Second Cycle (Lower Sixth) requires students to have demonstrated solid academic foundation in their GCE Ordinary Level examinations. Candidates must provide: GCE Ordinary Level Passes: A pass in at least four (4) GCE Ordinary Level subjects forming an approved combination in Arts, Science, or Commercial streams. Official Result Slip: A certified photocopy of the Cameroon GCE Ordinary Level results slip or certificate. Birth Certificate: A certified photocopy of the applicant's birth certificate. Formal Application: A handwritten formal application letter addressed directly to the Principal expressing the candidate's chosen combination and educational motivation. Upper Sixth transfers are considered strictly upon review of the student's Lower Sixth progress records and good disciplinary standing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What technical and vocational departments are offered for Forms 1 to 3?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In accordance with our mission to educate both minds and hands ( \"Edificamus Regnum Dei\" ), SJCCC offers accredited technical and vocational departments alongside general grammar education. In Forms 1 through 3, students can enroll in: Building Construction (CE-BC): Practical masonry, architectural drawing fundamentals, and structural civil works. Fashion Design & Clothing (FE): Garment design, pattern drafting, textile cutting, and professional tailoring techniques. Electrical Power Systems (EPS): Domestic wiring, electrical installation, machine repair, and circuitry principles. Automobile Repair Mechanics (ARM): Engine mechanics, diagnostic maintenance, vehicle mechanics, and workshop safety. Home Economics (HEc): Nutrition, food technology, hospitality craft, and family resource management. Students benefit from practical workshop sessions supervised by experienced technical instructors, equipping them with self-reliant trade skills."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "When do entrance interviews happen and what should candidates bring?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The annual Form One entrance interview takes place in August on the SJCCC Mbengwi campus starting promptly at 9:00 AM. On interview day, candidates should arrive neatly dressed accompanied by a parent or guardian and bring: Writing materials (blue/black pens, pencils, eraser, and ruler). Original Primary School progress booklet (report card). Common Entrance Examination candidate slip or registration proof. Birth certificate photocopy. The interview evaluates basic numeracy, literacy, and readiness for a structured boarding routine. Families unable to travel on the scheduled date should contact the administration via WhatsApp (+237 682 760 271) to arrange a provisional assessment."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can students transfer into intermediate classes (Forms 2, 3, 4, or Upper Sixth)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. SJCCC Mbengwi accepts transfer students into intermediate classes provided space is available in the requested department and the student meets our character standards. Transfer Certificate: An official transfer certificate duly signed and stamped by the Principal or Head of the previous school. Progress Card & Term Reports: Academic transcripts showing consistent attendance, passing marks, and no unresolved disciplinary suspensions. Parent/Guardian Interview: A short consultative interview with the Principal or Vice-Principal to ensure alignment with college rules. Transfers into candidate classes (Form Five and Upper Sixth) are accepted only under exceptional circumstances and require early clearance before examination registration deadlines."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the boarding facilities and living conditions like at SJCCC Mbengwi?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SJCCC Mbengwi is a co-educational Catholic boarding college situated in Momo Division, North West Region of Cameroon. Our campus offers a tranquil, green, and secure setting completely secluded from urban noise and distractions. Separate Residential Dormitories: Gated, dedicated dormitories for boys and girls with strict access controls and round-the-clock supervision. Dedicated Pastoral Team: Live-in House Masters, Matrons, and religious faculty ensure student welfare, discipline, character guidance, and security 24 hours a day. Structured Study Routine: Supervised morning and evening study halls (prep) fostering academic discipline, punctuality, and peer collaboration. Recreation & Faith: On-campus Catholic chapel for spiritual growth, dining hall serving balanced meals, sports courts, and playing fields for football, handball, and athletics."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What essential bedding, clothing, and toiletry items must boarders bring?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To ensure personal comfort, hygiene, and neatness, every boarding student must bring the following official items on resumption day: Mattress & Bedding: One single mattress (1.90m X 70cm). For Form One students, the mattress MUST be covered with protective waterproof plastic material. Bring a thick blanket, two sets of bed sheets (blue or green), a pillow, and two pillowcases. Prescribed Footwear: Official brown sandals for daily classes (purchased on campus or matching college design), black formal shoes for Sundays/feast days, and sports shoes/football boots. Compound & Sports Wear: Two sets of compound wear (white sleeveless gowns with gathers for girls; black trousers and white short-sleeve shirts for boys). Sports wear obtained according to house colours (Peter: White, François: Yellow, Chanel: Red, Champagnat: Green). Cutlery & Hygiene: Two silver plates, spoons, fork, table knife, two cups with handles, drinking water flask, large bucket for laundry and bathing, umbrella or raincoat, torchlight, padlocks with keys for lockers, and toiletries (bathing/laundry soap, toothbrush, toothpaste, sanitary towels for girls). Important Labelling: Parents must permanently mark every single piece of clothing and personal equipment with the student's name or initials before arrival to prevent mix-ups."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the policy on visiting days and contacting boarders during the term?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To preserve campus serenity and keep students focused on academic and moral growth, visits are strictly regulated: Scheduled Visiting Days: Visiting occurs once per term on a date communicated to parents in advance on the school calendar. Visiting Hours: Visiting day begins with Holy Mass at 9:00 AM and concludes promptly at 4:30 PM. Eligible Visitors: Only verified parents and officially designated immediate guardians are permitted to visit. Unscheduled or surprise visits are strictly prohibited. Exit Passes: Once on campus, exit passes to leave the college are not granted except for urgent family funerals of parents or siblings. Students whose parents live outside Bamenda/Mbengwi must have a registered local guardian."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How are healthcare and medical emergencies managed on campus?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The health and well-being of our students are guarded with diligent Catholic pastoral care: Campus Infirmary & Resident Nurse: SJCCC operates an on-campus clinic staffed by a qualified resident nurse who provides daily consultation, first aid, and basic healthcare. BEPHA Mutual Health Coverage: Every enrolled student is registered in BEPHA (the Catholic Mutual Health Insurance Scheme of the Archdiocese of Bamenda), covered within the statutory health fee. Hospital Referrals: In cases requiring specialized medical treatment, students are transported to the reference hospital immediately, and parents or guardians are contacted without delay. Special Diet Notice: The college serves wholesome, balanced communal meals. Please note that students requiring personalized or restrictive medical diets cannot be admitted, as the institution cannot provide separate kitchen catering."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What items are strictly prohibited in the boarding dormitories?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To safeguard moral uprightness, discipline, and fire safety across the compound, the following items are strictly contraband. When found, they are permanently confiscated and will not be returned: Electronic Devices: Mobile phones, smartphones, tablets, digital cameras, personal radios, and walkmans/MP3 players. Heating Appliances: Electric irons, hot plates, immersion boiling rings, and unauthorised wiring. Unauthorized Clothing & Shoes: Non-uniform casual clothing, high-heeled shoes, slippers outside dormitories, or fancy footwear. Food & Consumables: Cooked food brought from outside, garri, alcohol, and cigarettes. Food supplies are permitted only on designated visiting days. Cosmetics & Jewelry: Chemical bleaching lotions, hair-tinting chemicals, nail hardener/polish, necklaces, rings, and decorative jewelry."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the total school fee structure and what does it include?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SJCCC Mbengwi operates with complete financial transparency under the Archdiocese of Bamenda. The approved fees for the 2026/2027 academic session (all in FCFA) are: Fee Item Amount (FCFA) Boarding & Catering 112,000 Tuition (1st or 2nd Cycle) 63,000 Registration Fee 5,000 Health & BEPHA Mutual Insurance 5,000 Examination Fee 4,000 PTA Contribution 3,000 Student Identity Card 1,000 Practical Fee (Technical & Science classes) 5,000 C.R.S.E Fee (Form 3 & Lower Sixth) 2,500 The standard baseline boarding fee total is 193,000 FCFA (or up to 200,500 FCFA for technical/science students including practicals and CRSE)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can school fees be paid in installments?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The college provides an installment plan to help families manage educational expenses comfortably: First Installment: Payable during July, August, or September prior to or on resumption day. This clears boarding deposit, registration, and initial tuition. Second Installment: Due and payable before the end of January of the academic school year. Mandatory Rule for Examination Classes: Form Five and Upper Sixth candidates are required to pay all school fees in full on or before the reopening of the school year. This prevents class suspensions and guarantees timely registration with the Cameroon GCE Board."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where and how should school fee payments be deposited?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For safety, audit compliance, and accounting precision, school fees must never be handed as cash to staff or intermediaries. All payments must be deposited directly through our official financial partner: Institution: OPUS SECURITATIS (OPSEC) Microfinance Account Name: St. Joseph Cath. Col Mbengwi Account Number: 100117 Main Branch: All Saints Business Center, Mile 2 Nkwen, Bamenda (or any OPSEC branch across Cameroon) Obtaining Your Official Receipt: Present the stamped OPSEC bank deposit teller to the College Bursar on campus upon resumption to receive your computerized college receipt."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is student pocket money managed on campus?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To eliminate theft, peer conflict, and misuse of money, students are strictly forbidden from keeping physical money in dormitories, school bags, or classrooms. Deposit with the Bursar: All pocket money must be handed to the College Bursar on resumption day. Individual Student Ledgers: The Bursar records the deposit in the student's personal pocket money account. Regulated Disbursements: Small regulated amounts are disbursed periodically for necessary personal items, haircuts, or stamps. Maximum Allowance: In keeping with college guidelines, termly pocket money should not exceed 25,000 FCFA per term."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are there any additional fees or hidden charges during the academic year?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "There are no hidden charges. All mandatory institutional costs are included in the published fees. Transparent incidental costs that families should plan for include: External GCE Board Registration: Registration fees for the Cameroon GCE Ordinary or Advanced Level examinations for Form 5 and Upper Sixth candidates (fixed independently by the GCE Board). Textbooks & Stationery: Personal writing materials, 80-leaf exercise books (Forms 1-2), and ledgers (Forms 3 through Upper Sixth). Practical Projects & Field Trips: Specific technical workshops or educational excursions (e.g. building site visits or geography field study) may require modest ancillary contributions communicated in advance by letter."
+      }
+    }
+  ]
+}
+  </script>
+
+  <!-- Critical Hero Image Preload -->
+  <link rel="preload" as="image" href="/assets/stJoseph.jpg" fetchpriority="high">
+
+  <!-- Hidden News Cards Image Preloader (Pre-fetches & decodes news card media to eliminate layout shifts & delays) -->
+  <script>
+    (function () {
+      var newsCardImages = [
+        '/assets/sjccc-trophies.jpg',
+        '/assets/sjccc-graduants-0.jpg',
+        '/assets/sjccc-Electricity.jpeg',
+        '/assets/sjccc-student-in-chapel-1.png'
+      ];
+
+      var preloadNewsImages = function () {
+        window.__sjcccPrefetchedImages = window.__sjcccPrefetchedImages || [];
+        newsCardImages.forEach(function (src) {
+          // Offscreen hidden image allocation for memory cache & async raster decode
+          var img = new Image();
+          img.decoding = 'async';
+          img.src = src;
+          if (typeof img.decode === 'function') {
+            img.decode().catch(function () { });
+          }
+          window.__sjcccPrefetchedImages.push(img);
+
+          // Declarative prefetch link for browser HTTP disk cache
+          try {
+            var prefetchLink = document.createElement('link');
+            prefetchLink.rel = 'prefetch';
+            prefetchLink.as = 'image';
+            prefetchLink.href = src;
+            document.head.appendChild(prefetchLink);
+          } catch (e) { }
+        });
+      };
+
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(preloadNewsImages, { timeout: 1500 });
+      } else if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(preloadNewsImages, 100);
+      } else {
+        document.addEventListener('DOMContentLoaded', function () {
+          setTimeout(preloadNewsImages, 100);
+        });
+      }
+    })();
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&amp;display=swap"
+    rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="apple-touch-icon" href="/assets/icons/Apple/apple-icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2064-2752.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2752-2064.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2048-2732.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2732-2048.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1668-2420.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1210px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2420-1668.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1210px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1668-2388.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2388-1668.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1668-2224.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2224-1668.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1536-2048.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2048-1536.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1640-2360.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2360-1640.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1620-2160.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2160-1620.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1488-2266.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2266-1488.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1320-2868.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2868-1320.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1206-2622.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2622-1206.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1260-2736.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2736-1260.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1290-2796.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2796-1290.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1179-2556.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2556-1179.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1170-2532.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2532-1170.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1284-2778.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2778-1284.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1080-2340.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2340-1080.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1242-2688.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2688-1242.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1125-2436.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2436-1125.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-828-1792.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1792-828.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1242-2208.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-2208-1242.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-750-1334.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1334-750.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-640-1136.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="/assets/icons/Apple/apple-splash-dark-1136-640.jpg"
+    media="(prefers-color-scheme: dark) and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <script type="module" crossorigin src="/assets/main-DlLmgSNO.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/diagnostics-Ctwy5by9.js">
+  <link rel="stylesheet" crossorigin href="/assets/main-oK-mpNNh.css">
+</head>
+
+<body>
+  <script>
+    if (document.documentElement.classList.contains('dark-mode')) {
+      document.body.classList.add('dark-mode');
+    }
+  </script>
+  <div class="wco-titlebar" id="wcoTitlebar">
+    <div class="wco-titlebar__logo">
+      <!-- Small SJCCC icon -->
+      <svg width="20" height="20" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="200" rx="45" fill="#07182E" />
+        <circle cx="100" cy="100" r="68" stroke="#C9A229" stroke-width="2" />
+        <path d="M100 65L100 120" stroke="#C9A229" stroke-width="4" stroke-linecap="round" />
+        <path d="M80 85Q100 80 120 85" stroke="#C9A229" stroke-width="4" stroke-linecap="round" fill="none" />
+      </svg>
+      <span>SJCCC Home</span>
+    </div>
+    <div class="wco-titlebar__actions">
+      <button class="wco-titlebar__btn" id="wcoDarkModeToggle" title="Toggle theme"
+        toolDescription="Toggle the website between light and dark mode for more comfortable reading.">
+        <i class="bi bi-circle-half"></i>
+      </button>
+    </div>
+  </div>
+  <!-- Skip to main content -->
+  <a href="#main-content" class="skip-link"
+    toolDescription="Jump directly to the main content and skip the header and navigation.">Skip to main content</a>
+
+  <!-- =================== PRELOADER ========================== -->
+  <div id="preloader">
+
+    <!-- Container for both halves -->
+    <div class="preloader-container">
+      <div class="preloader-top-half" id="preloaderTopHalf"></div>
+      <div class="preloader-bottom-half" id="preloaderBottomHalf"></div>
+    </div>
+    <div class="preloader-particles" id="preloaderParticles"></div>
+
+    <!-- Center content -->
+    <div class="preloader-content" id="preloaderContent">
+      <div>
+        <img class="preloader-logo" src="/assets/icons/512X512.svg" alt="Saint Joseph's Catholic Comprehensive College">
+      </div>
+      <div class="preloader-title">St. Joseph's Catholic</div>
+      <div class="preloader-subtitle">Comprehensive College</div>
+      <div class="preloader-motto">"Edificamus Regnum Dei – Let us build the Kingdom of God"</div>
+      <div class="preloader-progress">
+        <div class="preloader-progress-bar" id="preloaderProgressBar"></div>
+      </div>
+      <div class="preloader-percentage" id="preloaderPercentage">0%</div>
+    </div>
+  </div>
+
+  <!-- ==================== HEADER ==================== -->
+  <header id="mainHeader">
+    <div class="header-inner">
+      <a href="/" class="logo-container" aria-label="St. Joseph's Catholic Comprehensive College Mbengwi Home">
+        <div class="logo-icon">SJCCC</div>
+        <span class="logo-text">St. Joseph's Catholic<small>Comprehensive College · Mbengwi</small>
+          <em class="logo-motto">"Edificamus Regnum Dei – Let us build the Kingdom of God"</em>
+        </span>
+      </a>
+      <nav id="navMenu">
+        <a href="#heroSection" class="nav-link" title="Home" aria-label="Home"
+          toolDescription="Go to the main home section of the school website."><i class="bi bi-house nav-icon"></i><span
+            class="nav-text">Home</span></a>
+        <a href="#about" class="nav-link" title="About" aria-label="About"
+          toolDescription="View the school overview and community information section."><i
+            class="bi bi-info-circle nav-icon"></i><span class="nav-text">About</span></a>
+        <a href="#academics" class="nav-link" title="Academics" aria-label="Academics"
+          toolDescription="Open the academic and technical programmes offered by the school."><i
+            class="bi bi-book nav-icon"></i><span class="nav-text">Academics</span></a>
+        <a href="#schoolDatesSection" class="nav-link" title="School Dates" aria-label="School Dates"
+          toolDescription="View upcoming school dates and academic milestones for the 2026/2027 year."><i
+            class="bi bi-calendar-check nav-icon"></i><span class="nav-text">Dates</span></a>
+        <a href="#news-events" class="nav-link" title="News" aria-label="News"
+          toolDescription="Browse the latest news, updates, and school events."><i
+            class="bi bi-newspaper nav-icon"></i><span class="nav-text">News</span></a>
+        <a href="#results" class="nav-link" title="GCE Results" aria-label="GCE Results"
+          toolDescription="View official 2026 GCE examination results and academic achievements."><i
+            class="bi bi-award nav-icon"></i><span class="nav-text">2026 Results</span></a>
+        <a href="#campus" class="nav-link" title="Campus Life" aria-label="Campus Life"
+          toolDescription="Explore campus life, activities, and the learning environment."><i
+            class="bi bi-geo-alt nav-icon"></i><span class="nav-text">Campus Life</span></a>
+        <a href="#campusMapSection" class="nav-link" title="Campus Map" aria-label="Campus Map"
+          toolDescription="Explore our interactive virtual campus map with facility photos and details."><i
+            class="bi bi-map nav-icon"></i><span class="nav-text">Campus Map</span></a>
+        <a href="#faq" class="nav-link" title="FAQ" aria-label="FAQ"
+          toolDescription="Browse answers to frequently asked questions about admission requirements, boarding facilities, and school fees."><i
+            class="bi bi-question-circle nav-icon"></i><span class="nav-text">FAQ</span></a>
+        <a href="#contact" class="nav-link" title="Contact" aria-label="Contact"
+          toolDescription="Go to the contact section to speak with the school or ask for admission information."><i
+            class="bi bi-envelope nav-icon"></i><span class="nav-text">Contact</span></a>
+        <a href="/prospectus.html" class="nav-link" title="Prospectus" aria-label="Prospectus"
+          toolDescription="Open the student prospectus for detailed school information and programme details."><i
+            class="bi bi-file-earmark-pdf nav-icon"></i><span class="nav-text">Prospectus</span></a>
+        <a href="#" class="nav-link" id="installApp" title="Install App" aria-label="Install App"
+          toolDescription="install the the site as an app on your device."><i class="bi bi-phone nav-icon"></i><span
+            class="nav-text">Install App</span></a>
+      </nav>
+      <div class="header-actions">
+        <button type="button" class="theme-toggle-btn header-theme-toggle" id="themeToggle"
+          title="Switch light/dark mode" aria-label="Switch light/dark mode" data-theme-toggle
+          toolDescription="Switch the website between light and dark theme.">
+          <span class="theme-icon-wrapper" aria-hidden="true">
+            <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" fill-opacity="0.25"></path>
+              <path d="M19 3v4" stroke-width="1.75"></path>
+              <path d="M17 5h4" stroke-width="1.75"></path>
+            </svg>
+            <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4.5" fill="currentColor" fill-opacity="0.25"></circle>
+              <line x1="12" y1="2" x2="12" y2="4.5"></line>
+              <line x1="12" y1="19.5" x2="12" y2="22"></line>
+              <line x1="4.22" y1="4.22" x2="5.99" y2="5.99"></line>
+              <line x1="18.01" y1="18.01" x2="19.78" y2="19.78"></line>
+              <line x1="2" y1="12" x2="4.5" y2="12"></line>
+              <line x1="19.5" y1="12" x2="22" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.99" y2="18.01"></line>
+              <line x1="18.01" y1="5.99" x2="19.78" y2="4.22"></line>
+            </svg>
+          </span>
+        </button>
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation" aria-expanded="false"
+          aria-controls="navMenu"
+          toolDescription="Open or close the mobile navigation menu so visitors can access page sections easily.">
+          <i class="bi bi-list" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Bottom Tab Bar (Compact mode navigation for devices < 768px) -->
+  <nav class="mobile-bottom-bar" id="mobileBottomBar" aria-label="Mobile Navigation">
+    <div class="mobile-bottom-glider" id="mobileBottomGlider" aria-hidden="true"></div>
+    <button type="button" class="mobile-bottom-item mobile-bottom-item--theme" id="bottomThemeToggle" data-theme-toggle
+      aria-label="Switch theme" title="Switch theme" toolDescription="Switch the website between light and dark theme.">
+      <i class="bi bi-sun-fill theme-icon-light" aria-hidden="true"></i>
+      <i class="bi bi-moon-stars-fill theme-icon-dark" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">
+        <span class="theme-name-text theme-name-light">Light Mode</span>
+        <span class="theme-name-text theme-name-dark">Dark Mode</span>
+      </span>
+    </button>
+    <a href="#heroSection" class="mobile-bottom-item mobile-bottom-item--home active" data-nav-target="heroSection"
+      aria-label="Home" aria-current="location" toolDescription="Navigate to Home section">
+      <i class="bi bi-house-door-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Home</span>
+    </a>
+    <a href="#academics" class="mobile-bottom-item mobile-bottom-item--academics" data-nav-target="academics"
+      aria-label="Academics" toolDescription="Navigate to Academics section">
+      <i class="bi bi-mortarboard-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Academics</span>
+    </a>
+    <a href="#schoolDatesSection" class="mobile-bottom-item mobile-bottom-item--dates"
+      data-nav-target="schoolDatesSection" aria-label="School Dates"
+      toolDescription="View upcoming school dates and academic milestones">
+      <i class="bi bi-calendar-check-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Dates</span>
+    </a>
+    <a href="#results" class="mobile-bottom-item mobile-bottom-item--results" data-nav-target="results"
+      aria-label="2026 Results" toolDescription="Navigate to GCE Results">
+      <i class="bi bi-award-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Results</span>
+    </a>
+    <a href="#campusMapSection" class="mobile-bottom-item mobile-bottom-item--map" data-nav-target="campusMapSection"
+      aria-label="Campus Map" toolDescription="View Campus Map">
+      <i class="bi bi-map-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Map</span>
+    </a>
+    <button type="button" class="mobile-bottom-item mobile-bottom-item--menu mobile-bottom-toggle"
+      id="bottomNavMenuToggle" aria-label="Open Full Navigation Menu" aria-controls="navMenu" aria-expanded="false"
+      toolDescription="Open full navigation drawer">
+      <i class="bi bi-grid-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Menu</span>
+    </button>
+  </nav>
+
+  <!-- Announcement Bar -->
+  <aside id="announcementBar" class="announcement-bar" role="region" aria-label="Important school announcement"
+    data-announcement-id="school-resumption-2026" data-priority="urgent" data-published-at="2026-08-21T08:00:00Z">
+    <div class="announcement-bar__inner">
+      <!-- Column 1: Urgent Message, Read More & Close -->
+      <div class="announcement-bar__col announcement-bar__col--primary announcement-bar__content">
+        <span class="announcement-priority priority-urgent" data-priority="urgent" role="status"
+          aria-label="Priority: Urgent Notice">
+          <span class="priority-dot" aria-hidden="true"></span>
+          <i class="bi bi-exclamation-triangle-fill priority-icon" aria-hidden="true"></i>
+          <span class="priority-label">Urgent</span>
+        </span>
+        <div class="announcement-bar__text-wrap">
+          <div class="announcement-bar__message">
+            <i class="bi bi-megaphone-fill announcement-bar__icon" aria-hidden="true"></i>
+            <strong class="announcement-bar__title">School Resumption 2026/2027:</strong>
+            <span class="announcement-bar__date">New Students: 21 Aug · Returning: 2 Sept (8:00 AM Prompt)</span>
+            <span class="announcement-bar__more-content" id="announcementMoreContent" hidden>
+              — Boarding Check-In Notice: All boarders must report with tuition fee bank receipts, prescribed college
+              uniforms, textbooks, and personal toiletries. Dormitory allocations and orientation commence at 8:00 AM.
+            </span>
+          </div>
+        </div>
+        <div class="announcement-bar__content-actions">
+          <button type="button" class="announcement-bar__toggle-btn" id="announcementToggleBtn" aria-expanded="false"
+            aria-controls="announcementMoreContent" data-tooltip="Toggle full announcement details"
+            title="Toggle full notice details" toolDescription="Expand or collapse the full announcement text details.">
+            <span class="toggle-text">Read more</span>
+            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="announcement-bar__action-btn announcement-bar__close" id="announcementClose"
+            data-tooltip="Dismiss notice banner" aria-label="Dismiss announcement" title="Dismiss notice"
+            toolDescription="Dismiss this important announcement banner from the page.">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Column 2: Resumption Schedule, Mark as Read & Historical Announcements Archive -->
+      <div class="announcement-bar__col announcement-bar__col--secondary announcement-bar__actions" role="toolbar"
+        aria-label="Announcement actions">
+        <a href="#schoolDatesSection" class="announcement-bar__action-btn announcement-bar__link announcement-bar__cta"
+          data-tooltip="View resumption dates &amp; schedule" title="View detailed resumption schedule"
+          toolDescription="View detailed dates and academic schedule.">
+          <i class="bi bi-calendar2-week cta-icon" aria-hidden="true"></i>
+          <span class="action-btn-text cta-text"><span class="cta-text-prefix">Resumption </span>Schedule</span>
+          <i class="bi bi-arrow-right cta-arrow" aria-hidden="true"></i>
+        </a>
+        <div class="announcement-bar__secondary-actions" role="group" aria-label="Secondary announcement actions">
+          <button type="button" class="announcement-bar__action-btn announcement-bar__mark-read-btn notice-read-receipt"
+            id="announcementMarkReadBtn" aria-pressed="false" data-tooltip="Mark notice as read"
+            title="Mark this announcement as read (persists across visits)"
+            toolDescription="Dim this announcement across your visits to acknowledge you have read it.">
+            <i class="bi bi-check2" aria-hidden="true"></i>
+            <span class="action-btn-text mark-read-text">Mark as read</span>
+          </button>
+          <button type="button" class="announcement-bar__action-btn announcement-bar__past-btn"
+            id="viewPastAnnouncementsBtn" aria-haspopup="dialog" aria-controls="pastAnnouncementsModal"
+            data-tooltip="Historical announcements archive" title="View historical school notices archive"
+            toolDescription="Open the historical school announcements modal archive.">
+            <i class="bi bi-clock-history" aria-hidden="true"></i>
+            <span class="action-btn-text past-btn-text">Past Notices</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="announcement-bar__progress" aria-hidden="true"></div>
+  </aside>
+
+  <!-- Ambient Dust Particles Canvas across the whole page -->
+  <canvas id="dustCanvas" class="dust-particles-canvas" aria-hidden="true" data-density="0.65" data-speed="0.55"
+    data-opacity="0.42"></canvas>
+
+  <main id="main-content" class="">
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section id="heroSection" class="hero-section">
+      <div class="sticky-container">
+        <div class="hero-bg-layer">
+          <div class="hero-bg-img"></div>
+          <div class="hero-overlay"></div>
+          <div class="hero-particles" id="heroParticles"></div>
+        </div>
+        <div class="school-header">
+          <h1 class="school-name" aria-label="St. Joseph's Catholic Comprehensive College Mbengwi">
+            St. Joseph's <span class="gold-shimmer">Catholic</span><br>Comprehensive College Mbengwi
+          </h1> <span class="hero-badge">Edificamus Regnum Dei – Let us build the Kingdom of God</span>
+
+        </div>
+        <div class="scroll-message-wrapper" id="messageContainer" data-dir="down">
+        </div>
+        <div class="hero-buttons">
+          <a class="btn btn-primary" href="/prospectus.html"
+            toolDescription="Open the student prospectus to learn about the school, admissions, and programmes."><i
+              class="bi bi-file-earmark-pdf"></i> View Student Prospectus</a>
+          <button id="getInTouchBtn" class="btn btn-outline"
+            toolDescription="Open the contact section to ask a question or start the admission enquiry process."><i
+              class="bi bi-envelope"></i> Get In Touch</button>
+        </div>
+        <div class="hero-scroll-indicator">
+          <span></span>
+        </div>
+      </div>
+    </section>
+    <div id="a11y-announcer" class="sr-only" aria-live="polite"
+      style="position:fixed; width:1px; height:1px; overflow:hidden;"></div>
+    <nav class="scroll-progress-hud" id="scrollProgress" aria-label="Message navigation">
+      <div class="hud-counter" id="hudCounter">01 / 07</div>
+      <div class="progress-track-container">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- TypeScript injects dots here -->
+      </div>
+    </nav>
+
+    <!-- ==================== STATS SECTION ==================== -->
+    <section id="about" class="stats-section section-padding" style="color:#fff;">
+      <div class="content">
+        <span class="section-label" style="color:var(--accent-glow);">Proven Excellence</span>
+        <h2 class="section-title" style="color:#fff;">Academic Rigor &amp; Caring Community</h2>
+        <div class="section-divider" style="background:var(--accent-glow);"></div>
+        <div class="stats-row">
+          <div class="stat-card reveal">
+            <div class="stat-icon"><i class="bi bi-award-fill"></i></div>
+            <div class="stat-number" data-target="100" data-suffix="%">0</div>
+            <div class="stat-label">2026 GCE O-Level</div>
+            <div class="stat-context">10/10 Passed · 100% Success Rate</div>
+          </div>
+          <div class="stat-card reveal reveal-delay-1">
+            <div class="stat-icon"><i class="bi bi-mortarboard-fill"></i></div>
+            <div class="stat-number" data-target="66.6" data-suffix="%">0</div>
+            <div class="stat-label">2026 GCE A-Level</div>
+            <div class="stat-context">Top quality 3 &amp; 4 subject passes</div>
+          </div>
+          <div class="stat-card reveal reveal-delay-2">
+            <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+            <div class="stat-number" data-target="150" data-suffix="+">0</div>
+            <div class="stat-label">Students Enrolled</div>
+            <div class="stat-context">Growing together in 2025/2026</div>
+          </div>
+          <div class="stat-card reveal reveal-delay-3">
+            <div class="stat-icon"><i class="bi bi-diagram-3-fill"></i></div>
+            <div class="stat-number" data-target="2">0</div>
+            <div class="stat-label">Academic Pathways</div>
+            <div class="stat-context">General Grammar &amp; Technical Trades</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ACADEMICS SECTION ==================== -->
+    <section id="academics" class="section-padding cream-bg">
+      <span class="section-label stagger-item">Our Programmes</span>
+      <h2 class="section-title stagger-item">Academic &amp; Technical Pathways</h2>
+      <p class="section-subtitle stagger-item">
+        We offer two distinct pathways, thoughtfully designed to guide students at their own pace through their Ordinary
+        and Advanced Levels.
+      </p>
+      <div class="academics-pillars stagger-group">
+
+        <!-- PILLAR 1: GENERAL EDUCATION -->
+        <div class="pillar pillar-general stagger-card">
+          <header class="pillar__header">
+            <div class="pillar__icon"><i class="bi bi-book-fill"></i></div>
+            <h3 class="pillar__title">General Education</h3>
+            <p class="pillar__desc">A well-rounded academic curriculum that builds foundational knowledge for the GCE
+              Ordinary and Advanced Levels.</p>
+          </header>
+          <div class="pillar__levels">
+            <div class="level level--ordinary">
+              <button class="level__toggle" aria-expanded="false">
+                <span class="level__title">Ordinary Level</span>
+                <span class="toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
+              </button>
+              <div class="level__content" hidden="">
+                <ul class="level__subjects">
+                  <li>Mathematics</li>
+                  <li>English Language</li>
+                  <li>French Language</li>
+                  <li>English Literature</li>
+                  <li>Physics</li>
+                  <li>Chemistry</li>
+                  <li>Biology</li>
+                  <li>Economics</li>
+                  <li>Geography</li>
+                  <li>Computer Science</li>
+                  <li>Information and Communication Technology (ICT)</li>
+                  <li>History</li>
+                  <li>Food Science</li>
+                  <li>Religious Studies</li>
+                  <li>Philosophy</li>
+                </ul>
+              </div>
+            </div>
+            <div class="level level--advanced">
+              <button class="level__toggle" aria-expanded="false">
+                <span class="level__title">Advanced Level</span>
+                <span class="toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
+              </button>
+              <div class="level__content" hidden="">
+                <ul class="level__subjects">
+                  <li>Pure Mathematics</li>
+                  <li>Further Mathematics</li>
+                  <li>Physics</li>
+                  <li>Chemistry</li>
+                  <li>Biology</li>
+                  <li>English Literature</li>
+                  <li>Geography</li>
+                  <li>Economics</li>
+                  <li>History</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACADEMIC PATHWAYS CARD SPLITTER -->
+        <div class="card-splitter card-splitter--vertical card-splitter--responsive" role="separator"
+          aria-orientation="vertical" aria-label="Curriculum Pathway Separator" tabindex="0">
+          <div class="card-splitter__line"></div>
+          <div class="card-splitter__badge">
+            <span class="card-splitter__icon"><i class="bi bi-diagram-2" aria-hidden="true"></i></span>
+            <span class="card-splitter__text">DUAL PATHWAYS</span>
+          </div>
+          <div class="card-splitter__line"></div>
+        </div>
+
+        <!-- PILLAR 2: TECHNICAL & VOCATIONAL -->
+        <div class="pillar pillar-technical stagger-card">
+          <header class="pillar__header">
+            <div class="pillar__icon"><i class="bi bi-tools"></i></div>
+            <h3 class="pillar__title">Technical Education</h3>
+            <p class="pillar__desc">Practical, hands-on skills training from <strong>Forms 1 to 3</strong>, preparing
+              students for self-reliance and further technical studies.</p>
+          </header>
+          <div class="pillar__levels">
+            <div class="level level--ordinary">
+              <button class="level__toggle" aria-expanded="false">
+                <span class="level__title">Ordinary Level</span>
+                <span class="toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
+              </button>
+              <div class="level__content" hidden="">
+                <ul class="level__subjects">
+                  <li>Building Construction (CE-BC)</li>
+                  <li>Fashion Design (FE)</li>
+                  <li>Electrical Power System (EPS)</li>
+                  <li>Automobile Repair Mechanics (ARM)</li>
+                  <li>Home Economics (HEc)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PILLAR 3: COMMERCIAL EDUCATION -->
+        <div class="pillar d-none pillar-general stagger-card">
+          <header class="pillar__header">
+            <div class="pillar__icon"><i class="bi bi-currency-dollar"></i></div>
+            <h3 class="pillar__title">Commercial Education</h3>
+            <p class="pillar__desc">Valuable business and commerce courses for <strong>Forms 1 to 4</strong>, equipping
+              students with modern workplace skills.</p>
+          </header>
+          <div class="pillar__levels">
+            <div class="level level--commercial">
+              <button class="level__toggle" aria-expanded="false">
+                <span class="level__title">Ordinary Level</span>
+                <span class="toggle-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
+              </button>
+              <div class="level__content" hidden="">
+                <ul class="level__subjects">
+                  <li>Accounting</li>
+                  <li>Commerce</li>
+                  <li>Office Practice</li>
+                  <li>Shorthand</li>
+                  <li>Computer Studies</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== UPCOMING SCHOOL DATES ==================== -->
+    <section id="schoolDatesSection" class="school-dates-section" aria-labelledby="schoolDatesTitle">
+      <div class="school-dates-container">
+        <span class="section-label">Academic Calendar 2026/2027</span>
+        <h2 class="section-title" id="schoolDatesTitle">Upcoming School Dates &amp; Milestones</h2>
+        <div class="section-divider"></div>
+        <p class="section-subtitle">
+          Key academic markers, term resumptions, mid-term breaks, examinations, and college celebrations guiding
+          students, parents, and faculty throughout the 2026/2027 academic session.
+        </p>
+
+        <!-- Immediate Next Milestone Feature Banner -->
+        <aside class="next-milestone-banner reveal" id="nextMilestoneBanner" aria-label="Next Upcoming Milestone">
+          <div class="next-milestone-banner__top">
+            <span class="next-milestone-kicker">
+              <i class="bi bi-stars"></i> Next Key Academic Milestone
+            </span>
+            <span class="banner-milestone-countdown">Loading upcoming date...</span>
+          </div>
+          <div class="next-milestone-banner__main">
+            <div class="next-milestone-banner__info">
+              <h3 class="banner-milestone-title">First Term Mid-Term Break</h3>
+              <div class="banner-milestone-meta">
+                <span><i class="bi bi-calendar3"></i> <strong class="banner-milestone-date">26 Oct – 30 Oct
+                    2026</strong></span>
+                <span><i class="bi bi-bookmark-check-fill text-accent"></i> First Term</span>
+                <span><i class="bi bi-geo-alt-fill text-accent"></i> Campus &amp; Parental Homes</span>
+              </div>
+              <p class="banner-milestone-desc">
+                Scheduled instructional breather and home visit weekend for students to rest and review coursework.
+              </p>
+            </div>
+            <div class="next-milestone-banner__action">
+              <button type="button" class="btn btn-primary btn-calendar-action"
+                data-milestone-id="midterm-break-t1-2026" aria-haspopup="dialog" aria-expanded="false"
+                title="Add First Term Mid-Term Break to Calendar"
+                toolDescription="Choose Google Calendar, Outlook, or download calendar file (.ics).">
+                <i class="bi bi-calendar-plus-fill" aria-hidden="true"></i>
+                <span>Add to Calendar</span>
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Interactive Filtering & Search Bar -->
+        <div class="timeline-controls-bar">
+          <div class="timeline-filter-tabs" role="tablist" aria-label="Filter timeline by academic term">
+            <button class="timeline-tab-btn active" data-filter-type="term" data-timeline-filter="all" role="tab"
+              aria-selected="true">
+              <i class="bi bi-grid-fill"></i> All Milestones (14)
+            </button>
+            <button class="timeline-tab-btn" data-filter-type="term" data-timeline-filter="term-1" role="tab"
+              aria-selected="false">
+              <i class="bi bi-1-circle-fill"></i> Term 1 (Sep – Dec 2026)
+            </button>
+            <button class="timeline-tab-btn" data-filter-type="term" data-timeline-filter="term-2" role="tab"
+              aria-selected="false">
+              <i class="bi bi-2-circle-fill"></i> Term 2 (Jan – Mar 2027)
+            </button>
+            <button class="timeline-tab-btn" data-filter-type="term" data-timeline-filter="term-3" role="tab"
+              aria-selected="false">
+              <i class="bi bi-3-circle-fill"></i> Term 3 (Apr – Jul 2027)
+            </button>
+          </div>
+
+          <div class="timeline-secondary-controls">
+            <div class="timeline-category-filters" role="group" aria-label="Filter timeline by category">
+              <button class="timeline-category-btn active" data-filter-type="category" data-timeline-filter="all">All
+                Types</button>
+              <button class="timeline-category-btn" data-filter-type="category"
+                data-timeline-filter="resumption">Resumptions</button>
+              <button class="timeline-category-btn" data-filter-type="category"
+                data-timeline-filter="exam">Examinations</button>
+              <button class="timeline-category-btn" data-filter-type="category" data-timeline-filter="break">Breaks
+                &amp; Holidays</button>
+              <button class="timeline-category-btn" data-filter-type="category" data-timeline-filter="spiritual">College
+                Events</button>
+            </div>
+
+            <div class="timeline-search-box">
+              <i class="bi bi-search" aria-hidden="true"></i>
+              <input type="search" id="timelineSearchInput" class="timeline-search-input"
+                placeholder="Search dates, e.g. exams, break, resumption..."
+                aria-label="Search academic dates and milestones">
+            </div>
+          </div>
+        </div>
+
+        <!-- Vertical Chronological Timeline Track -->
+        <div class="timeline-track-container">
+          <div class="timeline-track-line" aria-hidden="true"></div>
+
+          <div class="timeline-milestones-list" id="timelineMilestonesList"></div>
+
+          <!-- Progressive Disclosure Toggle (Full Academic Calendar) -->
+          <div class="timeline-disclosure-wrapper" id="timelineDisclosureWrapper">
+            <button type="button" class="btn btn-outline timeline-disclosure-btn" id="timelineDisclosureBtn"
+              aria-expanded="false" aria-controls="timelineMilestonesList">
+              <span class="timeline-disclosure-text">View Full Academic Calendar</span>
+              <span class="timeline-disclosure-count">(10 more)</span>
+              <i class="bi bi-chevron-down" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <!-- Empty search filter notice -->
+          <div class="timeline-empty-notice" id="timelineEmptyNotice">
+            <i class="bi bi-calendar-x"></i>
+            <h3>No milestones match your search</h3>
+            <p>Try selecting "All Milestones" or clearing your search term to see the complete academic calendar.</p>
+          </div>
+        </div>
+
+        <!-- Official Archdiocesan Calendar Advisory Card -->
+        <div class="timeline-advisory-card reveal">
+          <div class="timeline-advisory-content">
+            <i class="bi bi-shield-fill-check"></i>
+            <div>
+              <h4 class="timeline-advisory-title">Archdiocesan Calendar Adherence &amp; Updates</h4>
+              <p class="timeline-advisory-text">
+                Academic dates are officially coordinated by the Catholic Education Secretariat of the Archdiocese of
+                Bamenda
+                and the Ministry of Secondary Education. Any administrative modifications will be communicated through
+                official circulars and SMS alerts to registered parent contacts.
+              </p>
+            </div>
+          </div>
+          <button id="calendarEnquiryBtn" class="btn btn-outline"
+            toolDescription="Contact the Principal's office regarding specific academic dates or boarding arrangements.">
+            <i class="bi bi-question-circle"></i> Inquire with Principal
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== NEWS & EVENTS ==================== -->
+    <section id="news-events" class="section-padding bg-image-news">
+      <span class="section-label stagger-item">College Life &amp; Highlights</span>
+      <h2 class="section-title stagger-item">Latest News &amp; Events</h2>
+      <div class="section-divider stagger-item"></div>
+      <div class="events-grid stagger-group" id="newsEventsGrid">
+
+        <!-- News Story 1 (Featured: Historic GCE Results) -->
+        <article class="event-card stagger-card news-card news-card--featured" data-story-id="story-gce-2026"
+          role="region" aria-label="Historic 2026 GCE Results: 100% Ordinary Level Pass Rate">
+          <div class="news-card__media blurred-img-container">
+            <img
+              src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAQABgDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAIB/8QAGxABAAMAAwEAAAAAAAAAAAAAAQACEQMhMRP/xAAWAQEBAQAAAAAAAAAAAAAAAAABAAL/xAAXEQEBAQEAAAAAAAAAAAAAAAAAEQES/9oADAMBAAIRAxEAPwCvoHU1v1IqNj0MlNtyh7MzDWUQ3NiBeMTSI8qv/9k="
+              alt="" aria-hidden="true" class="blurred-img-placeholder" loading="eager" />
+            <img src="/assets/sjccc-trophies.jpg" alt="SJCCC academic and athletic achievement trophies on display"
+              class="news-card__img blurred-img-full" loading="lazy" width="480" height="280"
+              onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
+              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');" />
+            <span class="news-card__category-badge">Academic Excellence</span>
+            <span class="news-card__featured-badge"><i class="bi bi-star-fill" aria-hidden="true"></i> Featured
+              Milestone</span>
+          </div>
+          <div class="event-card__content news-card__content">
+            <div class="news-card__meta">
+              <time datetime="2026-08-21" class="news-card__date">
+                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                <span>21 August 2026</span>
+              </time>
+              <span class="news-card__divider" aria-hidden="true">·</span>
+              <span class="news-card__read-time">
+                <i class="bi bi-clock" aria-hidden="true"></i>
+                <span>3 min read</span>
+              </span>
+            </div>
+            <h3 class="event-card__title news-card__title">
+              <a href="#results" class="news-card__title-link">Historic 2026 GCE Results: 100% Ordinary Level Pass
+                Rate</a>
+            </h3>
+            <p class="event-card__desc news-card__desc">
+              Official returns from the Cameroon GCE Board confirm a landmark 100% pass rate in the General Ordinary
+              Level session, with 50% of candidates passing with 10 and 11 papers.
+            </p>
+
+            <!-- Smooth Height Expandable Region -->
+            <div class="news-card__expandable" id="details-story-gce-2026" aria-hidden="true">
+              <div class="news-card__expandable-inner">
+                <div class="news-card__details">
+                  <div class="news-card__takeaway">
+                    <i class="bi bi-quote" aria-hidden="true"></i>
+                    <span>Landmark 100% O-Level pass rate with 50% scoring 10 to 11 subjects in June 2026.</span>
+                  </div>
+                  <div class="news-card__full-text">
+                    <p>The official examination returns released by the Cameroon GCE Board officially confirm a landmark
+                      100% pass rate for the General Ordinary Level cohort at Saint Joseph Catholic Comprehensive
+                      College Mbengwi. Exactly 50% of all registered candidates cleared 10 and 11 subjects with
+                      distinguished honors.</p>
+                    <p>Core scientific subjects including Biology, Human Biology, Chemistry, and Additional Mathematics
+                      recorded flawless 100% pass rates, while English Language and Religious Knowledge garnered more
+                      than 40 Grade "A" marks across the student body.</p>
+                    <p>Principal Rev. Father noted during the assembly: "This achievement demonstrates our culture of
+                      rigorous evening tutorials, individual pastoral mentoring, and moral rectitude. We congratulate
+                      our teachers and supportive parents across Momo Division."</p>
+                  </div>
+                  <div class="news-card__metadata-grid">
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-award-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Exam Body</span>
+                        <strong class="metadata-value">Cameroon GCE Board</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Center Code</span>
+                        <strong class="metadata-value">Center No. 1028 Mbengwi</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Pass Rate</span>
+                        <strong class="metadata-value">100% O-Level · 66.6% A-Level</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-star-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Distinction</span>
+                        <strong class="metadata-value">50% Passed 10-11 Papers</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="news-card__footer">
+              <button type="button" class="news-card__expand-btn" aria-expanded="false"
+                aria-controls="details-story-gce-2026"
+                aria-label="Read full story details: Historic 2026 GCE Results: 100% Ordinary Level Pass Rate">
+                <span class="expand-btn-text">Read Full Story</span>
+                <i class="bi bi-chevron-down expand-btn-icon" aria-hidden="true"></i>
+              </button>
+              <a href="#results" class="news-card__cta" aria-label="View Official Returns: Historic 2026 GCE Results">
+                <span>View Official Returns</span>
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- News Story 2 (Convocation) -->
+        <article class="event-card stagger-card news-card" data-story-id="story-graduation-2026" role="region"
+          aria-label="Class of 2026 Valedictory Service & Convocation Honors">
+          <div class="news-card__media blurred-img-container">
+            <img
+              src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAQABgDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAMEAQL/xAAdEAEAAgICAwAAAAAAAAAAAAABAAIDMQQhERIi/8QAFwEAAwEAAAAAAAAAAAAAAAAAAAECA//EABgRAAMBAQAAAAAAAAAAAAAAAAABEQIx/9oADAMBAAIRAxEAPwCcqr1qd2Qfl7mntZ8VI+nFNu5o1ldEqLw5b12wlRhqaISbkIz/2Q=="
+              alt="" aria-hidden="true" class="blurred-img-placeholder" loading="eager" />
+            <img src="/assets/sjccc-graduants-0.jpg"
+              alt="SJCCC Class of 2026 graduands in formal academic robes and convocation caps"
+              class="news-card__img blurred-img-full" loading="lazy" width="480" height="280"
+              onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
+              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');" />
+            <span class="news-card__category-badge">Convocation</span>
+          </div>
+          <div class="event-card__content news-card__content">
+            <div class="news-card__meta">
+              <time datetime="2026-06-26" class="news-card__date">
+                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                <span>26 June 2026</span>
+              </time>
+              <span class="news-card__divider" aria-hidden="true">·</span>
+              <span class="news-card__read-time">
+                <i class="bi bi-clock" aria-hidden="true"></i>
+                <span>4 min read</span>
+              </span>
+            </div>
+            <h3 class="event-card__title news-card__title">
+              <a href="#schoolDatesSection" class="news-card__title-link">Class of 2026 Valedictory Service &amp;
+                Convocation Honors</a>
+            </h3>
+            <p class="event-card__desc news-card__desc">
+              Graduating Form Five and Upper Sixth students were robed and honored in a solemn Thanksgiving High Mass at
+              Saint Joseph Jubilee Hall under the motto "Edificamus Regnum Dei".
+            </p>
+
+            <!-- Smooth Height Expandable Region -->
+            <div class="news-card__expandable" id="details-story-graduation-2026" aria-hidden="true">
+              <div class="news-card__expandable-inner">
+                <div class="news-card__details">
+                  <div class="news-card__takeaway">
+                    <i class="bi bi-quote" aria-hidden="true"></i>
+                    <span>185 graduands commissioned with Archdiocesan blessing and lifetime alumni induction.</span>
+                  </div>
+                  <div class="news-card__full-text">
+                    <p>Dressed in formal collegiate academic regalia, 185 graduands from General Arts, Science, and
+                      Technical Engineering tracks participated in the 2026 Valedictory High Mass at Saint Joseph
+                      Jubilee Hall, celebrated by Archdiocesan clergy and faculty.</p>
+                    <p>The prestigious Edificamus Shield of Honor was awarded to the Senior College Prefect in
+                      recognition of seven years of exemplary boarding leadership, academic integrity, and dedicated
+                      liturgical service.</p>
+                    <p>During the ceremony, the Saint Joseph Old Boys &amp; Alumni Association (SJCCC-OBA) formally
+                      inducted the graduating class, presenting each scholar with a collegiate alumni lapel pin and
+                      lifelong mentoring directory access.</p>
+                  </div>
+                  <div class="news-card__metadata-grid">
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-people-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Graduand Count</span>
+                        <strong class="metadata-value">185 Scholars Inducted</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-building-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Venue</span>
+                        <strong class="metadata-value">Saint Joseph Jubilee Hall</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-trophy-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Top Honor</span>
+                        <strong class="metadata-value">Edificamus Shield of Character</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-globe" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Alumni Registry</span>
+                        <strong class="metadata-value">SJCCC-OBA Worldwide Network</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="news-card__footer">
+              <button type="button" class="news-card__expand-btn" aria-expanded="false"
+                aria-controls="details-story-graduation-2026"
+                aria-label="Read full story details: Class of 2026 Valedictory Service &amp; Convocation Honors">
+                <span class="expand-btn-text">Read Full Story</span>
+                <i class="bi bi-chevron-down expand-btn-icon" aria-hidden="true"></i>
+              </button>
+              <a href="#schoolDatesSection" class="news-card__cta"
+                aria-label="View Convocation Milestone: Class of 2026 Valedictory Service">
+                <span>View Convocation Milestone</span>
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- News Story 3 (Campus Development) -->
+        <article class="event-card stagger-card news-card" data-story-id="story-technical-workshop-2026" role="region"
+          aria-label="Electrical Power Systems & ICT Laboratory Expansion">
+          <div class="news-card__media blurred-img-container">
+            <img
+              src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAQABgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAMEAf/EAB8QAAIBBAIDAAAAAAAAAAAAAAECAAMREiEEMRNRgf/EABQBAQAAAAAAAAAAAAAAAAAAAAH/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCebe4UXPl39ikOfXc0KyMSYFS1ZTyAb6EJFldoRD//2Q=="
+              alt="" aria-hidden="true" class="blurred-img-placeholder" loading="eager" />
+            <img src="/assets/sjccc-Electricity.jpeg"
+              alt="SJCCC students engaged in technical electrical engineering workshop training"
+              class="news-card__img blurred-img-full" loading="lazy" width="480" height="280"
+              onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
+              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');" />
+            <span class="news-card__category-badge">Campus Development</span>
+          </div>
+          <div class="event-card__content news-card__content">
+            <div class="news-card__meta">
+              <time datetime="2026-05-12" class="news-card__date">
+                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                <span>12 May 2026</span>
+              </time>
+              <span class="news-card__divider" aria-hidden="true">·</span>
+              <span class="news-card__read-time">
+                <i class="bi bi-clock" aria-hidden="true"></i>
+                <span>2 min read</span>
+              </span>
+            </div>
+            <h3 class="event-card__title news-card__title">
+              <a href="#campusMapSection" class="news-card__title-link">Electrical Power Systems &amp; ICT Laboratory
+                Expansion</a>
+            </h3>
+            <p class="event-card__desc news-card__desc">
+              Commissioning of expanded electrical engineering workstations, solar circuit trainers, and upgraded
+              computer science terminals, advancing hands-on technical education.
+            </p>
+
+            <!-- Smooth Height Expandable Region -->
+            <div class="news-card__expandable" id="details-story-technical-workshop-2026" aria-hidden="true">
+              <div class="news-card__expandable-inner">
+                <div class="news-card__details">
+                  <div class="news-card__takeaway">
+                    <i class="bi bi-quote" aria-hidden="true"></i>
+                    <span>State-of-the-art solar and electrical testing benches paired with 60 modern computing
+                      stations.</span>
+                  </div>
+                  <div class="news-card__full-text">
+                    <p>In alignment with SJCCC’s mission to equip students with certified vocational mastery, the
+                      College Board inaugurated two major infrastructure modernizations: the Smart Energy Electrical
+                      Training Facility and the upgraded 60-terminal Computer Center.</p>
+                    <p>The electrical laboratory includes industrial three-phase circuit demonstration boards, solar
+                      inverter diagnostic stations, and protective relay test benches conforming to CEMAC industrial
+                      safety protocols.</p>
+                    <p>The computing facility features high-speed LAN connectivity, offline architectural design suites
+                      (CAD), and programming environments to prepare Form 3 through Upper Sixth technical students for
+                      regional engineering employment.</p>
+                  </div>
+                  <div class="news-card__metadata-grid">
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-tools" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Facility</span>
+                        <strong class="metadata-value">Smart Energy &amp; Computing Wing</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-sun-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Power Source</span>
+                        <strong class="metadata-value">Dedicated Solar Photovoltaic Bank</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-display-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Workstations</span>
+                        <strong class="metadata-value">60 Terminals + 12 Test Benches</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-patch-check-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Certification</span>
+                        <strong class="metadata-value">GCE Technical &amp; CAP Alignment</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="news-card__footer">
+              <button type="button" class="news-card__expand-btn" aria-expanded="false"
+                aria-controls="details-story-technical-workshop-2026"
+                aria-label="Read full story details: Electrical Power Systems &amp; ICT Laboratory Expansion">
+                <span class="expand-btn-text">Read Full Story</span>
+                <i class="bi bi-chevron-down expand-btn-icon" aria-hidden="true"></i>
+              </button>
+              <a href="#campusMapSection" class="news-card__cta"
+                aria-label="Tour Technical Labs: Electrical Power Systems & ICT Laboratory Expansion">
+                <span>Tour Technical Labs</span>
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- News Story 4 (Faith & Community) -->
+        <article class="event-card stagger-card news-card" data-story-id="story-patronal-feast-2026" role="region"
+          aria-label="Solemnity of Saint Joseph: College Patronal Feast Celebrations">
+          <div class="news-card__media blurred-img-container">
+            <img
+              src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAQABgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAEDAv/EAB0QAAIDAAIDAAAAAAAAAAAAAAEDAAIRBCESFDH/xAAWAQEBAQAAAAAAAAAAAAAAAAACAAH/xAAZEQACAwEAAAAAAAAAAAAAAAAAAQIRIRL/2gAMAwEAAhEDEQA/AEUsNcGmsz6luzuSCeY1XW6JXkcuzVVqOpcm2OyGrzT9hIFjCR5EnIQvBxprT//Z"
+              alt="" aria-hidden="true" class="blurred-img-placeholder" loading="eager" />
+            <img src="/assets/sjccc-student-in-chapel-1.png"
+              alt="Eucharistic and liturgical procession during the Feast of Saint Joseph on campus grounds"
+              class="news-card__img blurred-img-full" loading="lazy" width="480" height="280"
+              onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
+              onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');" />
+            <span class="news-card__category-badge">Faith &amp; Community</span>
+          </div>
+          <div class="event-card__content news-card__content">
+            <div class="news-card__meta">
+              <time datetime="2026-03-19" class="news-card__date">
+                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                <span>19 March 2026</span>
+              </time>
+              <span class="news-card__divider" aria-hidden="true">·</span>
+              <span class="news-card__read-time">
+                <i class="bi bi-clock" aria-hidden="true"></i>
+                <span>3 min read</span>
+              </span>
+            </div>
+            <h3 class="event-card__title news-card__title">
+              <a href="#about" class="news-card__title-link">Solemnity of Saint Joseph: College Patronal Feast
+                Celebrations</a>
+            </h3>
+            <p class="event-card__desc news-card__desc">
+              Students, alumni, and archdiocesan clergy gathered in prayer and cultural fellowship for the Pontifical
+              High Mass, inter-house choral anthems, and athletic finals.
+            </p>
+
+            <!-- Smooth Height Expandable Region -->
+            <div class="news-card__expandable" id="details-story-patronal-feast-2026" aria-hidden="true">
+              <div class="news-card__expandable-inner">
+                <div class="news-card__details">
+                  <div class="news-card__takeaway">
+                    <i class="bi bi-quote" aria-hidden="true"></i>
+                    <span>Archdiocesan Eucharistic celebration, Latin choral contests, and annual athletic
+                      championship.</span>
+                  </div>
+                  <div class="news-card__full-text">
+                    <p>The feast of Saint Joseph, Universal Patron of Workers and Protector of our College, gathered the
+                      entire Mbengwi Catholic community, alumni delegations, and visiting parents for an unforgettable
+                      day of spiritual devotion and cultural vibrancy.</p>
+                    <p>The Pontifical High Mass led by visiting Archdiocesan clergy highlighted Saint Joseph’s humble
+                      craftsmanship, devotion to family, and persevering faith as the foundational virtues guiding every
+                      SJCCC student.</p>
+                    <p>Festivities concluded with the annual Inter-House Choral and Athletic Championship, where Saint
+                      Peter’s House clinched the coveted 2026 Patronal Cup after a fiercely contested football final and
+                      four-part Latin hymn competition.</p>
+                  </div>
+                  <div class="news-card__metadata-grid">
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-calendar-heart-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Feast Day</span>
+                        <strong class="metadata-value">19 March (Solemnity)</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-building-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Liturgy</span>
+                        <strong class="metadata-value">Pontifical High Mass</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-trophy-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">House Winner</span>
+                        <strong class="metadata-value">Saint Peter's House</strong>
+                      </div>
+                    </div>
+                    <div class="news-card__metadata-item">
+                      <i class="bi bi-shield-fill" aria-hidden="true"></i>
+                      <div class="metadata-text">
+                        <span class="metadata-label">Motto Theme</span>
+                        <strong class="metadata-value">"Edificamus Regnum Dei"</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="news-card__footer">
+              <button type="button" class="news-card__expand-btn" aria-expanded="false"
+                aria-controls="details-story-patronal-feast-2026"
+                aria-label="Read full story details: Solemnity of Saint Joseph: College Patronal Feast Celebrations">
+                <span class="expand-btn-text">Read Full Story</span>
+                <i class="bi bi-chevron-down expand-btn-icon" aria-hidden="true"></i>
+              </button>
+              <a href="#about" class="news-card__cta" aria-label="Discover College Heritage: Solemnity of Saint Joseph">
+                <span>Discover College Heritage</span>
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ==================== GCE RESULTS SECTION ==================== -->
+    <section id="results" class="gce-results-section" aria-labelledby="gceResultsTitle">
+      <div class="gce-results-container">
+
+        <!-- Header -->
+        <header class="gce-results-header reveal">
+          <span class="section-label"><i class="bi bi-award-fill"></i> Academic Excellence · SJCCC 2026</span>
+          <h2 class="section-title" id="gceResultsTitle">Official 2026 GCE Examination Results</h2>
+          <p class="section-subtitle">Saint Joseph Catholic Comprehensive College Mbengwi (Momo Division)</p>
+          <div class="gce-meta-bar">
+            <span><i class="bi bi-calendar-event"></i> Published: 21st August 2026</span>
+            <span><i class="bi bi-shield-check"></i> Cameroon GCE Board Official Returns</span>
+            <span><i class="bi bi-geo-alt-fill"></i> Mbengwi, Momo Division</span>
+          </div>
+        </header>
+
+        <!-- Summary Highlight Card: College Motto & Graduation Details -->
+        <article class="gce-summary-card reveal" aria-labelledby="gceSummaryTitle">
+          <div class="gce-summary-card-inner">
+            <div class="gce-summary-main">
+              <div class="gce-summary-badge">
+                <i class="bi bi-mortarboard-fill"></i>
+                <span id="gceSummaryTitle">Convocation &amp; Graduation Milestone</span>
+              </div>
+
+              <blockquote class="gce-motto-highlight">
+                <i class="bi bi-quote quote-icon" aria-hidden="true"></i>
+                <div class="gce-motto-text">Edificamus Regnum Dei - Let us build the Kingdom of God</div>
+                <div class="gce-motto-subtext">Official Motto of Saint Joseph Catholic Comprehensive College Mbengwi
+                </div>
+              </blockquote>
+
+              <p class="gce-summary-lead">
+                In celebration of our extraordinary <strong>100% GCE Ordinary Level</strong> and <strong>66.6% Advanced
+                  Level</strong> success, we proudly commend the Class of 2026/2027 and invite parents, alumni, and
+                guardians to join in our solemn Valedictory Service and Graduation Day.
+              </p>
+
+              <div class="gce-summary-meta-grid">
+                <div class="gce-summary-meta-box">
+                  <div class="gce-meta-icon" aria-hidden="true"><i class="bi bi-calendar-check-fill"></i></div>
+                  <div class="gce-meta-info">
+                    <span class="gce-meta-title">Graduation Date</span>
+                    <strong class="gce-meta-value">Friday, 25th June 2027</strong>
+                    <span class="gce-meta-extra"><i class="bi bi-clock"></i> 9:30 AM Prompt</span>
+                  </div>
+                </div>
+
+                <div class="gce-summary-meta-box">
+                  <div class="gce-meta-icon" aria-hidden="true"><i class="bi bi-geo-alt-fill"></i></div>
+                  <div class="gce-meta-info">
+                    <span class="gce-meta-title">Ceremony Location</span>
+                    <strong class="gce-meta-value">Saint Joseph Jubilee Hall</strong>
+                    <span class="gce-meta-extra"><i class="bi bi-pin-map-fill"></i> GRA Mbengwi, Momo Division</span>
+                  </div>
+                </div>
+
+                <div class="gce-summary-meta-box">
+                  <div class="gce-meta-icon" aria-hidden="true"><i class="bi bi-award-fill"></i></div>
+                  <div class="gce-meta-info">
+                    <span class="gce-meta-title">Convocation Honours</span>
+                    <strong class="gce-meta-value">Class of 2026 / 2027</strong>
+                    <span class="gce-meta-extra"><i class="bi bi-patch-check-fill"></i> Robing &amp; Valedictory</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="gce-summary-footer-bar">
+                <div class="gce-summary-congrats">
+                  <i class="bi bi-heart-fill"></i>
+                  <span>Congratulations to Administration, Staff, Students &amp; Parents!</span>
+                </div>
+                <a href="#schoolDatesSection" class="gce-summary-calendar-link"
+                  toolDescription="Jump to the academic calendar timeline for graduation details">
+                  <i class="bi bi-calendar-event"></i> View on Academic Calendar
+                </a>
+              </div>
+            </div>
+
+            <div class="gce-summary-aside">
+              <div class="gce-summary-image-wrap">
+                <img src="/assets/sjccc-graduants-0.jpg"
+                  alt="SJCCC Graduating Class in academic regalia and convocation robes" loading="lazy" width="480"
+                  height="320"
+                  onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';">
+                <div class="gce-summary-image-overlay">
+                  <span class="gce-image-badge"><i class="bi bi-patch-check-fill"></i> Formal Robes &amp; Awards</span>
+                </div>
+              </div>
+              <div class="gce-summary-stat-capsule">
+                <div class="gce-capsule-item">
+                  <span class="capsule-num">100%</span>
+                  <span class="capsule-lbl">O-Level</span>
+                </div>
+                <div class="capsule-divider" aria-hidden="true"></div>
+                <div class="gce-capsule-item">
+                  <span class="capsule-num">66.6%</span>
+                  <span class="capsule-lbl">A-Level</span>
+                </div>
+                <div class="capsule-divider" aria-hidden="true"></div>
+                <div class="gce-capsule-item">
+                  <span class="capsule-num">GRA</span>
+                  <span class="capsule-lbl">Mbengwi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Dual Results Grid -->
+        <div class="gce-results-grid">
+
+          <!-- Card 1: Ordinary Level General -->
+          <article class="gce-result-card gce-result-card--olevel fluid-type-card reveal">
+            <header class="gce-card-header">
+              <div class="gce-card-title-group">
+                <h3>O Level General</h3>
+                <span class="gce-card-subtitle">First Cycle Grammar Curriculum</span>
+              </div>
+              <span class="gce-pass-badge gce-pass-badge--gold">
+                <i class="bi bi-check-circle-fill"></i> 100% Passed
+              </span>
+            </header>
+
+            <!-- Metrics Strip -->
+            <div class="gce-metrics-strip">
+              <div class="gce-metric-item">
+                <span class="gce-metric-val" data-counter data-target="10">10</span>
+                <span class="gce-metric-label">Registered</span>
+              </div>
+              <div class="gce-metric-item">
+                <span class="gce-metric-val" data-counter data-target="10">10</span>
+                <span class="gce-metric-label">Passed</span>
+              </div>
+              <div class="gce-metric-item">
+                <span class="gce-metric-val gce-highlight" data-counter data-target="100" data-suffix="%">100%</span>
+                <span class="gce-metric-label">% Passed</span>
+              </div>
+            </div>
+
+            <!-- Subject Distribution Breakdown -->
+            <div class="gce-distribution-heading">
+              <span>Passed in Subjects (Performance Breakdown)</span>
+              <span style="font-size:0.78rem;color:var(--accent-glow);"><i class="bi bi-bar-chart-fill"></i> 10
+                Candidates</span>
+            </div>
+
+            <ul class="gce-distribution-list">
+              <li class="gce-dist-row top-tier">
+                <span class="gce-dist-label">
+                  <i class="bi bi-star-fill star-icon" aria-hidden="true"></i>
+                  <strong>11 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>2 Students</span>
+                  <span class="gce-dist-badge">Outstanding</span>
+                </span>
+              </li>
+              <li class="gce-dist-row top-tier">
+                <span class="gce-dist-label">
+                  <i class="bi bi-star-fill star-icon" aria-hidden="true"></i>
+                  <strong>10 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>3 Students</span>
+                  <span class="gce-dist-badge">Distinction</span>
+                </span>
+              </li>
+              <li class="gce-dist-row">
+                <span class="gce-dist-label">
+                  <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                  <strong>9 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>1 Student</span>
+                  <span class="gce-dist-badge">Merit</span>
+                </span>
+              </li>
+              <li class="gce-dist-row">
+                <span class="gce-dist-label">
+                  <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                  <strong>8 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>2 Students</span>
+                  <span class="gce-dist-badge">Merit</span>
+                </span>
+              </li>
+              <li class="gce-dist-row">
+                <span class="gce-dist-label">
+                  <i class="bi bi-check2" aria-hidden="true"></i>
+                  <strong>6 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>1 Student</span>
+                  <span class="gce-dist-badge">Pass</span>
+                </span>
+              </li>
+              <li class="gce-dist-row">
+                <span class="gce-dist-label">
+                  <i class="bi bi-check2" aria-hidden="true"></i>
+                  <strong>5 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>1 Student</span>
+                  <span class="gce-dist-badge">Pass</span>
+                </span>
+              </li>
+            </ul>
+
+            <footer class="gce-card-footer-note">
+              <i class="bi bi-stars"></i>
+              <span><strong>100% Quality Output:</strong> Every registered candidate passed with 5 or more subjects, and
+                50% attained exceptional results in 10 or 11 subjects.</span>
+            </footer>
+          </article>
+
+          <!-- GCE LEVEL CARD SPLITTER -->
+          <div class="card-splitter card-splitter--vertical card-splitter--responsive" role="separator"
+            aria-orientation="vertical" aria-label="GCE Level Separator" tabindex="0">
+            <div class="card-splitter__line"></div>
+            <div class="card-splitter__badge">
+              <span class="card-splitter__icon"><i class="bi bi-mortarboard-fill" aria-hidden="true"></i></span>
+              <span class="card-splitter__text">CYCLE DIVISION</span>
+            </div>
+            <div class="card-splitter__line"></div>
+          </div>
+
+          <!-- Card 2: Advanced Level General -->
+          <article class="gce-result-card gce-result-card--alevel fluid-type-card reveal reveal-delay-1">
+            <header class="gce-card-header">
+              <div class="gce-card-title-group">
+                <h3>A Level General</h3>
+                <span class="gce-card-subtitle">Second Cycle Grammar (High School)</span>
+              </div>
+              <span class="gce-pass-badge gce-pass-badge--blue">
+                <i class="bi bi-check-circle-fill"></i> 66.6% Passed
+              </span>
+            </header>
+
+            <!-- Metrics Strip -->
+            <div class="gce-metrics-strip">
+              <div class="gce-metric-item">
+                <span class="gce-metric-val" data-counter data-target="3">3</span>
+                <span class="gce-metric-label">Registered</span>
+              </div>
+              <div class="gce-metric-item">
+                <span class="gce-metric-val" data-counter data-target="2">2</span>
+                <span class="gce-metric-label">Passed</span>
+              </div>
+              <div class="gce-metric-item">
+                <span class="gce-metric-val gce-highlight" data-counter data-target="66.6" data-suffix="%">66.6%</span>
+                <span class="gce-metric-label">% Passed</span>
+              </div>
+            </div>
+
+            <!-- Subject Distribution Breakdown -->
+            <div class="gce-distribution-heading">
+              <span>Passed in Subjects (Performance Breakdown)</span>
+              <span style="font-size:0.78rem;color:#93c5fd;"><i class="bi bi-bar-chart-fill"></i> 2 Candidates</span>
+            </div>
+
+            <ul class="gce-distribution-list">
+              <li class="gce-dist-row top-tier">
+                <span class="gce-dist-label">
+                  <i class="bi bi-star-fill star-icon" aria-hidden="true" style="color:#60a5fa;"></i>
+                  <strong>4 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>1 Student</span>
+                  <span class="gce-dist-badge"
+                    style="background:rgba(96,165,250,0.25);color:#93c5fd;border:1px solid rgba(96,165,250,0.4);">Full
+                    High Distinction</span>
+                </span>
+              </li>
+              <li class="gce-dist-row">
+                <span class="gce-dist-label">
+                  <i class="bi bi-check2-circle" aria-hidden="true" style="color:#60a5fa;"></i>
+                  <strong>3 Subjects</strong>
+                </span>
+                <span class="gce-dist-count">
+                  <span>1 Student</span>
+                  <span class="gce-dist-badge">University Qualifying</span>
+                </span>
+              </li>
+            </ul>
+
+            <footer class="gce-card-footer-note" style="margin-top:auto;">
+              <i class="bi bi-mortarboard-fill" style="color:#93c5fd;"></i>
+              <span><strong>University Readiness:</strong> Our Upper Sixth students demonstrated high mastery across
+                advanced subject papers, qualifying for premier university faculties.</span>
+            </footer>
+          </article>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== CAMPUS LIFE CAROUSEL ==================== -->
+    <section id="campus" class="section-padding alt-bg">
+      <span class="section-label">Our Home</span>
+      <h2 class="section-title">Life at SJCCC Mbengwi</h2>
+      <p class="section-subtitle">Experience our peaceful campus—a safe and engaging place where extracurricular
+        activities and close friendships shape well‑rounded individuals.</p>
+      <div class="carousel-wrapper reveal" role="region" aria-roledescription="carousel"
+        aria-label="Campus Life Highlights">
+        <div class="carousel-container" tabindex="0"
+          aria-label="Campus life photo carousel. Use Left and Right arrow keys or swipe to navigate.">
+          <div class="carousel-track" id="carouselTrack"></div>
+
+          <!-- Slick Autoplay Loading Progress Track -->
+          <div class="carousel-progress-track" aria-hidden="true" title="Slide timer">
+            <div class="carousel-progress-bar" id="carouselProgressBar"></div>
+          </div>
+
+          <button class="carousel-btn prev carousel-btn--prev" id="prevBtn" aria-label="Previous slide"
+            toolDescription="Show the previous campus image in the carousel.">
+            <svg class="carousel-btn-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button class="carousel-btn next carousel-btn--next" id="nextBtn" aria-label="Next slide"
+            toolDescription="Show the next campus image in the carousel.">
+            <svg class="carousel-btn-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <!-- Direct Navigation Thumbnails Container with Scroll Controls -->
+        <div class="carousel-thumbnails-wrapper" aria-label="Campus thumbnails navigator">
+          <button type="button" class="thumb-scroll-btn thumb-scroll-prev" id="thumbScrollPrev"
+            aria-label="Scroll thumbnails left" title="Scroll thumbnails left">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <nav class="carousel-thumbnails" id="carouselThumbnails" aria-label="Campus life slide thumbnails"></nav>
+
+          <button type="button" class="thumb-scroll-btn thumb-scroll-next" id="thumbScrollNext"
+            aria-label="Scroll thumbnails right" title="Scroll thumbnails right">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIRTUAL CAMPUS MAP ==================== -->
+    <section id="campusMapSection" class="section-padding campus-map-section alt-bg" aria-labelledby="campusMapTitle">
+      <div class="campus-map-wrapper">
+        <div class="campus-map-header text-center">
+          <span class="section-label">Virtual Campus Tour</span>
+          <h2 class="section-title" id="campusMapTitle">Interactive Virtual Campus Map</h2>
+          <div class="section-divider"></div>
+          <p class="section-subtitle">
+            Explore our scenic Mbengwi hillside campus. Click or tap any marker on the illustrated campus layout to
+            inspect classrooms, technical workshops, residential dormitories, spiritual grounds, and athletics
+            facilities.
+          </p>
+        </div>
+
+        <!-- Interactive Map Container Component -->
+        <div id="campusMapContainer" class="campus-map-interactive-container reveal" tabindex="0"
+          aria-label="Interactive Virtual Campus Map. Use Tab or Arrow keys to navigate between areas.">
+
+          <!-- Category Quick Selection Filter Bar -->
+          <div class="map-zone-quickbar" role="tablist" aria-label="Select campus zone to explore">
+            <button class="map-zone-btn active" data-zone-id="chapel" role="tab" aria-selected="true">
+              <i class="bi bi-bank"></i>
+              <span>Chapel &amp; Shrine</span>
+            </button>
+            <button class="map-zone-btn" data-zone-id="workshops-electrical" role="tab" aria-selected="false">
+              <i class="bi bi-lightning-charge-fill"></i>
+              <span>Electrical Workshops</span>
+            </button>
+            <button class="map-zone-btn" data-zone-id="dormitories" role="tab" aria-selected="false">
+              <i class="bi bi-building-fill"></i>
+              <span>Dormitories</span>
+            </button>
+            <button class="map-zone-btn" data-zone-id="classrooms" role="tab" aria-selected="false">
+              <i class="bi bi-book-half"></i>
+              <span>Classrooms &amp; Labs</span>
+            </button>
+            <button class="map-zone-btn" data-zone-id="construction" role="tab" aria-selected="false">
+              <i class="bi bi-tools"></i>
+              <span>Construction Yard</span>
+            </button>
+            <button class="map-zone-btn" data-zone-id="sports" role="tab" aria-selected="false">
+              <i class="bi bi-dribbble"></i>
+              <span>Sports &amp; Quadrangle</span>
+            </button>
+          </div>
+
+          <!-- Main Layout: Map Canvas Viewport + Area Preview Card -->
+          <div class="campus-map-grid">
+
+            <!-- Illustrated Map Viewport -->
+            <div class="campus-map-viewport" id="campusMapViewport">
+              <div class="campus-map-canvas-wrap" id="campusMapCanvasWrap">
+                <div class="campus-map-content" id="campusMapContent">
+                  <img src="/assets/campus_map.jpg"
+                    alt="Illustrated Map of SJCCC Mbengwi Campus grounds showing school buildings, chapel, dormitories, and sports fields"
+                    class="campus-map-image" id="campusMapIllustration" loading="lazy"
+                    onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';">
+
+                  <!-- Map Overlay Gradient & Grid Lines -->
+                  <div class="campus-map-overlay" aria-hidden="true"></div>
+
+                  <!-- Hotspot Marker 1: Chapel & Shrine -->
+                  <button class="map-hotspot-pin active" data-zone-id="chapel" style="left: 24%; top: 36%;"
+                    aria-label="Select College Chapel and St. Joseph Shrine marker" role="button" aria-selected="true">
+                    <span class="map-pin-pulse" aria-hidden="true"></span>
+                    <span class="map-pin-core">
+                      <i class="bi bi-bank" aria-hidden="true"></i>
+                    </span>
+                    <span class="map-pin-label">Chapel &amp; Shrine</span>
+                  </button>
+
+                  <!-- Hotspot Marker 2: Electrical Workshops -->
+                  <button class="map-hotspot-pin" data-zone-id="workshops-electrical" style="left: 72%; top: 30%;"
+                    aria-label="Select Technical Electrical Workshops marker" role="button" aria-selected="false">
+                    <span class="map-pin-pulse" aria-hidden="true"></span>
+                    <span class="map-pin-core">
+                      <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+                    </span>
+                    <span class="map-pin-label">Workshops</span>
+                  </button>
+
+                  <!-- Hotspot Marker 3: Boarding Dormitories -->
+                  <button class="map-hotspot-pin" data-zone-id="dormitories" style="left: 48%; top: 22%;"
+                    aria-label="Select Boarding Dormitories marker" role="button" aria-selected="false">
+                    <span class="map-pin-pulse" aria-hidden="true"></span>
+                    <span class="map-pin-core">
+                      <i class="bi bi-building-fill" aria-hidden="true"></i>
+                    </span>
+                    <span class="map-pin-label">Dormitories</span>
+                  </button>
+
+                  <!-- Hotspot Marker 4: Classrooms & Science Labs -->
+                  <button class="map-hotspot-pin" data-zone-id="classrooms" style="left: 44%; top: 54%;"
+                    aria-label="Select Academic Classroom Blocks and Labs marker" role="button" aria-selected="false">
+                    <span class="map-pin-pulse" aria-hidden="true"></span>
+                    <span class="map-pin-core">
+                      <i class="bi bi-book-half" aria-hidden="true"></i>
+                    </span>
+                    <span class="map-pin-label">Classrooms</span>
+                  </button>
+
+                  <!-- Hotspot Marker 5: Building & Construction Yard -->
+                  <button class="map-hotspot-pin" data-zone-id="construction" style="left: 82%; top: 62%;"
+                    aria-label="Select Building and Construction Yard marker" role="button" aria-selected="false">
+                    <span class="map-pin-pulse" aria-hidden="true"></span>
+                    <span class="map-pin-core">
+                      <i class="bi bi-tools" aria-hidden="true"></i>
+                    </span>
+                    <span class="map-pin-label">Construction</span>
+                  </button>
+
+                  <!-- Hotspot Marker 6: Quadrangle & Sports Grounds -->
+                  <button class="map-hotspot-pin" data-zone-id="sports" style="left: 28%; top: 74%;"
+                    aria-label="Select Central Quadrangle and Sports Grounds marker" role="button"
+                    aria-selected="false">
+                    <span class="map-pin-pulse" aria-hidden="true"></span>
+                    <span class="map-pin-core">
+                      <i class="bi bi-dribbble" aria-hidden="true"></i>
+                    </span>
+                    <span class="map-pin-label">Sports Ground</span>
+                  </button>
+                </div>
+
+                <!-- Guided Tour Auto-Cycle Control -->
+                <div class="campus-map-tour-control" id="campusMapTourControl">
+                  <button type="button" class="map-tour-btn is-playing" id="mapTourToggleBtn"
+                    aria-label="Pause auto guided tour of campus highlights"
+                    title="Pause guided campus tour (5s interval)">
+                    <span class="map-tour-pulse-ring" aria-hidden="true"></span>
+                    <i class="bi bi-pause-fill map-tour-icon" id="mapTourIcon" aria-hidden="true"></i>
+                    <span class="map-tour-text-wrap">
+                      <span class="map-tour-btn-text" id="mapTourBtnText">Guided Tour</span>
+                      <span class="map-tour-badge" id="mapTourBadge">Stop 1/6</span>
+                    </span>
+                    <div class="map-tour-progress-track" aria-hidden="true" title="5s interval timer">
+                      <div class="map-tour-progress-bar" id="mapTourTimerBar"></div>
+                    </div>
+                  </button>
+                </div>
+
+                <!-- Zoom Controls Toolbar -->
+                <div class="campus-map-zoom-controls" id="campusMapZoomControls" role="toolbar"
+                  aria-label="Campus map zoom and view controls">
+                  <button type="button" class="map-zoom-btn" id="mapZoomInBtn" aria-label="Zoom in map"
+                    title="Zoom in (+)">
+                    <i class="bi bi-zoom-in" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="map-zoom-btn map-zoom-btn--level" id="mapZoomLevelBtn"
+                    aria-label="Current zoom: 100%. Click to cycle zoom" title="Current zoom (click to cycle)">
+                    <span class="map-zoom-level-text" id="mapZoomLevel">100%</span>
+                  </button>
+                  <button type="button" class="map-zoom-btn" id="mapZoomOutBtn" aria-label="Zoom out map"
+                    title="Zoom out (-)" disabled>
+                    <i class="bi bi-zoom-out" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="map-zoom-btn map-zoom-btn--reset" id="mapZoomResetBtn"
+                    aria-label="Reset map zoom" title="Reset zoom (100%)">
+                    <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+                <!-- Pan / Drag indicator hint -->
+                <div class="campus-map-pan-hint" id="campusMapPanHint" aria-hidden="true">
+                  <i class="bi bi-arrows-move"></i>
+                  <span>Drag to pan map</span>
+                </div>
+              </div>
+
+              <!-- Map Viewport Footnote -->
+              <div class="campus-map-viewport-bar">
+                <div class="map-legend-hint">
+                  <i class="bi bi-compass text-accent" aria-hidden="true"></i>
+                  <span id="mapTourStatusText">Guided Tour: <strong>Chapel &amp; Shrine</strong> (Stop 1 of 6) · Next
+                    highlight in 5s</span>
+                </div>
+                <div class="map-status-pill">
+                  <span class="map-status-dot"></span>
+                  <span>Campus Grounds · Mbengwi</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Area Detail Description Card Panel -->
+            <div class="map-detail-panel">
+              <article class="map-detail-card" id="mapDetailCard" aria-live="polite">
+
+                <!-- Facility Area Photo Preview with Category Tag -->
+                <div class="map-detail-img-container">
+                  <img id="mapDetailImage" class="map-detail-image" src="/assets/stJoseph.jpg"
+                    alt="College Chapel &amp; St. Joseph's Shrine at SJCCC Mbengwi" loading="lazy"
+                    onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true';">
+                  <div class="map-detail-img-gradient"></div>
+                  <span id="mapDetailCategory" class="map-detail-category-badge">Spiritual Life</span>
+                </div>
+
+                <!-- Facility Content Body -->
+                <div class="map-detail-body map-detail-card-content">
+                  <div class="map-detail-header">
+                    <h3 id="mapDetailTitle" class="map-detail-title">College Chapel &amp; St. Joseph's Shrine</h3>
+                    <p id="mapDetailTagline" class="map-detail-tagline">Spiritual foundation and sanctuary for
+                      reflection</p>
+                  </div>
+
+                  <p id="mapDetailDesc" class="map-detail-desc">
+                    The serene heart of our Catholic community. Dedicated to Saint Joseph, the Chapel hosts daily
+                    morning prayers, Holy Mass, choir practices, and liturgical feast celebrations led by Archdiocese
+                    clergy.
+                  </p>
+
+                  <div class="map-detail-features-box">
+                    <h4 class="map-detail-features-title">
+                      <i class="bi bi-stars text-accent"></i> Key Facilities &amp; Amenities
+                    </h4>
+                    <ul id="mapDetailAmenities" class="map-detail-amenities-list">
+                      <li><i class="bi bi-check2-circle text-accent"></i> <span>Daily Community Mass &amp;
+                          Benediction</span></li>
+                      <li><i class="bi bi-check2-circle text-accent"></i> <span>Chapel Choir &amp; liturgical music
+                          instruments</span></li>
+                      <li><i class="bi bi-check2-circle text-accent"></i> <span>St. Joseph Grotto prayer grounds</span>
+                      </li>
+                      <li><i class="bi bi-check2-circle text-accent"></i> <span>Quiet sacramental counseling
+                          rooms</span></li>
+                    </ul>
+                  </div>
+
+                  <!-- Operational Metadata Grid -->
+                  <div class="map-detail-meta-grid">
+                    <div class="map-detail-meta-item">
+                      <i class="bi bi-clock-history text-accent"></i>
+                      <div>
+                        <span class="meta-label">Schedule &amp; Access</span>
+                        <strong id="mapDetailHours" class="meta-value">5:30 AM – 9:00 PM Daily</strong>
+                      </div>
+                    </div>
+                    <div class="map-detail-meta-item">
+                      <i class="bi bi-person-badge text-accent"></i>
+                      <div>
+                        <span class="meta-label">Area Oversight</span>
+                        <strong id="mapDetailHead" class="meta-value">College Chaplaincy</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Navigation & Inquire Action Bar -->
+                  <div class="map-detail-actions">
+                    <div class="map-detail-nav-group">
+                      <button id="mapPrevZoneBtn" class="btn btn-outline map-step-btn" title="View Previous Campus Area"
+                        aria-label="Previous Area">
+                        <i class="bi bi-arrow-left"></i> Previous
+                      </button>
+                      <button id="mapNextZoneBtn" class="btn btn-outline map-step-btn" title="View Next Campus Area"
+                        aria-label="Next Area">
+                        Next <i class="bi bi-arrow-right"></i>
+                      </button>
+                    </div>
+                    <a href="#contact" id="mapInquireBtn" class="btn btn-primary map-inquire-btn"
+                      toolDescription="Contact admissions or request an in-person guided tour of our Mbengwi campus facilities.">
+                      <i class="bi bi-compass"></i> Inquire About Campus
+                    </a>
+                  </div>
+                </div>
+
+              </article>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== TESTIMONIALS ==================== -->
+    <section class="section-padding d-none cream-bg" id="testimonials">
+      <span class="section-label">Community Voices</span>
+      <h2 class="section-title">What Our Family Says</h2>
+      <div class="section-divider"></div>
+      <div class="grid-container" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <div class="testimonial-card reveal">
+          <img class="testimonial-avatar" src="https://i.pravatar.cc/150?img=11" alt="Paul N." loading="lazy"
+            onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
+          <div class="testimonial-quote"><i class="bi bi-chat-quote-fill"></i></div>
+          <p>"Because it’s a smaller school, the teachers actually knew my name and my struggles. They gave me the
+            personal attention and technical skills that set me apart. I now run my own electrical workshop."</p>
+          <div class="testimonial-author">Paul N.</div>
+          <div class="testimonial-role">Alumnus, Industrial Electrical</div>
+        </div>
+        <div class="testimonial-card reveal reveal-delay-1">
+          <img class="testimonial-avatar" src="https://i.pravatar.cc/150?img=47" alt="Mrs. A. Chia" loading="lazy"
+            onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
+          <div class="testimonial-quote"><i class="bi bi-chat-quote-fill"></i></div>
+          <p>"The moral grounding and patient teachers here prepared my children not just for exams, but for life. It is
+            a
+            truly nurturing environment where you know your child is safe."</p>
+          <div class="testimonial-author">Mrs. A. Chia</div>
+          <div class="testimonial-role">Parent</div>
+        </div>
+        <div class="testimonial-card reveal reveal-delay-2">
+          <img class="testimonial-avatar" src="https://i.pravatar.cc/150?img=12" alt="Br. Emmanuel" loading="lazy"
+            onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
+          <div class="testimonial-quote"><i class="bi bi-chat-quote-fill"></i></div>
+          <p>"Teaching at SJCCC is a blessing. The students are eager to learn, and our close-knit community makes every
+            single day special and rewarding."</p>
+          <div class="testimonial-author">Br. Emmanuel</div>
+          <div class="testimonial-role">Faculty Member</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== FREQUENTLY ASKED QUESTIONS ==================== -->
+    <section id="faq" class="section-padding alt-bg" aria-labelledby="faqTitle">
+      <div class="faq-container">
+        <div class="faq-header-center">
+          <span class="section-label">Answers &amp; Guidance</span>
+          <h2 class="section-title" id="faqTitle">Frequently Asked Questions</h2>
+          <div class="section-divider"></div>
+          <p class="section-subtitle">
+            Find reliable answers to key questions concerning admissions requirements, boarding life &amp; equipment,
+            and the school fee structure at St. Joseph's Catholic Comprehensive College Mbengwi.
+          </p>
+        </div>
+
+        <!-- Controls: Filters, Search, and Expand/Collapse Tools -->
+        <div class="faq-controls-panel reveal">
+          <div class="faq-filter-controls">
+            <!-- Tabs Navigation (Admissions, Boarding, Fees) -->
+            <div class="faq-filters-bar" role="tablist" aria-label="FAQ Categories" id="faqCategoryTabs">
+              <button type="button" id="faq-tab-all" class="faq-filter-btn is-active" data-faq-filter="all" role="tab"
+                aria-selected="true" aria-controls="faqAccordion" tabindex="0"
+                toolDescription="Show all frequently asked questions across all categories.">
+                <i class="bi bi-grid-fill" aria-hidden="true"></i>
+                <span>All Questions</span>
+                <span class="faq-filter-count">15</span>
+              </button>
+              <button type="button" id="faq-tab-admissions" class="faq-filter-btn" data-faq-filter="admissions"
+                role="tab" aria-selected="false" aria-controls="faqAccordion" tabindex="-1"
+                toolDescription="Filter questions related to admission requirements, interviews, and entry criteria.">
+                <i class="bi bi-mortarboard-fill" aria-hidden="true"></i>
+                <span>Admissions</span>
+                <span class="faq-filter-count">5</span>
+              </button>
+              <button type="button" id="faq-tab-boarding" class="faq-filter-btn" data-faq-filter="boarding" role="tab"
+                aria-selected="false" aria-controls="faqAccordion" tabindex="-1"
+                toolDescription="Filter questions related to boarding facilities, dormitory life, and supplies.">
+                <i class="bi bi-house-door-fill" aria-hidden="true"></i>
+                <span>Boarding</span>
+                <span class="faq-filter-count">5</span>
+              </button>
+              <button type="button" id="faq-tab-fees" class="faq-filter-btn" data-faq-filter="fees" role="tab"
+                aria-selected="false" aria-controls="faqAccordion" tabindex="-1"
+                toolDescription="Filter questions regarding school fees, bank payment options, and pocket money.">
+                <i class="bi bi-cash-stack" aria-hidden="true"></i>
+                <span>Fees &amp; Payments</span>
+                <span class="faq-filter-count">5</span>
+              </button>
+            </div>
+
+            <!-- Responsive Category Select Dropdown -->
+            <div class="faq-select-wrapper" id="faqSelectWrapper">
+              <label for="faqCategorySelect" class="faq-select-label">
+                <i class="bi bi-funnel-fill" aria-hidden="true"></i>
+                <span>Category:</span>
+              </label>
+              <div class="faq-select-container">
+                <select id="faqCategorySelect" class="faq-category-select"
+                  aria-label="Filter frequently asked questions by category">
+                  <option value="all">All Questions (15)</option>
+                  <option value="admissions">Admissions (5)</option>
+                  <option value="boarding">Boarding (5)</option>
+                  <option value="fees">Fees &amp; Payments (5)</option>
+                </select>
+                <i class="bi bi-chevron-down faq-select-chevron" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-search-and-tools">
+            <div class="faq-search-wrapper">
+              <i class="bi bi-search faq-search-icon" aria-hidden="true"></i>
+              <input type="search" id="faqSearchInput" class="faq-search-input"
+                placeholder="Search questions (e.g. fees, OPSEC, Form 1, uniform, mattress, transfer)..."
+                aria-label="Search frequently asked questions" autocomplete="off">
+              <button type="button" id="faqSearchClear" class="faq-search-clear" aria-label="Clear search input" hidden>
+                <i class="bi bi-x-circle-fill"></i>
+              </button>
+            </div>
+            <div class="faq-meta-tools">
+              <span id="faqResultCount" class="faq-result-count" aria-live="polite">All 15 questions</span>
+              <button type="button" id="faqExpandAllBtn" class="faq-action-link" title="Open all visible answers">Expand
+                All</button>
+              <span id="faqToolsSeparator" class="faq-tools-separator" style="color:var(--text-muted);font-size:0.8rem;"
+                aria-hidden="true" hidden>·</span>
+              <button type="button" id="faqCollapseAllBtn" class="faq-action-link" title="Close all open answers"
+                hidden>Collapse All</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAQ Items Accordion -->
+        <div class="faq-list" id="faqAccordion"></div><!-- /faq-list -->
+
+        <!-- Empty Search State -->
+        <div class="faq-empty-state" id="faqEmptyState" hidden>
+          <i class="bi bi-search faq-empty-icon" aria-hidden="true"></i>
+          <h3 class="faq-empty-title">No matching questions found</h3>
+          <p class="faq-empty-desc">
+            We couldn't find any questions matching <span class="faq-empty-query font-bold">your query</span>. Try
+            searching for admissions, boarding, fees, uniform, or OPSEC.
+          </p>
+          <button type="button" class="btn btn-outline" id="faqEmptyResetBtn"
+            style="padding:8px 20px; font-size:0.9rem;" toolDescription="Reset search and view all questions.">
+            Show All Questions
+          </button>
+        </div>
+
+        <!-- Still Have Questions / Help Card -->
+        <div class="faq-help-card reveal">
+          <div class="faq-help-content">
+            <h3 class="faq-help-title">Still Have Questions About SJCCC?</h3>
+            <p class="faq-help-desc">
+              Our administration and bursary office are here to guide you through registration, boarding preparations,
+              and fee installment arrangements.
+            </p>
+          </div>
+          <div class="faq-help-actions">
+            <button type="button" id="faqEnquiryBtn" class="faq-help-btn-primary"
+              toolDescription="Open the enquiry dialog to send a direct message to the school.">
+              <i class="bi bi-chat-dots-fill"></i> Send an Enquiry
+            </button>
+            <a href="/prospectus.html" class="faq-help-btn-secondary"
+              toolDescription="Read the comprehensive student prospectus for full details.">
+              <i class="bi bi-file-earmark-pdf-fill"></i> View Prospectus
+            </a>
+            <a href="https://wa.me/237682760271" target="_blank" rel="noopener noreferrer"
+              class="faq-help-btn-secondary" toolDescription="Chat directly with the admissions office on WhatsApp.">
+              <i class="bi bi-whatsapp"></i> WhatsApp Us
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== CAMPUS LOCATION & GOOGLE MAP FACADE ==================== -->
+    <section id="location" class="location-section section-padding">
+      <div class="location-container">
+        <div class="location-header text-center">
+          <span class="section-label">Come Visit Us</span>
+          <h2 class="section-title">Our Location &amp; Campus Grounds</h2>
+          <div class="section-divider"></div>
+          <p class="section-subtitle">
+            Situated atop the scenic highlands of Mbengwi in Momo Division, North West Region of Cameroon.
+          </p>
+        </div>
+
+        <div class="location-card reveal">
+          <!-- Left: High-performance Static Map Facade with on-demand interactive embed -->
+          <div class="location-map-wrapper" id="locationMapWrapper">
+            <div class="location-facade" id="locationFacade">
+              <!-- Authentic Mbengwi Regional Map Vector -->
+              <div class="location-facade__art">
+                <img src="/assets/mbengwi-map.svg"
+                  alt="Detailed regional map of Mbengwi showing Saint Joseph Catholic Comprehensive College location"
+                  class="location-topo-svg location-map-svg-img"
+                  loading="lazy"
+                  width="742"
+                  height="850" />
+              </div>
+
+              <!-- Overlay elements -->
+              <div class="location-facade__overlay">
+                <span class="location-facade__badge">
+                  <i class="bi bi-compass" aria-hidden="true"></i>
+                  <span>Mbengwi Central · 2.5 km from Town Center</span>
+                </span>
+
+                <div class="location-pin-wrap">
+                  <div class="location-pin-pulse" aria-hidden="true"></div>
+                  <div class="location-pin-icon" aria-hidden="true">
+                    <i class="bi bi-geo-alt-fill"></i>
+                  </div>
+                  <div class="location-pin-card">
+                    <span class="location-pin-name">SJCCC Campus</span>
+                    <span class="location-pin-coord">6°01'53.4"N 10°00'55.6"E</span>
+                  </div>
+                </div>
+
+                <div class="location-facade__cta-overlay">
+                  <button type="button" class="location-activate-btn" id="loadGoogleMapBtn"
+                    aria-label="Load interactive Google Map embed">
+                    <i class="bi bi-map" aria-hidden="true"></i>
+                    <span>Load Interactive Map</span>
+                  </button>
+                  <span class="location-facade__hint">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i> Saves data
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Campus Location & Transit Information Panel -->
+          <div class="location-info-panel">
+            <div class="location-info-header">
+              <span class="location-kicker">
+                <i class="bi bi-building" aria-hidden="true"></i> Institutional Campus
+              </span>
+              <h3 class="location-college-name">Saint Joseph Catholic Comprehensive College</h3>
+              <p class="location-motto-quote">"Edificamus Regnum Dei" · Founded 1963 · Archdiocese of Bamenda</p>
+            </div>
+
+            <ul class="location-meta-list" role="list">
+              <li>
+                <div class="location-meta-icon" aria-hidden="true">
+                  <i class="bi bi-geo-alt-fill"></i>
+                </div>
+                <div class="location-meta-text">
+                  <strong>Campus Address</strong>
+                  <span>Mbengwi, Momo Division, North West Region, Republic of Cameroon</span>
+                  <span class="location-meta-sub">Scenic hilltop setting overlooking Mbengwi municipality</span>
+                </div>
+              </li>
+              <li>
+                <div class="location-meta-icon" aria-hidden="true">
+                  <i class="bi bi-signpost-2"></i>
+                </div>
+                <div class="location-meta-text">
+                  <strong>Travel &amp; Access Corridor</strong>
+                  <span>Via Bamenda–Mbengwi Highway (~45 minutes from Bamenda Commercial Avenue)</span>
+                  <span class="location-meta-sub">Accessible by public transit, college bus, and private vehicles</span>
+                </div>
+              </li>
+              <li>
+                <div class="location-meta-icon" aria-hidden="true">
+                  <i class="bi bi-clock-history"></i>
+                </div>
+                <div class="location-meta-text">
+                  <strong>Office &amp; Visitation Hours</strong>
+                  <span>Monday – Friday: 7:30 AM – 3:30 PM</span>
+                  <span class="location-meta-sub">Admissions office, Principal's registry &amp; campus tours</span>
+                </div>
+              </li>
+              <li>
+                <div class="location-meta-icon" aria-hidden="true">
+                  <i class="bi bi-crosshair"></i>
+                </div>
+                <div class="location-meta-text">
+                  <strong>Geographic Positioning</strong>
+                  <span>6.0315° N, 10.0154° E · Elevation: 1,380 m</span>
+                  <span class="location-meta-sub">Clean alpine climate conducive to rigorous academic study</span>
+                </div>
+              </li>
+            </ul>
+
+            <div class="location-actions-toolbar">
+              <a href="https://maps.google.com/?q=St+Joseph+Secondary+School+Mbengwi+Cameroon" target="_blank"
+                rel="noopener noreferrer" class="btn btn-primary location-action-btn"
+                aria-label="Open in Google Maps for turn-by-turn navigation (opens in new tab)">
+                <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                <span>Get Driving Directions</span>
+              </a>
+              <a href="#campusMapSection" class="location-action-btn btn-ghost"
+                aria-label="Explore the 6 Virtual Campus Zones">
+                <i class="bi bi-layers" aria-hidden="true"></i>
+                <span>Explore 6 Campus Zones</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CTA BANNER ==================== -->
+    <section class="section-padding">
+      <div class="cta-banner reveal">
+        <h2>Ready to Join Our Family?</h2>
+        <p>Admissions are open. We're committed to developing confident, thoughtful learners prepared for meaningful
+          futures.</p>
+        <button id="enquire-btn" class="btn btn-primary">Enquire Now</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer id="contact">
+    <div class="footer-content">
+      <div>
+        <h3>Contact Us</h3>
+        <p><i class="bi bi-geo-alt-fill"></i> Mbengwi, Momo Division,<br>&nbsp;&nbsp;&nbsp;North-West Region, Cameroon
+        </p>
+        <p><a class="contact-link" href="https://wa.me/237682760271"><i class="bi bi-whatsapp"></i> +237 682 760 271</a>
+        </p>
+        <p><a class="contact-link" href="tel:+237682760271" target="_blank" rel="noopener noreferrer"><i
+              class="bi bi-telephone-fill"></i> +237 682 760 271</a></p>
+        <p><a class="contact-link" href="mailto:stjosephcollegembengwi@gmail.com" target="_blank"
+            rel="noopener noreferrer"><i class="bi bi-envelope"></i> stjosephcollegembengwi@gmail.com</a></p>
+        <div class="d-none footer-social">
+          <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+          <a href="#" aria-label="Email"><i class="bi bi-envelope"></i></a>
+        </div>
+      </div>
+      <div>
+        <h3>Our Vision</h3>
+        <p>Under the caring guidance of the Principal, Rev. Fr. Joseph Gael Kenne S.D, and his dedicated and experienced
+          staff, we provide a warm, disciplined environment rooted in moral integrity, personal growth, and practical
+          skill development.</p>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <p><a href="#heroSection" style="color:#b0c4de;text-decoration:none;"><i class="bi bi-arrow-right-short"></i>
+            Home</a></p>
+        <p><a href="#academics" style="color:#b0c4de;text-decoration:none;"><i class="bi bi-arrow-right-short"></i>
+            Programs</a></p>
+        <p><a href="#news-events" style="color:#b0c4de;text-decoration:none;"><i class="bi bi-arrow-right-short"></i>
+            News &amp; Events</a></p>
+        <p><a href="#campus" style="color:#b0c4de;text-decoration:none;"><i class="bi bi-arrow-right-short"></i> Campus
+            Life</a></p>
+        <p><a href="#faq" style="color:#b0c4de;text-decoration:none;"><i class="bi bi-arrow-right-short"></i> Frequently
+            Asked Questions</a></p>
+        <p><a href="/prospectus.html" style="color:#b0c4de;text-decoration:none;"><i
+              class="bi bi-arrow-right-short"></i> Student Prospectus</a></p>
+        <p class="d-none"><a href="#testimonials" style="color:#b0c4de;text-decoration:none;"><i
+              class="bi bi-arrow-right-short"></i> Testimonials</a></p>
+      </div>
+    </div>
+    <p class="copyright">© 2026 St. Joseph's Catholic Comprehensive College, Mbengwi. All Rights Reserved.</p>
+  </footer>
+
+  <!-- Unified Assistance & Enquiry Dock (Combined to prevent screen clutter) -->
+  <div class="unified-action-dock" id="unifiedAssistanceDock" role="region" aria-label="Assistance and Enquiry Actions">
+    <button type="button" class="unified-dock-btn unified-dock-btn--ai" id="sjcccAiFab"
+      aria-label="Open SJCCC AI Guidance Assistant" title="Ask AI Assistant (Gemini 2.5 Flash)"
+      toolDescription="Open the SJCCC AI Guidance Assistant to ask questions about admissions, fees, and programs.">
+      <i class="bi bi-stars" aria-hidden="true"></i>
+      <span class="dock-btn-label">Ask AI</span>
+    </button>
+    <span class="unified-dock-divider" aria-hidden="true"></span>
+    <button type="button" class="unified-dock-btn unified-dock-btn--enquiry" id="enquiryFab"
+      aria-label="Open enquiry form" title="Send us an enquiry message"
+      toolDescription="Open the enquiry form so visitors can send an official message or ask about admissions.">
+      <i class="bi bi-chat-dots-fill fab-icon" aria-hidden="true"></i>
+      <span class="dock-btn-label">Enquire</span>
+    </button>
+  </div>
+
+  <!-- Enquiry Modal -->
+  <div class="modal-overlay" id="enquiryModal" role="dialog" aria-modal="true" aria-labelledby="enquiryTitle" hidden="">
+    <div class="modal-content">
+      <button aria-label="Close enquiry form" class="modal-close" id="modalClose"
+        toolDescription="Close the enquiry form and return to the page.">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <h2 id="enquiryTitle">Send Us an Enquiry</h2>
+      <div class="enquiry-ai-bridge">
+        <i class="bi bi-stars" aria-hidden="true"></i>
+        <span>Need instant answers?</span>
+        <button type="button" id="enquirySwitchToAiBtn" class="enquiry-ai-bridge-btn"
+          title="Open AI Guidance Assistant for instant answers">
+          Ask AI Guidance Assistant
+        </button>
+      </div>
+      <form action="https://formspree.io/f/xnjkgpgg" data-whatsapp-phone="237672829014" id="enquiryForm" method="POST"
+        novalidate="">
+        <div class="form-group">
+          <label for="enqName">Your Name</label>
+          <div class="field-wrapper">
+            <input type="text" id="enqName" name="enqName" placeholder="Enter your full name" required="">
+            <div class="typing-indicator" aria-hidden="true">
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="enqEmail">Email Address</label>
+          <div class="field-wrapper">
+            <input type="email" id="enqEmail" name="enqEmail" placeholder="your@email.com" required="">
+            <div class="typing-indicator" aria-hidden="true">
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="enqMessage">Your Message</label>
+          <div class="message-field-wrapper">
+            <textarea id="enqMessage" name="enqMessage" rows="4" placeholder="Type your message here..." maxlength="500"
+              required=""></textarea>
+            <span class="char-count" aria-live="polite">0/500</span>
+            <div class="typing-indicator" aria-hidden="true">
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group form-toggle">
+          <label class="switch-label" for="whatsappRoutingToggle">
+            <input id="whatsappRoutingToggle" name="sendViaWhatsApp" checked type="checkbox">
+            <span class="toggle-text">Send instantly via WhatsApp instead of Email</span>
+          </label>
+        </div>
+        <button class="btn btn-primary" id="submitBtn" type="submit"
+          toolDescription="Send the enquiry message to the school for a response.">Send Message</button>
+        <p class="form-note" id="formStatus" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Past Announcements Modal -->
+  <div class="past-modal-overlay" id="pastAnnouncementsModal" role="dialog" aria-modal="true"
+    aria-labelledby="pastAnnouncementsTitle" hidden>
+    <div class="past-modal-dialog">
+      <header class="past-modal-header">
+        <div class="past-modal-title-group">
+          <h2 id="pastAnnouncementsTitle"><i class="bi bi-bell-fill" aria-hidden="true"></i> Historical Announcements
+            Archive</h2>
+          <p class="past-modal-subtitle">Official school notices, circulars, examination returns &amp; admissions
+            bulletins</p>
+        </div>
+        <button type="button" class="past-modal-close" aria-label="Close announcements archive" title="Close"
+          toolDescription="Close the past announcements modal.">
+          <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
+      </header>
+
+      <div class="past-modal-controls">
+        <div class="past-search-wrap">
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <input type="search" id="pastAnnouncementsSearch" class="past-search-input"
+            placeholder="Search notices (e.g. Resumption, GCE, Interviews, Registration)..."
+            aria-label="Search past announcements">
+        </div>
+        <div class="past-category-filters" role="group" aria-label="Filter notices by category">
+          <button type="button" class="past-filter-btn active" data-category="all">All Categories</button>
+          <button type="button" class="past-filter-btn" data-category="admissions">Admissions &amp; Enrolment</button>
+          <button type="button" class="past-filter-btn" data-category="academic">Academic &amp; GCE</button>
+          <button type="button" class="past-filter-btn" data-category="campus">Campus &amp; Facilities</button>
+          <button type="button" class="past-filter-btn" data-category="celebration">Celebrations &amp; Feasts</button>
+        </div>
+        <div class="past-filter-row">
+          <div class="past-priority-filters" role="group" aria-label="Filter notices by priority level">
+            <span class="past-filter-label"><i class="bi bi-funnel-fill"></i> Priority:</span>
+            <button type="button" class="past-priority-pill active" data-priority-filter="all">All</button>
+            <button type="button" class="past-priority-pill priority-pill-urgent" data-priority-filter="urgent">
+              <span class="priority-dot dot-red"></span> Urgent
+            </button>
+            <button type="button" class="past-priority-pill priority-pill-important" data-priority-filter="important">
+              <span class="priority-dot dot-amber"></span> Important
+            </button>
+            <button type="button" class="past-priority-pill priority-pill-info" data-priority-filter="info">
+              <span class="priority-dot dot-blue"></span> General
+            </button>
+          </div>
+          <div class="past-sort-wrap">
+            <label for="pastSortSelect" class="past-filter-label"><i class="bi bi-sort-down"></i> Sort:</label>
+            <select id="pastSortSelect" class="past-sort-select" aria-label="Sort announcements">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="priority">Highest Priority First</option>
+            </select>
+            <button type="button" class="past-clear-cache-btn" id="pastClearStorageBtn"
+              title="Reset all announcement dismissal and read states">
+              <i class="bi bi-arrow-counterclockwise"></i> Reset Cache
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="past-modal-body" id="pastAnnouncementsList" role="region" aria-live="polite">
+        <!-- Rendered dynamically by PastAnnouncementsModal.ts -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const wcoTitlebar = document.getElementById('wcoTitlebar');
+      if (!wcoTitlebar) return;
+
+      // Check if Window Controls Overlay API is supported
+      if ('windowControlsOverlay' in navigator) {
+        const wco = navigator.windowControlsOverlay;
+
+        // Apply initial state
+        if (wco.visible) {
+          document.body.classList.add('wco-active');
+          document.getElementById('themeToggle').classList.add('d-none');
+        }
+
+        // Listen for geometry changes
+        wco.addEventListener('geometrychange', (event) => {
+          if (event.titlebarAreaRect) {
+            document.body.classList.add('wco-active');
+          } else {
+            document.body.classList.remove('wco-active');
+          }
+        });
+
+        // Also listen with media query as fallback
+        const mq = window.matchMedia('(display-mode: window-controls-overlay)');
+        const handleChange = (e) => {
+          document.body.classList.toggle('wco-active', e.matches);
+        };
+        mq.addEventListener('change', handleChange);
+        handleChange(mq);
+
+        // Theme toggle inside WCO titlebar - delegate to canonical ThemeManager toggle
+        const wcoThemeBtn = document.getElementById('wcoDarkModeToggle');
+        if (wcoThemeBtn) {
+          wcoThemeBtn.addEventListener('click', () => {
+            const mainThemeToggle = document.getElementById('themeToggle');
+            if (mainThemeToggle) {
+              mainThemeToggle.click();
+            }
+          });
+        }
+      }
+    })();
+  </script>
+  <!-- Calendar Action Sheet Dialog (Accessible & Truthful UX) -->
+  <dialog id="calendarActionSheet" class="calendar-action-overlay" aria-labelledby="calDialogTitle"
+    aria-describedby="calDialogDesc" hidden>
+    <div class="calendar-action-backdrop" data-action="close"></div>
+    <div class="calendar-action-sheet" tabindex="-1">
+      <div class="calendar-action-header">
+        <div class="calendar-action-title-group">
+          <span class="calendar-action-kicker"><i class="bi bi-calendar-plus" aria-hidden="true"></i> Add to
+            Calendar</span>
+          <h3 id="calDialogTitle" class="calendar-action-title">Select Calendar</h3>
+          <p id="calDialogDesc" class="calendar-action-event-info"></p>
+        </div>
+        <button type="button" class="calendar-action-close-btn" data-action="close"
+          aria-label="Close calendar options dialog">
+          <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="calendar-action-body">
+        <ul class="calendar-provider-list">
+          <!-- Google Calendar -->
+          <li class="calendar-provider-item">
+            <button type="button" class="calendar-provider-btn" data-provider="google">
+              <div class="calendar-provider-icon google-icon">
+                <i class="bi bi-google" aria-hidden="true"></i>
+              </div>
+              <div class="calendar-provider-details">
+                <span class="calendar-provider-name">Google Calendar</span>
+                <span class="calendar-provider-desc">Opens Google Calendar with event details filled in</span>
+              </div>
+              <i class="bi bi-box-arrow-up-right calendar-provider-arrow" aria-hidden="true"></i>
+            </button>
+          </li>
+
+          <!-- Outlook / Microsoft 365 -->
+          <li class="calendar-provider-item">
+            <button type="button" class="calendar-provider-btn" data-provider="outlook">
+              <div class="calendar-provider-icon outlook-icon">
+                <i class="bi bi-microsoft" aria-hidden="true"></i>
+              </div>
+              <div class="calendar-provider-details">
+                <span class="calendar-provider-name">Outlook / Microsoft 365</span>
+                <span class="calendar-provider-desc">Opens Outlook Web with event details filled in</span>
+              </div>
+              <i class="bi bi-box-arrow-up-right calendar-provider-arrow" aria-hidden="true"></i>
+            </button>
+          </li>
+
+          <!-- Calendar File (.ics) -->
+          <li class="calendar-provider-item">
+            <button type="button" class="calendar-provider-btn" data-provider="ics">
+              <div class="calendar-provider-icon ics-icon">
+                <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i>
+              </div>
+              <div class="calendar-provider-details">
+                <span class="calendar-provider-name">Calendar File (.ics)</span>
+                <span class="calendar-provider-desc">Works with Apple Calendar and other calendar apps</span>
+              </div>
+              <i class="bi bi-download calendar-provider-arrow" aria-hidden="true"></i>
+            </button>
+          </li>
+        </ul>
+
+        <!-- Offline notice if offline -->
+        <div class="calendar-offline-hint" id="calOfflineHint" hidden>
+          <i class="bi bi-wifi-off" aria-hidden="true"></i>
+          <span>You are currently offline. Web calendar links may not load until connection is restored; calendar file
+            (.ics) download is fully available.</span>
+        </div>
+
+        <!-- Feedback & Guidance Box -->
+        <div class="calendar-action-guidance" id="calActionGuidance" hidden>
+          <div class="calendar-guidance-content">
+            <i class="bi bi-info-circle-fill" id="calGuidanceIcon" aria-hidden="true"></i>
+            <div id="calGuidanceText"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="calendar-action-footer">
+        <button type="button" class="btn btn-outline calendar-action-dismiss-btn" data-action="close">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Polite live region for screen readers -->
+  <div id="calendarStatusLive" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+</body>
+
+</html>
