@@ -58,7 +58,7 @@ export const SJCCC_SYSTEM_PROMPT = buildSjcccSystemPrompt();
 
 export class GeminiService {
     private readonly apiEndpoint: string = '/api/gemini';
-    private readonly defaultTimeoutMs: number = 15000;
+    private readonly defaultTimeoutMs: number = 25000;
 
     constructor(endpoint?: string) {
         if (endpoint) {
@@ -140,7 +140,7 @@ export class GeminiService {
                 }
 
                 // If authentication/server configuration error occurs, fall back to offline engine cleanly
-                const prefixNote = status === 401 || status === 403 || status === 503
+                const prefixNote = status === 400 || status === 401 || status === 403 || status === 503
                     ? 'Note: Live assistant temporarily unavailable. Serving verified institutional archive:'
                     : undefined;
 

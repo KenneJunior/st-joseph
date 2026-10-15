@@ -7,6 +7,7 @@ import {
     processGeminiQuery,
     validateClientPayload,
     POST,
+    APPROVED_MODEL,
     MAX_PROMPT_LENGTH,
     MAX_HISTORY_LENGTH,
     MAX_REQUEST_BODY_BYTES,
@@ -295,7 +296,7 @@ describe('Server-Side Rate Limiter & Abuse Protection', () => {
             expect(result.statusCode).toBe(200);
 
             // Server strictly targeted approved model in URL
-            expect(capturedUrl).toContain('/models/gemini-2.5-flash:generateContent');
+            expect(capturedUrl).toContain(`/models/${APPROVED_MODEL}:generateContent`);
             expect(capturedUrl).not.toContain('expensive-gpt');
 
             // Server used its own key, ignoring attacker key

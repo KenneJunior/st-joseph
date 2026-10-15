@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * SJCCC – AI Guidance Assistant Widget (AiAssistantWidget.ts)
- * Interactive School Q&A Widget powered by Google Gemini (gemini-2.5-flash).
+ * Interactive School Q&A Widget powered by Google Gemini (gemini-3.8-flash).
  * Lightweight, zero-dependency, glassmorphic floating modal with motion suspension.
  * ============================================================================
  */
@@ -440,10 +440,10 @@ export class AiAssistantWidget {
         // 2. Set loading state
         this.setLoading(true);
         this.scrollToBottom();
-
         try {
-            // 3. Call Gemini Service
-            const response = await geminiService.sendMessage(text, this.history);
+            // 3. Call Gemini Service with prior conversation turns
+            const priorHistory = this.history.slice(0, -1);
+            const response = await geminiService.sendMessage(text, priorHistory);
 
             // 4. Render Assistant Response
             this.appendMessage('model', response.text);

@@ -1,9 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import type { IncomingMessage, ServerResponse } from 'http';
 import { GeminiService } from '../../src/features/ai-assistant/geminiService.ts';
-import {
+import defaultHandler, {
     validateClientPayload,
     formatGeminiContents,
     processGeminiQuery,
+    isApiKeyConfigured,
+    POST,
     MAX_PROMPT_LENGTH,
     MAX_HISTORY_LENGTH,
 } from '../../api/gemini.ts';
@@ -306,7 +309,7 @@ describe('Gemini AI Service & Server Proxy Integration', () => {
             expect(contents[contents.length - 1].parts[0].text).toBe('How much are fees?');
         });
 
-        it('should return 503 AUTH when server API key is not configured', async () => {
+        it('should return 503 AUTH with helpful message when server API key is not configured', async () => {
             const savedKey = process.env.GEMINI_API_KEY;
             delete process.env.GEMINI_API_KEY;
             try {
@@ -318,7 +321,70 @@ describe('Gemini AI Service & Server Proxy Integration', () => {
                 expect(result.statusCode).toBe(503);
                 if ('error' in result.body) {
                     expect(result.body.error).toBe('AUTH');
+                    expect(result.body.message).toContain('GEMINI_API_KEY is not defined');
                 }
+            } finally {
+                if (savedKey) process.env.GEMINI_API_KEY = savedKey;
+            }
+        });
+
+        it('should validate whether GEMINI_API_KEY is defined via isApiKeyConfigured', () => {
+            expect(isApiKeyConfigured('valid-key')).toBe(true);
+            expect(isApiKeyConfigured('')).toBe(false);
+            expect(isApiKeyConfigured('   ')).toBe(false);
+            expect(isApiKeyConfigured('your_gemini_api_key_here')).toBe(false);
+            expect(isApiKeyConfigured('placeholder')).toBe(false);
+            expect(isApiKeyConfigured('MY_GEMINI_API_KEY')).toBe(false);
+            expect(isApiKeyConfigured('my_gemini_api_key')).toBe(false);
+        });
+
+        it('should return 503 from default handler when GEMINI_API_KEY is not defined', async () => {
+            const savedKey = process.env.GEMINI_API_KEY;
+            delete process.env.GEMINI_API_KEY;
+            try {
+                let statusCode = 0;
+                const headers: Record<string, string> = {};
+                let responseBody = '';
+
+                const mockReq = {
+                    method: 'POST',
+                    headers: {},
+                } as unknown as IncomingMessage;
+
+                const mockRes = {
+                    setHeader: (k: string, v: string) => { headers[k] = v; },
+                    end: (chunk: string) => { responseBody = chunk; },
+                    get statusCode() { return statusCode; },
+                    set statusCode(c: number) { statusCode = c; },
+                } as unknown as ServerResponse;
+
+                await defaultHandler(mockReq, mockRes);
+
+                expect(statusCode).toBe(503);
+                expect(headers['Content-Type']).toBe('application/json');
+                const parsed = JSON.parse(responseBody);
+                expect(parsed.error).toBe('AUTH');
+                expect(parsed.message).toContain('GEMINI_API_KEY is not defined');
+            } finally {
+                if (savedKey) process.env.GEMINI_API_KEY = savedKey;
+            }
+        });
+
+        it('should return 503 from POST web handler when GEMINI_API_KEY is not defined', async () => {
+            const savedKey = process.env.GEMINI_API_KEY;
+            delete process.env.GEMINI_API_KEY;
+            try {
+                const req = new Request('https://example.com/api/gemini', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: 'Hello' }),
+                });
+
+                const response = await POST(req);
+                expect(response.status).toBe(503);
+                const body = await response.json();
+                expect(body.error).toBe('AUTH');
+                expect(body.message).toContain('GEMINI_API_KEY is not defined');
             } finally {
                 if (savedKey) process.env.GEMINI_API_KEY = savedKey;
             }
