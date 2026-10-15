@@ -125,44 +125,105 @@ export class FaqSection {
         });
     }
 
-    private expandItem(trigger: HTMLButtonElement, content: HTMLElement, item: HTMLElement): void {
+    public expandItem(trigger: HTMLButtonElement, content: HTMLElement, item: HTMLElement): void {
         trigger.setAttribute('aria-expanded', 'true');
         item.classList.add('is-open');
+
+        // Cancel any pending transition listener on this content element
+        const contentEl = content as HTMLElement & { _faqTransitionEndHandler?: ((e: TransitionEvent) => void) | null };
+        if (contentEl._faqTransitionEndHandler) {
+            content.removeEventListener('transitionend', contentEl._faqTransitionEndHandler);
+            contentEl._faqTransitionEndHandler = null;
+        }
+
+        if (this.isReducedMotion()) {
+            content.hidden = false;
+            content.style.maxHeight = 'none';
+            content.style.opacity = '1';
+            this.updateExpandCollapseState();
+            return;
+        }
+
+        // Unhide content so layout metrics and scrollHeight are active
         content.hidden = false;
 
-        content.style.maxHeight = `${content.scrollHeight + 40}px`;
+        // If reversing a collapse in progress, start from current rendered height
+        const currentHeight = content.getBoundingClientRect().height;
+        const startHeight = currentHeight > 0 && currentHeight < content.scrollHeight ? Math.ceil(currentHeight) : 0;
+        content.style.maxHeight = `${startHeight}px`;
+        content.style.opacity = startHeight > 0 ? (content.style.opacity || '0') : '0';
 
-        content.addEventListener('transitionend', (e) => {
-            // Prevent child transitions from triggering this
-            if (e.target !== content) return; 
-            // Race-condition check: Ensure it wasn't collapsed during the animation
+        // Force browser layout reflow to register the starting baseline
+        void content.offsetHeight;
+
+        // Smoothly animate max-height and opacity to open state (350ms cinematic curve)
+        const targetHeight = Math.ceil(content.scrollHeight);
+        content.style.maxHeight = `${targetHeight}px`;
+        content.style.opacity = '1';
+
+        const onExpandEnd = (e: TransitionEvent) => {
+            // Guard: only respond to the max-height transition on the content element itself
+            if (e.target !== content || e.propertyName !== 'max-height') return;
+            content.removeEventListener('transitionend', onExpandEnd);
+            contentEl._faqTransitionEndHandler = null;
+
+            // Race-condition check: Ensure it wasn't collapsed during animation
             if (trigger.getAttribute('aria-expanded') === 'true') {
                 content.style.maxHeight = 'none';
             }
-        }, { once: true });
+        };
+
+        contentEl._faqTransitionEndHandler = onExpandEnd;
+        content.addEventListener('transitionend', onExpandEnd);
         
         this.updateExpandCollapseState();
     }
 
-    private collapseItem(trigger: HTMLButtonElement, content: HTMLElement, item: HTMLElement): void {
+    public collapseItem(trigger: HTMLButtonElement, content: HTMLElement, item: HTMLElement): void {
         trigger.setAttribute('aria-expanded', 'false');
         item.classList.remove('is-open');
 
-        // If it was fully open, it has max-height: none. We must set it to a pixel value before animating to 0.
-        if (content.style.maxHeight === 'none') {
-            content.style.maxHeight = `${content.scrollHeight}px`;
-            void content.offsetHeight; // Force reflow
+        // Cancel any pending transition listener on this content element
+        const contentEl = content as HTMLElement & { _faqTransitionEndHandler?: ((e: TransitionEvent) => void) | null };
+        if (contentEl._faqTransitionEndHandler) {
+            content.removeEventListener('transitionend', contentEl._faqTransitionEndHandler);
+            contentEl._faqTransitionEndHandler = null;
         }
-        
-        content.style.maxHeight = '0px';
 
-        content.addEventListener('transitionend', (e) => {
-            if (e.target !== content) return;
-            // Race-condition check: Ensure it wasn't expanded again during the animation
+        if (this.isReducedMotion()) {
+            content.style.maxHeight = '0px';
+            content.style.opacity = '0';
+            content.hidden = true;
+            this.updateExpandCollapseState();
+            return;
+        }
+
+        // If it was fully open, it had max-height: none.
+        // Set it to current rendered pixel height first so CSS can interpolate smoothly to 0.
+        const currentHeight = Math.ceil(content.getBoundingClientRect().height || content.scrollHeight);
+        content.style.maxHeight = `${currentHeight}px`;
+        content.style.opacity = '1';
+
+        // Force reflow so the starting height is committed to DOM layout
+        void content.offsetHeight;
+
+        // Animate smoothly down to 0px height and 0 opacity (350ms cinematic curve)
+        content.style.maxHeight = '0px';
+        content.style.opacity = '0';
+
+        const onCollapseEnd = (e: TransitionEvent) => {
+            if (e.target !== content || e.propertyName !== 'max-height') return;
+            content.removeEventListener('transitionend', onCollapseEnd);
+            contentEl._faqTransitionEndHandler = null;
+
+            // Race-condition check: Ensure it wasn't re-expanded during animation
             if (trigger.getAttribute('aria-expanded') === 'false') {
                 content.hidden = true;
             }
-        }, { once: true });
+        };
+
+        contentEl._faqTransitionEndHandler = onCollapseEnd;
+        content.addEventListener('transitionend', onCollapseEnd);
         
         this.updateExpandCollapseState();
     }
