@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="4.632 4.226 168 168" width="163.145px" height="164.093px">
+    <defs>
+        <linearGradient id="sq-tileGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#16294f"/>
+            <stop offset="1" stop-color="#07182E"/>
+        </linearGradient>
+        <filter id="sq-tileShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000000" flood-opacity="0.28"/>
+        </filter>
+        <linearGradient gradientUnits="userSpaceOnUse" x1="253.343" y1="10.036" x2="253.343" y2="508.12" id="gradient-1" gradientTransform="matrix(0.336814, 0, 0, 0.337248, 3.088728, 0.84082)">
+            <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.18"/>
+            <stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient gradientUnits="userSpaceOnUse" x1="253.343" y1="10.036" x2="253.343" y2="508.12" id="gradient-2" gradientTransform="matrix(0.336814, 0, 0, 0.337248, 3.088728, 0.84082)">
+            <stop offset="0" style="stop-color: #bada55"/>
+            <stop offset="1" style="stop-color: #758d29"/>
+        </linearGradient>
+        <clipPath id="sq-top-clip">
+            <rect x="0" y="0" width="400" height="245"/>
+        </clipPath>
+        <path id="sq-textArc" d="M 110 400 Q 200 440 290 400" fill="none"/>
+    </defs>
+    <rect x="4.632" y="4.226" width="168" height="168" rx="31" ry="31" stroke="#C9A229" stroke-width="6" filter="url(#sq-tileShadow)" style="stroke-width: 3;" fill="url(#sq-tileGradient)" transform="matrix(0.9999999999999999, 0, 0, 0.9999999999999999, 0, 0)"/>
+    <rect x="4.632" y="4.226" width="167.57" height="167.974" rx="31" ry="31" style="stroke-width: 0.5; fill: url(&quot;#gradient-1&quot;); stroke: url(&quot;#gradient-2&quot;);" transform="matrix(0.9999999999999999, 0, 0, 0.9999999999999999, 0, 0)"/>
+    <g transform="matrix(0.42000102996826166, 0, 0, 0.4200080037117004, -3.5879941521286014, -1.047037974700892)" style="">
+        <path d="M 228.034 93.691 L 326.119 115.873 L 326.119 221.238 C 326.119 287.784 280.346 315.512 228.034 337.694 C 175.722 315.512 129.948 287.784 129.948 221.238 L 129.948 115.873 L 228.034 93.691 Z" stroke="none" transform="matrix(1, 0, 0, 1, 0, -1.4210854715202004e-14)" fill="#FBF7EC"/>
+        <path class="gold-stroke" stroke-width="8" d="M 228.034 93.691 L 326.119 115.873 L 326.119 221.238 C 326.119 287.784 280.346 315.512 228.034 337.694 C 175.722 315.512 129.948 287.784 129.948 221.238 L 129.948 115.873 L 228.034 93.691 Z" style="fill: none; stroke: rgb(201, 162, 41); stroke-linecap: round; stroke-linejoin: round; stroke-width: 8;" transform="matrix(1, 0, 0, 1, 0, -1.4210854715202004e-14)"/>
+        <path class="gold-stroke" stroke-width="3" d="M 228.034 102.009 L 318.273 121.419 L 318.273 221.238 C 318.273 282.239 277.077 307.194 228.034 327.712 C 178.991 307.194 137.795 282.239 137.795 221.238 L 137.795 121.419 L 228.034 102.009 Z" style="fill: none; stroke: rgb(201, 162, 41); stroke-linecap: round; stroke-linejoin: round; stroke-width: 3;" transform="matrix(1, 0, 0, 1, 0, -1.4210854715202004e-14)"/>
+        <g class="gold-stroke" stroke-width="4" style="fill: none; stroke: rgb(201, 162, 41); stroke-linecap: round; stroke-linejoin: round;" transform="matrix(0.4306310415267945, 0, 0, 0.5545540452003479, 140.65170497673307, 68.05609232270855)">
+            <line x1="200" y1="85" x2="200" y2="115"/>
+            <line x1="185" y1="97.274" x2="215" y2="97.274" style="transform-box: fill-box; transform-origin: 50% 0%;"/>
+        </g>
+        <g fill="#07182E" stroke="#C9A229" stroke-width="7" stroke-linejoin="round" transform="matrix(0.5412829518318176, 0, 0, 0.5545540452003479, 117.53081687585735, 45.0540129699411)" style="">
+            <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 67.4375px 160px; text-anchor: middle;" x="88" y="320">S</text>
+            <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 127.344px 160px; text-anchor: middle;" x="200" y="320">C</text>
+            <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 183.344px 160px; text-anchor: middle;" x="312" y="320">C</text>
+        </g>
+        <g fill="#07182E" stroke="none" transform="matrix(0.5421779751777649, 0, 0, 0.5545540452003479, 117.49059470728925, 45.0540129699411)" style="">
+            <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 67.4375px 160px; text-anchor: middle;" x="88" y="320">S</text>
+            <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 127.344px 160px; text-anchor: middle;" x="200" y="320">C</text>
+            <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 183.344px 160px; text-anchor: middle;" x="312" y="320">C</text>
+        </g>
+        <g fill="#07182E" stroke="#C9A229" stroke-width="7" stroke-linejoin="round" transform="matrix(0.5412829518318176, 0, 0, 0.5545540452003479, 117.53081687585735, 45.0540129699411)" style="">
+            <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 87.625px 160px; text-anchor: middle;" x="144" y="320">J</text>
+            <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 155.344px 160px; text-anchor: middle;" x="256" y="320">C</text>
+        </g>
+        <g fill="#07182E" stroke="none" transform="matrix(0.5412829518318176, 0, 0, 0.5545540452003479, 117.53081687585735, 45.0540129699411)" style="">
+            <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 87.625px 160px; text-anchor: middle;" x="144" y="320">J</text>
+            <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 155.344px 160px; text-anchor: middle;" x="256" y="320">C</text>
+        </g>
+        <g clip-path="url(#sq-top-clip)" transform="matrix(0.5412829518318176, 0, 0, 0.5545540452003479, 117.53081687585735, 45.0540129699411)" style="">
+            <g fill="#07182E" stroke="#C9A229" stroke-width="7" stroke-linejoin="round">
+                <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 67.4375px 160px; text-anchor: middle;" x="88" y="320">S</text>
+                <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 127.344px 160px; text-anchor: middle;" x="200" y="320">C</text>
+                <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 183.344px 160px; text-anchor: middle;" x="312" y="320">C</text>
+            </g>
+            <g fill="#07182E" stroke="none">
+                <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 67.4375px 160px; text-anchor: middle;" x="88" y="320">S</text>
+                <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 127.344px 160px; text-anchor: middle;" x="200" y="320">C</text>
+                <text class="monogram" style="white-space: pre; font-family: &quot;Times New Roman&quot;, Times, serif; font-size: 155px; line-height: 248px; perspective-origin: 183.344px 160px; text-anchor: middle;" x="312" y="320">C</text>
+            </g>
+        </g>
+        <text class="location-text" style="white-space: pre; fill: rgb(7, 24, 46); font-family: Inter, system-ui, sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 5px; line-height: 35.2px; perspective-origin: 141.797px 210.094px;" transform="matrix(0.6539060473442078, 0, 0, 0.5545540452003479, 95.41272114832283, 50.90849380058786)">
+            <textPath href="#sq-textArc" startOffset="50%" text-anchor="middle">MBENGWI</textPath>
+        </text>
+        <rect x="201.661" y="177.258" width="1.702" height="3.67" style="fill: rgb(7, 24, 46);" transform="matrix(1, 0, 0, 1, 0, -1.4210854715202004e-14)"/>
+        <rect x="204.905" y="179.691" width="0.346" height="1.21" style="fill: rgb(7, 24, 46);" transform="matrix(1, 0, 0, 1, 0, -1.4210854715202004e-14)"/>
+        <rect x="203.882" y="177.723" width="0.013" height="0.426" style="fill: rgb(46, 43, 6);" transform="matrix(1, 0, 0, 1, 0, -1.4210854715202004e-14)"/>
+        <rect x="203.978" y="175.451" width="0.781" height="5.858" style="fill: none; stroke: rgb(201, 162, 41); stroke-linecap: round; stroke-linejoin: round;" transform="matrix(1, 0, 0, 1, 0, -1.4210854715202004e-14)"/>
+    </g>
+</svg>
