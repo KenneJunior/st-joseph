@@ -8,17 +8,21 @@
 
 import { geminiService, type ChatMessage } from './geminiService.ts';
 import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
+import { AiChatHistoryStore } from '../../core/storage/AiChatHistoryStore.ts';
+import { getCurrentPageContext } from './pageContext.ts';
 
 export interface AiWidgetConfig {
     container?: HTMLElement;
     fabLabel?: string;
     starterPrompts?: string[];
+    historyStore?: AiChatHistoryStore;
 }
 
 export class AiAssistantWidget {
     private isOpen: boolean = false;
     private isLoading: boolean = false;
     private history: ChatMessage[] = [];
+    private readonly chatHistoryStore: AiChatHistoryStore;
 
     // DOM Elements
     private fabEl: HTMLButtonElement | null = null;
@@ -42,6 +46,7 @@ export class AiAssistantWidget {
         if (config.starterPrompts && config.starterPrompts.length > 0) {
             this.starterPrompts = config.starterPrompts;
         }
+        this.chatHistoryStore = config.historyStore || new AiChatHistoryStore();
     }
 
     /**
@@ -55,6 +60,7 @@ export class AiAssistantWidget {
 
         this.renderFab();
         this.renderDrawer();
+        this.loadPersistedHistory();
         this.bindEvents();
         return this;
     }
@@ -235,7 +241,7 @@ export class AiAssistantWidget {
                         <i class="bi bi-send-fill" aria-hidden="true"></i>
                     </button>
                 </form>
-                <p class="sjccc-ai-footer__hint">Press Enter to send • Verified Catholic College Guidance</p>
+                <p id="sjcccAiFooterHint" class="sjccc-ai-footer__hint">Press Enter to send • Verified Catholic College Guidance</p>
             </footer>
         `;
 
@@ -263,6 +269,32 @@ export class AiAssistantWidget {
                 });
                 chipsContainer.appendChild(chip);
             });
+        }
+    }
+
+    /**
+     * Restores saved chat history from persistent storage and populates the conversation DOM.
+     */
+    private loadPersistedHistory(): void {
+        const saved = this.chatHistoryStore.getHistory();
+        if (!saved || saved.length === 0) return;
+
+        this.history = saved.map((item) => ({
+            role: item.role,
+            text: item.text,
+            timestamp: item.timestamp,
+        }));
+
+        if (!this.messageContainerEl) return;
+        this.messageContainerEl.innerHTML = '';
+
+        const divider = document.createElement('div');
+        divider.className = 'sjccc-msg-divider';
+        divider.innerHTML = `<span><i class="bi bi-clock-history" aria-hidden="true"></i> Saved Conversation</span>`;
+        this.messageContainerEl.appendChild(divider);
+
+        for (const msg of this.history) {
+            this.appendMessage(msg.role, msg.text, msg.timestamp);
         }
     }
 
@@ -362,6 +394,13 @@ export class AiAssistantWidget {
             document.body.style.overflow = 'hidden';
         }
 
+        // Update footer hint with current page section context
+        const pageContext = getCurrentPageContext();
+        const hintEl = this.windowEl?.querySelector('#sjcccAiFooterHint');
+        if (hintEl && pageContext.pageSection && pageContext.pageSection !== 'General Campus') {
+            hintEl.innerHTML = `Viewing: <strong>${this.escapeHtml(pageContext.pageSection)}</strong> • Press Enter to send`;
+        }
+
         setTimeout(() => {
             this.inputEl?.focus();
             if (this.history.length > 0) {
@@ -433,27 +472,44 @@ export class AiAssistantWidget {
         const text = promptText.trim();
         if (!text || this.isLoading) return;
 
-        // 1. Render User Message
-        this.appendMessage('user', text);
-        this.history.push({ role: 'user', text, timestamp: Date.now() });
+        // 1. Render User Message & persist to history store
+        const userTimestamp = Date.now();
+        this.appendMessage('user', text, userTimestamp);
+        this.history.push({ role: 'user', text, timestamp: userTimestamp });
+        this.chatHistoryStore.addMessage('user', text, userTimestamp);
 
         // 2. Set loading state
         this.setLoading(true);
         this.scrollToBottom();
-        try {
-            // 3. Call Gemini Service with prior conversation turns
-            const priorHistory = this.history.slice(0, -1);
-            const response = await geminiService.sendMessage(text, priorHistory);
 
-            // 4. Render Assistant Response
-            this.appendMessage('model', response.text);
-            this.history.push({ role: 'model', text: response.text, timestamp: Date.now() });
+        // 3. Resolve active page context (title and section)
+        const pageContext = getCurrentPageContext();
+
+        try {
+            // 4. Call Gemini Service with prior conversation turns and page context
+            const priorHistory = this.history.slice(0, -1);
+            const response = await geminiService.sendMessage(text, priorHistory, {
+                context: pageContext,
+            });
+
+            // 5. Render Assistant Response & persist to history store
+            const modelTimestamp = Date.now();
+            this.appendMessage('model', response.text, modelTimestamp);
+            this.history.push({ role: 'model', text: response.text, timestamp: modelTimestamp });
+            this.chatHistoryStore.addMessage('model', response.text, modelTimestamp);
 
         } catch (error) {
             console.error('[AiAssistantWidget] Error:', error);
-            const fallback = geminiService.generateOfflineFallback(text, 'Notice: Reconnecting to Gemini service. Serving verified local guidance:');
-            this.appendMessage('model', fallback.text);
-            this.history.push({ role: 'model', text: fallback.text, timestamp: Date.now() });
+            const fallback = geminiService.generateOfflineFallback(
+                text,
+                'Notice: Reconnecting to Gemini service. Serving verified local guidance:',
+                'NETWORK',
+                pageContext
+            );
+            const fallbackTimestamp = Date.now();
+            this.appendMessage('model', fallback.text, fallbackTimestamp);
+            this.history.push({ role: 'model', text: fallback.text, timestamp: fallbackTimestamp });
+            this.chatHistoryStore.addMessage('model', fallback.text, fallbackTimestamp);
         } finally {
             this.setLoading(false);
             this.scrollToBottom();
@@ -462,9 +518,35 @@ export class AiAssistantWidget {
     }
 
     /**
+     * Formats message timestamps gracefully (today, yesterday, or short date)
+     */
+    private formatMessageTime(timestamp?: number): string {
+        const date = typeof timestamp === 'number' && Number.isFinite(timestamp)
+            ? new Date(timestamp)
+            : new Date();
+
+        const now = new Date();
+        const isToday = date.toDateString() === now.toDateString();
+
+        const yesterday = new Date(now);
+        yesterday.setDate(now.getDate() - 1);
+        const isYesterday = date.toDateString() === yesterday.toDateString();
+
+        const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        if (isToday) {
+            return timeStr;
+        }
+        if (isYesterday) {
+            return `Yesterday, ${timeStr}`;
+        }
+        return `${date.toLocaleDateString([], { month: 'short', day: 'numeric' })}, ${timeStr}`;
+    }
+
+    /**
      * Appends a message bubble to the conversation area
      */
-    private appendMessage(role: 'user' | 'model', contentText: string): void {
+    private appendMessage(role: 'user' | 'model', contentText: string, timestamp?: number): void {
         if (!this.messageContainerEl) return;
 
         const row = document.createElement('div');
@@ -475,7 +557,7 @@ export class AiAssistantWidget {
             ? this.escapeHtml(contentText).replace(/\n/g, '<br>')
             : this.renderMarkdown(contentText);
 
-        const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const timeStr = this.formatMessageTime(timestamp);
 
         if (isUser) {
             row.innerHTML = `
@@ -522,10 +604,11 @@ export class AiAssistantWidget {
     }
 
     /**
-     * Resets the conversation history
+     * Resets the conversation history across DOM and persistent storage
      */
     public resetConversation(): void {
         this.history = [];
+        this.chatHistoryStore.clearHistory();
         if (this.messageContainerEl) {
             this.messageContainerEl.innerHTML = '';
         }
@@ -535,6 +618,13 @@ export class AiAssistantWidget {
             this.adjustInputHeight();
             this.updateSendButtonState();
         }
+    }
+
+    /**
+     * Returns the underlying persistent history store
+     */
+    public getHistoryStore(): AiChatHistoryStore {
+        return this.chatHistoryStore;
     }
 
     /**

@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { geminiService, SJCCC_SYSTEM_PROMPT } from '../../src/features/ai-assistant/geminiService.ts';
 import { AiAssistantWidget } from '../../src/features/ai-assistant/AiAssistantWidget.ts';
 import { motionSuspension } from '../../src/core/physics/MotionSuspension.ts';
+import { AiChatHistoryStore } from '../../src/core/storage/AiChatHistoryStore.ts';
 
 /**
  * Minimal DOM element mock for testing in Node.js test environment
@@ -159,9 +160,14 @@ function setupMockDom() {
         return [];
     };
 
-    (globalThis as any).document = doc;
+    (globalThis as any).document = {
+        ...doc,
+        title: "St. Joseph's Catholic Comprehensive College | Mbengwi",
+    };
     (globalThis as any).window = {
         innerWidth: 1024,
+        scrollY: 0,
+        location: { hash: '' },
         requestAnimationFrame: (cb: Function) => cb()
     };
     (globalThis as any).requestAnimationFrame = (cb: Function) => cb();
@@ -287,6 +293,61 @@ describe('SJCCC AI Guidance Assistant Unit Tests', () => {
 
             widget.resetConversation();
             expect(messageList?.children.length).toBe(0);
+            expect(widget.getHistoryStore().getHistory().length).toBe(0);
+        });
+
+        it('should automatically persist sent messages and responses into history store', async () => {
+            const store = widget.getHistoryStore();
+            expect(store.getHistory().length).toBe(0);
+
+            await widget.handleUserPrompt('How do I apply for admission to Form 1?');
+
+            const saved = store.getHistory();
+            expect(saved.length).toBe(2);
+            expect(saved[0].role).toBe('user');
+            expect(saved[0].text).toBe('How do I apply for admission to Form 1?');
+            expect(saved[1].role).toBe('model');
+            expect(saved[1].text).toContain('Admissions at SJCCC Mbengwi');
+        });
+
+        it('should restore previously saved conversation upon re-initialization', () => {
+            widget.destroy();
+            setupMockDom();
+
+            const customStorage: Record<string, string> = {
+                'sjccc-ai-chat-history': JSON.stringify([
+                    { role: 'user', text: 'Where is the college located?', timestamp: 1700000000000 },
+                    { role: 'model', text: 'The college is located in Mbengwi, MOMO Division.', timestamp: 1700000005000 },
+                ]),
+            };
+
+            const mockStorageAdapter = {
+                getItem: (k: string) => customStorage[k] ?? null,
+                setItem: (k: string, v: string) => { customStorage[k] = v; },
+                removeItem: (k: string) => { delete customStorage[k]; },
+            };
+
+            const persistentStore = new AiChatHistoryStore('sjccc-ai-chat-history', {
+                storage: mockStorageAdapter,
+            });
+
+            const restoredWidget = new AiAssistantWidget({
+                historyStore: persistentStore,
+            });
+            restoredWidget.init();
+
+            const messageList = document.getElementById('sjcccAiMessageList');
+            expect(messageList).not.toBeNull();
+            // Should contain divider + 2 restored message rows
+            expect(messageList?.children.length).toBe(3);
+
+            const userRow = messageList?.children.find((c) => c.className.includes('sjccc-msg-row--user'));
+            const assistantRow = messageList?.children.find((c) => c.className.includes('sjccc-msg-row--assistant'));
+
+            expect(userRow?.textContent).toContain('Where is the college located?');
+            expect(assistantRow?.textContent).toContain('The college is located in Mbengwi');
+
+            restoredWidget.destroy();
         });
 
         it('should combine seamlessly with existing #enquiryFab into unified assistance dock', () => {
@@ -312,6 +373,25 @@ describe('SJCCC AI Guidance Assistant Unit Tests', () => {
             expect(dock?.children).toContain(enquiryFab);
 
             newWidget.destroy();
+        });
+
+        it('should pass page title and section context to geminiService.sendMessage', async () => {
+            const sendSpy = vi.spyOn(geminiService, 'sendMessage').mockImplementation(async (prompt) => {
+                return geminiService.generateOfflineFallback(prompt);
+            });
+
+            await widget.handleUserPrompt('What are the fees?');
+
+            expect(sendSpy).toHaveBeenCalledWith(
+                'What are the fees?',
+                expect.any(Array),
+                expect.objectContaining({
+                    context: expect.objectContaining({
+                        pageTitle: expect.any(String),
+                        pageSection: expect.any(String),
+                    }),
+                })
+            );
         });
     });
 });

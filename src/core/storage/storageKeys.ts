@@ -22,6 +22,10 @@ export const STORAGE_KEYS = {
     DATES_SEARCH_HISTORY: 'sjccc-dates-search-history',
     /** LocalStorage key for Frequently Asked Questions (FAQ) search history */
     FAQ_SEARCH_HISTORY: 'sjccc-faq-search-history',
+    /** LocalStorage key for persistent AI Guidance Assistant chat history */
+    AI_CHAT_HISTORY: 'sjccc-ai-chat-history',
+    /** LocalStorage key for milestone 24-hour reminders */
+    MILESTONE_REMINDERS: 'sjccc-milestone-reminders',
 } as const;
 
 export type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];

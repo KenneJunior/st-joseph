@@ -903,6 +903,52 @@ html.dark-mode .sjccc-ai-chip:hover i {
   box-sizing: border-box;
 }
 
+.sjccc-msg-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0 6px 0;
+  width: 100%;
+  user-select: none;
+}
+
+.sjccc-msg-divider::before,
+.sjccc-msg-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--ai-border-header, rgba(10, 31, 63, 0.12));
+}
+
+.sjccc-msg-divider span {
+  font-size: 0.64rem;
+  font-weight: 600;
+  color: var(--ai-badge-text, #8C6A21);
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  background: var(--ai-badge-bg, rgba(201, 162, 41, 0.12));
+  border: 1px solid var(--ai-badge-border, rgba(201, 162, 41, 0.35));
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+body.dark-mode .sjccc-msg-divider::before,
+html.dark-mode .sjccc-msg-divider::before,
+body.dark-mode .sjccc-msg-divider::after,
+html.dark-mode .sjccc-msg-divider::after {
+  background: rgba(201, 162, 41, 0.22);
+}
+
+body.dark-mode .sjccc-msg-divider span,
+html.dark-mode .sjccc-msg-divider span {
+  background: rgba(201, 162, 41, 0.16);
+  border-color: rgba(201, 162, 41, 0.40);
+  color: var(--sj-gold-300, #f3d779);
+}
+
 .sjccc-msg-row {
   display: flex;
   gap: 8px;
