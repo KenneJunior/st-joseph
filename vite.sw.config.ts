@@ -1,10 +1,13 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { fileURLToPath } from 'url';
 import { readFileSync, existsSync } from 'fs';
+
+const rootDir = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig(() => {
     // Read generated production manifest if it exists
-    const manifestPath = resolve(import.meta.dirname, 'dist/.vite/manifest.json');
+    const manifestPath = resolve(rootDir, 'dist/.vite/manifest.json');
     const precacheAssets: string[] = [];
 
     if (existsSync(manifestPath)) {
@@ -36,7 +39,7 @@ export default defineConfig(() => {
             target: 'esnext',
             minify: true,
             lib: {
-                entry: resolve(import.meta.dirname, 'src/sw.ts'),
+                entry: resolve(rootDir, 'src/sw.ts'),
                 formats: ['iife'],
                 name: 'SJCCCServiceWorker',
                 fileName: () => 'sw.js',

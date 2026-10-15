@@ -1,8 +1,11 @@
 {
-  "name": "st-joseph",
-  "description": "Imported from GitHub: KenneJunior/st-joseph",
+  "name": "Remix st-joseph",
+  "description": "Imported from GitHub",
   "requestFramePermissions": [],
   "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ],
+  "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
   ]
 }

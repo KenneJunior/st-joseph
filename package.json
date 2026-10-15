@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 3000",
-    "build": "tsc && vite build && vite build --config vite.sw.config.ts",
+    "build": "tsc && vite build && vite build --config vite.sw.config.ts && tsx scripts/postbuild.ts",
     "preview": "vite preview --host 0.0.0.0 --port 3000",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
@@ -27,6 +27,7 @@
     "vitest": "^5.0.3"
   },
   "dependencies": {
+    "@google/genai": "^2.29.1",
     "@kennejunior/liquidglass": "^1.0.5",
     "vercel": "^62.2.0"
   }
