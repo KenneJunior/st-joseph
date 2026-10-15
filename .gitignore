@@ -29,5 +29,4 @@ reports/*
 com.chrom.devtools.json
 com.chrome.devtools.json
 com.chromium.devtools.json
-/.aistudio/
-/dist/
+!/.aistudio/
