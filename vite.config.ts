@@ -30,6 +30,7 @@ export default defineConfig(({ mode }) => {
         test: {
             environmentMatchGlobs: [
                 ['tests/unit/school-dates-timeline.test.ts', 'jsdom'],
+                ['tests/unit/timeline-stagger-entrance.test.ts', 'jsdom'],
                 ['tests/unit/faq-accordion.test.ts', 'jsdom'],
             ],
         },

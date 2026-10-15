@@ -788,22 +788,26 @@ body.dark-mode .timeline-track-line::before {
   align-items: flex-start;
   gap: 20px;
   position: relative;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .timeline-milestone.timeline-hidden {
   display: none !important;
 }
 
-/* ─── Staggered Entrance Animation for Newly Disclosed Milestones ─── */
-@keyframes milestoneDiscloseEntrance {
+/* ==========================================================================
+   TIMELINE MILESTONES STAGGERED ENTRANCE ANIMATION (.timeline-track-container)
+   Hardware-accelerated visual discovery experience on scroll
+   ========================================================================== */
+
+@keyframes timelineMilestoneEntrance {
   0% {
     opacity: 0;
-    transform: translateY(20px) scale(0.985);
+    transform: translateY(28px) scale(0.98);
   }
-  60% {
-    opacity: 0.95;
-    transform: translateY(-2px) scale(1.002);
+  65% {
+    opacity: 0.96;
+    transform: translateY(-2px) scale(1.003);
   }
   100% {
     opacity: 1;
@@ -811,9 +815,74 @@ body.dark-mode .timeline-track-line::before {
   }
 }
 
+@keyframes timelineNodeMarkerEntrance {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+    box-shadow: 0 0 0 rgba(201, 162, 41, 0);
+  }
+  65% {
+    transform: scale(1.18);
+    opacity: 1;
+    box-shadow: 0 0 22px rgba(201, 162, 41, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 16px rgba(200, 150, 62, 0.35);
+  }
+}
+
+/* Stagger preparation for milestones inside .timeline-track-container */
+.timeline-track-container.has-stagger-observer .timeline-milestone:not(.timeline-hidden):not(.is-entered) {
+  opacity: 0;
+  transform: translateY(28px) scale(0.98);
+  pointer-events: none;
+}
+
+/* Active entered state: staggered reveal with spring deceleration */
+.timeline-track-container.has-stagger-observer .timeline-milestone:not(.timeline-hidden).is-entered {
+  animation: timelineMilestoneEntrance 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--milestone-delay, var(--milestone-fallback-delay, 0ms));
+  pointer-events: auto;
+}
+
+/* Node marker pop and glow accent synchronization */
+.timeline-track-container.has-stagger-observer .timeline-milestone:not(.timeline-hidden).is-entered .timeline-node-marker {
+  animation: timelineNodeMarkerEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--milestone-delay, var(--milestone-fallback-delay, 0ms)) + 50ms);
+}
+
+/* Fallback pure CSS nth-child stagger delays if JS variable is not yet computed */
+.timeline-track-container.has-stagger-observer .timeline-milestones-list > .timeline-milestone:not(.timeline-hidden):nth-child(1) { --milestone-fallback-delay: 0ms; }
+.timeline-track-container.has-stagger-observer .timeline-milestones-list > .timeline-milestone:not(.timeline-hidden):nth-child(2) { --milestone-fallback-delay: 85ms; }
+.timeline-track-container.has-stagger-observer .timeline-milestones-list > .timeline-milestone:not(.timeline-hidden):nth-child(3) { --milestone-fallback-delay: 170ms; }
+.timeline-track-container.has-stagger-observer .timeline-milestones-list > .timeline-milestone:not(.timeline-hidden):nth-child(4) { --milestone-fallback-delay: 255ms; }
+.timeline-track-container.has-stagger-observer .timeline-milestones-list > .timeline-milestone:not(.timeline-hidden):nth-child(5) { --milestone-fallback-delay: 340ms; }
+.timeline-track-container.has-stagger-observer .timeline-milestones-list > .timeline-milestone:not(.timeline-hidden):nth-child(6) { --milestone-fallback-delay: 420ms; }
+
+/* Backward-compatible hook for timeline-disclosed-enter */
 .timeline-milestone.timeline-disclosed-enter {
-  animation: milestoneDiscloseEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: timelineMilestoneEntrance 0.52s cubic-bezier(0.16, 1, 0.3, 1) both;
   will-change: opacity, transform;
+}
+
+/* Accessibility: Strict Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .timeline-track-container.has-stagger-observer .timeline-milestone:not(.timeline-hidden):not(.is-entered),
+  .timeline-track-container.has-stagger-observer .timeline-milestone:not(.timeline-hidden).is-entered {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+    pointer-events: auto !important;
+    will-change: auto !important;
+  }
+
+  .timeline-track-container.has-stagger-observer .timeline-milestone .timeline-node-marker {
+    animation: none !important;
+    transform: none !important;
+  }
 }
 
 /* ─── Date Badge & Spine Node ─── */

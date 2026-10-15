@@ -14,10 +14,11 @@ import { STORAGE_KEYS } from '../../core/storage/storageKeys.ts';
 import { SearchHistoryDropdown } from '../../ui/utils/SearchHistoryDropdown.ts';
 import { CalendarActionSheet } from './CalendarActionSheet.ts';
 import { TimelineDragScroller } from './TimelineDragScroller.ts';
+import { TimelineStaggerEntrance } from './TimelineStaggerEntrance.ts';
 import { milestoneReminderService, MilestoneReminderService } from './MilestoneReminderService.ts';
 
 export type { AcademicMilestone };
-export { ACADEMIC_MILESTONES_2026_2027, milestoneReminderService, MilestoneReminderService };
+export { ACADEMIC_MILESTONES_2026_2027, milestoneReminderService, MilestoneReminderService, TimelineStaggerEntrance };
 
 export class SchoolDatesTimeline {
     private readonly container: HTMLElement | null;
@@ -38,6 +39,7 @@ export class SchoolDatesTimeline {
     private readonly disclosureCount: HTMLElement | null;
     private searchHistoryDropdown: SearchHistoryDropdown | null = null;
     private dragScroller: TimelineDragScroller | null = null;
+    private staggerEntrance: TimelineStaggerEntrance | null = null;
 
     private currentTerm: string = 'all';
     private currentCategory: string = 'all';
@@ -78,6 +80,7 @@ export class SchoolDatesTimeline {
         this.bindCalendarExports();
         this.updateNextMilestoneBanner();
         this.initDragScroller();
+        this.initStaggerEntrance();
         this.initReminders();
         this.checkDeepLinkTarget();
         this.syncCategoryCheckboxVisuals();
@@ -437,6 +440,9 @@ export class SchoolDatesTimeline {
 
         // Inject custom category-specific icons based on current filtering state
         this.updateMilestoneCategoryIcons();
+
+        // Staggered entrance update for visible milestones
+        this.staggerEntrance?.onFilterOrDisclosureChange();
     }
 
     /**
@@ -640,6 +646,23 @@ export class SchoolDatesTimeline {
 
     public getDragScroller(): TimelineDragScroller | null {
         return this.dragScroller;
+    }
+
+    private initStaggerEntrance(): void {
+        const trackContainer = this.container?.querySelector<HTMLElement>('.timeline-track-container') ??
+            document.querySelector<HTMLElement>('.timeline-track-container');
+
+        if (trackContainer) {
+            this.staggerEntrance = new TimelineStaggerEntrance({
+                container: trackContainer,
+                baseDelay: 85,
+                maxDelayCap: 420,
+            });
+        }
+    }
+
+    public getStaggerEntrance(): TimelineStaggerEntrance | null {
+        return this.staggerEntrance;
     }
 
     /**
