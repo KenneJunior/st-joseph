@@ -26,6 +26,8 @@ export const STORAGE_KEYS = {
     AI_CHAT_HISTORY: 'sjccc-ai-chat-history',
     /** LocalStorage key for milestone 24-hour reminders */
     MILESTONE_REMINDERS: 'sjccc-milestone-reminders',
+    /** LocalStorage key for milestone reminder chime preference */
+    MILESTONE_CHIME: 'sjccc-milestone-chime',
 } as const;
 
 export type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];

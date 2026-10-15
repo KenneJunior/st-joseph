@@ -463,3 +463,290 @@ export function getCalendarExportGuidance(platformInfo: DevicePlatformInfo, mile
             };
     }
 }
+
+export interface NotificationPlatformGuidance {
+    key: string;
+    headline: string;
+    instructions: string;
+    steps: readonly string[];
+    browserLabel: string;
+    osLabel: string;
+    quickTip?: string;
+    osSteps?: readonly string[];
+    shortcutUrl?: string;
+    iconClass?: string;
+}
+
+/**
+ * Returns tailored step-by-step instructions for allowing notifications
+ * based on the user's detected browser and operating system.
+ */
+export function getNotificationPermissionGuidance(
+    platformInfo: DevicePlatformInfo = detectPlatform()
+): NotificationPlatformGuidance {
+    const { os, browser, browserLabel, osLabel } = platformInfo;
+
+    // Windows OS system-level instructions
+    const windowsOsSteps: readonly string[] = [
+        'Open Windows Settings (press Win + I).',
+        'Navigate to System > Notifications (or Notifications & actions).',
+        'Verify that master Notifications are toggled ON.',
+        `Ensure ${browserLabel} is enabled under "Notifications from apps and other senders".`
+    ];
+
+    // macOS system-level instructions
+    const macOsSteps: readonly string[] = [
+        'Open Apple menu > System Settings (or System Preferences).',
+        'Click "Notifications" in the sidebar.',
+        `Select ${browserLabel} and ensure "Allow Notifications" is enabled with Banners or Alerts.`,
+        'Check that Focus / Do Not Disturb is not silencing alerts.'
+    ];
+
+    if (browser === 'firefox') {
+        return {
+            key: 'firefox',
+            headline: `How to Allow Notifications in ${browserLabel}`,
+            instructions: `Notifications are currently blocked in Firefox. Follow these steps to enable milestone alerts on ${osLabel}:`,
+            steps: [
+                'Click the crossed-out notification/lock icon immediately to the left of the address bar.',
+                'Under "Permissions", click the "✕" button next to "Blocked" to clear the restriction.',
+                'Refresh this page and check the "Remind me" box again.',
+                'Select "Allow Notifications" when Firefox prompts for permission.'
+            ],
+            osSteps: os === 'windows' ? windowsOsSteps : (os === 'macos' ? macOsSteps : undefined),
+            browserLabel,
+            osLabel,
+            iconClass: 'bi-browser-firefox',
+            quickTip: 'You can also check Firefox Settings > Privacy & Security > Permissions > Notifications > Settings.'
+        };
+    }
+
+    if (browser === 'safari') {
+        if (os === 'ios') {
+            return {
+                key: 'safari-ios',
+                headline: 'How to Enable Notifications on Apple iPhone / iPad',
+                instructions: 'Apple iOS requires adding this website to your Home Screen to deliver web push notifications:',
+                steps: [
+                    'Tap the Share button (square icon with an arrow pointing upward) in Safari.',
+                    'Scroll down and tap "Add to Home Screen", then tap "Add" in the top right.',
+                    'Open the SJCCC app from your Home Screen.',
+                    'When prompted, tap "Allow Notifications" to receive 24-hour milestone alerts.'
+                ],
+                osSteps: [
+                    'Open iOS Settings > Notifications > SJCCC (or Safari).',
+                    'Ensure "Allow Notifications" is toggled ON with Badges, Sounds, and Banners enabled.'
+                ],
+                browserLabel,
+                osLabel,
+                iconClass: 'bi-phone',
+                quickTip: 'Apple web push requires iOS 16.4+ installed as a Home Screen web app.'
+            };
+        }
+        return {
+            key: 'safari-mac',
+            headline: `How to Allow Notifications in ${browserLabel} on ${osLabel}`,
+            instructions: 'Safari requires notification permission in its Website Settings:',
+            steps: [
+                'In the Safari top menu bar, click "Safari" and choose "Settings..." (or press Cmd + ,).',
+                'Click the "Websites" tab at the top of the settings window.',
+                'Click "Notifications" in the left sidebar list.',
+                'Find this website in the list and change the dropdown from "Deny" to "Allow".'
+            ],
+            osSteps: macOsSteps,
+            browserLabel,
+            osLabel,
+            iconClass: 'bi-browser-safari',
+            quickTip: 'Also verify that system notifications for Safari are enabled in macOS System Settings > Notifications.'
+        };
+    }
+
+    if (browser === 'edge') {
+        return {
+            key: 'edge',
+            headline: `How to Allow Notifications in ${browserLabel}`,
+            instructions: `Notifications are currently blocked in Microsoft Edge. Follow these steps on ${osLabel}:`,
+            steps: [
+                'Click the padlock or site info icon on the left side of the address bar.',
+                'Find "Notifications" in the dropdown list of permissions.',
+                'Change the setting from "Block" to "Allow".',
+                'Reload the tab to activate your reminder schedule.'
+            ],
+            osSteps: os === 'windows' ? windowsOsSteps : (os === 'macos' ? macOsSteps : undefined),
+            browserLabel,
+            osLabel,
+            iconClass: 'bi-browser-edge',
+            shortcutUrl: 'edge://settings/content/notifications',
+            quickTip: 'Alternatively, visit edge://settings/content/notifications in Edge.'
+        };
+    }
+
+    if (os === 'android') {
+        return {
+            key: 'android',
+            headline: 'How to Allow Notifications on Android',
+            instructions: 'Enable notification alerts in your mobile browser settings:',
+            steps: [
+                'Tap the site settings/lock icon to the left of the URL address in your browser.',
+                'Tap "Permissions" and then "Notifications".',
+                'Switch the toggle to "Allowed".',
+                'If still blocked, check device Settings > Apps > Chrome/Samsung Internet > Notifications.'
+            ],
+            osSteps: [
+                'Open Android device Settings > Apps > Chrome (or your current browser).',
+                'Tap Notifications and toggle "All Chrome notifications" ON.'
+            ],
+            browserLabel,
+            osLabel,
+            iconClass: 'bi-phone',
+            quickTip: 'Make sure your phone is not in "Do Not Disturb" mode during alert times.'
+        };
+    }
+
+    // Default: Chrome / Chromium on Windows, macOS, Linux, ChromeOS
+    return {
+        key: os === 'windows' ? 'chrome-windows' : 'chrome',
+        headline: `How to Allow Notifications in ${browserLabel}${os === 'windows' ? ' on Windows' : ''}`,
+        instructions: `Notifications are currently blocked in ${browserLabel} on ${osLabel}. Follow these simple steps:`,
+        steps: [
+            'Click the tune/padlock icon immediately to the left of the URL in your address bar.',
+            'Locate "Notifications" in the site permissions menu.',
+            'Change the dropdown option from "Block" to "Allow".',
+            'Reload the page to immediately activate your reminder schedule.'
+        ],
+        osSteps: os === 'windows' ? windowsOsSteps : (os === 'macos' ? macOsSteps : undefined),
+        browserLabel,
+        osLabel,
+        iconClass: os === 'windows' ? 'bi-windows' : 'bi-browser-chrome',
+        shortcutUrl: 'chrome://settings/content/notifications',
+        quickTip: 'In Chrome, you can also manage permissions at chrome://settings/content/notifications.'
+    };
+}
+
+/**
+ * Returns a comprehensive catalog of notification unblock guides for all major
+ * platforms and browsers (Windows, Chrome, Firefox, Safari Mac, Safari iOS, Edge, Android).
+ */
+export function getAllNotificationPermissionGuides(): NotificationPlatformGuidance[] {
+    return [
+        {
+            key: 'chrome-windows',
+            browserLabel: 'Google Chrome',
+            osLabel: 'Windows 10 / 11',
+            iconClass: 'bi-windows',
+            headline: 'Allow Notifications in Google Chrome on Windows',
+            instructions: 'Follow these steps to unblock notifications in Chrome on your Windows PC:',
+            steps: [
+                'Click the "View site information" (tune/padlock) icon on the left of the address bar.',
+                'Find "Notifications" and switch the toggle/dropdown to "Allow".',
+                'If not listed, click "Site settings" and change Notifications from Block to Allow.',
+                'Reload the page to start receiving advance milestone alerts.'
+            ],
+            osSteps: [
+                'Press Win + I to open Windows Settings.',
+                'Go to System > Notifications.',
+                'Ensure master Notifications are ON and "Google Chrome" is enabled in the app list.'
+            ],
+            shortcutUrl: 'chrome://settings/content/notifications',
+            quickTip: 'You can paste chrome://settings/content/notifications into Chrome address bar to manage site permissions.'
+        },
+        {
+            key: 'firefox',
+            browserLabel: 'Mozilla Firefox',
+            osLabel: 'Windows / Mac / Linux',
+            iconClass: 'bi-browser-firefox',
+            headline: 'Allow Notifications in Mozilla Firefox',
+            instructions: 'Follow these steps to unblock notifications in Firefox:',
+            steps: [
+                'Click the permissions icon (crossed-out notification bell or padlock) to the left of the address bar.',
+                'Click the "✕" next to "Blocked" under Send Notifications to clear the block.',
+                'Refresh the page and tap "Remind me" on your chosen milestone.',
+                'When Firefox prompts "Will you allow saintjosephcollege... to send notifications?", click "Allow".'
+            ],
+            osSteps: [
+                'On Windows: Check Windows Settings (Win + I) > System > Notifications > Firefox: On.',
+                'On Mac: Open System Settings > Notifications > Firefox and turn ON "Allow Notifications".'
+            ],
+            quickTip: 'Manage all blocked sites in Firefox Settings (Cmd/Ctrl + ,) > Privacy & Security > Permissions > Notifications.'
+        },
+        {
+            key: 'safari-mac',
+            browserLabel: 'Apple Safari',
+            osLabel: 'macOS (MacBook / iMac)',
+            iconClass: 'bi-browser-safari',
+            headline: 'Allow Notifications in Safari on Mac',
+            instructions: 'Follow these steps to grant notification permissions in Safari for Mac:',
+            steps: [
+                'In the top menu bar, click "Safari" and choose "Settings..." (or "Preferences...", shortcut Cmd + ,).',
+                'Select the "Websites" tab at the top of the dialog.',
+                'In the left sidebar, select "Notifications".',
+                'Find this website in the list and change the dropdown setting from "Deny" to "Allow".'
+            ],
+            osSteps: [
+                'Open Apple menu > System Settings > Notifications.',
+                'Select Safari and ensure "Allow Notifications" is enabled.',
+                'Ensure Focus / Do Not Disturb mode allows alerts from Safari.'
+            ],
+            quickTip: 'Close and re-open the webpage tab to immediately verify notification capability.'
+        },
+        {
+            key: 'safari-ios',
+            browserLabel: 'Apple Safari (iOS)',
+            osLabel: 'iPhone & iPad',
+            iconClass: 'bi-phone',
+            headline: 'Enable Milestone Alerts on iPhone & iPad',
+            instructions: 'iOS requires installing the web app to your Home Screen for push alerts:',
+            steps: [
+                'Tap the Share button (square with arrow pointing upward) in the Safari bottom bar.',
+                'Scroll down and tap "Add to Home Screen", then tap "Add" in the top right.',
+                'Launch the "SJCCC" icon from your iPhone/iPad Home Screen.',
+                'Navigate to the Academic Calendar and tap "Remind me", then tap "Allow" on the iOS prompt.'
+            ],
+            osSteps: [
+                'Open iPhone Settings > Notifications > SJCCC.',
+                'Ensure "Allow Notifications" is toggled ON with Sound, Badges, and Lock Screen banners.'
+            ],
+            quickTip: 'Web push notifications are supported on iOS 16.4 and newer.'
+        },
+        {
+            key: 'edge',
+            browserLabel: 'Microsoft Edge',
+            osLabel: 'Windows 10 / 11 / Mac',
+            iconClass: 'bi-browser-edge',
+            headline: 'Allow Notifications in Microsoft Edge',
+            instructions: 'Follow these steps to unblock notifications in Microsoft Edge:',
+            steps: [
+                'Click the padlock or site info icon to the left of the address bar.',
+                'Find "Notifications" in the dropdown and change it from "Block" to "Allow".',
+                'If not visible, click "Permissions for this site" and set Notifications to "Allow".',
+                'Refresh the page to activate milestone notifications.'
+            ],
+            osSteps: [
+                'On Windows: Check Windows Settings (Win + I) > System > Notifications > Microsoft Edge: On.'
+            ],
+            shortcutUrl: 'edge://settings/content/notifications',
+            quickTip: 'You can navigate to edge://settings/content/notifications in Edge.'
+        },
+        {
+            key: 'android',
+            browserLabel: 'Chrome / Samsung Internet',
+            osLabel: 'Android Phones & Tablets',
+            iconClass: 'bi-phone',
+            headline: 'Allow Notifications on Android',
+            instructions: 'Follow these steps to unblock notifications on your Android device:',
+            steps: [
+                'Tap the lock/tune icon or menu (⋮) in your browser address bar.',
+                'Tap "Site settings" or "Permissions", then select "Notifications".',
+                'Switch the toggle to "Allowed" or tap "Reset permissions".',
+                'Refresh this page and tap "Remind me" to approve the notification prompt.'
+            ],
+            osSteps: [
+                'Open Android Settings > Apps > Chrome (or Samsung Internet).',
+                'Tap Notifications and verify "Allow notifications" is turned ON.'
+            ],
+            quickTip: 'Ensure your device is not in "Do Not Disturb" mode when expecting alerts.'
+        }
+    ];
+}
+
+

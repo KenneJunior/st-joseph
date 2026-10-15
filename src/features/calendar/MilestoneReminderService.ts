@@ -8,6 +8,31 @@
 
 import { type AcademicMilestone, ACADEMIC_MILESTONES_2026_2027 } from '../../data/academicCalendar.ts';
 import { STORAGE_KEYS } from '../../core/storage/storageKeys.ts';
+import {
+    milestoneChimeSynthesizer,
+    CHIME_OPTIONS,
+    type ChimeId,
+    type ChimeOption,
+} from './MilestoneChimeSynthesizer.ts';
+import {
+    detectPlatform,
+    getNotificationPermissionGuidance,
+    type DevicePlatformInfo,
+    type NotificationPlatformGuidance,
+} from '../../core/platform/platformDetection.ts';
+import {
+    notificationGuidanceModal,
+    NotificationGuidanceModal,
+} from './NotificationGuidanceModal.ts';
+
+export {
+    milestoneChimeSynthesizer,
+    CHIME_OPTIONS,
+    type ChimeId,
+    type ChimeOption,
+    notificationGuidanceModal,
+    NotificationGuidanceModal,
+};
 
 export interface StoredMilestoneReminder {
     milestoneId: string;
@@ -29,7 +54,11 @@ export interface ToastOptions {
     dateBadge?: string;
     actionLabel?: string;
     onAction?: () => void;
+    linkText?: string;
+    linkUrl?: string;
+    onLinkClick?: () => void;
     duration?: number; // ms, default 7000ms
+    playChime?: boolean;
 }
 
 const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
@@ -40,6 +69,7 @@ export class MilestoneReminderService {
     private toastContainer: HTMLElement | null = null;
     private activeTimers: Map<string, number> = new Map();
     private checkIntervalId: number | null = null;
+    private themeObserver: MutationObserver | null = null;
     private isInitialized = false;
 
     constructor() {
@@ -79,7 +109,47 @@ export class MilestoneReminderService {
             document.body.appendChild(el);
         }
         this.toastContainer = el;
+
+        // Ensure active toasts remain theme-synchronized if user toggles dark/light mode
+        if (!this.themeObserver && typeof MutationObserver !== 'undefined' && typeof document !== 'undefined') {
+            try {
+                this.themeObserver = new MutationObserver(() => {
+                    this.syncActiveToastsTheme();
+                });
+                this.themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] });
+                if (document.body) {
+                    this.themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+                }
+            } catch {
+                // Ignore in headless/mock DOM
+            }
+        }
+
         return el;
+    }
+
+    /**
+     * Synchronizes all active toasts with the current active theme.
+     */
+    public syncActiveToastsTheme(): void {
+        if (!this.toastContainer) return;
+        const isDark = (typeof document !== 'undefined') && (
+            document.documentElement.classList.contains('dark-mode') ||
+            document.body?.classList.contains('dark-mode') ||
+            document.documentElement.getAttribute('data-theme') === 'dark'
+        );
+        const theme = isDark ? 'dark' : 'light';
+        const toasts = this.toastContainer.querySelectorAll<HTMLElement>('.milestone-toast');
+        toasts.forEach((toast) => {
+            toast.setAttribute('data-theme', theme);
+        });
+    }
+
+    /**
+     * Opens the device-specific notification permission guidance modal.
+     */
+    public showNotificationHelp(guideKey?: string): void {
+        notificationGuidanceModal.open(guideKey);
     }
 
     /**
@@ -170,6 +240,23 @@ export class MilestoneReminderService {
         if (now >= reminderTime) {
             // Immediately trigger the 24-hour notification
             this.triggerReminder(milestone.id, false);
+            if (perm === 'denied') {
+                const platform = detectPlatform();
+                this.showToast({
+                    type: 'warning',
+                    title: 'Browser Notifications Blocked',
+                    message: `Browser alerts are blocked in settings, but in-app toast notifications will still alert you! You can unblock notifications in ${platform.browserLabel} on ${platform.osLabel}.`,
+                    linkText: `How to allow notifications on ${platform.browserLabel} (${platform.osLabel})`,
+                    onLinkClick: () => {
+                        this.showNotificationHelp();
+                    },
+                    actionLabel: `How to Allow on ${platform.browserLabel}`,
+                    onAction: () => {
+                        this.showNotificationHelp();
+                    },
+                    duration: 10000,
+                });
+            }
         } else {
             // Milestone is in the future (>24h away)
             const delayMs = reminderTime - now;
@@ -191,11 +278,20 @@ export class MilestoneReminderService {
             });
 
             if (perm === 'denied') {
+                const platform = detectPlatform();
                 this.showToast({
                     type: 'warning',
                     title: 'Browser Notifications Blocked',
-                    message: 'Browser alerts are blocked in settings, but in-app toast notifications will still alert you!',
-                    duration: 5000,
+                    message: `Browser alerts are blocked in settings, but in-app toast notifications will still alert you! You can unblock notifications in ${platform.browserLabel} on ${platform.osLabel}.`,
+                    linkText: `How to allow notifications on ${platform.browserLabel} (${platform.osLabel})`,
+                    onLinkClick: () => {
+                        this.showNotificationHelp();
+                    },
+                    actionLabel: `How to Allow on ${platform.browserLabel}`,
+                    onAction: () => {
+                        this.showNotificationHelp();
+                    },
+                    duration: 10000,
                 });
             }
         }
@@ -222,6 +318,9 @@ export class MilestoneReminderService {
     public triggerReminder(milestoneId: string, isManualTest = false): void {
         const milestone = this.findMilestone(milestoneId);
         if (!milestone) return;
+
+        // Play subtle synthetic audio chime
+        void milestoneChimeSynthesizer.playChime();
 
         // Mark as notified in storage
         const stored = this.getAllStoredReminders();
@@ -310,6 +409,19 @@ export class MilestoneReminderService {
         toast.className = `milestone-toast milestone-toast--${options.type || 'info'}`;
         toast.setAttribute('role', options.type === 'reminder' ? 'alert' : 'status');
 
+        // Dynamic theme synchronization
+        const isDark = (typeof document !== 'undefined') && (
+            document.documentElement.classList.contains('dark-mode') ||
+            document.body?.classList.contains('dark-mode') ||
+            document.documentElement.getAttribute('data-theme') === 'dark'
+        );
+        toast.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
+        // Optional chime playback
+        if (options.playChime) {
+            void milestoneChimeSynthesizer.playChime();
+        }
+
         const iconClass = options.type === 'reminder'
             ? 'bi-bell-fill'
             : options.type === 'success'
@@ -326,6 +438,15 @@ export class MilestoneReminderService {
             ? `<button type="button" class="milestone-toast-action-btn">${options.actionLabel}</button>`
             : '';
 
+        const linkBtnHtml = options.linkText
+            ? `<div class="milestone-toast-links">
+                <button type="button" class="milestone-toast-help-link">
+                  <i class="bi bi-question-circle" aria-hidden="true"></i>
+                  <span>${options.linkText}</span>
+                </button>
+              </div>`
+            : '';
+
         toast.innerHTML = `
             <div class="milestone-toast-glow" aria-hidden="true"></div>
             <div class="milestone-toast-content">
@@ -339,6 +460,7 @@ export class MilestoneReminderService {
                 </div>
                 <p class="milestone-toast-message">${options.message}</p>
                 ${actionBtnHtml ? `<div class="milestone-toast-actions">${actionBtnHtml}</div>` : ''}
+                ${linkBtnHtml}
               </div>
               <button type="button" class="milestone-toast-close" aria-label="Dismiss notification">
                 <i class="bi bi-x-lg" aria-hidden="true"></i>
@@ -361,6 +483,15 @@ export class MilestoneReminderService {
             actionBtn?.addEventListener('click', () => {
                 options.onAction?.();
                 this.dismissToast(toast);
+            });
+        }
+
+        // Wire up link button
+        if (options.onLinkClick) {
+            const linkBtn = toast.querySelector<HTMLButtonElement>('.milestone-toast-help-link');
+            linkBtn?.addEventListener('click', (e) => {
+                e.preventDefault();
+                options.onLinkClick?.();
             });
         }
 
@@ -525,6 +656,14 @@ export class MilestoneReminderService {
         }
     }
 
+    public getToastContainer(): HTMLElement | null {
+        return this.toastContainer;
+    }
+
+    public getIsInitialized(): boolean {
+        return this.isInitialized;
+    }
+
     /**
      * Persists all reminders dictionary to localStorage.
      */
@@ -646,6 +785,11 @@ export class MilestoneReminderService {
         if (this.checkIntervalId !== null) {
             clearInterval(this.checkIntervalId);
             this.checkIntervalId = null;
+        }
+
+        if (this.themeObserver) {
+            this.themeObserver.disconnect();
+            this.themeObserver = null;
         }
 
         this.isInitialized = false;
