@@ -11,8 +11,6 @@
 
 import {
     milestoneReminderService,
-    MilestoneReminderService,
-    type StoredMilestoneReminder,
 } from './MilestoneReminderService.ts';
 import {
     milestoneChimeSynthesizer,
@@ -141,9 +139,10 @@ export class MyRemindersController {
             document.body.appendChild(modal);
         }
 
-        // Close when clicking outside dialog sheet (on the backdrop)
+        // Close when clicking outside dialog sheet (on the backdrop) or on close buttons
         modal.addEventListener('click', (e) => {
-            if (e.target === modal || (e.target as HTMLElement).dataset.action === 'close') {
+            const target = e.target as HTMLElement | null;
+            if (target === modal || target?.dataset.action === 'close' || target?.closest('[data-action="close"]')) {
                 this.close();
             }
         });
@@ -217,6 +216,38 @@ export class MyRemindersController {
         const reminderList = Object.values(storedReminders);
         const count = reminderList.length;
         const currentChime = milestoneChimeSynthesizer.getSelectedChime();
+        const platform = detectPlatform();
+
+        // Theme attribute synchronization
+        const isDark = (typeof document !== 'undefined') && (
+            document.documentElement.classList.contains('dark-mode') ||
+            document.body?.classList.contains('dark-mode') ||
+            document.documentElement.getAttribute('data-theme') === 'dark'
+        );
+        this.modalEl.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
+        // Check if browser notifications are blocked
+        const isPermDenied = typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'denied';
+        const blockedBannerHtml = isPermDenied
+            ? `
+              <div class="my-reminders-blocked-banner" role="alert">
+                <div class="blocked-banner-icon" aria-hidden="true">
+                  <i class="bi bi-bell-slash-fill"></i>
+                </div>
+                <div class="blocked-banner-content">
+                  <strong class="blocked-banner-title">Browser Notifications Blocked</strong>
+                  <p class="blocked-banner-desc">
+                    Your browser on <strong>${platform.browserLabel} (${platform.osLabel})</strong> is currently blocking notification alerts. In-app notifications will still chime, but system popups require permission.
+                  </p>
+                  <button type="button" class="btn-allow-guide" id="myRemindersOpenGuideBtn">
+                    <i class="bi bi-question-circle" aria-hidden="true"></i>
+                    <span>How to allow notifications on ${platform.browserLabel}</span>
+                    <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            `
+            : '';
 
         // Sort reminders chronologically by reminderTime
         reminderList.sort((a, b) => a.reminderTime - b.reminderTime);
@@ -224,6 +255,7 @@ export class MyRemindersController {
         let listHtml = '';
         if (count === 0) {
             listHtml = `
+              ${blockedBannerHtml}
               <div class="my-reminders-empty-state">
                 <div class="empty-state-icon" aria-hidden="true">
                   <i class="bi bi-bell-slash"></i>
@@ -240,6 +272,7 @@ export class MyRemindersController {
             `;
         } else {
             listHtml = `
+              ${blockedBannerHtml}
               <div class="my-reminders-items-list" role="list">
                 ${reminderList
                     .map((item) => {
@@ -406,6 +439,13 @@ export class MyRemindersController {
             this.close();
             const schoolDatesSection = document.getElementById('schoolDatesSection');
             schoolDatesSection?.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Open notification guidance guide button (if blocked banner is shown)
+        const openGuideBtn = this.modalEl.querySelector<HTMLButtonElement>('#myRemindersOpenGuideBtn');
+        openGuideBtn?.addEventListener('click', () => {
+            this.close();
+            milestoneReminderService.showNotificationHelp();
         });
 
         // Individual remove buttons

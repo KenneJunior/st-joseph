@@ -226,4 +226,61 @@ describe('Academic Milestone 24-Hour Reminder & Toast Notification System', () =
         const toastContainer = document.getElementById('milestoneToastContainer');
         expect(toastContainer!.innerHTML).toContain('Browser Notifications Blocked');
     });
+
+    it('creates theme-aware toast notifications that synchronize with active theme', () => {
+        const container = document.querySelector<HTMLElement>('.timeline-track-container');
+        service.init(container);
+
+        // 1. Light theme by default
+        document.documentElement.classList.remove('dark-mode');
+        document.documentElement.setAttribute('data-theme', 'light');
+
+        const toast1 = service.showToast({
+            title: 'Light Theme Alert',
+            message: 'Testing light theme awareness',
+            type: 'info',
+        });
+        expect(toast1.getAttribute('data-theme')).toBe('light');
+
+        // 2. Dark theme active
+        document.documentElement.classList.add('dark-mode');
+        document.documentElement.setAttribute('data-theme', 'dark');
+
+        const toast2 = service.showToast({
+            title: 'Dark Theme Alert',
+            message: 'Testing dark theme awareness',
+            type: 'warning',
+        });
+        expect(toast2.getAttribute('data-theme')).toBe('dark');
+
+        // 3. Dynamic sync of existing toasts when theme changes
+        document.documentElement.classList.remove('dark-mode');
+        document.documentElement.setAttribute('data-theme', 'light');
+        service.syncActiveToastsTheme();
+
+        expect(toast1.getAttribute('data-theme')).toBe('light');
+        expect(toast2.getAttribute('data-theme')).toBe('light');
+    });
+
+    it('includes a device-detected permission guidance link when notifications are blocked', async () => {
+        mockNotification.permission = 'denied';
+        mockNotification.requestPermission = vi.fn().mockResolvedValue('denied');
+
+        const container = document.querySelector<HTMLElement>('.timeline-track-container');
+        service.init(container);
+
+        const openSpy = vi.spyOn(service, 'showNotificationHelp');
+
+        await service.setReminder('resumption-new-2026', true);
+
+        const toastContainer = document.getElementById('milestoneToastContainer');
+        const helpLink = toastContainer!.querySelector<HTMLButtonElement>('.milestone-toast-help-link');
+        expect(helpLink).not.toBeNull();
+        expect(helpLink!.textContent).toContain('How to allow notifications on');
+
+        // Clicking the link opens device-specific permission guidance
+        helpLink!.click();
+        expect(openSpy).toHaveBeenCalled();
+    });
 });
+

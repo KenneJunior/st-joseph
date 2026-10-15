@@ -17,8 +17,6 @@ import {
 import {
     detectPlatform,
     getNotificationPermissionGuidance,
-    type DevicePlatformInfo,
-    type NotificationPlatformGuidance,
 } from '../../core/platform/platformDetection.ts';
 import {
     notificationGuidanceModal,
@@ -242,19 +240,20 @@ export class MilestoneReminderService {
             this.triggerReminder(milestone.id, false);
             if (perm === 'denied') {
                 const platform = detectPlatform();
+                const guidance = getNotificationPermissionGuidance(platform);
                 this.showToast({
                     type: 'warning',
                     title: 'Browser Notifications Blocked',
                     message: `Browser alerts are blocked in settings, but in-app toast notifications will still alert you! You can unblock notifications in ${platform.browserLabel} on ${platform.osLabel}.`,
                     linkText: `How to allow notifications on ${platform.browserLabel} (${platform.osLabel})`,
                     onLinkClick: () => {
-                        this.showNotificationHelp();
+                        this.showNotificationHelp(guidance.key);
                     },
-                    actionLabel: `How to Allow on ${platform.browserLabel}`,
+                    actionLabel: `Allow Guide`,
                     onAction: () => {
-                        this.showNotificationHelp();
+                        this.showNotificationHelp(guidance.key);
                     },
-                    duration: 10000,
+                    duration: 12000,
                 });
             }
         } else {
@@ -279,19 +278,20 @@ export class MilestoneReminderService {
 
             if (perm === 'denied') {
                 const platform = detectPlatform();
+                const guidance = getNotificationPermissionGuidance(platform);
                 this.showToast({
                     type: 'warning',
                     title: 'Browser Notifications Blocked',
                     message: `Browser alerts are blocked in settings, but in-app toast notifications will still alert you! You can unblock notifications in ${platform.browserLabel} on ${platform.osLabel}.`,
                     linkText: `How to allow notifications on ${platform.browserLabel} (${platform.osLabel})`,
                     onLinkClick: () => {
-                        this.showNotificationHelp();
+                        this.showNotificationHelp(guidance.key);
                     },
-                    actionLabel: `How to Allow on ${platform.browserLabel}`,
+                    actionLabel: `Allow Guide`,
                     onAction: () => {
-                        this.showNotificationHelp();
+                        this.showNotificationHelp(guidance.key);
                     },
-                    duration: 10000,
+                    duration: 12000,
                 });
             }
         }
@@ -440,9 +440,10 @@ export class MilestoneReminderService {
 
         const linkBtnHtml = options.linkText
             ? `<div class="milestone-toast-links">
-                <button type="button" class="milestone-toast-help-link">
+                <button type="button" class="milestone-toast-help-link" aria-haspopup="dialog" title="${options.linkText}">
                   <i class="bi bi-question-circle" aria-hidden="true"></i>
                   <span>${options.linkText}</span>
+                  <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
                 </button>
               </div>`
             : '';
@@ -555,7 +556,7 @@ export class MilestoneReminderService {
     /**
      * Scrolls smoothly to the milestone card and applies highlight effect.
      */
-    private scrollToMilestone(milestoneId: string): void {
+    public scrollToMilestone(milestoneId: string): void {
         const milestoneEl = document.getElementById(milestoneId)
             || document.querySelector(`[data-milestone-id="${milestoneId}"]`);
 
