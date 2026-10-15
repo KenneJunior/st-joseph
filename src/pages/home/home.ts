@@ -29,6 +29,7 @@ import { FaqSection } from '../../features/faq/FaqSection.ts';
 import { renderFaqItems } from '../../features/faq/FaqRenderer.ts';
 import { SchoolDatesTimeline } from '../../features/calendar/SchoolDatesTimeline.ts';
 import { renderTimelineMilestones } from '../../features/calendar/TimelineRenderer.ts';
+import { myRemindersController } from '../../features/calendar/MyRemindersController.ts';
 import { VirtualCampusMap } from '../../features/campus/VirtualCampusMap.ts';
 import { LocationMapFacade } from '../../features/location/LocationMapFacade.ts';
 import { renderNewsStories } from '../../features/news/NewsStoriesRenderer.ts';
@@ -164,6 +165,7 @@ export class HomeApp {
         // 12. Upcoming School Dates & Milestones Timeline
         renderTimelineMilestones(document.getElementById('timelineMilestonesList'));
         new SchoolDatesTimeline(HOME_SELECTORS.schoolDates);
+        myRemindersController.init();
 
         // 13. Virtual Campus Map interactive explorer
         new VirtualCampusMap(HOME_SELECTORS.campusMapContainer);

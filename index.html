@@ -524,6 +524,11 @@
         <a href="#schoolDatesSection" class="nav-link" title="School Dates" aria-label="School Dates"
           toolDescription="View upcoming school dates and academic milestones for the 2026/2027 year."><i
             class="bi bi-calendar-check nav-icon"></i><span class="nav-text">Dates</span></a>
+        <button type="button" class="nav-link nav-link--reminders" id="navMyRemindersBtn" title="My Reminders" aria-label="My Reminders" aria-haspopup="dialog"
+          toolDescription="View and manage your scheduled academic milestone reminders and notification preferences.">
+          <i class="bi bi-bell nav-icon"></i><span class="nav-text">Reminders</span>
+          <span class="nav-reminders-badge is-zero" id="navRemindersBadge" aria-label="0 reminders active">0</span>
+        </button>
         <a href="#news-events" class="nav-link" title="News" aria-label="News"
           toolDescription="Browse the latest news, updates, and school events."><i
             class="bi bi-newspaper nav-icon"></i><span class="nav-text">News</span></a>
@@ -611,6 +616,14 @@
       <i class="bi bi-calendar-check-fill" aria-hidden="true"></i>
       <span class="mobile-bottom-label">Dates</span>
     </a>
+    <button type="button" class="mobile-bottom-item mobile-bottom-item--reminders" id="bottomMyRemindersBtn"
+      aria-label="My Reminders" aria-haspopup="dialog" toolDescription="View scheduled reminders and notification preferences">
+      <div class="mobile-bottom-badge-wrapper">
+        <i class="bi bi-bell-fill" aria-hidden="true"></i>
+        <span class="bottom-reminders-badge is-zero" id="bottomRemindersBadge">0</span>
+      </div>
+      <span class="mobile-bottom-label">Reminders</span>
+    </button>
     <a href="#results" class="mobile-bottom-item mobile-bottom-item--results" data-nav-target="results"
       aria-label="2026 Results" toolDescription="Navigate to GCE Results">
       <i class="bi bi-award-fill" aria-hidden="true"></i>
