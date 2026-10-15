@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { isApplePlatform, detectPlatform, getCalendarExportGuidance, type PlatformNavigator } from '../../src/core/platform/platformDetection.ts';
+import {
+    isApplePlatform,
+    detectPlatform,
+    getCalendarExportGuidance,
+    getNotificationPermissionGuidance,
+    getAllNotificationPermissionGuides,
+    type PlatformNavigator,
+} from '../../src/core/platform/platformDetection.ts';
 
 describe('Platform & Device Detection (isApplePlatform)', () => {
     it('identifies iPhone devices across Safari and Chrome', () => {
@@ -321,3 +328,112 @@ describe('Calendar Platform Guidance Generation (getCalendarExportGuidance)', ()
         expect(guidance.instructions).toContain('Google Calendar');
     });
 });
+
+describe('Notification Permission Guidance (getNotificationPermissionGuidance & getAllNotificationPermissionGuides)', () => {
+    it('provides tailored unblock instructions for Mozilla Firefox with OS system steps', () => {
+        const winFirefox = detectPlatform({
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0',
+            platform: 'Win32',
+        });
+        const guidance = getNotificationPermissionGuidance(winFirefox);
+
+        expect(guidance.key).toBe('firefox');
+        expect(guidance.headline).toContain('Mozilla Firefox');
+        expect(guidance.instructions).toContain('Firefox');
+        expect(guidance.steps.some((s) => s.includes('✕'))).toBe(true);
+        expect(guidance.osSteps).toBeDefined();
+        expect(guidance.osSteps![0]).toContain('Windows Settings');
+    });
+
+    it('provides tailored unblock instructions for Google Chrome on Windows', () => {
+        const winChrome = detectPlatform({
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/123.0.0.0 Safari/537.36',
+            platform: 'Win32',
+        });
+        const guidance = getNotificationPermissionGuidance(winChrome);
+
+        expect(guidance.key).toBe('chrome-windows');
+        expect(guidance.headline).toContain('Google Chrome');
+        expect(guidance.headline).toContain('Windows');
+        expect(guidance.steps.some((s) => s.includes('Notifications'))).toBe(true);
+        expect(guidance.osSteps).toBeDefined();
+        expect(guidance.osSteps![0]).toContain('Windows Settings');
+    });
+
+    it('provides tailored unblock instructions for Apple Safari on macOS', () => {
+        const macSafari = detectPlatform({
+            userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/17.4 Safari/605.1.15',
+            platform: 'MacIntel',
+            maxTouchPoints: 0,
+        });
+        const guidance = getNotificationPermissionGuidance(macSafari);
+
+        expect(guidance.key).toBe('safari-mac');
+        expect(guidance.headline).toContain('Safari');
+        expect(guidance.headline).toContain('macOS');
+        expect(guidance.steps.some((s) => s.includes('Websites'))).toBe(true);
+        expect(guidance.osSteps).toBeDefined();
+        expect(guidance.osSteps![0]).toContain('System Settings');
+    });
+
+    it('provides tailored iOS Web Push Home Screen instructions for iPhone / iPad', () => {
+        const iphoneSafari = detectPlatform({
+            userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1',
+            platform: 'iPhone',
+            maxTouchPoints: 5,
+        });
+        const guidance = getNotificationPermissionGuidance(iphoneSafari);
+
+        expect(guidance.key).toBe('safari-ios');
+        expect(guidance.headline).toContain('iPhone');
+        expect(guidance.steps.some((s) => s.includes('Add to Home Screen'))).toBe(true);
+        expect(guidance.quickTip).toContain('iOS 16.4+');
+    });
+
+    it('provides tailored unblock instructions for Microsoft Edge', () => {
+        const winEdge = detectPlatform({
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0',
+            platform: 'Win32',
+        });
+        const guidance = getNotificationPermissionGuidance(winEdge);
+
+        expect(guidance.key).toBe('edge');
+        expect(guidance.headline).toContain('Microsoft Edge');
+        expect(guidance.steps.some((s) => s.includes('Block') && s.includes('Allow'))).toBe(true);
+    });
+
+    it('provides tailored unblock instructions for Android mobile devices', () => {
+        const androidPhone = detectPlatform({
+            userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/123.0 Mobile Safari/537.36',
+            platform: 'Linux armv81',
+            maxTouchPoints: 5,
+        });
+        const guidance = getNotificationPermissionGuidance(androidPhone);
+
+        expect(guidance.key).toBe('android');
+        expect(guidance.headline).toContain('Android');
+        expect(guidance.steps.some((s) => s.includes('Site settings') || s.includes('Permissions'))).toBe(true);
+    });
+
+    it('returns a comprehensive catalog of all major platform guides', () => {
+        const allGuides = getAllNotificationPermissionGuides();
+        expect(allGuides.length).toBeGreaterThanOrEqual(6);
+
+        const keys = allGuides.map((g) => g.key);
+        expect(keys).toContain('chrome-windows');
+        expect(keys).toContain('chrome');
+        expect(keys).toContain('firefox');
+        expect(keys).toContain('safari-mac');
+        expect(keys).toContain('safari-ios');
+        expect(keys).toContain('edge');
+        expect(keys).toContain('android');
+
+        allGuides.forEach((g) => {
+            expect(g.headline.length).toBeGreaterThan(0);
+            expect(g.instructions.length).toBeGreaterThan(0);
+            expect(g.steps.length).toBeGreaterThanOrEqual(3);
+            expect(g.browserLabel.length).toBeGreaterThan(0);
+        });
+    });
+});
+

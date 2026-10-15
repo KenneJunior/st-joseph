@@ -631,7 +631,7 @@ export function getAllNotificationPermissionGuides(): NotificationPlatformGuidan
     return [
         {
             key: 'chrome-windows',
-            browserLabel: 'Google Chrome',
+            browserLabel: 'Chrome (Windows)',
             osLabel: 'Windows 10 / 11',
             iconClass: 'bi-windows',
             headline: 'Allow Notifications in Google Chrome on Windows',
@@ -649,6 +649,25 @@ export function getAllNotificationPermissionGuides(): NotificationPlatformGuidan
             ],
             shortcutUrl: 'chrome://settings/content/notifications',
             quickTip: 'You can paste chrome://settings/content/notifications into Chrome address bar to manage site permissions.'
+        },
+        {
+            key: 'chrome',
+            browserLabel: 'Chrome (Mac/Linux)',
+            osLabel: 'macOS / Linux / ChromeOS',
+            iconClass: 'bi-browser-chrome',
+            headline: 'Allow Notifications in Google Chrome',
+            instructions: 'Follow these steps to unblock notifications in Google Chrome:',
+            steps: [
+                'Click the tune or padlock icon immediately to the left of the address bar.',
+                'Find "Notifications" and select "Allow" from the dropdown.',
+                'If prompted to reload, click "Reload" to activate reminder notifications.'
+            ],
+            osSteps: [
+                'On macOS: Open System Settings > Notifications > Google Chrome and turn ON "Allow Notifications".',
+                'Ensure Focus / Do Not Disturb is not silencing browser alerts.'
+            ],
+            shortcutUrl: 'chrome://settings/content/notifications',
+            quickTip: 'Manage all site notification permissions at chrome://settings/content/notifications.'
         },
         {
             key: 'firefox',
@@ -691,7 +710,7 @@ export function getAllNotificationPermissionGuides(): NotificationPlatformGuidan
         },
         {
             key: 'safari-ios',
-            browserLabel: 'Apple Safari (iOS)',
+            browserLabel: 'Safari (iOS)',
             osLabel: 'iPhone & iPad',
             iconClass: 'bi-phone',
             headline: 'Enable Milestone Alerts on iPhone & iPad',
@@ -729,7 +748,7 @@ export function getAllNotificationPermissionGuides(): NotificationPlatformGuidan
         },
         {
             key: 'android',
-            browserLabel: 'Chrome / Samsung Internet',
+            browserLabel: 'Android (Chrome / Samsung)',
             osLabel: 'Android Phones & Tablets',
             iconClass: 'bi-phone',
             headline: 'Allow Notifications on Android',

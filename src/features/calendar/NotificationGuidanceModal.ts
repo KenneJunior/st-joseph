@@ -14,7 +14,6 @@ import {
     getNotificationPermissionGuidance,
     getAllNotificationPermissionGuides,
     type DevicePlatformInfo,
-    type NotificationPlatformGuidance,
 } from '../../core/platform/platformDetection.ts';
 
 export class NotificationGuidanceModal {
@@ -112,9 +111,10 @@ export class NotificationGuidanceModal {
             modal.hidden = true;
             document.body.appendChild(modal);
 
-            // Backdrop click close
+            // Backdrop click close & close buttons
             modal.addEventListener('click', (e) => {
-                if (e.target === modal || (e.target as HTMLElement).dataset.action === 'close') {
+                const target = e.target as HTMLElement | null;
+                if (target === modal || target?.dataset.action === 'close' || target?.closest('[data-action="close"]')) {
                     this.close();
                 }
             });
@@ -125,6 +125,23 @@ export class NotificationGuidanceModal {
                     this.close();
                 }
             });
+
+            // Observe theme changes to keep open modal reactive
+            if (typeof MutationObserver !== 'undefined' && typeof document !== 'undefined') {
+                try {
+                    const themeObserver = new MutationObserver(() => {
+                        if (this.isOpen) {
+                            const isDark = document.documentElement.classList.contains('dark-mode')
+                                || document.body.classList.contains('dark-mode')
+                                || document.documentElement.getAttribute('data-theme') === 'dark';
+                            modal?.setAttribute('data-theme', isDark ? 'dark' : 'light');
+                        }
+                    });
+                    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] });
+                } catch {
+                    // Ignore in mock DOM
+                }
+            }
         }
 
         this.modalEl = modal;
@@ -313,17 +330,24 @@ export class NotificationGuidanceModal {
         const testBtn = this.modalEl.querySelector<HTMLButtonElement>('#guideTestPermBtn');
         testBtn?.addEventListener('click', async () => {
             if (typeof window === 'undefined' || !('Notification' in window)) {
-                alert('Notifications are not supported by this browser.');
+                const noteEl = this.modalEl?.querySelector('.guide-footer-note');
+                if (noteEl) {
+                    noteEl.innerHTML = '<i class="bi bi-exclamation-circle" aria-hidden="true"></i> Notification API is not supported by this browser.';
+                }
                 return;
             }
 
             try {
                 const res = await Notification.requestPermission();
                 if (res === 'granted') {
-                    new Notification('SJCCC Notifications Enabled!', {
-                        body: 'Milestone reminder alerts will now reach you 24 hours in advance.',
-                        icon: '/assets/favicon.ico',
-                    });
+                    try {
+                        new Notification('SJCCC Notifications Enabled!', {
+                            body: 'Milestone reminder alerts will now reach you 24 hours in advance.',
+                            icon: '/assets/icons/168X168.svg',
+                        });
+                    } catch {
+                        // Some mobile browsers fail on new Notification
+                    }
                 }
                 this.renderContent();
             } catch {
