@@ -222,6 +222,13 @@ export class ScrollSpy {
     }
 
     /**
+     * Returns the currently active section ID tracked by ScrollSpy
+     */
+    public getActiveSectionId(): string | null {
+        return this.currentActiveSectionId;
+    }
+
+    /**
      * Sets the active section ID and updates both desktop nav and mobile bottom dock
      */
     public setActiveTarget(sectionId: string): void {

@@ -44,15 +44,22 @@ export interface ClientChatMessage {
     text: string;
 }
 
+export interface ClientPageContext {
+    pageTitle?: string;
+    pageSection?: string;
+}
+
 export interface ClientRequestBody {
     prompt: string;
     history?: ClientChatMessage[];
+    context?: ClientPageContext;
 }
 
 export interface ValidationSuccess {
     isValid: true;
     prompt: string;
     history: ClientChatMessage[];
+    context?: ClientPageContext;
 }
 
 export interface ValidationFailure {
@@ -176,10 +183,35 @@ export function validateClientPayload(body: unknown): ValidationResult {
         }
     }
 
+    // Context validation (page title and active section)
+    let validatedContext: ClientPageContext | undefined;
+    if (payload.context !== undefined) {
+        if (typeof payload.context !== 'object' || payload.context === null || Array.isArray(payload.context)) {
+            return {
+                isValid: false,
+                statusCode: 400,
+                error: 'BAD_REQUEST',
+                message: 'Context must be an object with pageTitle and/or pageSection.',
+            };
+        }
+
+        const ctx = payload.context as Record<string, unknown>;
+        const rawTitle = typeof ctx.pageTitle === 'string' ? ctx.pageTitle.trim().slice(0, 300) : undefined;
+        const rawSection = typeof ctx.pageSection === 'string' ? ctx.pageSection.trim().slice(0, 300) : undefined;
+
+        if (rawTitle || rawSection) {
+            validatedContext = {
+                ...(rawTitle ? { pageTitle: rawTitle } : {}),
+                ...(rawSection ? { pageSection: rawSection } : {}),
+            };
+        }
+    }
+
     return {
         isValid: true,
         prompt: trimmedPrompt,
         history: validatedHistory,
+        ...(validatedContext ? { context: validatedContext } : {}),
     };
 }
 
@@ -351,7 +383,6 @@ export async function processGeminiQuery(
     rawBody: unknown,
     options: ProcessQueryOptions = {}
 ): Promise<CoreProcessResult> {
-    const startTime = Date.now();
     const limiter = options.limiter ?? serverRateLimiter;
     const clientId = options.clientId || 'c_default';
 
@@ -405,7 +436,19 @@ export async function processGeminiQuery(
     try {
         // 4. Build dynamic grounded system prompt (Server owns prompt & Cameroon date)
         const todayCameroon = getCameroonDate();
-        const systemPrompt = buildSjcccSystemPrompt({ todayCameroon });
+        let systemPrompt = buildSjcccSystemPrompt({ todayCameroon });
+
+        if (validation.context && (validation.context.pageTitle || validation.context.pageSection)) {
+            const { pageTitle, pageSection } = validation.context;
+            systemPrompt += '\n\n[USER ACTIVE BROWSING CONTEXT]\n';
+            if (pageTitle) {
+                systemPrompt += `- Current Page: "${pageTitle}"\n`;
+            }
+            if (pageSection) {
+                systemPrompt += `- Active Section in View: "${pageSection}"\n`;
+            }
+            systemPrompt += 'Context Directive: Use the user\'s current page and section context to provide directly relevant, focused answers about St. Joseph\'s Catholic Comprehensive College Mbengwi (e.g., if they are viewing tuition fees or academics, prioritize information corresponding to that section while accurately resolving their prompt).';
+        }
 
         // 5. Build contents payload (Server owns model and generation limits)
         const contents = formatGeminiContents(validation.history, validation.prompt);

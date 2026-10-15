@@ -65,6 +65,37 @@ describe('Gemini AI Service & Server Proxy Integration', () => {
                 })
             );
         });
+
+        it('should include pageTitle and pageSection in payload when context is provided', async () => {
+            let capturedBody: string = '';
+            globalThis.fetch = vi.fn().mockImplementation(async (_url, options) => {
+                capturedBody = options?.body as string;
+                return {
+                    ok: true,
+                    status: 200,
+                    json: async () => ({
+                        text: 'Contextual response.',
+                        source: 'gemini',
+                    }),
+                } as Response;
+            });
+
+            vi.spyOn(service, 'isOnline').mockReturnValue(true);
+
+            await service.sendMessage('Tell me more', [], {
+                context: {
+                    pageTitle: "St. Joseph's Catholic Comprehensive College | Mbengwi",
+                    pageSection: 'Academic Programs (#academics)',
+                },
+            });
+
+            expect(capturedBody).toBeTruthy();
+            const parsed = JSON.parse(capturedBody);
+            expect(parsed.context).toEqual({
+                pageTitle: "St. Joseph's Catholic Comprehensive College | Mbengwi",
+                pageSection: 'Academic Programs (#academics)',
+            });
+        });
     });
 
     describe('Error Mapping & Fallback Behavior', () => {
@@ -250,6 +281,35 @@ describe('Gemini AI Service & Server Proxy Integration', () => {
             }
         });
 
+        it('should accept and validate page context in request body', () => {
+            const result = validateClientPayload({
+                prompt: 'Where is the hall located?',
+                context: {
+                    pageTitle: 'SJCCC Mbengwi',
+                    pageSection: 'Campus Map (#campus-map)',
+                },
+            });
+
+            expect(result.isValid).toBe(true);
+            if (result.isValid) {
+                expect(result.context?.pageTitle).toBe('SJCCC Mbengwi');
+                expect(result.context?.pageSection).toBe('Campus Map (#campus-map)');
+            }
+        });
+
+        it('should reject invalid non-object context in request body', () => {
+            const result = validateClientPayload({
+                prompt: 'Where is the hall located?',
+                context: 'not an object',
+            });
+
+            expect(result.isValid).toBe(false);
+            if (!result.isValid) {
+                expect(result.statusCode).toBe(400);
+                expect(result.message).toContain('Context must be an object');
+            }
+        });
+
         it('should reject non-object or null request body', () => {
             const result = validateClientPayload(null);
             expect(result.isValid).toBe(false);
@@ -307,6 +367,36 @@ describe('Gemini AI Service & Server Proxy Integration', () => {
             expect(contents[0].role).toBe('user');
             expect(contents[contents.length - 1].role).toBe('user');
             expect(contents[contents.length - 1].parts[0].text).toBe('How much are fees?');
+        });
+
+        it('should inject page context into systemInstruction when processGeminiQuery is executed', async () => {
+            let capturedSystemInstruction = '';
+            globalThis.fetch = vi.fn().mockImplementation(async (_url, options) => {
+                const body = JSON.parse(options.body);
+                capturedSystemInstruction = body.systemInstruction?.parts?.[0]?.text || '';
+                return {
+                    ok: true,
+                    status: 200,
+                    json: async () => ({
+                        candidates: [{ content: { parts: [{ text: 'Answer' }] } }],
+                    }),
+                } as Response;
+            });
+
+            await processGeminiQuery(
+                {
+                    prompt: 'What are the school fees?',
+                    context: {
+                        pageTitle: 'SJCCC Prospectus',
+                        pageSection: 'Fees Structure (#fees-structure)',
+                    },
+                },
+                { apiKeyOverride: 'test-fake-api-key' }
+            );
+
+            expect(capturedSystemInstruction).toContain('[USER ACTIVE BROWSING CONTEXT]');
+            expect(capturedSystemInstruction).toContain('Current Page: "SJCCC Prospectus"');
+            expect(capturedSystemInstruction).toContain('Active Section in View: "Fees Structure (#fees-structure)"');
         });
 
         it('should return 503 AUTH with helpful message when server API key is not configured', async () => {

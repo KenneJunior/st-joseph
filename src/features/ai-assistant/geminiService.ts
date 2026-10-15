@@ -19,6 +19,9 @@
 
 import { generateOfflineResponse, type OfflineIntent } from './offlineIntentEngine.ts';
 import { buildSjcccSystemPrompt } from './knowledgeFormatter.ts';
+import type { ClientPageContext } from './pageContext.ts';
+
+export type { ClientPageContext } from './pageContext.ts';
 
 export type AssistantError =
     | 'OFFLINE'
@@ -40,6 +43,7 @@ export interface ChatMessage {
 export interface GeminiClientOptions {
     timeoutMs?: number;
     apiEndpoint?: string;
+    context?: ClientPageContext;
 }
 
 export interface AssistantResponse {
@@ -99,7 +103,8 @@ export class GeminiService {
             return this.generateOfflineFallback(
                 trimmedPrompt,
                 'Offline mode: Displaying verified institutional information from college records:',
-                'OFFLINE'
+                'OFFLINE',
+                options.context
             );
         }
 
@@ -108,6 +113,19 @@ export class GeminiService {
 
         // 2. Prepare normalized, turn-aware history
         const normalizedHistory = this.prepareHistory(history);
+
+        // 3. Assemble JSON payload with optional page browsing context
+        const requestPayload: Record<string, unknown> = {
+            prompt: trimmedPrompt,
+            history: normalizedHistory,
+        };
+
+        if (options.context && (options.context.pageTitle || options.context.pageSection)) {
+            requestPayload.context = {
+                ...(options.context.pageTitle ? { pageTitle: options.context.pageTitle } : {}),
+                ...(options.context.pageSection ? { pageSection: options.context.pageSection } : {}),
+            };
+        }
 
         const controller = new AbortController();
         const timeoutHandle = setTimeout(() => {
@@ -120,10 +138,7 @@ export class GeminiService {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    prompt: trimmedPrompt,
-                    history: normalizedHistory,
-                }),
+                body: JSON.stringify(requestPayload),
                 signal: controller.signal,
             });
 
@@ -135,7 +150,8 @@ export class GeminiService {
                     return this.generateOfflineFallback(
                         trimmedPrompt,
                         "The AI service is temporarily busy. I'm using SJCCC's verified local information instead:",
-                        'RATE_LIMIT'
+                        'RATE_LIMIT',
+                        options.context
                     );
                 }
 
@@ -144,7 +160,7 @@ export class GeminiService {
                     ? 'Note: Live assistant temporarily unavailable. Serving verified institutional archive:'
                     : undefined;
 
-                return this.generateOfflineFallback(trimmedPrompt, prefixNote, errorType);
+                return this.generateOfflineFallback(trimmedPrompt, prefixNote, errorType, options.context);
             }
 
             const data = (await response.json()) as {
@@ -157,7 +173,8 @@ export class GeminiService {
                 return this.generateOfflineFallback(
                     trimmedPrompt,
                     'Note: Reconnecting to Gemini service. Serving verified local guidance:',
-                    'EMPTY_RESPONSE'
+                    'EMPTY_RESPONSE',
+                    options.context
                 );
             }
 
@@ -183,7 +200,8 @@ export class GeminiService {
             return this.generateOfflineFallback(
                 trimmedPrompt,
                 'Unable to reach server. Here is verified information from our institutional records:',
-                'NETWORK'
+                'NETWORK',
+                options.context
             );
 
         } finally {
@@ -239,7 +257,8 @@ export class GeminiService {
     public generateOfflineFallback(
         prompt: string,
         prefixNote?: string,
-        error?: AssistantError
+        error?: AssistantError,
+        _context?: ClientPageContext
     ): AssistantResponse {
         const result = generateOfflineResponse(prompt, { prefixNote });
 
