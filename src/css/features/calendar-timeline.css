@@ -470,6 +470,11 @@ body.dark-mode .timeline-search-input {
 
 /* ─── Timeline Vertical Track & Milestones (Drag-to-Scroll Enhanced) ─── */
 .timeline-track-container {
+  --timeline-pad-top: 16px;
+  --timeline-pad-right: 14px;
+  --timeline-pad-bottom: 28px;
+  --timeline-pad-left: 8px;
+  --timeline-blur-height: 54px;
   position: relative;
   margin-top: 14px;
   max-height: clamp(520px, 72vh, 720px);
@@ -549,75 +554,115 @@ body.dark-mode .timeline-track-container::-webkit-scrollbar-track {
   background: rgba(201, 162, 41, 0.8);
 }
 
-/* ─── Edge Fade Gradients with Subtle Multi-Stop Fade-Out Effect ─── */
+/* ─── Progressive Blur & Edge Fade Overlays (Drag & Scroll) ─── */
 .timeline-track-container::before,
 .timeline-track-container::after {
   content: '';
   position: sticky;
   left: 0;
   right: 0;
-  height: 44px;
+  height: var(--timeline-blur-height, 54px);
   pointer-events: none;
   z-index: 10;
   opacity: 0;
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s ease;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   display: block;
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(14px) saturate(135%);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
 }
 
 .timeline-track-container::before {
-  top: -10px;
-  margin-bottom: -44px;
+  top: calc(-1 * var(--timeline-pad-top, 16px));
+  margin-bottom: calc(-1 * var(--timeline-blur-height, 54px));
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
   background: linear-gradient(
     180deg,
-    rgba(251, 249, 246, 0.98) 0%,
-    rgba(251, 249, 246, 0.82) 28%,
-    rgba(251, 249, 246, 0.38) 65%,
-    rgba(251, 249, 246, 0) 100%
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(255, 255, 255, 0.88) 18%,
+    rgba(250, 248, 244, 0.6) 48%,
+    rgba(248, 246, 242, 0.22) 76%,
+    rgba(248, 246, 242, 0) 100%
   );
-  border-bottom: 1px solid rgba(201, 162, 41, 0.16);
-  box-shadow: 0 4px 14px -2px rgba(201, 162, 41, 0.08);
-  transform: translateY(-2px);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.98) 15%,
+    rgba(0, 0, 0, 0.88) 32%,
+    rgba(0, 0, 0, 0.65) 52%,
+    rgba(0, 0, 0, 0.38) 72%,
+    rgba(0, 0, 0, 0.12) 88%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.98) 15%,
+    rgba(0, 0, 0, 0.88) 32%,
+    rgba(0, 0, 0, 0.65) 52%,
+    rgba(0, 0, 0, 0.38) 72%,
+    rgba(0, 0, 0, 0.12) 88%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  transform: translateY(-4px);
 }
 
 body.dark-mode .timeline-track-container::before {
   background: linear-gradient(
     180deg,
-    rgba(11, 29, 54, 0.98) 0%,
-    rgba(11, 29, 54, 0.84) 28%,
-    rgba(11, 29, 54, 0.38) 65%,
-    rgba(11, 29, 54, 0) 100%
+    rgba(14, 38, 68, 0.98) 0%,
+    rgba(14, 38, 68, 0.88) 18%,
+    rgba(11, 29, 54, 0.6) 48%,
+    rgba(8, 22, 42, 0.22) 76%,
+    rgba(8, 22, 42, 0) 100%
   );
-  border-bottom: 1px solid rgba(201, 162, 41, 0.24);
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(201, 162, 41, 0.14);
 }
 
 .timeline-track-container::after {
-  bottom: -23px;
-  margin-top: -44px;
+  bottom: calc(-1 * var(--timeline-pad-bottom, 28px));
+  margin-top: calc(-1 * var(--timeline-blur-height, 54px));
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
   background: linear-gradient(
     0deg,
-    rgba(251, 249, 246, 0.98) 0%,
-    rgba(251, 249, 246, 0.82) 28%,
-    rgba(251, 249, 246, 0.38) 65%,
-    rgba(251, 249, 246, 0) 100%
+    rgba(248, 246, 242, 0.96) 0%,
+    rgba(248, 246, 242, 0.88) 18%,
+    rgba(250, 248, 244, 0.6) 48%,
+    rgba(255, 255, 255, 0.22) 76%,
+    rgba(255, 255, 255, 0) 100%
   );
-  border-top: 1px solid rgba(201, 162, 41, 0.16);
-  box-shadow: 0 -4px 14px -2px rgba(201, 162, 41, 0.08);
-  transform: translateY(2px);
+  -webkit-mask-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.98) 15%,
+    rgba(0, 0, 0, 0.88) 32%,
+    rgba(0, 0, 0, 0.65) 52%,
+    rgba(0, 0, 0, 0.38) 72%,
+    rgba(0, 0, 0, 0.12) 88%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.98) 15%,
+    rgba(0, 0, 0, 0.88) 32%,
+    rgba(0, 0, 0, 0.65) 52%,
+    rgba(0, 0, 0, 0.38) 72%,
+    rgba(0, 0, 0, 0.12) 88%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  transform: translateY(4px);
 }
 
 body.dark-mode .timeline-track-container::after {
   background: linear-gradient(
     0deg,
-    rgba(11, 29, 54, 0.98) 0%,
-    rgba(11, 29, 54, 0.84) 28%,
-    rgba(11, 29, 54, 0.38) 65%,
-    rgba(11, 29, 54, 0) 100%
+    rgba(8, 22, 42, 0.98) 0%,
+    rgba(8, 22, 42, 0.88) 18%,
+    rgba(11, 29, 54, 0.6) 48%,
+    rgba(14, 38, 68, 0.22) 76%,
+    rgba(14, 38, 68, 0) 100%
   );
-  border-top: 1px solid rgba(201, 162, 41, 0.24);
-  box-shadow: 0 -4px 16px -2px rgba(0, 0, 0, 0.5), 0 -2px 8px rgba(201, 162, 41, 0.14);
 }
 
 .timeline-track-container.can-scroll-up::before {
@@ -1371,7 +1416,9 @@ body.dark-mode .timeline-disclosure-btn:hover .timeline-disclosure-count {
   .timeline-disclosure-btn,
   .timeline-disclosure-btn i,
   .timeline-disclosure-wrapper,
-  .timeline-milestone.timeline-disclosed-enter {
+  .timeline-milestone.timeline-disclosed-enter,
+  .timeline-track-container::before,
+  .timeline-track-container::after {
     transition: none !important;
     transform: none !important;
     animation: none !important;
@@ -1463,15 +1510,25 @@ body.dark-mode .timeline-reset-filters-btn:hover {
   }
 
   .timeline-track-container {
+    --timeline-pad-top: 14px;
+    --timeline-pad-right: 12px;
+    --timeline-pad-bottom: 24px;
+    --timeline-pad-left: 6px;
+    --timeline-blur-height: 48px;
     max-height: clamp(480px, 68vh, 640px);
-    padding: 14px 12px 24px 6px;
+    padding: var(--timeline-pad-top) var(--timeline-pad-right) var(--timeline-pad-bottom) var(--timeline-pad-left);
   }
 }
 
 @media (max-width: 768px) {
   .timeline-track-container {
+    --timeline-pad-top: 10px;
+    --timeline-pad-right: 8px;
+    --timeline-pad-bottom: 20px;
+    --timeline-pad-left: 4px;
+    --timeline-blur-height: 44px;
     max-height: clamp(440px, 64vh, 580px);
-    padding: 10px 8px 20px 4px;
+    padding: var(--timeline-pad-top) var(--timeline-pad-right) var(--timeline-pad-bottom) var(--timeline-pad-left);
     border-radius: var(--radius-md, 14px);
   }
 
@@ -1671,8 +1728,13 @@ body.dark-mode .timeline-reset-filters-btn:hover {
 
 @media (max-width: 480px) {
   .timeline-track-container {
+    --timeline-pad-top: 8px;
+    --timeline-pad-right: 6px;
+    --timeline-pad-bottom: 16px;
+    --timeline-pad-left: 2px;
+    --timeline-blur-height: 40px;
     max-height: clamp(400px, 60vh, 520px);
-    padding: 8px 6px 16px 2px;
+    padding: var(--timeline-pad-top) var(--timeline-pad-right) var(--timeline-pad-bottom) var(--timeline-pad-left);
   }
 
   .next-milestone-banner {
