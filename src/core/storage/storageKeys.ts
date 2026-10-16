@@ -30,6 +30,10 @@ export const STORAGE_KEYS = {
     MILESTONE_CHIME: 'sjccc-milestone-chime',
     /** LocalStorage key for user milestone push notifications enabled preference */
     MILESTONE_PUSH_ENABLED: 'sjccc-milestone-push-enabled',
+    /** LocalStorage key for locally muting notifications */
+    NOTIFICATIONS_MUTED: 'sjccc-notifications-muted',
+    /** LocalStorage key for sent notification history (last 5 sent notifications) */
+    NOTIFICATION_HISTORY: 'sjccc-notification-history',
 } as const;
 
 export type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];

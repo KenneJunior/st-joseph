@@ -282,5 +282,44 @@ describe('Academic Milestone 24-Hour Reminder & Toast Notification System', () =
         helpLink!.click();
         expect(openSpy).toHaveBeenCalled();
     });
+
+    it('autoAddImportantDates automatically populates reminders with key academic milestones (exams, holidays, resumptions)', () => {
+        const container = document.querySelector<HTMLElement>('.timeline-track-container');
+        service.init(container);
+
+        // Initially no reminders
+        expect(Object.keys(service.getAllStoredReminders()).length).toBe(0);
+
+        const result = service.autoAddImportantDates();
+
+        expect(result.addedCount).toBeGreaterThanOrEqual(10);
+        expect(result.totalStoredCount).toBe(result.addedCount);
+
+        const stored = service.getAllStoredReminders();
+        // Verify key milestones are present:
+        // Exams
+        expect(stored['exams-t1-2026']).toBeDefined();
+        expect(stored['exams-t1-2026'].title).toContain('First Term Examinations');
+        expect(stored['exams-t2-2027']).toBeDefined();
+        expect(stored['gce-national-exams-2027']).toBeDefined();
+        // Holidays / Breaks
+        expect(stored['midterm-break-t1-2026']).toBeDefined();
+        expect(stored['christmas-vacation-2026']).toBeDefined();
+        expect(stored['midterm-break-t2-2027']).toBeDefined();
+        // Resumptions
+        expect(stored['resumption-new-2026']).toBeDefined();
+        expect(stored['resumption-old-2026']).toBeDefined();
+
+        // Toast feedback rendered
+        const toastContainer = document.getElementById('milestoneToastContainer');
+        expect(toastContainer).not.toBeNull();
+        expect(toastContainer!.textContent).toContain('Important Dates Added');
+
+        // Calling autoAddImportantDates again when already populated reports up to date
+        const secondResult = service.autoAddImportantDates();
+        expect(secondResult.addedCount).toBe(0);
+        expect(toastContainer!.textContent).toContain('Reminders Up to Date');
+    });
 });
+
 

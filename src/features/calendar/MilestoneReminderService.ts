@@ -44,6 +44,18 @@ export interface StoredMilestoneReminder {
     notifiedAt?: number;
 }
 
+export interface SentNotificationRecord {
+    id: string;
+    title: string;
+    body: string;
+    timestamp: number;
+    type: 'milestone' | 'test';
+    suppressed?: boolean;
+    milestoneId?: string;
+    dateText?: string;
+    categoryLabel?: string;
+}
+
 export interface ToastOptions {
     id?: string;
     type?: 'reminder' | 'success' | 'info' | 'warning';
@@ -348,9 +360,6 @@ export class MilestoneReminderService {
         const milestone = this.findMilestone(milestoneId);
         if (!milestone) return;
 
-        // Play subtle synthetic audio chime
-        void milestoneChimeSynthesizer.playChime();
-
         // Mark as notified in storage
         const stored = this.getAllStoredReminders();
         if (stored[milestoneId] && !isManualTest) {
@@ -363,6 +372,35 @@ export class MilestoneReminderService {
             : `Upcoming Milestone (in 24 Hours): ${milestone.title}`;
 
         const bodyText = `${milestone.title} commences on ${milestone.dateText} at ${milestone.location}. ${milestone.timeOrDuration || ''}`.trim();
+
+        const isMuted = this.isMuted();
+
+        // Record to Notification History (maintaining last 5 sent notifications)
+        this.recordNotificationHistory({
+            milestoneId: milestone.id,
+            title: titleText,
+            body: bodyText,
+            timestamp: Date.now(),
+            type: isManualTest ? 'test' : 'milestone',
+            suppressed: isMuted,
+            dateText: milestone.dateText,
+            categoryLabel: milestone.categoryLabel,
+        });
+
+        // If muted, locally suppress audio chime, browser notification, and standard popup
+        if (isMuted) {
+            this.showToast({
+                type: 'info',
+                title: `Muted: ${milestone.title}`,
+                message: `Advance alert for "${milestone.title}" was suppressed locally because notifications are muted. Review in Notification History.`,
+                dateBadge: milestone.dateText,
+                duration: 6000,
+            });
+            return;
+        }
+
+        // Play subtle synthetic audio chime
+        void milestoneChimeSynthesizer.playChime();
 
         // 1. Show rich in-app Toast Notification
         this.showToast({
@@ -390,6 +428,10 @@ export class MilestoneReminderService {
      */
     public showBrowserNotification(title: string, options?: NotificationOptions): Notification | null {
         if (typeof window === 'undefined' || !('Notification' in window)) {
+            return null;
+        }
+
+        if (this.isMuted()) {
             return null;
         }
 
@@ -441,6 +483,10 @@ export class MilestoneReminderService {
     public isPushNotificationsEnabled(): boolean {
         if (typeof window === 'undefined') return false;
         try {
+            const storedMute = localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS_MUTED);
+            if (storedMute === 'true') {
+                return false;
+            }
             const stored = localStorage.getItem(STORAGE_KEYS.MILESTONE_PUSH_ENABLED);
             if (stored === null) {
                 return 'Notification' in window && Notification.permission === 'granted';
@@ -458,10 +504,115 @@ export class MilestoneReminderService {
         if (typeof window === 'undefined') return;
         try {
             localStorage.setItem(STORAGE_KEYS.MILESTONE_PUSH_ENABLED, enabled ? 'true' : 'false');
+            localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS_MUTED, enabled ? 'false' : 'true');
         } catch (err) {
             console.warn('[MilestoneReminderService] Could not persist push preference:', err);
         }
 
+        this.dispatchUpdateEvent();
+    }
+
+    /**
+     * Checks if notifications are locally muted by user preference.
+     */
+    public isMuted(): boolean {
+        if (typeof window === 'undefined') return false;
+        try {
+            const storedMute = localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS_MUTED);
+            if (storedMute !== null) {
+                return storedMute === 'true';
+            }
+            const pushPref = localStorage.getItem(STORAGE_KEYS.MILESTONE_PUSH_ENABLED);
+            if (pushPref === 'false') {
+                return true;
+            }
+            return false;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Alias for isMuted() indicating whether notifications are locally suppressed.
+     */
+    public isNotificationsMuted(): boolean {
+        return this.isMuted();
+    }
+
+    /**
+     * Sets local mute state for notifications without revoking browser permissions.
+     */
+    public setMuted(muted: boolean): void {
+        if (typeof window === 'undefined') return;
+        try {
+            localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS_MUTED, muted ? 'true' : 'false');
+            localStorage.setItem(STORAGE_KEYS.MILESTONE_PUSH_ENABLED, muted ? 'false' : 'true');
+        } catch (err) {
+            console.warn('[MilestoneReminderService] Could not persist mute preference:', err);
+        }
+
+        this.dispatchUpdateEvent();
+    }
+
+    /**
+     * Alias for setMuted(muted).
+     */
+    public setNotificationsMuted(muted: boolean): void {
+        this.setMuted(muted);
+    }
+
+    /**
+     * Retrieves the last 5 sent notifications from localStorage.
+     */
+    public getNotificationHistory(): SentNotificationRecord[] {
+        if (typeof window === 'undefined') return [];
+        try {
+            const raw = localStorage.getItem(STORAGE_KEYS.NOTIFICATION_HISTORY);
+            return raw ? JSON.parse(raw) : [];
+        } catch {
+            return [];
+        }
+    }
+
+    /**
+     * Records a sent or triggered notification to history, maintaining the last 5 sent notifications.
+     */
+    public recordNotificationHistory(record: Omit<SentNotificationRecord, 'id'>): SentNotificationRecord {
+        const history = this.getNotificationHistory();
+        const newRecord: SentNotificationRecord = {
+            id: `notif-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+            ...record,
+        };
+        const updated = [newRecord, ...history].slice(0, 5);
+        if (typeof window !== 'undefined') {
+            try {
+                localStorage.setItem(STORAGE_KEYS.NOTIFICATION_HISTORY, JSON.stringify(updated));
+            } catch (err) {
+                console.warn('[MilestoneReminderService] Could not persist notification history:', err);
+            }
+            this.dispatchUpdateEvent();
+        }
+        return newRecord;
+    }
+
+    /**
+     * Clears all notification history records.
+     */
+    public clearNotificationHistory(): void {
+        if (typeof window !== 'undefined') {
+            try {
+                localStorage.removeItem(STORAGE_KEYS.NOTIFICATION_HISTORY);
+            } catch (err) {
+                console.warn('[MilestoneReminderService] Could not clear notification history:', err);
+            }
+            this.dispatchUpdateEvent();
+        }
+    }
+
+    /**
+     * Dispatches milestone-reminders-updated custom event across window.
+     */
+    public dispatchUpdateEvent(): void {
         if (typeof window !== 'undefined') {
             try {
                 const Evt = (window as any).CustomEvent || CustomEvent;
@@ -530,6 +681,32 @@ export class MilestoneReminderService {
      * Sends an immediate test alert to verify browser notifications and chime.
      */
     public async sendTestNotification(): Promise<boolean> {
+        const isMuted = this.isMuted();
+        const title = 'SJCCC Milestone Push Test';
+        const body = isMuted
+            ? 'Browser push alert was suppressed because notifications are currently muted.'
+            : 'Browser push notifications are active and ready to alert you 24 hours before your scheduled milestones!';
+
+        // Record test alert in Notification History (last 5 sent notifications)
+        this.recordNotificationHistory({
+            title,
+            body,
+            timestamp: Date.now(),
+            type: 'test',
+            suppressed: isMuted,
+        });
+
+        // If muted, suppress chime, browser notification, and SW message
+        if (isMuted) {
+            this.showToast({
+                type: 'warning',
+                title: 'Test Notification Suppressed (Muted)',
+                message: 'Notifications are muted. The test alert was suppressed locally without revoking browser permissions and recorded in Notification History.',
+                duration: 6000,
+            });
+            return true;
+        }
+
         milestoneChimeSynthesizer.playChime();
 
         // Try service worker notification first
@@ -740,7 +917,9 @@ export class MilestoneReminderService {
             || document.querySelector(`[data-milestone-id="${milestoneId}"]`);
 
         if (milestoneEl) {
-            milestoneEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (typeof milestoneEl.scrollIntoView === 'function') {
+                milestoneEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
             milestoneEl.classList.add('is-highlighted-reminder');
             window.setTimeout(() => {
                 milestoneEl.classList.remove('is-highlighted-reminder');
@@ -902,6 +1081,79 @@ export class MilestoneReminderService {
         } else {
             this.disableReminder(milestone);
         }
+    }
+
+    /**
+     * Automatically populates the reminders list with key academic milestones
+     * (examinations, holidays/breaks, and semester resumptions) directly from the school calendar.
+     */
+    public autoAddImportantDates(): { addedCount: number; milestones: AcademicMilestone[]; totalStoredCount: number } {
+        const stored = this.getAllStoredReminders();
+        const importantMilestones = ACADEMIC_MILESTONES_2026_2027.filter((m) =>
+            m.category === 'exam' ||
+            m.category === 'break' ||
+            m.category === 'resumption' ||
+            m.isKeyMilestone === true
+        );
+
+        let addedCount = 0;
+        const now = Date.now();
+
+        if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
+            this.requestNotificationPermission().catch(() => {});
+        }
+
+        importantMilestones.forEach((milestone) => {
+            if (!stored[milestone.id]) {
+                const eventTime = this.getMilestoneStartTime(milestone);
+                const reminderTime = eventTime - TWENTY_FOUR_HOURS_MS;
+                const record: StoredMilestoneReminder = {
+                    milestoneId: milestone.id,
+                    title: milestone.title,
+                    dateText: milestone.dateText,
+                    location: milestone.location,
+                    description: milestone.description,
+                    eventTime,
+                    reminderTime,
+                    createdAt: now,
+                };
+                stored[milestone.id] = record;
+                addedCount++;
+
+                // If in future (>now), schedule timer
+                if (now < reminderTime) {
+                    const delayMs = reminderTime - now;
+                    this.scheduleTimer(milestone.id, delayMs);
+                }
+            }
+        });
+
+        if (addedCount > 0) {
+            this.persistAllReminders(stored);
+            this.syncCheckboxesFromStorage();
+
+            this.showToast({
+                type: 'success',
+                title: 'Important Dates Added',
+                message: `Added ${addedCount} key academic milestone${addedCount === 1 ? '' : 's'} (exams and holidays) directly from the school calendar to your reminders!`,
+                duration: 6000,
+            });
+
+            this.dispatchUpdateEvent();
+        } else {
+            this.showToast({
+                type: 'info',
+                title: 'Reminders Up to Date',
+                message: 'All key academic milestones (exams and holidays) are already present in your reminders.',
+                duration: 4000,
+            });
+        }
+
+        return {
+            addedCount,
+            milestones: importantMilestones,
+            totalStoredCount: Object.keys(stored).length,
+        };
     }
 
     /**
