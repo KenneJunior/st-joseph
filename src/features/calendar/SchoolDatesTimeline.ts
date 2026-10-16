@@ -16,6 +16,7 @@ import { CalendarActionSheet } from './CalendarActionSheet.ts';
 import { TimelineDragScroller } from './TimelineDragScroller.ts';
 import { TimelineStaggerEntrance } from './TimelineStaggerEntrance.ts';
 import { milestoneReminderService, MilestoneReminderService } from './MilestoneReminderService.ts';
+import { myRemindersController } from './MyRemindersController.ts';
 
 export type { AcademicMilestone };
 export { ACADEMIC_MILESTONES_2026_2027, milestoneReminderService, MilestoneReminderService, TimelineStaggerEntrance };
@@ -570,6 +571,18 @@ export class SchoolDatesTimeline {
                 if (!milestone) return;
 
                 CalendarActionSheet.getInstance().open(milestone, btn);
+            });
+        });
+
+        // Auto-add key academic dates to My Reminders button in banner or timeline
+        const autoAddButtons = this.container?.querySelectorAll<HTMLButtonElement>(
+            '#bannerAutoAddRemindersBtn, .btn-calendar-auto-add, #timelineAutoAddRemindersBtn, .timeline-auto-add-btn'
+        );
+        autoAddButtons?.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                myRemindersController.autoAddImportantDates();
+                myRemindersController.open();
             });
         });
     }

@@ -466,4 +466,221 @@ describe('MyRemindersController - Navbar, Bottom Dock & Reminders Management', (
         helperLink.click();
         expect(openGuideSpy).toHaveBeenCalled();
     });
+
+    it('renders Mute Notifications toggle and locally suppresses alerts without revoking browser permissions', async () => {
+        mockNotification.permission = 'granted';
+        controller.open();
+
+        const modal = document.getElementById('myRemindersModal')!;
+        const muteToggle = modal.querySelector<HTMLInputElement>('#toggleMuteNotifications');
+        expect(muteToggle).not.toBeNull();
+        expect(muteToggle!.getAttribute('role')).toBe('switch');
+        expect(muteToggle!.checked).toBe(false);
+
+        // Turn Mute ON
+        muteToggle!.checked = true;
+        muteToggle!.dispatchEvent(new (window as any).Event('change'));
+
+        expect(milestoneReminderService.isMuted()).toBe(true);
+        expect(milestoneReminderService.isNotificationsMuted()).toBe(true);
+        // Browser permission remains granted!
+        expect(mockNotification.permission).toBe('granted');
+        expect(modal.textContent).toContain('Muted');
+
+        // Test alert while muted: browser notification should NOT be constructed
+        mockNotification.mockClear();
+        await milestoneReminderService.sendTestNotification();
+        expect(mockNotification).not.toHaveBeenCalled();
+
+        // Notification history should record the suppressed alert
+        const history = milestoneReminderService.getNotificationHistory();
+        expect(history.length).toBe(1);
+        expect(history[0].suppressed).toBe(true);
+        expect(history[0].type).toBe('test');
+
+        // Turn Mute OFF
+        const updatedMuteToggle = modal.querySelector<HTMLInputElement>('#toggleMuteNotifications')!;
+        updatedMuteToggle.checked = false;
+        updatedMuteToggle.dispatchEvent(new (window as any).Event('change'));
+
+        expect(milestoneReminderService.isMuted()).toBe(false);
+        expect(milestoneReminderService.isNotificationsMuted()).toBe(false);
+
+        // Test alert when unmuted: browser notification IS constructed
+        await milestoneReminderService.sendTestNotification();
+        expect(mockNotification).toHaveBeenCalledWith(
+            expect.stringContaining('SJCCC Milestone Push Test'),
+            expect.anything()
+        );
+    });
+
+    it('suppresses 24-hour academic milestone notification when muted and records to history', async () => {
+        mockNotification.permission = 'granted';
+        milestoneReminderService.setMuted(true);
+
+        const milestone = ACADEMIC_MILESTONES_2026_2027[0];
+        mockNotification.mockClear();
+
+        // Trigger reminder while muted
+        milestoneReminderService.triggerReminder(milestone.id, false);
+
+        // Notification API suppressed
+        expect(mockNotification).not.toHaveBeenCalled();
+
+        // Recorded in Notification History as muted / suppressed
+        const history = milestoneReminderService.getNotificationHistory();
+        expect(history.length).toBe(1);
+        expect(history[0].milestoneId).toBe(milestone.id);
+        expect(history[0].suppressed).toBe(true);
+        expect(history[0].title).toContain(milestone.title);
+    });
+
+    it('renders Notification History tab, switches between tabs, and displays last 5 sent notifications', async () => {
+        controller.open();
+        const modal = document.getElementById('myRemindersModal')!;
+
+        const tabReminders = modal.querySelector<HTMLButtonElement>('#myRemindersTabReminders')!;
+        const tabHistory = modal.querySelector<HTMLButtonElement>('#myRemindersTabHistory')!;
+        expect(tabReminders).not.toBeNull();
+        expect(tabHistory).not.toBeNull();
+        expect(tabReminders.classList.contains('is-active')).toBe(true);
+        expect(tabHistory.classList.contains('is-active')).toBe(false);
+
+        // Switch to Notification History tab
+        tabHistory.click();
+        expect(controller.getActiveTab()).toBe('history');
+        expect(modal.querySelector('#myRemindersPanelHistory')!.hasAttribute('hidden')).toBe(false);
+        expect(modal.querySelector('#myRemindersEmptyHistory')).not.toBeNull();
+        expect(modal.textContent).toContain('No Sent Notifications');
+
+        // Dispatch 6 notifications to verify history capping at 5
+        for (let i = 0; i < 6; i++) {
+            milestoneReminderService.recordNotificationHistory({
+                title: `Notification Alert #${i + 1}`,
+                body: `Detailed reminder text for alert #${i + 1}`,
+                timestamp: Date.now() + i * 1000,
+                type: 'milestone',
+                milestoneId: ACADEMIC_MILESTONES_2026_2027[i % ACADEMIC_MILESTONES_2026_2027.length].id,
+            });
+        }
+
+        controller.renderModalContent();
+
+        // Verify only the last 5 sent notifications are displayed
+        const historyCards = modal.querySelectorAll('.my-history-card');
+        expect(historyCards.length).toBe(5);
+
+        // Newest should be Alert #6
+        expect(historyCards[0].textContent).toContain('Notification Alert #6');
+        // Oldest retained should be Alert #2 (#1 trimmed)
+        expect(historyCards[4].textContent).toContain('Notification Alert #2');
+        expect(modal.textContent).not.toContain('Notification Alert #1');
+
+        // Test clear history button
+        const clearHistoryBtn = modal.querySelector<HTMLButtonElement>('#myRemindersClearHistoryBtn')!;
+        expect(clearHistoryBtn).not.toBeNull();
+        clearHistoryBtn.click();
+
+        expect(milestoneReminderService.getNotificationHistory().length).toBe(0);
+        expect(modal.querySelector('#myRemindersEmptyHistory')).not.toBeNull();
+        expect(modal.textContent).toContain('No Sent Notifications');
+    });
+
+    it('provides a "View in Timeline" button in notification history cards that scrolls to the milestone', () => {
+        const milestone = ACADEMIC_MILESTONES_2026_2027[0];
+        milestoneReminderService.recordNotificationHistory({
+            title: `Advance alert: ${milestone.title}`,
+            body: `Starts on ${milestone.dateText}`,
+            timestamp: Date.now(),
+            type: 'milestone',
+            milestoneId: milestone.id,
+        });
+
+        controller.open();
+        controller.setActiveTab('history');
+
+        const modal = document.getElementById('myRemindersModal')!;
+        const jumpBtn = modal.querySelector<HTMLButtonElement>(`.my-history-jump-btn[data-milestone-id="${milestone.id}"]`);
+        expect(jumpBtn).not.toBeNull();
+
+        const scrollSpy = vi.spyOn(milestoneReminderService, 'scrollToMilestone');
+        jumpBtn!.click();
+
+        expect(scrollSpy).toHaveBeenCalledWith(milestone.id);
+        expect(controller.getActiveTab()).toBe('history');
+    });
+
+    it('renders "Auto-Add Important Dates" button in empty state and populates reminders list with key milestones', () => {
+        controller.open();
+        const modal = document.getElementById('myRemindersModal')!;
+
+        // Verify empty state is displayed with Auto-Add button
+        expect(modal.querySelector('#myRemindersEmptyState')).not.toBeNull();
+        const autoAddBtn = modal.querySelector<HTMLButtonElement>('#myRemindersAutoAddBtn');
+        expect(autoAddBtn).not.toBeNull();
+        expect(autoAddBtn!.textContent).toContain('Auto-Add Important Dates');
+
+        // Click Auto-Add Important Dates
+        autoAddBtn!.click();
+
+        // Stored reminders should now be populated
+        const stored = milestoneReminderService.getAllStoredReminders();
+        const storedCount = Object.keys(stored).length;
+        expect(storedCount).toBeGreaterThanOrEqual(10);
+
+        // Exams and holidays should be present
+        expect(stored['exams-t1-2026']).toBeDefined();
+        expect(stored['midterm-break-t1-2026']).toBeDefined();
+        expect(stored['christmas-vacation-2026']).toBeDefined();
+        expect(stored['gce-national-exams-2027']).toBeDefined();
+
+        // Modal should re-render and show scheduled reminder cards
+        const reminderCards = modal.querySelectorAll('.my-reminder-card');
+        expect(reminderCards.length).toBe(storedCount);
+
+        // Tab badge and nav badges should be updated
+        const tabBadge = modal.querySelector('#tabRemindersBadge');
+        expect(tabBadge?.textContent).toBe(String(storedCount));
+        const topNavBadge = document.getElementById('navRemindersBadge');
+        expect(topNavBadge?.textContent).toBe(String(storedCount));
+
+        // Toolbar Auto-Add button should now be rendered for subsequent updates
+        const toolbarAutoAddBtn = modal.querySelector<HTMLButtonElement>('#myRemindersToolbarAutoAddBtn');
+        expect(toolbarAutoAddBtn).not.toBeNull();
+        expect(toolbarAutoAddBtn!.textContent).toContain('Auto-Add Important Dates');
+
+        // Footer Auto-Add button should also be available
+        const footerAutoAddBtn = modal.querySelector<HTMLButtonElement>('#myRemindersFooterAutoAddBtn');
+        expect(footerAutoAddBtn).not.toBeNull();
+    });
+
+    it('allows auto-adding dates from toolbar and footer when reminders already exist', () => {
+        // Start with only 1 reminder
+        const initialMilestone = ACADEMIC_MILESTONES_2026_2027[0];
+        milestoneReminderService.saveReminder({
+            milestoneId: initialMilestone.id,
+            title: initialMilestone.title,
+            dateText: initialMilestone.dateText,
+            location: initialMilestone.location,
+            description: initialMilestone.description,
+            eventTime: Date.now() + 1000000,
+            reminderTime: Date.now() + 500000,
+            createdAt: Date.now(),
+        });
+
+        controller.open();
+        const modal = document.getElementById('myRemindersModal')!;
+        expect(modal.querySelectorAll('.my-reminder-card').length).toBe(1);
+
+        const toolbarBtn = modal.querySelector<HTMLButtonElement>('#myRemindersToolbarAutoAddBtn')!;
+        expect(toolbarBtn).not.toBeNull();
+
+        toolbarBtn.click();
+
+        // Now all key milestones should be populated
+        const stored = milestoneReminderService.getAllStoredReminders();
+        expect(Object.keys(stored).length).toBeGreaterThanOrEqual(10);
+        expect(modal.querySelectorAll('.my-reminder-card').length).toBeGreaterThanOrEqual(10);
+    });
 });
+

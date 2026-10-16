@@ -33,6 +33,7 @@ export class MyRemindersController {
     private modalEl: HTMLElement | null = null;
     private isOpen: boolean = false;
     private lastFocusedEl: HTMLElement | null = null;
+    private activeTab: 'reminders' | 'history' = 'reminders';
 
     private constructor() {
         this.init();
@@ -43,6 +44,30 @@ export class MyRemindersController {
             MyRemindersController.instance = new MyRemindersController();
         }
         return MyRemindersController.instance;
+    }
+
+    public setActiveTab(tab: 'reminders' | 'history'): void {
+        this.activeTab = tab;
+        if (this.isOpen) {
+            this.renderModalContent();
+        }
+    }
+
+    public getActiveTab(): 'reminders' | 'history' {
+        return this.activeTab;
+    }
+
+    /**
+     * Automatically populates the reminders list with key academic milestones
+     * (e.g., examinations, holidays, resumptions) directly from the school calendar.
+     */
+    public autoAddImportantDates(): { addedCount: number; milestones: any[]; totalStoredCount: number } {
+        const result = milestoneReminderService.autoAddImportantDates();
+        this.updateBadges();
+        if (this.isOpen) {
+            this.renderModalContent();
+        }
+        return result;
     }
 
     public init(): void {
@@ -248,9 +273,11 @@ export class MyRemindersController {
         const permStatus = this.checkNotificationStatus();
         const isPushEnabled = milestoneReminderService.isPushNotificationsEnabled();
         const isDev = milestoneReminderService.isDevEnvironment();
+        const isMuted = milestoneReminderService.isMuted();
+        const historyList = milestoneReminderService.getNotificationHistory();
 
-        const isPushActive = permStatus === 'granted' && isPushEnabled;
-        const isPushMuted = permStatus === 'granted' && !isPushEnabled;
+        const isPushActive = permStatus === 'granted' && isPushEnabled && !isMuted;
+        const isPushMuted = (permStatus === 'granted' && (!isPushEnabled || isMuted)) || isMuted;
         const isPushBlocked = permStatus === 'denied';
         const isPushUnsupported = permStatus === 'unsupported';
         const notifState = isPushActive ? 'granted' : isPushMuted ? 'muted' : isPushBlocked ? 'denied' : isPushUnsupported ? 'unsupported' : 'default';
@@ -269,7 +296,7 @@ export class MyRemindersController {
             statusText = 'Muted · Alerts Paused';
             statusBadgeClass = 'push-status-badge--muted';
             statusBadgeIcon = 'bi-pause-circle-fill';
-            statusDesc = 'Advance push alerts are paused in this browser. In-app chimes will still sound on the page.';
+            statusDesc = 'Advance push alerts and test alerts are suppressed locally without revoking browser permissions.';
         } else if (isPushBlocked) {
             statusText = 'Blocked in Browser';
             statusBadgeClass = 'push-status-badge--blocked';
@@ -355,6 +382,30 @@ export class MyRemindersController {
                     </label>
                   </div>
                 </div>
+
+                <div class="push-card-mute-row" id="pushCardMuteRow">
+                  <div class="mute-row-info">
+                    <div class="mute-row-title-with-badge">
+                      <span class="mute-row-title">
+                        <i class="bi bi-bell-slash" aria-hidden="true"></i> Mute Notifications
+                      </span>
+                      ${isMuted ? `<span class="mute-status-tag"><i class="bi bi-volume-mute-fill" aria-hidden="true"></i> Muted Locally</span>` : ''}
+                    </div>
+                    <p class="mute-row-desc">Locally suppress the reception of test and future academic notifications without revoking browser permissions.</p>
+                  </div>
+                  <div class="mute-row-toggle-wrapper">
+                    <label class="switch-control ${isDisabled ? 'is-disabled' : ''}" for="toggleMuteNotifications"
+                      title="${isDisabled ? 'Notifications unavailable' : 'Locally suppress test and academic notifications'}">
+                      <input type="checkbox" id="toggleMuteNotifications" role="switch"
+                        aria-checked="${isMuted ? 'true' : 'false'}"
+                        aria-label="Mute Notifications"
+                        ${isMuted ? 'checked' : ''}
+                        ${isDisabled ? 'disabled' : ''}>
+                      <span class="switch-slider switch-slider--amber" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                </div>
+
                 <div class="push-card-actions">
                   ${unblockHelperHtml}
                   ${isDev && permStatus === 'granted' ? `
@@ -371,28 +422,127 @@ export class MyRemindersController {
           </div>
         `;
 
+        // Notification History HTML (last 5 sent notifications)
+        let historyHtml = '';
+        if (historyList.length === 0) {
+            historyHtml = `
+              <div class="my-reminders-empty-history" id="myRemindersEmptyHistory">
+                <div class="empty-state-icon" aria-hidden="true">
+                  <i class="bi bi-clock-history"></i>
+                </div>
+                <h4 class="empty-state-title">No Sent Notifications</h4>
+                <p class="empty-state-text">
+                  No notifications have been triggered yet. When 24-hour advance alerts or test alerts are dispatched,
+                  the last 5 notifications will be archived here so you can review any reminders you missed while away from your device.
+                </p>
+              </div>
+            `;
+        } else {
+            historyHtml = `
+              <div class="my-reminders-history-container" id="myRemindersHistoryContainer">
+                <div class="my-reminders-history-header">
+                  <div class="history-header-info">
+                    <span class="history-count-label">
+                      <i class="bi bi-archive-fill" aria-hidden="true"></i> Last ${historyList.length} Sent Notification${historyList.length === 1 ? '' : 's'}
+                    </span>
+                    <span class="history-sub-label">Review alerts dispatched while you were away from your device</span>
+                  </div>
+                  <button type="button" class="btn btn-outline btn-xs my-reminders-clear-history-btn" id="myRemindersClearHistoryBtn"
+                    title="Clear notification history log">
+                    <i class="bi bi-trash3" aria-hidden="true"></i> Clear History
+                  </button>
+                </div>
+                <div class="my-reminders-history-list" role="list" aria-label="Recent notification history">
+                  ${historyList.map((item) => {
+                      const formattedTime = new Date(item.timestamp).toLocaleString(undefined, {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                      });
+                      const isSuppressed = Boolean(item.suppressed);
+                      const isTest = item.type === 'test';
+                      const statusClass = isSuppressed ? 'history-badge--suppressed' : 'history-badge--delivered';
+                      const statusText = isSuppressed ? 'Muted / Missed' : 'Delivered';
+                      const statusIcon = isSuppressed ? 'bi-volume-mute-fill' : 'bi-check-circle-fill';
+
+                      return `
+                        <div class="my-history-card ${isSuppressed ? 'is-suppressed' : ''}" role="listitem" data-notif-id="${item.id}">
+                          <div class="my-history-card__header">
+                            <div class="my-history-meta">
+                              <span class="my-history-type-badge ${isTest ? 'is-test' : ''}">
+                                <i class="bi ${isTest ? 'bi-lightning-charge-fill' : 'bi-calendar-event'}" aria-hidden="true"></i>
+                                <span>${isTest ? 'Test Alert' : (item.categoryLabel || 'Academic Milestone')}</span>
+                              </span>
+                              <span class="my-history-status-badge ${statusClass}">
+                                <i class="bi ${statusIcon}" aria-hidden="true"></i>
+                                <span>${statusText}</span>
+                              </span>
+                            </div>
+                            <time class="my-history-timestamp" datetime="${new Date(item.timestamp).toISOString()}">
+                              <i class="bi bi-clock" aria-hidden="true"></i> ${formattedTime}
+                            </time>
+                          </div>
+                          <h4 class="my-history-title">${item.title}</h4>
+                          <p class="my-history-body">${item.body}</p>
+                          ${item.milestoneId ? `
+                            <div class="my-history-card__actions">
+                              <button type="button" class="btn btn-outline btn-xs my-history-jump-btn"
+                                data-milestone-id="${item.milestoneId}"
+                                title="View this milestone in the academic timeline">
+                                <i class="bi bi-box-arrow-in-down-right" aria-hidden="true"></i> View in Timeline
+                              </button>
+                            </div>
+                          ` : ''}
+                        </div>
+                      `;
+                  }).join('')}
+                </div>
+              </div>
+            `;
+        }
+
         // Sort reminders chronologically by reminderTime
         reminderList.sort((a, b) => a.reminderTime - b.reminderTime);
 
         let listHtml = '';
         if (count === 0) {
             listHtml = `
-              <div class="my-reminders-empty-state">
+              <div class="my-reminders-empty-state" id="myRemindersEmptyState">
                 <div class="empty-state-icon" aria-hidden="true">
                   <i class="bi bi-bell-slash"></i>
                 </div>
                 <h4 class="empty-state-title">No Active Reminders</h4>
                 <p class="empty-state-text">
-                  You haven't scheduled any milestone alerts yet. Browse the Academic Calendar below and check
-                  <strong>"Remind me"</strong> on exams, breaks, or resumptions to receive advance alerts.
+                  You haven't scheduled any milestone alerts yet. Automatically populate your schedule with key academic milestones (exams, breaks, and resumptions) or browse the calendar below.
                 </p>
-                <button type="button" class="btn btn-primary btn-sm my-reminders-browse-btn" id="myRemindersBrowseBtn">
-                  <i class="bi bi-calendar-check" aria-hidden="true"></i> Browse Academic Calendar
-                </button>
+                <div class="my-reminders-empty-actions">
+                  <button type="button" class="btn btn-primary btn-sm my-reminders-auto-add-btn" id="myRemindersAutoAddBtn"
+                    title="Automatically add all key academic milestones (exams, holidays) to My Reminders">
+                    <i class="bi bi-calendar-plus-fill" aria-hidden="true"></i> Auto-Add Important Dates
+                  </button>
+                  <button type="button" class="btn btn-outline btn-sm my-reminders-browse-btn" id="myRemindersBrowseBtn">
+                    <i class="bi bi-calendar-check" aria-hidden="true"></i> Browse Academic Calendar
+                  </button>
+                </div>
               </div>
             `;
         } else {
             listHtml = `
+              <div class="my-reminders-list-toolbar" id="myRemindersListToolbar">
+                <div class="list-toolbar-info">
+                  <span class="list-toolbar-title">
+                    <i class="bi bi-bell-fill" aria-hidden="true"></i>
+                    <strong>${count}</strong> Scheduled Milestone${count === 1 ? '' : 's'}
+                  </span>
+                  <span class="list-toolbar-hint">Advance alerts trigger 24h prior to each milestone</span>
+                </div>
+                <button type="button" class="btn btn-outline btn-xs my-reminders-auto-add-btn" id="myRemindersToolbarAutoAddBtn"
+                  title="Populate key academic dates (exams, holidays) directly from the school calendar">
+                  <i class="bi bi-calendar-plus-fill" aria-hidden="true"></i>
+                  <span>Auto-Add Important Dates</span>
+                </button>
+              </div>
               <div class="my-reminders-items-list" role="list">
                 ${reminderList
                     .map((item) => {
@@ -523,8 +673,40 @@ export class MyRemindersController {
 
             <div class="my-reminders-body">
               ${pushCardHtml}
-              ${listHtml}
-              ${chimesHtml}
+
+              <div class="my-reminders-tabs" role="tablist" aria-label="Reminders tabs">
+                <button type="button" class="my-reminders-tab ${this.activeTab === 'reminders' ? 'is-active' : ''}"
+                  id="myRemindersTabReminders" role="tab"
+                  aria-selected="${this.activeTab === 'reminders' ? 'true' : 'false'}"
+                  aria-controls="myRemindersPanelReminders"
+                  data-tab="reminders">
+                  <i class="bi bi-calendar-check" aria-hidden="true"></i>
+                  <span>Scheduled Reminders</span>
+                  <span class="my-reminders-tab-badge ${count === 0 ? 'is-zero' : ''}" id="tabRemindersBadge">${count}</span>
+                </button>
+                <button type="button" class="my-reminders-tab ${this.activeTab === 'history' ? 'is-active' : ''}"
+                  id="myRemindersTabHistory" role="tab"
+                  aria-selected="${this.activeTab === 'history' ? 'true' : 'false'}"
+                  aria-controls="myRemindersPanelHistory"
+                  data-tab="history">
+                  <i class="bi bi-clock-history" aria-hidden="true"></i>
+                  <span>Notification History</span>
+                  <span class="my-reminders-tab-badge ${historyList.length === 0 ? 'is-zero' : ''}" id="tabHistoryBadge">${historyList.length}</span>
+                </button>
+              </div>
+
+              <div class="my-reminders-tab-panel ${this.activeTab === 'reminders' ? 'is-active' : ''}"
+                id="myRemindersPanelReminders" role="tabpanel" aria-labelledby="myRemindersTabReminders"
+                ${this.activeTab !== 'reminders' ? 'hidden' : ''}>
+                ${listHtml}
+                ${chimesHtml}
+              </div>
+
+              <div class="my-reminders-tab-panel ${this.activeTab === 'history' ? 'is-active' : ''}"
+                id="myRemindersPanelHistory" role="tabpanel" aria-labelledby="myRemindersTabHistory"
+                ${this.activeTab !== 'history' ? 'hidden' : ''}>
+                ${historyHtml}
+              </div>
             </div>
 
             <div class="my-reminders-footer">
@@ -532,6 +714,10 @@ export class MyRemindersController {
                 <i class="bi bi-shield-check" aria-hidden="true"></i> Advance alerts trigger 24h prior to milestone events.
               </span>
               <div class="my-reminders-footer-actions">
+                <button type="button" class="btn btn-outline btn-sm my-reminders-auto-add-btn" id="myRemindersFooterAutoAddBtn"
+                  title="Automatically populate reminders with key academic dates from the calendar">
+                  <i class="bi bi-calendar-plus" aria-hidden="true"></i> Auto-Add Dates
+                </button>
                 ${count > 0 ? `
                   <button type="button" class="btn btn-outline btn-sm my-reminders-clear-btn" id="myRemindersClearAllBtn">
                     <i class="bi bi-trash3" aria-hidden="true"></i> Clear All Reminders
@@ -585,6 +771,48 @@ export class MyRemindersController {
             this.renderModalContent();
         });
 
+        // 'Mute Notifications' toggle (locally suppresses alerts without revoking browser permissions)
+        const muteToggle = this.modalEl.querySelector<HTMLInputElement>('#toggleMuteNotifications');
+        muteToggle?.addEventListener('change', (e) => {
+            const target = e.currentTarget as HTMLInputElement;
+            milestoneReminderService.setMuted(target.checked);
+            this.renderModalContent();
+        });
+
+        // Tab switcher buttons
+        const tabReminders = this.modalEl.querySelector<HTMLButtonElement>('#myRemindersTabReminders');
+        const tabHistory = this.modalEl.querySelector<HTMLButtonElement>('#myRemindersTabHistory');
+
+        tabReminders?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.setActiveTab('reminders');
+        });
+
+        tabHistory?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.setActiveTab('history');
+        });
+
+        // Clear Notification History button
+        const clearHistoryBtn = this.modalEl.querySelector<HTMLButtonElement>('#myRemindersClearHistoryBtn');
+        clearHistoryBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            milestoneReminderService.clearNotificationHistory();
+            this.renderModalContent();
+        });
+
+        // History jump to timeline button
+        const historyJumpBtns = this.modalEl.querySelectorAll<HTMLButtonElement>('.my-history-jump-btn');
+        historyJumpBtns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const milestoneId = btn.dataset.milestoneId;
+                if (!milestoneId) return;
+                this.close();
+                milestoneReminderService.scrollToMilestone(milestoneId);
+            });
+        });
+
         // 'Send Test Notification' button (appears only when permissions are granted)
         const testNotificationBtn = this.modalEl.querySelector<HTMLButtonElement>(
             '#myRemindersTestNotificationBtn, #myRemindersTestAlertBtn, .my-reminders-test-notification-btn'
@@ -627,6 +855,17 @@ export class MyRemindersController {
                     }
                 }
             }, 5000);
+        });
+
+        // Auto-Add Important Dates button(s) (empty state, toolbar, footer)
+        const autoAddBtns = this.modalEl.querySelectorAll<HTMLButtonElement>(
+            '#myRemindersAutoAddBtn, #myRemindersToolbarAutoAddBtn, #myRemindersFooterAutoAddBtn, .my-reminders-auto-add-btn'
+        );
+        autoAddBtns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.autoAddImportantDates();
+            });
         });
 
         // Browse Academic Calendar button (in empty state)
