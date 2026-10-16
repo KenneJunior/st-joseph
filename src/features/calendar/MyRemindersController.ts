@@ -18,7 +18,10 @@ import {
     type ChimeId,
 } from './MilestoneChimeSynthesizer.ts';
 import { CalendarActionSheet } from './CalendarActionSheet.ts';
-import { detectPlatform } from '../../core/platform/platformDetection.ts';
+import {
+    detectPlatform,
+    getNotificationPermissionGuidance,
+} from '../../core/platform/platformDetection.ts';
 
 export class MyRemindersController {
     private static instance: MyRemindersController | null = null;
@@ -43,6 +46,9 @@ export class MyRemindersController {
     }
 
     public init(): void {
+        if (typeof document === 'undefined') {
+            return;
+        }
         this.topNavBtn = document.getElementById('navMyRemindersBtn');
         this.bottomNavBtn = document.getElementById('bottomMyRemindersBtn');
         this.topNavBadge = document.getElementById('navRemindersBadge');
@@ -92,11 +98,13 @@ export class MyRemindersController {
         });
 
         // Close on Escape key
-        document.addEventListener('keydown', (e) => {
+        const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && this.isOpen) {
                 this.close();
             }
-        });
+        };
+        document.addEventListener('keydown', handleEscape);
+        window.addEventListener('keydown', handleEscape);
     }
 
     /**
@@ -164,6 +172,7 @@ export class MyRemindersController {
 
         this.renderModalContent();
 
+        modal.classList.add('is-open');
         modal.hidden = false;
         if (typeof (modal as HTMLDialogElement).showModal === 'function') {
             try {
@@ -197,6 +206,7 @@ export class MyRemindersController {
                 // Fallback
             }
         }
+        this.modalEl.classList.remove('is-open');
         this.modalEl.hidden = true;
         document.body.classList.remove('reminders-modal-open');
 
@@ -204,6 +214,14 @@ export class MyRemindersController {
         if (this.lastFocusedEl && typeof this.lastFocusedEl.focus === 'function') {
             this.lastFocusedEl.focus();
         }
+    }
+
+    /**
+     * Service function that uses the Notification API to determine 'granted', 'denied', or 'default' states
+     * (or 'unsupported' if the browser lacks Notification support) and reflects them in the UI badge immediately upon opening.
+     */
+    public checkNotificationStatus(): NotificationPermission | 'unsupported' {
+        return milestoneReminderService.checkNotificationStatus();
     }
 
     /**
@@ -226,28 +244,132 @@ export class MyRemindersController {
         );
         this.modalEl.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
-        // Check if browser notifications are blocked
-        const isPermDenied = typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'denied';
-        const blockedBannerHtml = isPermDenied
-            ? `
-              <div class="my-reminders-blocked-banner" role="alert">
-                <div class="blocked-banner-icon" aria-hidden="true">
-                  <i class="bi bi-bell-slash-fill"></i>
-                </div>
-                <div class="blocked-banner-content">
-                  <strong class="blocked-banner-title">Browser Notifications Blocked</strong>
-                  <p class="blocked-banner-desc">
-                    Your browser on <strong>${platform.browserLabel} (${platform.osLabel})</strong> is currently blocking notification alerts. In-app notifications will still chime, but system popups require permission.
-                  </p>
-                  <button type="button" class="btn-allow-guide" id="myRemindersOpenGuideBtn">
-                    <i class="bi bi-question-circle" aria-hidden="true"></i>
-                    <span>How to allow notifications on ${platform.browserLabel}</span>
-                    <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
-                  </button>
+        // Check Notification API permission status immediately using checkNotificationStatus()
+        const permStatus = this.checkNotificationStatus();
+        const isPushEnabled = milestoneReminderService.isPushNotificationsEnabled();
+        const isDev = milestoneReminderService.isDevEnvironment();
+
+        const isPushActive = permStatus === 'granted' && isPushEnabled;
+        const isPushMuted = permStatus === 'granted' && !isPushEnabled;
+        const isPushBlocked = permStatus === 'denied';
+        const isPushUnsupported = permStatus === 'unsupported';
+        const notifState = isPushActive ? 'granted' : isPushMuted ? 'muted' : isPushBlocked ? 'denied' : isPushUnsupported ? 'unsupported' : 'default';
+
+        let statusText = '';
+        let statusBadgeClass = '';
+        let statusBadgeIcon = '';
+        let statusDesc = '';
+
+        if (isPushActive) {
+            statusText = 'Active · Push Alerts Enabled';
+            statusBadgeClass = 'push-status-badge--active';
+            statusBadgeIcon = 'bi-check-circle-fill'; // Checkmark for granted
+            statusDesc = 'Browser alerts will sound and notify you 24 hours prior to scheduled milestones.';
+        } else if (isPushMuted) {
+            statusText = 'Muted · Alerts Paused';
+            statusBadgeClass = 'push-status-badge--muted';
+            statusBadgeIcon = 'bi-pause-circle-fill';
+            statusDesc = 'Advance push alerts are paused in this browser. In-app chimes will still sound on the page.';
+        } else if (isPushBlocked) {
+            statusText = 'Blocked in Browser';
+            statusBadgeClass = 'push-status-badge--blocked';
+            statusBadgeIcon = 'bi-exclamation-triangle-fill'; // Warning for denied
+            statusDesc = `Push notifications are blocked in your ${platform.browserLabel} settings on ${platform.osLabel}. Tap the 'How to unblock' link below to view unblock instructions.`;
+        } else if (isPushUnsupported) {
+            statusText = 'Not Supported';
+            statusBadgeClass = 'push-status-badge--unsupported';
+            statusBadgeIcon = 'bi-info-circle-fill';
+            statusDesc = 'Web push notifications are not supported by this browser. In-app alerts remain active.';
+        } else {
+            // Default state
+            statusText = 'Disabled';
+            statusBadgeClass = 'push-status-badge--default';
+            statusBadgeIcon = 'bi-info-circle-fill'; // Info for default
+            statusDesc = 'Enable browser push notifications to receive advance alerts 24 hours before your milestones.';
+        }
+
+        const isChecked = isPushActive;
+        const isDisabled = isPushBlocked || isPushUnsupported;
+        const guidance = getNotificationPermissionGuidance(platform);
+
+        const unblockHelperHtml = isPushBlocked ? `
+          <div class="my-reminders-unblock-wrapper" id="myRemindersUnblockSection">
+            <div class="push-card-unblock-box">
+              <div class="unblock-box-header">
+                <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                <span class="unblock-box-title">How to unblock in ${platform.browserLabel} on ${platform.osLabel}:</span>
+              </div>
+              <ol class="unblock-steps-list">
+                ${guidance.steps.slice(0, 3).map((step, idx) => `
+                  <li>
+                    <span class="step-num">${idx + 1}</span>
+                    <span class="step-text">${step}</span>
+                  </li>
+                `).join('')}
+              </ol>
+            </div>
+            <div class="unblock-actions-row">
+              <a href="#how-to-unblock" class="my-reminders-unblock-link" id="myRemindersUnblockHelperLink" role="button" aria-label="How to unblock notifications on ${platform.browserLabel}">
+                <i class="bi bi-question-circle" aria-hidden="true"></i>
+                <span>How to unblock notifications on ${platform.browserLabel}</span>
+                <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+              </a>
+              <button type="button" class="btn-allow-guide" id="myRemindersOpenGuideBtn" aria-label="Open visual unblock instructions">
+                <i class="bi bi-book-half" aria-hidden="true"></i>
+                <span>Visual Unblock Guide</span>
+                <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        ` : '';
+
+        const pushCardHtml = `
+          <div class="my-reminders-push-card ${isPushBlocked ? 'my-reminders-blocked-banner' : ''}" id="myRemindersPushCard" data-state="${notifState}" role="${isPushBlocked ? 'alert' : 'region'}" aria-label="Browser Push Notification Settings">
+            <div class="push-card-main">
+              <div class="push-card-icon-col" aria-hidden="true">
+                <div class="push-card-icon-badge ${isChecked ? 'is-active' : ''} ${isPushBlocked ? 'is-blocked' : ''}">
+                  <i class="bi ${isPushBlocked ? 'bi-bell-slash-fill' : isChecked ? 'bi-bell-fill' : 'bi-bell'}"></i>
                 </div>
               </div>
-            `
-            : '';
+              <div class="push-card-content">
+                <div class="push-card-header-row">
+                  <div class="push-card-title-group">
+                    <div class="push-card-title-with-badge">
+                      <h4 class="push-card-title ${isPushBlocked ? 'blocked-banner-title' : ''}">${isPushBlocked ? 'Browser Notifications Blocked' : 'Browser Push Notifications'}</h4>
+                      <span class="push-status-badge ${statusBadgeClass}">
+                        <i class="bi ${statusBadgeIcon} push-status-badge-icon" aria-hidden="true"></i>
+                        <span class="push-status-text">${statusText}</span>
+                      </span>
+                    </div>
+                    <p class="push-card-desc">${statusDesc}</p>
+                  </div>
+                  <div class="push-card-toggle-wrapper">
+                    <label class="switch-control ${isDisabled ? 'is-disabled' : ''}" for="toggleNotificationPush"
+                      title="${isPushBlocked ? 'Notifications blocked in browser settings' : 'Toggle browser push notifications'}">
+                      <input type="checkbox" id="toggleNotificationPush" role="switch"
+                        aria-checked="${isChecked ? 'true' : 'false'}"
+                        aria-label="Toggle browser push notifications"
+                        ${isChecked ? 'checked' : ''}
+                        ${isDisabled ? 'disabled' : ''}>
+                      <span class="switch-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="push-card-actions">
+                  ${unblockHelperHtml}
+                  ${isDev && permStatus === 'granted' ? `
+                    <button type="button" class="btn btn-outline btn-xs my-reminders-test-alert-btn my-reminders-test-notification-btn" id="myRemindersTestNotificationBtn" data-testid="myRemindersTestAlertBtn"
+                      title="Send test browser push notification with a 5-second delay to verify alerts"
+                      aria-label="Send test notification with 5-second delay">
+                      <i class="bi bi-bell-fill" aria-hidden="true"></i>
+                      <span>Send Test Notification</span>
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
 
         // Sort reminders chronologically by reminderTime
         reminderList.sort((a, b) => a.reminderTime - b.reminderTime);
@@ -255,7 +377,6 @@ export class MyRemindersController {
         let listHtml = '';
         if (count === 0) {
             listHtml = `
-              ${blockedBannerHtml}
               <div class="my-reminders-empty-state">
                 <div class="empty-state-icon" aria-hidden="true">
                   <i class="bi bi-bell-slash"></i>
@@ -272,7 +393,6 @@ export class MyRemindersController {
             `;
         } else {
             listHtml = `
-              ${blockedBannerHtml}
               <div class="my-reminders-items-list" role="list">
                 ${reminderList
                     .map((item) => {
@@ -297,7 +417,7 @@ export class MyRemindersController {
                                 <span aria-hidden="true">·</span>
                                 <span class="my-reminder-category">${categoryLabel}</span>
                               </div>
-                              <button type="button" class="my-reminder-remove-btn"
+                              <button type="button" class="my-reminder-remove-btn my-reminders-remove-btn"
                                 data-milestone-id="${item.milestoneId}"
                                 aria-label="Cancel reminder for ${item.title}"
                                 title="Cancel this reminder">
@@ -402,6 +522,7 @@ export class MyRemindersController {
             </div>
 
             <div class="my-reminders-body">
+              ${pushCardHtml}
               ${listHtml}
               ${chimesHtml}
             </div>
@@ -433,6 +554,81 @@ export class MyRemindersController {
     private bindModalInnerEvents(): void {
         if (!this.modalEl) return;
 
+        // Visual 'Enable Notifications' push toggle
+        const pushToggle = this.modalEl.querySelector<HTMLInputElement>('#toggleNotificationPush');
+        pushToggle?.addEventListener('change', async (e) => {
+            const target = e.currentTarget as HTMLInputElement;
+            const notifState = milestoneReminderService.getNotificationState();
+
+            if (notifState === 'denied') {
+                target.checked = false;
+                this.close();
+                milestoneReminderService.showNotificationHelp();
+                return;
+            }
+
+            if (notifState === 'default') {
+                const perm = await milestoneReminderService.requestNotificationPermission();
+                if (perm === 'granted') {
+                    milestoneReminderService.setPushNotificationsEnabled(true);
+                } else if (perm === 'denied') {
+                    milestoneReminderService.setPushNotificationsEnabled(false);
+                    this.renderModalContent();
+                    milestoneReminderService.showNotificationHelp();
+                    return;
+                }
+                this.renderModalContent();
+                return;
+            }
+
+            milestoneReminderService.setPushNotificationsEnabled(target.checked);
+            this.renderModalContent();
+        });
+
+        // 'Send Test Notification' button (appears only when permissions are granted)
+        const testNotificationBtn = this.modalEl.querySelector<HTMLButtonElement>(
+            '#myRemindersTestNotificationBtn, #myRemindersTestAlertBtn, .my-reminders-test-notification-btn'
+        );
+        testNotificationBtn?.addEventListener('click', async () => {
+            testNotificationBtn.disabled = true;
+            const originalHtml = testNotificationBtn.innerHTML;
+            let remaining = 5;
+
+            testNotificationBtn.innerHTML = `
+              <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+              <span>Sending test in ${remaining}s...</span>
+            `;
+
+            milestoneReminderService.showToast({
+                type: 'info',
+                title: 'Test Notification Scheduled',
+                message: 'A test alert will trigger in 5 seconds. You can switch tabs or minimize the browser to verify background delivery!',
+                duration: 5000,
+            });
+
+            const countdownInterval = window.setInterval(() => {
+                remaining -= 1;
+                if (remaining > 0 && testNotificationBtn) {
+                    testNotificationBtn.innerHTML = `
+                      <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                      <span>Sending test in ${remaining}s...</span>
+                    `;
+                }
+            }, 1000);
+
+            window.setTimeout(async () => {
+                window.clearInterval(countdownInterval);
+                try {
+                    await milestoneReminderService.sendTestNotification();
+                } finally {
+                    if (testNotificationBtn) {
+                        testNotificationBtn.disabled = false;
+                        testNotificationBtn.innerHTML = originalHtml;
+                    }
+                }
+            }, 5000);
+        });
+
         // Browse Academic Calendar button (in empty state)
         const browseBtn = this.modalEl.querySelector<HTMLButtonElement>('#myRemindersBrowseBtn');
         browseBtn?.addEventListener('click', () => {
@@ -441,11 +637,16 @@ export class MyRemindersController {
             schoolDatesSection?.scrollIntoView({ behavior: 'smooth' });
         });
 
-        // Open notification guidance guide button (if blocked banner is shown)
-        const openGuideBtn = this.modalEl.querySelector<HTMLButtonElement>('#myRemindersOpenGuideBtn');
-        openGuideBtn?.addEventListener('click', () => {
-            this.close();
-            milestoneReminderService.showNotificationHelp();
+        // Open notification guidance guide button or helper link (if blocked banner/card is shown)
+        const openGuideBtns = this.modalEl.querySelectorAll<HTMLElement>(
+            '#myRemindersOpenGuideBtn, #myRemindersUnblockHelperLink, .my-reminders-unblock-link, .btn-allow-guide'
+        );
+        openGuideBtns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.close();
+                milestoneReminderService.showNotificationHelp();
+            });
         });
 
         // Individual remove buttons
@@ -544,6 +745,21 @@ export class MyRemindersController {
                 }
             });
         });
+    }
+
+    /**
+     * Cleans up the controller instance and removes modal element from DOM.
+     */
+    public destroy(): void {
+        this.close();
+        if (this.modalEl && this.modalEl.parentNode) {
+            this.modalEl.parentNode.removeChild(this.modalEl);
+        }
+        this.modalEl = null;
+        this.topNavBtn = null;
+        this.bottomNavBtn = null;
+        this.topNavBadge = null;
+        this.bottomNavBadge = null;
     }
 }
 
