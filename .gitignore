@@ -13,9 +13,11 @@ reports/*
 !reports/.gitkeep
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
+.vscode
 .idea
+.aistudio
+.dist
+.env.exmaple
 .DS_Store
 *.suo
 *.ntvs*
@@ -29,4 +31,5 @@ reports/*
 com.chrom.devtools.json
 com.chrome.devtools.json
 com.chromium.devtools.json
-!/.aistudio/
+/dist/
+/.aistudio/
