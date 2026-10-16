@@ -1834,6 +1834,92 @@ body.dark-mode .my-reminders-overlay .empty-state-text {
   color: #94a3b8;
 }
 
+.my-reminders-empty-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* List Toolbar for Scheduled Reminders */
+.my-reminders-list-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background: rgba(7, 24, 46, 0.03);
+  border: 1px solid rgba(7, 24, 46, 0.08);
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-reminders-list-toolbar,
+html.dark-mode .my-reminders-overlay .my-reminders-list-toolbar,
+body.dark-mode .my-reminders-overlay .my-reminders-list-toolbar {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.list-toolbar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.list-toolbar-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.my-reminders-overlay[data-theme="dark"] .list-toolbar-title,
+html.dark-mode .my-reminders-overlay .list-toolbar-title,
+body.dark-mode .my-reminders-overlay .list-toolbar-title {
+  color: #f1f5f9;
+}
+
+.list-toolbar-hint {
+  font-size: 0.74rem;
+  color: #64748b;
+}
+
+.my-reminders-overlay[data-theme="dark"] .list-toolbar-hint,
+html.dark-mode .my-reminders-overlay .list-toolbar-hint,
+body.dark-mode .my-reminders-overlay .list-toolbar-hint {
+  color: #94a3b8;
+}
+
+.my-reminders-auto-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.my-reminders-auto-add-btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-calendar-auto-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-calendar-auto-add:hover {
+  transform: translateY(-1px);
+}
+
 /* Reminder Items List */
 .my-reminders-items-list {
   display: flex;
@@ -2219,6 +2305,496 @@ body.dark-mode .my-reminders-overlay .my-reminders-footer-note {
   .chime-options-grid {
     grid-template-columns: 1fr;
   }
+
+  .push-card-mute-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .my-reminders-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+}
+
+/* ============================================================================
+   MUTE NOTIFICATIONS ROW (.push-card-mute-row)
+   ============================================================================ */
+.push-card-mute-row {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(7, 24, 46, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.my-reminders-overlay[data-theme="dark"] .push-card-mute-row,
+html.dark-mode .my-reminders-overlay .push-card-mute-row,
+body.dark-mode .my-reminders-overlay .push-card-mute-row {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.mute-row-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mute-row-title-with-badge {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.mute-row-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mute-status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 4px;
+  background: rgba(217, 119, 6, 0.15);
+  color: #b45309;
+  border: 1px solid rgba(217, 119, 6, 0.3);
+}
+
+.my-reminders-overlay[data-theme="dark"] .mute-status-tag,
+html.dark-mode .my-reminders-overlay .mute-status-tag,
+body.dark-mode .my-reminders-overlay .mute-status-tag {
+  background: rgba(217, 119, 6, 0.22);
+  color: #fbbf24;
+  border-color: rgba(217, 119, 6, 0.4);
+}
+
+.mute-row-desc {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: #64748b;
+  margin: 0;
+}
+
+.my-reminders-overlay[data-theme="dark"] .mute-row-desc,
+html.dark-mode .my-reminders-overlay .mute-row-desc,
+body.dark-mode .my-reminders-overlay .mute-row-desc {
+  color: #94a3b8;
+}
+
+.mute-row-toggle-wrapper {
+  flex-shrink: 0;
+}
+
+/* Amber slider variant for Mute switch */
+.switch-slider--amber {
+  background-color: #cbd5e1;
+}
+
+.switch-control input:checked + .switch-slider--amber {
+  background-color: #d97706;
+  box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.25), 0 2px 10px rgba(217, 119, 6, 0.3);
+}
+
+/* ============================================================================
+   MY REMINDERS TABS & TAB PANELS (.my-reminders-tabs)
+   ============================================================================ */
+.my-reminders-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px solid rgba(7, 24, 46, 0.08);
+  margin-bottom: 16px;
+  padding-bottom: 2px;
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-reminders-tabs,
+html.dark-mode .my-reminders-overlay .my-reminders-tabs,
+body.dark-mode .my-reminders-overlay .my-reminders-tabs {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.my-reminders-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px 8px 0 0;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -4px;
+}
+
+.my-reminders-tab:hover {
+  color: #07182e;
+  background: rgba(217, 119, 6, 0.06);
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-reminders-tab:hover,
+html.dark-mode .my-reminders-overlay .my-reminders-tab:hover,
+body.dark-mode .my-reminders-overlay .my-reminders-tab:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.my-reminders-tab.is-active {
+  color: #b45309;
+  border-bottom-color: #d97706;
+  font-weight: 700;
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-reminders-tab.is-active,
+html.dark-mode .my-reminders-overlay .my-reminders-tab.is-active,
+body.dark-mode .my-reminders-overlay .my-reminders-tab.is-active {
+  color: #fbbf24;
+  border-bottom-color: #fbbf24;
+}
+
+.my-reminders-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(7, 24, 46, 0.1);
+  color: #475569;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.my-reminders-tab.is-active .my-reminders-tab-badge {
+  background: #d97706;
+  color: #ffffff;
+}
+
+.my-reminders-tab-badge.is-zero {
+  opacity: 0.6;
+}
+
+.my-reminders-tab-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: tabFadeIn 0.22s ease-out;
+}
+
+.my-reminders-tab-panel[hidden] {
+  display: none !important;
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================================
+   NOTIFICATION HISTORY TAB (.my-reminders-history-container)
+   ============================================================================ */
+.my-reminders-history-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.my-reminders-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 2px;
+}
+
+.history-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-count-label {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #07182e;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.my-reminders-overlay[data-theme="dark"] .history-count-label,
+html.dark-mode .my-reminders-overlay .history-count-label,
+body.dark-mode .my-reminders-overlay .history-count-label {
+  color: #f1f5f9;
+}
+
+.history-sub-label {
+  font-size: 0.76rem;
+  color: #64748b;
+}
+
+.my-reminders-overlay[data-theme="dark"] .history-sub-label,
+html.dark-mode .my-reminders-overlay .history-sub-label,
+body.dark-mode .my-reminders-overlay .history-sub-label {
+  color: #94a3b8;
+}
+
+.my-reminders-clear-history-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: transparent;
+  transition: all 0.18s ease;
+}
+
+.my-reminders-clear-history-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border-color: #ef4444;
+}
+
+.my-reminders-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.my-history-card {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(7, 24, 46, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.my-history-card:hover {
+  border-color: rgba(217, 119, 6, 0.3);
+  box-shadow: 0 4px 12px rgba(7, 24, 46, 0.05);
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-history-card,
+html.dark-mode .my-reminders-overlay .my-history-card,
+body.dark-mode .my-reminders-overlay .my-history-card {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-history-card:hover,
+html.dark-mode .my-reminders-overlay .my-history-card:hover,
+body.dark-mode .my-reminders-overlay .my-history-card:hover {
+  border-color: rgba(217, 119, 6, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.my-history-card.is-suppressed {
+  border-left: 3px solid #d97706;
+}
+
+.my-history-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.my-history-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.my-history-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(7, 24, 46, 0.06);
+  color: #334155;
+}
+
+.my-history-type-badge.is-test {
+  background: rgba(14, 165, 233, 0.12);
+  color: #0284c7;
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-history-type-badge,
+html.dark-mode .my-reminders-overlay .my-history-type-badge,
+body.dark-mode .my-reminders-overlay .my-history-type-badge {
+  background: rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-history-type-badge.is-test,
+html.dark-mode .my-reminders-overlay .my-history-type-badge.is-test,
+body.dark-mode .my-reminders-overlay .my-history-type-badge.is-test {
+  background: rgba(14, 165, 233, 0.2);
+  color: #38bdf8;
+}
+
+.my-history-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.history-badge--delivered {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.history-badge--suppressed {
+  background: rgba(245, 158, 11, 0.14);
+  color: #b45309;
+}
+
+.my-reminders-overlay[data-theme="dark"] .history-badge--delivered,
+html.dark-mode .my-reminders-overlay .history-badge--delivered,
+body.dark-mode .my-reminders-overlay .history-badge--delivered {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.my-reminders-overlay[data-theme="dark"] .history-badge--suppressed,
+html.dark-mode .my-reminders-overlay .history-badge--suppressed,
+body.dark-mode .my-reminders-overlay .history-badge--suppressed {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.my-history-timestamp {
+  font-size: 0.74rem;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-history-timestamp,
+html.dark-mode .my-reminders-overlay .my-history-timestamp,
+body.dark-mode .my-reminders-overlay .my-history-timestamp {
+  color: #94a3b8;
+}
+
+.my-history-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin: 0;
+  color: inherit;
+  line-height: 1.35;
+}
+
+.my-history-body {
+  font-size: 0.81rem;
+  line-height: 1.45;
+  color: #475569;
+  margin: 0;
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-history-body,
+html.dark-mode .my-reminders-overlay .my-history-body,
+body.dark-mode .my-reminders-overlay .my-history-body {
+  color: #cbd5e1;
+}
+
+.my-history-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.my-history-jump-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  padding: 3px 9px;
+  border-radius: 6px;
+  color: #b45309;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  background: rgba(217, 119, 6, 0.05);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.my-history-jump-btn:hover {
+  background: #d97706;
+  color: #ffffff;
+  border-color: #d97706;
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-history-jump-btn,
+html.dark-mode .my-reminders-overlay .my-history-jump-btn,
+body.dark-mode .my-reminders-overlay .my-history-jump-btn {
+  color: #fbbf24;
+  border-color: rgba(217, 119, 6, 0.45);
+  background: rgba(217, 119, 6, 0.12);
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-history-jump-btn:hover,
+html.dark-mode .my-reminders-overlay .my-history-jump-btn:hover,
+body.dark-mode .my-reminders-overlay .my-history-jump-btn:hover {
+  background: #d97706;
+  color: #ffffff;
+}
+
+.my-reminders-empty-history {
+  text-align: center;
+  padding: 36px 20px;
+  border-radius: 12px;
+  background: rgba(7, 24, 46, 0.03);
+  border: 1px dashed rgba(7, 24, 46, 0.14);
+}
+
+.my-reminders-overlay[data-theme="dark"] .my-reminders-empty-history,
+html.dark-mode .my-reminders-overlay .my-reminders-empty-history,
+body.dark-mode .my-reminders-overlay .my-reminders-empty-history {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Reduced motion support */
@@ -2238,7 +2814,9 @@ body.dark-mode .my-reminders-overlay .my-reminders-footer-note {
   .push-card-icon-badge,
   .push-card-icon-badge i,
   .switch-slider,
-  .switch-slider::before {
+  .switch-slider::before,
+  .my-reminders-tab-panel,
+  .my-history-card {
     animation: none !important;
     transition: none !important;
     transform: none !important;
