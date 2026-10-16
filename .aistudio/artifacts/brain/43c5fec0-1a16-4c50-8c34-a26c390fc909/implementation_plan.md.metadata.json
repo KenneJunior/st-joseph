@@ -1,6 +1,0 @@
-{
-  "summary": "Implementation plan for a visual 'Enable Notifications' toggle inside the 'My Reminders' dialog, featuring a dedicated status card, browser push permission prompting, blocked state guidance, and environment-aware test alert triggering.",
-  "updatedAt": "2026-10-16T08:24:52.632780902Z",
-  "requestFeedback": true,
-  "userFacing": true
-}
