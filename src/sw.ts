@@ -22,6 +22,12 @@ import { OFFLINE_HTML, IMAGE_PLACEHOLDER_SVG } from './sw/offlineAssets.ts';
 declare const self: ServiceWorkerGlobalScope;
 declare const __SW_MANIFEST_ASSETS__: string[] | undefined;
 
+interface ExtendedNotificationOptions extends NotificationOptions {
+    actions?: Array<{ action: string; title: string; icon?: string }>;
+    vibrate?: number | number[];
+    showTrigger?: unknown;
+}
+
 // ---------------------------------------------------------------------------
 // 1. Versioning & Cache Namespaces
 // ---------------------------------------------------------------------------
@@ -357,7 +363,207 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
                 }
             })()
         );
+        return;
     }
+
+    // Show immediate milestone notification via ServiceWorker
+    if (data.type === 'SHOW_MILESTONE_NOTIFICATION') {
+        const title = data.title || 'SJCCC Academic Milestone Alert';
+        const options: ExtendedNotificationOptions = {
+            body: data.body || 'Upcoming academic milestone at St. Joseph Catholic Comprehensive College.',
+            icon: data.icon || '/assets/icons/Apple/manifest-icon-192.maskable.png',
+            badge: data.badge || '/assets/icons/96X96.svg',
+            tag: data.tag || (data.milestoneId ? `sjccc-milestone-${data.milestoneId}` : 'sjccc-notification'),
+            data: {
+                url: data.url || '/#schoolDatesSection',
+                milestoneId: data.milestoneId,
+            },
+            actions: [
+                { action: 'view-milestone', title: 'View Milestone' },
+                { action: 'dismiss', title: 'Dismiss' },
+            ],
+            vibrate: [200, 100, 200],
+        };
+
+        event.waitUntil(self.registration.showNotification(title, options));
+        return;
+    }
+
+    // Schedule milestone notification for 24h prior
+    if (data.type === 'SCHEDULE_MILESTONE_NOTIFICATION' && data.reminder) {
+        const { reminder } = data;
+        const delayMs = reminder.reminderTime - Date.now();
+        const title = reminder.title || `Upcoming Milestone (in 24 Hours)`;
+        const options: ExtendedNotificationOptions = {
+            body: reminder.body || `${reminder.title} commences in 24 hours at ${reminder.location || 'SJCCC Campus'}.`,
+            icon: '/assets/icons/Apple/manifest-icon-192.maskable.png',
+            badge: '/assets/icons/96X96.svg',
+            tag: `sjccc-milestone-${reminder.milestoneId}`,
+            data: {
+                url: '/#schoolDatesSection',
+                milestoneId: reminder.milestoneId,
+            },
+            actions: [
+                { action: 'view-milestone', title: 'View Milestone' },
+                { action: 'dismiss', title: 'Dismiss' },
+            ],
+            vibrate: [200, 100, 200],
+        };
+
+        event.waitUntil(
+            (async () => {
+                // If Notification Trigger API is supported by the browser (Chromium)
+                if ('showTrigger' in Notification.prototype && typeof (self as any).TimestampTrigger !== 'undefined') {
+                    try {
+                        const trigger = new (self as any).TimestampTrigger(reminder.reminderTime);
+                        await self.registration.showNotification(title, {
+                            ...options,
+                            showTrigger: trigger,
+                        } as any);
+                        return;
+                    } catch (e) {
+                        console.debug('[SW] TimestampTrigger setup fallback to timeout:', e);
+                    }
+                }
+
+                // If delay is immediate or past
+                if (delayMs <= 0) {
+                    await self.registration.showNotification(title, options);
+                } else if (delayMs <= 2147483647) {
+                    // Maximum 32-bit integer for setTimeout
+                    setTimeout(async () => {
+                        await self.registration.showNotification(title, options);
+                    }, delayMs);
+                }
+            })()
+        );
+        return;
+    }
+
+    // Cancel scheduled milestone notification
+    if (data.type === 'CANCEL_MILESTONE_NOTIFICATION' && data.milestoneId) {
+        event.waitUntil(
+            (async () => {
+                const notifications = await self.registration.getNotifications({
+                    tag: `sjccc-milestone-${data.milestoneId}`,
+                });
+                for (const n of notifications) {
+                    n.close();
+                }
+            })()
+        );
+        return;
+    }
+
+    // Test push notification
+    if (data.type === 'TEST_PUSH_NOTIFICATION') {
+        const title = 'SJCCC Milestone Push Test';
+        const options: ExtendedNotificationOptions = {
+            body: 'Browser push notifications are active and ready to alert you 24 hours before your scheduled milestones!',
+            icon: '/assets/icons/Apple/manifest-icon-192.maskable.png',
+            badge: '/assets/icons/96X96.svg',
+            tag: 'sjccc-test-push',
+            data: { url: '/#schoolDatesSection' },
+            vibrate: [200, 100, 200],
+        };
+        event.waitUntil(self.registration.showNotification(title, options));
+        return;
+    }
+});
+
+// ---------------------------------------------------------------------------
+// 8. Lifecycle: Web Push & Notification Click Handlers
+// ---------------------------------------------------------------------------
+
+self.addEventListener('push', (event: PushEvent) => {
+    let payload: {
+        title?: string;
+        body?: string;
+        icon?: string;
+        badge?: string;
+        tag?: string;
+        data?: Record<string, unknown>;
+        milestoneId?: string;
+    } = {};
+
+    if (event.data) {
+        try {
+            payload = event.data.json();
+        } catch {
+            payload = { title: event.data.text() };
+        }
+    }
+
+    const title = payload.title || 'SJCCC Academic Milestone Reminder';
+    const body = payload.body || 'Upcoming school date or academic milestone in 24 hours.';
+    const icon = payload.icon || '/assets/icons/Apple/manifest-icon-192.maskable.png';
+    const badge = payload.badge || '/assets/icons/96X96.svg';
+    const tag = payload.tag || (payload.milestoneId ? `sjccc-milestone-${payload.milestoneId}` : 'sjccc-milestone-reminder');
+    const url = (payload.data?.url as string) || (payload.milestoneId ? '/#schoolDatesSection' : '/');
+
+    const options: ExtendedNotificationOptions = {
+        body,
+        icon,
+        badge,
+        tag,
+        data: {
+            url,
+            milestoneId: payload.milestoneId,
+            ...(payload.data || {}),
+        },
+        actions: [
+            { action: 'view-milestone', title: 'View Milestone' },
+            { action: 'dismiss', title: 'Dismiss' },
+        ],
+        vibrate: [200, 100, 200],
+    };
+
+    event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', (event: NotificationEvent) => {
+    event.notification.close();
+    const action = event.action;
+
+    if (action === 'dismiss') {
+        return;
+    }
+
+    const data = event.notification.data || {};
+    const targetUrl = (data.url as string) || '/#schoolDatesSection';
+    const milestoneId = data.milestoneId as string | undefined;
+
+    event.waitUntil(
+        (async () => {
+            const allClients = await self.clients.matchAll({
+                type: 'window',
+                includeUncontrolled: true,
+            });
+
+            // Focus an existing client if available
+            for (const client of allClients) {
+                if ('focus' in client) {
+                    if (milestoneId) {
+                        client.postMessage({
+                            type: 'FOCUS_MILESTONE',
+                            milestoneId,
+                        });
+                    }
+                    await client.navigate(targetUrl);
+                    return client.focus();
+                }
+            }
+
+            // Otherwise open a new window
+            if (self.clients.openWindow) {
+                return self.clients.openWindow(targetUrl);
+            }
+        })()
+    );
+});
+
+self.addEventListener('notificationclose', (event: NotificationEvent) => {
+    console.info('[SW] Notification closed:', event.notification.tag);
 });
 
 // ---------------------------------------------------------------------------
