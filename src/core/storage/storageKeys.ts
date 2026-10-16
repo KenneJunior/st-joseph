@@ -28,6 +28,8 @@ export const STORAGE_KEYS = {
     MILESTONE_REMINDERS: 'sjccc-milestone-reminders',
     /** LocalStorage key for milestone reminder chime preference */
     MILESTONE_CHIME: 'sjccc-milestone-chime',
+    /** LocalStorage key for user milestone push notifications enabled preference */
+    MILESTONE_PUSH_ENABLED: 'sjccc-milestone-push-enabled',
 } as const;
 
 export type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];

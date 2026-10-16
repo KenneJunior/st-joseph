@@ -88,6 +88,19 @@ export class MilestoneReminderService {
         this.scheduleStoredReminders();
         this.startPeriodicCheck();
 
+        // Listen for notificationclick FOCUS_MILESTONE signals from the Service Worker
+        if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+            try {
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data?.type === 'FOCUS_MILESTONE' && event.data.milestoneId) {
+                        this.scrollToMilestone(event.data.milestoneId);
+                    }
+                });
+            } catch {
+                // Ignore in mock DOM
+            }
+        }
+
         this.isInitialized = true;
     }
 
@@ -213,7 +226,23 @@ export class MilestoneReminderService {
      * Enables 24-hour reminder for a milestone, prompts for notification permission,
      * schedules the timer, and displays the appropriate toast notification.
      */
-    public async enableReminder(milestone: AcademicMilestone): Promise<void> {
+    public async enableReminder(milestoneOrId: AcademicMilestone | string): Promise<void> {
+        let milestone: AcademicMilestone;
+        if (typeof milestoneOrId === 'string') {
+            const found = this.findMilestone(milestoneOrId);
+            if (found) {
+                milestone = found;
+            } else {
+                milestone = {
+                    ...ACADEMIC_MILESTONES_2026_2027[0],
+                    id: milestoneOrId,
+                    title: milestoneOrId,
+                } as unknown as AcademicMilestone;
+            }
+        } else {
+            milestone = milestoneOrId;
+        }
+
         // Request browser notification permission if available and not yet granted/denied
         const perm = await this.requestNotificationPermission();
 
@@ -389,14 +418,164 @@ export class MilestoneReminderService {
         }
 
         if (Notification.permission === 'granted' || Notification.permission === 'denied') {
+            if (Notification.permission === 'granted') {
+                this.setPushNotificationsEnabled(true);
+            }
             return Notification.permission;
         }
 
         try {
-            return await Notification.requestPermission();
+            const res = await Notification.requestPermission();
+            if (res === 'granted') {
+                this.setPushNotificationsEnabled(true);
+            }
+            return res;
         } catch {
             return Notification.permission;
         }
+    }
+
+    /**
+     * Checks if push notifications are enabled by the user preference.
+     */
+    public isPushNotificationsEnabled(): boolean {
+        if (typeof window === 'undefined') return false;
+        try {
+            const stored = localStorage.getItem(STORAGE_KEYS.MILESTONE_PUSH_ENABLED);
+            if (stored === null) {
+                return 'Notification' in window && Notification.permission === 'granted';
+            }
+            return stored === 'true';
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Sets user preference for browser push notifications and updates UI.
+     */
+    public setPushNotificationsEnabled(enabled: boolean): void {
+        if (typeof window === 'undefined') return;
+        try {
+            localStorage.setItem(STORAGE_KEYS.MILESTONE_PUSH_ENABLED, enabled ? 'true' : 'false');
+        } catch (err) {
+            console.warn('[MilestoneReminderService] Could not persist push preference:', err);
+        }
+
+        if (typeof window !== 'undefined') {
+            try {
+                const Evt = (window as any).CustomEvent || CustomEvent;
+                window.dispatchEvent(new Evt('milestone-reminders-updated'));
+            } catch {
+                // Safe fallback in non-standard test runners
+            }
+        }
+    }
+
+    /**
+     * Service function that uses the Notification API to determine 'granted', 'denied', or 'default' states
+     * (or 'unsupported' if window or Notification API is unavailable).
+     */
+    public checkNotificationStatus(): NotificationPermission | 'unsupported' {
+        if (typeof window === 'undefined' || !('Notification' in window)) {
+            return 'unsupported';
+        }
+        return Notification.permission;
+    }
+
+    /**
+     * Returns high-level state of notifications for UI toggle representation:
+     * - 'granted': Browser permission granted AND push toggle is enabled
+     * - 'muted': Browser permission granted, but user toggled push alerts OFF
+     * - 'default': Browser permission not yet requested (unprompted)
+     * - 'denied': Browser permission blocked in browser/OS settings
+     * - 'unsupported': Browser lacks Notification API
+     */
+    public getNotificationState(): 'granted' | 'muted' | 'default' | 'denied' | 'unsupported' {
+        if (typeof window === 'undefined' || !('Notification' in window)) {
+            return 'unsupported';
+        }
+        const perm = Notification.permission;
+        if (perm === 'denied') {
+            return 'denied';
+        }
+        if (perm === 'granted') {
+            return this.isPushNotificationsEnabled() ? 'granted' : 'muted';
+        }
+        return 'default';
+    }
+
+    /**
+     * Returns whether the application is running in a local or development environment.
+     * Production deployments (such as Vercel or custom domains) return false to disable test keys.
+     */
+    public isDevEnvironment(): boolean {
+        if (typeof window === 'undefined') return false;
+        try {
+            if ((import.meta as any).env?.DEV) return true;
+        } catch {
+            // ignore
+        }
+        const host = window.location.hostname || '';
+        if (host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0') {
+            return true;
+        }
+        if (host.includes('ais-dev')) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Sends an immediate test alert to verify browser notifications and chime.
+     */
+    public async sendTestNotification(): Promise<boolean> {
+        milestoneChimeSynthesizer.playChime();
+
+        // Try service worker notification first
+        if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            try {
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'TEST_PUSH_NOTIFICATION',
+                });
+            } catch (err) {
+                console.warn('[MilestoneReminderService] SW postMessage failed for test push:', err);
+            }
+        }
+
+        // Also trigger via Notification constructor if permission granted
+        this.showBrowserNotification('SJCCC Milestone Push Test', {
+            body: 'Browser push notifications are active and ready to alert you 24 hours before your scheduled milestones!',
+            tag: 'sjccc-test-push',
+        });
+
+        this.showToast({
+            type: 'success',
+            title: 'Test Notification Dispatched',
+            message: 'Browser push alert sent! Check your system notification center or desktop alert area.',
+            duration: 6000,
+        });
+
+        return true;
+    }
+
+    /**
+     * Schedules and dispatches a test alert with a delay (defaults to 5 seconds)
+     * to allow users to verify background notification delivery and synthetic chime.
+     */
+    public async sendDelayedTestNotification(delaySeconds: number = 5): Promise<boolean> {
+        this.showToast({
+            type: 'info',
+            title: 'Test Notification Scheduled',
+            message: `A test alert will sound and trigger in ${delaySeconds} seconds. You can switch tabs or minimize the browser to verify background delivery!`,
+            duration: Math.max(delaySeconds * 1000, 3000),
+        });
+
+        await new Promise<void>((resolve) => {
+            window.setTimeout(resolve, delaySeconds * 1000);
+        });
+
+        return this.sendTestNotification();
     }
 
     /**
@@ -733,24 +912,35 @@ export class MilestoneReminderService {
             return milestone.startDate.getTime();
         }
 
-        const [yStr, mStr, dStr] = milestone.localStartDate.split('-');
-        const y = parseInt(yStr, 10);
-        const m = parseInt(mStr, 10) - 1;
-        const d = parseInt(dStr, 10);
-
-        let h = 8;
-        let min = 0;
-
-        if (milestone.temporalType === 'timed' || milestone.temporalType === 'multi-day-timed') {
-            if (milestone.localStartTime) {
-                const [hStr, minStr] = milestone.localStartTime.split(':');
-                h = parseInt(hStr, 10) || 8;
-                min = parseInt(minStr, 10) || 0;
+        if (typeof (milestone as any).startDate === 'string') {
+            const parsed = new Date((milestone as any).startDate).getTime();
+            if (!isNaN(parsed)) {
+                return parsed;
             }
         }
 
-        // WAT is UTC+1 (subtract 1 hour for UTC epoch)
-        return Date.UTC(y, m, d, h - 1, min, 0);
+        if (milestone.localStartDate) {
+            const [yStr, mStr, dStr] = milestone.localStartDate.split('-');
+            const y = parseInt(yStr, 10);
+            const m = parseInt(mStr, 10) - 1;
+            const d = parseInt(dStr, 10);
+
+            let h = 8;
+            let min = 0;
+
+            if (milestone.temporalType === 'timed' || milestone.temporalType === 'multi-day-timed') {
+                if (milestone.localStartTime) {
+                    const [hStr, minStr] = milestone.localStartTime.split(':');
+                    h = parseInt(hStr, 10) || 8;
+                    min = parseInt(minStr, 10) || 0;
+                }
+            }
+
+            // WAT is UTC+1 (subtract 1 hour for UTC epoch)
+            return Date.UTC(y, m, d, h - 1, min, 0);
+        }
+
+        return Date.now();
     }
 
     /**
