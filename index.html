@@ -959,12 +959,6 @@
                 <i class="bi bi-calendar-plus-fill" aria-hidden="true"></i>
                 <span>Add to Calendar</span>
               </button>
-              <button type="button" class="btn btn-outline btn-calendar-auto-add" id="bannerAutoAddRemindersBtn"
-                title="Auto-add key academic dates (exams, holidays) to My Reminders"
-                toolDescription="Automatically populate My Reminders with upcoming exams, holidays, and resumptions.">
-                <i class="bi bi-bell-plus-fill" aria-hidden="true"></i>
-                <span>Auto-Add to Reminders</span>
-              </button>
             </div>
           </div>
         </aside>
@@ -1046,6 +1040,15 @@
                 placeholder="Search dates, e.g. exams, break, resumption..."
                 aria-label="Search academic dates and milestones">
             </div>
+
+            <div class="timeline-auto-add-container">
+              <button type="button" class="btn btn-outline btn-calendar-auto-add timeline-auto-add-btn" id="timelineAutoAddRemindersBtn"
+                title="Auto-add key academic dates (exams, holidays) to My Reminders"
+                toolDescription="Automatically populate My Reminders with upcoming exams, holidays, and resumptions.">
+                <i class="bi bi-bell-plus-fill" aria-hidden="true"></i>
+                <span>Auto-Add Dates to Reminders</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1118,7 +1121,7 @@
             <img
               src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAQABgDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAIB/8QAGxABAAMAAwEAAAAAAAAAAAAAAQACEQMhMRP/xAAWAQEBAQAAAAAAAAAAAAAAAAABAAL/xAAXEQEBAQEAAAAAAAAAAAAAAAAAEQES/9oADAMBAAIRAxEAPwCvoHU1v1IqNj0MlNtyh7MzDWUQ3NiBeMTSI8qv/9k="
               alt="" aria-hidden="true" class="blurred-img-placeholder" loading="eager" />
-            <img src="/assets/sjccc-trophies.jpg" alt="SJCCC academic and athletic achievement trophies on display"
+            <img data-src="/assets/sjccc-trophies.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 280'%3E%3C/svg%3E" alt="SJCCC academic and athletic achievement trophies on display"
               class="news-card__img blurred-img-full" loading="lazy" width="480" height="280"
               onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
               onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');" />
@@ -1223,7 +1226,7 @@
             <img
               src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAQABgDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAMEAQL/xAAdEAEAAgICAwAAAAAAAAAAAAABAAIDMQQhERIi/8QAFwEAAwEAAAAAAAAAAAAAAAAAAAECA//EABgRAAMBAQAAAAAAAAAAAAAAAAABEQIx/9oADAMBAAIRAxEAPwCcqr1qd2Qfl7mntZ8VI+nFNu5o1ldEqLw5b12wlRhqaISbkIz/2Q=="
               alt="" aria-hidden="true" class="blurred-img-placeholder" loading="eager" />
-            <img src="/assets/sjccc-graduants-0.jpg"
+            <img data-src="/assets/sjccc-graduants-0.jpg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 280'%3E%3C/svg%3E"
               alt="SJCCC Class of 2026 graduands in formal academic robes and convocation caps"
               class="news-card__img blurred-img-full" loading="lazy" width="480" height="280"
               onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
@@ -1327,7 +1330,7 @@
             <img
               src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAQABgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAMEAf/EAB8QAAIBBAIDAAAAAAAAAAAAAAECAAMREiEEMRNRgf/EABQBAQAAAAAAAAAAAAAAAAAAAAH/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCebe4UXPl39ikOfXc0KyMSYFS1ZTyAb6EJFldoRD//2Q=="
               alt="" aria-hidden="true" class="blurred-img-placeholder" loading="eager" />
-            <img src="/assets/sjccc-Electricity.jpeg"
+            <img data-src="/assets/sjccc-Electricity.jpeg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 280'%3E%3C/svg%3E"
               alt="SJCCC students engaged in technical electrical engineering workshop training"
               class="news-card__img blurred-img-full" loading="lazy" width="480" height="280"
               onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"
@@ -1432,7 +1435,7 @@
             <img
               src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAQABgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAEDAv/EAB0QAAIDAAIDAAAAAAAAAAAAAAEDAAIRBCESFDH/xAAWAQEBAQAAAAAAAAAAAAAAAAACAAH/xAAZEQACAwEAAAAAAAAAAAAAAAAAAQIRIRL/2gAMAwEAAhEDEQA/AEUsNcGmsz6luzuSCeY1XW6JXkcuzVVqOpcm2OyGrzT9hIFjCR5EnIQvBxprT//Z"
               alt="" aria-hidden="true" class="blurred-img-placeholder" loading="eager" />
-            <img src="/assets/sjccc-student-in-chapel-1.png"
+            <img data-src="/assets/sjccc-student-in-chapel-1.png" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 280'%3E%3C/svg%3E"
               alt="Eucharistic and liturgical procession during the Feast of Saint Joseph on campus grounds"
               class="news-card__img blurred-img-full" loading="lazy" width="480" height="280"
               onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');"

@@ -32,6 +32,134 @@ export {
     NotificationGuidanceModal,
 };
 
+export type ReminderCategory = 'Exams' | 'Assignments' | 'Fees' | 'General';
+
+export interface ReminderCategoryConfig {
+    id: ReminderCategory;
+    label: string;
+    icon: string;
+    color: string;
+    textColor: string;
+    bgLight: string;
+    bgDark: string;
+    borderLight: string;
+    borderDark: string;
+    badgeClass: string;
+    cardClass: string;
+    description: string;
+}
+
+export const REMINDER_CATEGORIES: Record<ReminderCategory, ReminderCategoryConfig> = {
+    Exams: {
+        id: 'Exams',
+        label: 'Exams',
+        icon: 'bi-mortarboard-fill',
+        color: '#8b5cf6',
+        textColor: '#6d28d9',
+        bgLight: 'rgba(139, 92, 246, 0.12)',
+        bgDark: 'rgba(139, 92, 246, 0.22)',
+        borderLight: 'rgba(139, 92, 246, 0.3)',
+        borderDark: 'rgba(167, 139, 250, 0.35)',
+        badgeClass: 'category-badge--exams',
+        cardClass: 'my-reminder-card--exams',
+        description: 'Examinations, mock tests, and GCE evaluations',
+    },
+    Assignments: {
+        id: 'Assignments',
+        label: 'Assignments',
+        icon: 'bi-journal-check',
+        color: '#f59e0b',
+        textColor: '#b45309',
+        bgLight: 'rgba(245, 158, 11, 0.12)',
+        bgDark: 'rgba(245, 158, 11, 0.22)',
+        borderLight: 'rgba(245, 158, 11, 0.3)',
+        borderDark: 'rgba(251, 191, 36, 0.35)',
+        badgeClass: 'category-badge--assignments',
+        cardClass: 'my-reminder-card--assignments',
+        description: 'Coursework, homework, projects, and lab submissions',
+    },
+    Fees: {
+        id: 'Fees',
+        label: 'Fees',
+        icon: 'bi-cash-coin',
+        color: '#10b981',
+        textColor: '#047857',
+        bgLight: 'rgba(16, 185, 129, 0.12)',
+        bgDark: 'rgba(16, 185, 129, 0.22)',
+        borderLight: 'rgba(16, 185, 129, 0.3)',
+        borderDark: 'rgba(52, 211, 153, 0.35)',
+        badgeClass: 'category-badge--fees',
+        cardClass: 'my-reminder-card--fees',
+        description: 'Tuition installments, PTA levies, and clearance payments',
+    },
+    General: {
+        id: 'General',
+        label: 'General',
+        icon: 'bi-bookmark-star-fill',
+        color: '#0284c7',
+        textColor: '#0369a1',
+        bgLight: 'rgba(2, 132, 199, 0.12)',
+        bgDark: 'rgba(2, 132, 199, 0.22)',
+        borderLight: 'rgba(2, 132, 199, 0.3)',
+        borderDark: 'rgba(56, 189, 248, 0.35)',
+        badgeClass: 'category-badge--general',
+        cardClass: 'my-reminder-card--general',
+        description: 'Semester resumptions, breaks, holidays, and campus events',
+    },
+};
+
+/**
+ * Heuristically infers the most relevant organization category ('Exams', 'Assignments', 'Fees', 'General')
+ * from title, description, and canonical milestone metadata.
+ */
+export function inferReminderCategory(title: string, desc?: string, originalCategory?: string): ReminderCategory {
+    const text = `${title} ${desc || ''}`.toLowerCase();
+    if (
+        originalCategory === 'exam' ||
+        text.includes('exam') ||
+        text.includes('mock') ||
+        text.includes('gce') ||
+        text.includes('evaluation') ||
+        text.includes('test')
+    ) {
+        return 'Exams';
+    }
+    if (
+        text.includes('fee') ||
+        text.includes('tuition') ||
+        text.includes('payment') ||
+        text.includes('pta') ||
+        text.includes('clearance') ||
+        text.includes('installment') ||
+        text.includes('dues')
+    ) {
+        return 'Fees';
+    }
+    if (
+        text.includes('assignment') ||
+        text.includes('homework') ||
+        text.includes('coursework') ||
+        text.includes('submission') ||
+        text.includes('project') ||
+        text.includes('workshop report') ||
+        text.includes('practical report')
+    ) {
+        return 'Assignments';
+    }
+    return 'General';
+}
+
+export type SnoozeDurationHours = 1 | 6 | 12;
+
+export interface SnoozeOptionInfo {
+    hours: SnoozeDurationHours;
+    label: string;
+    ms: number;
+    valid: boolean;
+    targetTime: number;
+    reason?: string;
+}
+
 export interface StoredMilestoneReminder {
     milestoneId: string;
     title: string;
@@ -39,9 +167,12 @@ export interface StoredMilestoneReminder {
     location: string;
     description: string;
     eventTime: number; // UTC timestamp of event start
-    reminderTime: number; // UTC timestamp 24 hours prior to eventTime
+    reminderTime: number; // UTC timestamp 24 hours prior to eventTime or snoozed time
     createdAt: number;
     notifiedAt?: number;
+    category?: ReminderCategory;
+    snoozedUntil?: number;
+    snoozeCount?: number;
 }
 
 export interface SentNotificationRecord {
@@ -69,6 +200,10 @@ export interface ToastOptions {
     onLinkClick?: () => void;
     duration?: number; // ms, default 7000ms
     playChime?: boolean;
+    milestoneId?: string;
+    eventTime?: number;
+    category?: ReminderCategory;
+    onSnooze?: (hours: SnoozeDurationHours) => void;
 }
 
 const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
@@ -262,6 +397,8 @@ export class MilestoneReminderService {
         const reminderTime = eventTime - TWENTY_FOUR_HOURS_MS;
         const now = Date.now();
 
+        const category = inferReminderCategory(milestone.title, milestone.description, milestone.category);
+
         const record: StoredMilestoneReminder = {
             milestoneId: milestone.id,
             title: milestone.title,
@@ -271,6 +408,7 @@ export class MilestoneReminderService {
             eventTime,
             reminderTime,
             createdAt: now,
+            category,
         };
 
         this.saveReminder(record);
@@ -402,16 +540,22 @@ export class MilestoneReminderService {
         // Play subtle synthetic audio chime
         void milestoneChimeSynthesizer.playChime();
 
+        const milestoneCategory = stored[milestoneId]?.category || inferReminderCategory(milestone.title, milestone.description, milestone.category);
+        const eventStartTime = stored[milestoneId]?.eventTime || this.getMilestoneStartTime(milestone);
+
         // 1. Show rich in-app Toast Notification
         this.showToast({
             type: 'reminder',
             title: titleText,
             message: bodyText,
             dateBadge: milestone.dateText,
+            category: milestoneCategory,
             actionLabel: 'View in Timeline',
             onAction: () => {
                 this.scrollToMilestone(milestone.id);
             },
+            milestoneId: milestone.id,
+            eventTime: eventStartTime,
             duration: isManualTest ? 8000 : 12000,
         });
 
@@ -794,6 +938,40 @@ export class MilestoneReminderService {
             ? `<button type="button" class="milestone-toast-action-btn">${options.actionLabel}</button>`
             : '';
 
+        let snoozeBtnHtml = '';
+        if (options.milestoneId || options.type === 'reminder') {
+            const mId = options.milestoneId || '';
+            if (mId) {
+                const snoozeOpts = this.getSnoozeOptions(mId);
+                if (snoozeOpts.length > 0) {
+                    snoozeBtnHtml = `
+                      <div class="milestone-toast-snooze-wrapper">
+                        <button type="button" class="milestone-toast-snooze-btn" aria-haspopup="true" aria-expanded="false" title="Delay reminder alert (1h, 6h, or 12h without going past event date)">
+                          <i class="bi bi-alarm" aria-hidden="true"></i>
+                          <span>Snooze</span>
+                          <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                        </button>
+                        <div class="milestone-toast-snooze-flyout" hidden>
+                          <span class="snooze-flyout-heading">Delay reminder:</span>
+                          <div class="snooze-flyout-buttons">
+                            ${snoozeOpts.map((opt) => `
+                              <button type="button" class="snooze-flyout-item ${!opt.valid ? 'is-disabled' : ''}"
+                                data-snooze-hours="${opt.hours}"
+                                data-milestone-id="${mId}"
+                                ${!opt.valid ? 'disabled title="Cannot snooze: exceeds event date"' : `title="Delay reminder by ${opt.label}"`}>
+                                <i class="bi bi-clock-history" aria-hidden="true"></i>
+                                <span>+${opt.hours}h (${opt.label})</span>
+                                ${!opt.valid ? '<span class="snooze-invalid-tag">Past date</span>' : ''}
+                              </button>
+                            `).join('')}
+                          </div>
+                        </div>
+                      </div>
+                    `;
+                }
+            }
+        }
+
         const linkBtnHtml = options.linkText
             ? `<div class="milestone-toast-links">
                 <button type="button" class="milestone-toast-help-link" aria-haspopup="dialog" title="${options.linkText}">
@@ -816,7 +994,7 @@ export class MilestoneReminderService {
                   ${dateBadgeHtml}
                 </div>
                 <p class="milestone-toast-message">${options.message}</p>
-                ${actionBtnHtml ? `<div class="milestone-toast-actions">${actionBtnHtml}</div>` : ''}
+                ${(actionBtnHtml || snoozeBtnHtml) ? `<div class="milestone-toast-actions">${actionBtnHtml} ${snoozeBtnHtml}</div>` : ''}
                 ${linkBtnHtml}
               </div>
               <button type="button" class="milestone-toast-close" aria-label="Dismiss notification">
@@ -840,6 +1018,38 @@ export class MilestoneReminderService {
             actionBtn?.addEventListener('click', () => {
                 options.onAction?.();
                 this.dismissToast(toast);
+            });
+        }
+
+        // Wire up Snooze toggle and items
+        const snoozeWrapper = toast.querySelector<HTMLElement>('.milestone-toast-snooze-wrapper');
+        if (snoozeWrapper && options.milestoneId) {
+            const snoozeBtn = snoozeWrapper.querySelector<HTMLButtonElement>('.milestone-toast-snooze-btn');
+            const snoozeFlyout = snoozeWrapper.querySelector<HTMLElement>('.milestone-toast-snooze-flyout');
+            const snoozeItems = snoozeWrapper.querySelectorAll<HTMLButtonElement>('.snooze-flyout-item');
+
+            snoozeBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = snoozeFlyout?.hasAttribute('hidden') ?? true;
+                if (isHidden) {
+                    snoozeFlyout?.removeAttribute('hidden');
+                    snoozeBtn?.setAttribute('aria-expanded', 'true');
+                } else {
+                    snoozeFlyout?.setAttribute('hidden', '');
+                    snoozeBtn?.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            snoozeItems.forEach((btn) => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const hours = Number(btn.dataset.snoozeHours) as SnoozeDurationHours;
+                    if (hours && options.milestoneId) {
+                        this.snoozeReminder(options.milestoneId, hours);
+                        options.onSnooze?.(hours);
+                        this.dismissToast(toast);
+                    }
+                });
             });
         }
 
@@ -1009,10 +1219,225 @@ export class MilestoneReminderService {
     public getAllStoredReminders(): Record<string, StoredMilestoneReminder> {
         try {
             const raw = localStorage.getItem(STORAGE_KEYS.MILESTONE_REMINDERS);
-            return raw ? JSON.parse(raw) : {};
+            if (!raw) return {};
+            const parsed = JSON.parse(raw) as Record<string, StoredMilestoneReminder>;
+            let modified = false;
+            Object.values(parsed).forEach((item) => {
+                if (!item.category) {
+                    const milestone = this.findMilestone(item.milestoneId);
+                    item.category = inferReminderCategory(item.title, item.description, milestone?.category);
+                    modified = true;
+                }
+            });
+            if (modified) {
+                this.persistAllReminders(parsed);
+            }
+            return parsed;
         } catch {
             return {};
         }
+    }
+
+    /**
+     * Updates the user category of a stored reminder ('Exams', 'Assignments', 'Fees', 'General').
+     */
+    public updateReminderCategory(milestoneId: string, category: ReminderCategory): boolean {
+        const stored = this.getAllStoredReminders();
+        if (!stored[milestoneId]) return false;
+
+        stored[milestoneId].category = category;
+        this.persistAllReminders(stored);
+        this.dispatchUpdateEvent();
+        return true;
+    }
+
+    /**
+     * Calculates available snooze options (1h, 6h, 12h) for a given milestone.
+     * Enforces the invariant: snooze time must not go past the event date (eventTime).
+     */
+    public getSnoozeOptions(milestoneId: string, now: number = Date.now()): SnoozeOptionInfo[] {
+        const stored = this.getAllStoredReminders();
+        const item = stored[milestoneId];
+        const milestone = this.findMilestone(milestoneId);
+        const eventTime = item?.eventTime || (milestone ? this.getMilestoneStartTime(milestone) : now + 24 * 3600 * 1000);
+
+        const presets: Array<{ hours: SnoozeDurationHours; label: string }> = [
+            { hours: 1, label: '1 hour' },
+            { hours: 6, label: '6 hours' },
+            { hours: 12, label: '12 hours' },
+        ];
+
+        return presets.map((preset) => {
+            const ms = preset.hours * 60 * 60 * 1000;
+            const targetTime = now + ms;
+            // Strict invariant: cannot exceed the date of the reminder
+            const valid = targetTime <= eventTime;
+            return {
+                hours: preset.hours,
+                label: preset.label,
+                ms,
+                valid,
+                targetTime,
+                reason: valid ? undefined : `Cannot delay by ${preset.label}: would exceed the scheduled event date (${new Date(eventTime).toLocaleDateString()}).`,
+            };
+        });
+    }
+
+    /**
+     * Snoozes a reminder by 1, 6, or 12 hours.
+     * Rejects delays that would go after the milestone's scheduled date/time.
+     */
+    public snoozeReminder(
+        milestoneId: string,
+        hours: SnoozeDurationHours,
+        now: number = Date.now()
+    ): { success: boolean; snoozedUntil?: number; message: string } {
+        const stored = this.getAllStoredReminders();
+        const item = stored[milestoneId];
+        if (!item) {
+            return { success: false, message: 'Reminder record not found.' };
+        }
+
+        const ms = hours * 60 * 60 * 1000;
+        const targetTime = now + ms;
+
+        // Invariant check: let it not go after the date of the reminder
+        if (targetTime > item.eventTime) {
+            const errMessage = `Cannot snooze by ${hours}h: would exceed the milestone date (${new Date(item.eventTime).toLocaleDateString()}).`;
+            this.showToast({
+                type: 'warning',
+                title: 'Snooze Blocked',
+                message: errMessage,
+                duration: 5000,
+            });
+            return { success: false, message: errMessage };
+        }
+
+        // Cancel previous timer
+        this.clearTimer(milestoneId);
+
+        // Update record
+        item.reminderTime = targetTime;
+        item.snoozedUntil = targetTime;
+        item.snoozeCount = (item.snoozeCount || 0) + 1;
+        item.notifiedAt = undefined; // allow triggering when timer fires
+
+        this.persistAllReminders(stored);
+
+        // Schedule new timer
+        const delayMs = targetTime - now;
+        this.scheduleTimer(milestoneId, delayMs);
+
+        const formattedTargetTime = new Date(targetTime).toLocaleTimeString(undefined, {
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+        const formattedTargetDate = new Date(targetTime).toLocaleDateString(undefined, {
+            month: 'short',
+            day: 'numeric',
+        });
+
+        // Record to notification history
+        this.recordNotificationHistory({
+            milestoneId: item.milestoneId,
+            title: `Reminder Snoozed: ${item.title}`,
+            body: `Snoozed for ${hours} hour${hours === 1 ? '' : 's'}. Next alert will fire on ${formattedTargetDate} at ${formattedTargetTime}.`,
+            timestamp: now,
+            type: 'milestone',
+            suppressed: false,
+            dateText: item.dateText,
+            categoryLabel: item.category || 'General',
+        });
+
+        this.showToast({
+            type: 'success',
+            title: 'Reminder Snoozed',
+            message: `"${item.title}" snoozed for ${hours} hour${hours === 1 ? '' : 's'}. Next alert: ${formattedTargetDate} at ${formattedTargetTime}.`,
+            dateBadge: item.dateText,
+            duration: 6000,
+        });
+
+        this.dispatchUpdateEvent();
+
+        return {
+            success: true,
+            snoozedUntil: targetTime,
+            message: `Snoozed for ${hours} hour${hours === 1 ? '' : 's'}.`,
+        };
+    }
+
+    /**
+     * Resets any active snooze back to the standard 24 hours prior schedule.
+     */
+    public cancelSnooze(milestoneId: string): void {
+        const stored = this.getAllStoredReminders();
+        const item = stored[milestoneId];
+        if (!item) return;
+
+        this.clearTimer(milestoneId);
+        item.reminderTime = item.eventTime - TWENTY_FOUR_HOURS_MS;
+        item.snoozedUntil = undefined;
+        this.persistAllReminders(stored);
+
+        const now = Date.now();
+        if (now < item.reminderTime) {
+            this.scheduleTimer(milestoneId, item.reminderTime - now);
+        }
+
+        this.showToast({
+            type: 'info',
+            title: 'Snooze Cancelled',
+            message: `"${item.title}" reverted to standard 24-hour advance alert.`,
+            duration: 4000,
+        });
+
+        this.dispatchUpdateEvent();
+    }
+
+    /**
+     * Adds a custom reminder (e.g. for user assignments, tuition fee deadlines, exams).
+     */
+    public addCustomReminder(options: {
+        title: string;
+        category: ReminderCategory;
+        dateText: string;
+        eventTime: number;
+        description?: string;
+        location?: string;
+    }): StoredMilestoneReminder {
+        const stored = this.getAllStoredReminders();
+        const customId = `custom-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+        const now = Date.now();
+        const reminderTime = options.eventTime - TWENTY_FOUR_HOURS_MS;
+
+        const record: StoredMilestoneReminder = {
+            milestoneId: customId,
+            title: options.title,
+            dateText: options.dateText,
+            location: options.location || 'SJCCC Campus, Mbengwi',
+            description: options.description || '',
+            eventTime: options.eventTime,
+            reminderTime: reminderTime > now ? reminderTime : (now + 60000),
+            createdAt: now,
+            category: options.category,
+        };
+
+        stored[customId] = record;
+        this.persistAllReminders(stored);
+
+        if (now < record.reminderTime) {
+            this.scheduleTimer(customId, record.reminderTime - now);
+        }
+
+        this.showToast({
+            type: 'success',
+            title: 'Reminder Added',
+            message: `Added "${options.title}" to your ${options.category} schedule.`,
+            duration: 5000,
+        });
+
+        this.dispatchUpdateEvent();
+        return record;
     }
 
     public getToastContainer(): HTMLElement | null {
@@ -1107,6 +1532,7 @@ export class MilestoneReminderService {
             if (!stored[milestone.id]) {
                 const eventTime = this.getMilestoneStartTime(milestone);
                 const reminderTime = eventTime - TWENTY_FOUR_HOURS_MS;
+                const category = inferReminderCategory(milestone.title, milestone.description, milestone.category);
                 const record: StoredMilestoneReminder = {
                     milestoneId: milestone.id,
                     title: milestone.title,
@@ -1116,6 +1542,7 @@ export class MilestoneReminderService {
                     eventTime,
                     reminderTime,
                     createdAt: now,
+                    category,
                 };
                 stored[milestone.id] = record;
                 addedCount++;

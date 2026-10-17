@@ -467,27 +467,32 @@ describe('MyRemindersController - Navbar, Bottom Dock & Reminders Management', (
         expect(openGuideSpy).toHaveBeenCalled();
     });
 
-    it('renders Mute Notifications toggle and locally suppresses alerts without revoking browser permissions', async () => {
+    it('removes redundant mute toggle and uses browser notification push toggle to control alerts without revoking browser permissions', async () => {
         mockNotification.permission = 'granted';
         controller.open();
 
         const modal = document.getElementById('myRemindersModal')!;
+        // The redundant duplicate mute toggle row is removed
         const muteToggle = modal.querySelector<HTMLInputElement>('#toggleMuteNotifications');
-        expect(muteToggle).not.toBeNull();
-        expect(muteToggle!.getAttribute('role')).toBe('switch');
-        expect(muteToggle!.checked).toBe(false);
+        expect(muteToggle).toBeNull();
 
-        // Turn Mute ON
-        muteToggle!.checked = true;
-        muteToggle!.dispatchEvent(new (window as any).Event('change'));
+        // The unified browser notification toggle controls alerts
+        const pushToggle = modal.querySelector<HTMLInputElement>('#toggleNotificationPush');
+        expect(pushToggle).not.toBeNull();
+        expect(pushToggle!.getAttribute('role')).toBe('switch');
+        expect(pushToggle!.checked).toBe(true);
 
+        // Turn notifications OFF via push toggle
+        pushToggle!.checked = false;
+        pushToggle!.dispatchEvent(new (window as any).Event('change'));
+
+        expect(milestoneReminderService.isPushNotificationsEnabled()).toBe(false);
         expect(milestoneReminderService.isMuted()).toBe(true);
-        expect(milestoneReminderService.isNotificationsMuted()).toBe(true);
         // Browser permission remains granted!
         expect(mockNotification.permission).toBe('granted');
         expect(modal.textContent).toContain('Muted');
 
-        // Test alert while muted: browser notification should NOT be constructed
+        // Test alert while muted/disabled: browser notification should NOT be constructed
         mockNotification.mockClear();
         await milestoneReminderService.sendTestNotification();
         expect(mockNotification).not.toHaveBeenCalled();
@@ -498,13 +503,13 @@ describe('MyRemindersController - Navbar, Bottom Dock & Reminders Management', (
         expect(history[0].suppressed).toBe(true);
         expect(history[0].type).toBe('test');
 
-        // Turn Mute OFF
-        const updatedMuteToggle = modal.querySelector<HTMLInputElement>('#toggleMuteNotifications')!;
-        updatedMuteToggle.checked = false;
-        updatedMuteToggle.dispatchEvent(new (window as any).Event('change'));
+        // Turn notifications back ON
+        const updatedPushToggle = modal.querySelector<HTMLInputElement>('#toggleNotificationPush')!;
+        updatedPushToggle.checked = true;
+        updatedPushToggle.dispatchEvent(new (window as any).Event('change'));
 
+        expect(milestoneReminderService.isPushNotificationsEnabled()).toBe(true);
         expect(milestoneReminderService.isMuted()).toBe(false);
-        expect(milestoneReminderService.isNotificationsMuted()).toBe(false);
 
         // Test alert when unmuted: browser notification IS constructed
         await milestoneReminderService.sendTestNotification();
@@ -649,12 +654,12 @@ describe('MyRemindersController - Navbar, Bottom Dock & Reminders Management', (
         expect(toolbarAutoAddBtn).not.toBeNull();
         expect(toolbarAutoAddBtn!.textContent).toContain('Auto-Add Important Dates');
 
-        // Footer Auto-Add button should also be available
+        // Footer duplicate Auto-Add button was removed to leave a single clear action in the sheet
         const footerAutoAddBtn = modal.querySelector<HTMLButtonElement>('#myRemindersFooterAutoAddBtn');
-        expect(footerAutoAddBtn).not.toBeNull();
+        expect(footerAutoAddBtn).toBeNull();
     });
 
-    it('allows auto-adding dates from toolbar and footer when reminders already exist', () => {
+    it('allows auto-adding dates from toolbar when reminders already exist', () => {
         // Start with only 1 reminder
         const initialMilestone = ACADEMIC_MILESTONES_2026_2027[0];
         milestoneReminderService.saveReminder({
@@ -681,6 +686,267 @@ describe('MyRemindersController - Navbar, Bottom Dock & Reminders Management', (
         const stored = milestoneReminderService.getAllStoredReminders();
         expect(Object.keys(stored).length).toBeGreaterThanOrEqual(10);
         expect(modal.querySelectorAll('.my-reminder-card').length).toBeGreaterThanOrEqual(10);
+    });
+
+    it('renders color-coded category badges (Exams, Assignments, Fees, General) and category filter chips', async () => {
+        // Add items across multiple categories
+        milestoneReminderService.saveReminder({
+            milestoneId: 'exam-sample',
+            title: 'First Term GCE Mock Exams',
+            dateText: '10 Dec 2026',
+            location: 'Examination Halls',
+            description: 'Mock exam period',
+            eventTime: Date.now() + 86400000 * 5,
+            reminderTime: Date.now() + 86400000 * 4,
+            createdAt: Date.now(),
+            category: 'Exams',
+        });
+
+        milestoneReminderService.saveReminder({
+            milestoneId: 'assignment-sample',
+            title: 'Physics Practical Lab Assignment',
+            dateText: '15 Dec 2026',
+            location: 'Science Lab',
+            description: 'Lab report submission',
+            eventTime: Date.now() + 86400000 * 10,
+            reminderTime: Date.now() + 86400000 * 9,
+            createdAt: Date.now(),
+            category: 'Assignments',
+        });
+
+        milestoneReminderService.saveReminder({
+            milestoneId: 'fee-sample',
+            title: 'Second Installment Tuition Fee Due',
+            dateText: '20 Dec 2026',
+            location: 'Bursar Office',
+            description: 'Tuition clearance installment',
+            eventTime: Date.now() + 86400000 * 15,
+            reminderTime: Date.now() + 86400000 * 14,
+            createdAt: Date.now(),
+            category: 'Fees',
+        });
+
+        milestoneReminderService.saveReminder({
+            milestoneId: 'general-sample',
+            title: 'Christmas Vacation Resumption',
+            dateText: '05 Jan 2027',
+            location: 'Campus Yard',
+            description: 'All students resume',
+            eventTime: Date.now() + 86400000 * 30,
+            reminderTime: Date.now() + 86400000 * 29,
+            createdAt: Date.now(),
+            category: 'General',
+        });
+
+        controller.open();
+        const modal = document.getElementById('myRemindersModal')!;
+
+        // Category filter chips should exist
+        const filterChips = modal.querySelectorAll('.category-filter-chip');
+        expect(filterChips.length).toBe(5); // All, Exams, Assignments, Fees, General
+
+        // Check category badges and classes on cards
+        const examCard = modal.querySelector('.my-reminder-card--exams');
+        expect(examCard).not.toBeNull();
+        expect(examCard!.querySelector('.category-badge--exams')).not.toBeNull();
+        expect(examCard!.textContent).toContain('Exams');
+
+        const assignCard = modal.querySelector('.my-reminder-card--assignments');
+        expect(assignCard).not.toBeNull();
+        expect(assignCard!.querySelector('.category-badge--assignments')).not.toBeNull();
+        expect(assignCard!.textContent).toContain('Assignments');
+
+        const feeCard = modal.querySelector('.my-reminder-card--fees');
+        expect(feeCard).not.toBeNull();
+        expect(feeCard!.querySelector('.category-badge--fees')).not.toBeNull();
+        expect(feeCard!.textContent).toContain('Fees');
+
+        const generalCard = modal.querySelector('.my-reminder-card--general');
+        expect(generalCard).not.toBeNull();
+        expect(generalCard!.querySelector('.category-badge--general')).not.toBeNull();
+        expect(generalCard!.textContent).toContain('General');
+    });
+
+    it('filters reminder cards when selecting category filter chips', () => {
+        milestoneReminderService.saveReminder({
+            milestoneId: 'exam-1',
+            title: 'Terminal Examination',
+            dateText: '10 Dec 2026',
+            location: 'Campus',
+            description: 'Desc',
+            eventTime: Date.now() + 86400000 * 5,
+            reminderTime: Date.now() + 86400000 * 4,
+            createdAt: Date.now(),
+            category: 'Exams',
+        });
+
+        milestoneReminderService.saveReminder({
+            milestoneId: 'fee-1',
+            title: 'PTA Levy Clearance',
+            dateText: '15 Dec 2026',
+            location: 'Bursary',
+            description: 'Desc',
+            eventTime: Date.now() + 86400000 * 10,
+            reminderTime: Date.now() + 86400000 * 9,
+            createdAt: Date.now(),
+            category: 'Fees',
+        });
+
+        controller.open();
+        const modal = document.getElementById('myRemindersModal')!;
+        expect(modal.querySelectorAll('.my-reminder-card').length).toBe(2);
+
+        // Click Exams filter chip
+        const examChip = modal.querySelector<HTMLButtonElement>('.category-filter-chip--exams')!;
+        expect(examChip).not.toBeNull();
+        examChip.click();
+
+        // Only exam card should be visible
+        const cardsAfterFilter = modal.querySelectorAll('.my-reminder-card');
+        expect(cardsAfterFilter.length).toBe(1);
+        expect(cardsAfterFilter[0].textContent).toContain('Terminal Examination');
+
+        // Click All filter chip to reset
+        const allChip = modal.querySelector<HTMLButtonElement>('.category-filter-chip[data-cat-filter="all"]')!;
+        allChip.click();
+        expect(modal.querySelectorAll('.my-reminder-card').length).toBe(2);
+    });
+
+    it('allows changing a reminder category via the card dropdown', () => {
+        milestoneReminderService.saveReminder({
+            milestoneId: 'item-to-reclassify',
+            title: 'Technical Drawing Submission',
+            dateText: '12 Dec 2026',
+            location: 'Workshop',
+            description: 'Submit drawings',
+            eventTime: Date.now() + 86400000 * 5,
+            reminderTime: Date.now() + 86400000 * 4,
+            createdAt: Date.now(),
+            category: 'General',
+        });
+
+        controller.open();
+        const modal = document.getElementById('myRemindersModal')!;
+        const catSelect = modal.querySelector<HTMLSelectElement>('.my-reminder-category-select')!;
+        expect(catSelect).not.toBeNull();
+        expect(catSelect.value).toBe('General');
+
+        // Change category to Assignments
+        catSelect.value = 'Assignments';
+        catSelect.dispatchEvent(new (window as any).Event('change'));
+
+        const updated = milestoneReminderService.getAllStoredReminders()['item-to-reclassify'];
+        expect(updated.category).toBe('Assignments');
+    });
+
+    it('provides snooze options (1h, 6h, 12h) and prevents snoozing after the reminder date', () => {
+        const now = Date.now();
+        // Event is in 3 hours
+        const nearEventTime = now + 3 * 3600 * 1000;
+        milestoneReminderService.saveReminder({
+            milestoneId: 'near-event',
+            title: 'Immediate Test Due',
+            dateText: 'Today',
+            location: 'Class',
+            description: 'Due soon',
+            eventTime: nearEventTime,
+            reminderTime: now - 1000,
+            createdAt: now,
+            category: 'Exams',
+        });
+
+        const snoozeOpts = milestoneReminderService.getSnoozeOptions('near-event', now);
+        // 1h option should be valid (now + 1h < now + 3h)
+        expect(snoozeOpts.find((o) => o.hours === 1)?.valid).toBe(true);
+        // 6h option should be invalid (now + 6h > now + 3h)
+        expect(snoozeOpts.find((o) => o.hours === 6)?.valid).toBe(false);
+        // 12h option should be invalid (now + 12h > now + 3h)
+        expect(snoozeOpts.find((o) => o.hours === 12)?.valid).toBe(false);
+
+        // Attempting to snooze by 6h should be rejected
+        const failResult = milestoneReminderService.snoozeReminder('near-event', 6, now);
+        expect(failResult.success).toBe(false);
+        expect(failResult.message).toContain('would exceed the milestone date');
+
+        // Snoozing by 1h should succeed
+        const successResult = milestoneReminderService.snoozeReminder('near-event', 1, now);
+        expect(successResult.success).toBe(true);
+        expect(successResult.snoozedUntil).toBe(now + 3600 * 1000);
+
+        const stored = milestoneReminderService.getAllStoredReminders()['near-event'];
+        expect(stored.reminderTime).toBe(now + 3600 * 1000);
+        expect(stored.snoozedUntil).toBe(now + 3600 * 1000);
+
+        // Cancel snooze
+        milestoneReminderService.cancelSnooze('near-event');
+        const resetItem = milestoneReminderService.getAllStoredReminders()['near-event'];
+        expect(resetItem.snoozedUntil).toBeUndefined();
+    });
+
+    it('renders snooze options in reminder card and displays active snooze banner', () => {
+        const now = Date.now();
+        milestoneReminderService.saveReminder({
+            milestoneId: 'snooze-ui-test',
+            title: 'Boarding Fee Clearance',
+            dateText: '25 Dec 2026',
+            location: 'Bursar',
+            description: 'Clearance dues',
+            eventTime: now + 48 * 3600 * 1000, // 48h away
+            reminderTime: now + 24 * 3600 * 1000,
+            createdAt: now,
+            category: 'Fees',
+        });
+
+        controller.open();
+        const modal = document.getElementById('myRemindersModal')!;
+
+        // Snooze button should be rendered on card
+        const snoozeBtn = modal.querySelector<HTMLButtonElement>('.my-reminder-snooze-btn');
+        expect(snoozeBtn).not.toBeNull();
+
+        // Toggle flyout
+        snoozeBtn!.click();
+        const flyout = modal.querySelector<HTMLElement>('#snoozeFlyout-snooze-ui-test')!;
+        expect(flyout).not.toBeNull();
+        expect(flyout.hasAttribute('hidden')).toBe(false);
+
+        // Click +6h snooze chip
+        const chip6h = flyout.querySelector<HTMLButtonElement>('.btn-snooze-chip[data-hours="6"]')!;
+        expect(chip6h).not.toBeNull();
+        chip6h.click();
+
+        // Modal should now display snoozed alert banner with reset button
+        const snoozedAlert = modal.querySelector('.my-reminder-snoozed-alert');
+        expect(snoozedAlert).not.toBeNull();
+        expect(snoozedAlert!.textContent).toContain('Snoozed');
+        expect(modal.querySelector('.btn-cancel-snooze')).not.toBeNull();
+    });
+
+    it('allows adding a custom reminder with category', () => {
+        controller.open();
+        const modal = document.getElementById('myRemindersModal')!;
+
+        // Click "+ Custom Reminder"
+        const toggleBtn = modal.querySelector<HTMLButtonElement>('#myRemindersToggleNewBtn')!;
+        expect(toggleBtn).not.toBeNull();
+        toggleBtn.click();
+
+        // Form should be rendered
+        const titleInput = modal.querySelector<HTMLInputElement>('#customReminderTitle')!;
+        const catSelect = modal.querySelector<HTMLSelectElement>('#customReminderCategory')!;
+        const saveBtn = modal.querySelector<HTMLButtonElement>('#myRemindersSaveCustomBtn')!;
+
+        expect(titleInput).not.toBeNull();
+        expect(catSelect).not.toBeNull();
+
+        titleInput.value = 'History Essay Submission';
+        catSelect.value = 'Assignments';
+        saveBtn.click();
+
+        const all = milestoneReminderService.getAllStoredReminders();
+        const customItem = Object.values(all).find((r) => r.title === 'History Essay Submission');
+        expect(customItem).toBeDefined();
+        expect(customItem!.category).toBe('Assignments');
     });
 });
 

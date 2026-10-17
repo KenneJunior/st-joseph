@@ -180,180 +180,205 @@ export class NotificationGuidanceModal {
             || document.documentElement.getAttribute('data-theme') === 'dark';
         this.modalEl.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
-        this.modalEl.innerHTML = `
-          <div class="notification-guide-backdrop" data-action="close" aria-hidden="true"></div>
-          <div class="notification-guide-sheet" role="document">
-            <div class="notification-guide-header">
-              <div class="notification-guide-header__text">
-                <span class="notification-guide-kicker">
-                  <i class="bi bi-bell-slash-fill" aria-hidden="true"></i> Notification Setup Guide
-                </span>
-                <h3 id="notificationGuideTitle" class="notification-guide-title">
-                  Allow Milestone Notifications
-                </h3>
-                <p id="notificationGuideDesc" class="notification-guide-subtitle">
-                  Step-by-step instructions to enable 24-hour advance milestone reminders on your browser and operating system.
-                </p>
-              </div>
-              <button type="button" class="notification-guide-close-btn" id="notificationGuideCloseBtn"
-                data-action="close" aria-label="Close notification guide">
-                <i class="bi bi-x-lg" aria-hidden="true"></i>
-              </button>
+        const headerHtml = `
+            <div class="notification-guide-header__text">
+              <span class="notification-guide-kicker">
+                <i class="bi bi-bell-slash-fill" aria-hidden="true"></i> Notification Setup Guide
+              </span>
+              <h3 id="notificationGuideTitle" class="notification-guide-title">
+                Allow Milestone Notifications
+              </h3>
+              <p id="notificationGuideDesc" class="notification-guide-subtitle">
+                Step-by-step instructions to enable 24-hour advance milestone reminders on your browser and operating system.
+              </p>
             </div>
+            <button type="button" class="notification-guide-close-btn" id="notificationGuideCloseBtn"
+              data-action="close" aria-label="Close notification guide">
+              <i class="bi bi-x-lg" aria-hidden="true"></i>
+            </button>
+        `;
 
-            <!-- Detected Device Banner -->
-            <div class="notification-guide-device-bar">
-              <div class="device-detected-info">
-                <i class="bi bi-laptop" aria-hidden="true"></i>
-                <span>Detected Platform: <strong>${this.detectedPlatform.browserLabel}</strong> on <strong>${this.detectedPlatform.osLabel}</strong></span>
-              </div>
-              <div class="guide-status-badge ${permBadgeClass}">
-                <i class="bi ${currentPerm === 'granted' ? 'bi-check-circle-fill' : currentPerm === 'denied' ? 'bi-shield-x' : 'bi-info-circle-fill'}" aria-hidden="true"></i>
-                Status: ${permLabel}
-              </div>
+        const deviceBarHtml = `
+            <div class="device-detected-info">
+              <i class="bi bi-laptop" aria-hidden="true"></i>
+              <span>Detected Platform: <strong>${this.detectedPlatform.browserLabel}</strong> on <strong>${this.detectedPlatform.osLabel}</strong></span>
             </div>
-
-            <!-- Device Switcher Tabs -->
-            <div class="notification-guide-tabs" role="tablist" aria-label="Choose your device or browser">
-              ${allGuides
-                .map((g) => {
-                    const isSelected = g.key === activeGuide.key;
-                    return `
-                      <button type="button" role="tab"
-                        class="notification-guide-tab ${isSelected ? 'is-active' : ''}"
-                        data-guide-key="${g.key}"
-                        aria-selected="${isSelected ? 'true' : 'false'}"
-                        title="${g.headline}">
-                        <i class="bi ${g.iconClass || 'bi-globe'}" aria-hidden="true"></i>
-                        <span>${g.browserLabel}</span>
-                      </button>
-                    `;
-                })
-                .join('')}
+            <div class="guide-status-badge ${permBadgeClass}">
+              <i class="bi ${currentPerm === 'granted' ? 'bi-check-circle-fill' : currentPerm === 'denied' ? 'bi-shield-x' : 'bi-info-circle-fill'}" aria-hidden="true"></i>
+              Status: ${permLabel}
             </div>
+        `;
 
-            <!-- Active Guide Content -->
-            <div class="notification-guide-body" role="tabpanel">
-              <div class="guide-active-card">
-                <div class="guide-card-header">
-                  <div class="guide-card-icon">
-                    <i class="bi ${activeGuide.iconClass || 'bi-gear-wide-connected'}" aria-hidden="true"></i>
-                  </div>
-                  <div class="guide-card-titles">
-                    <h4 class="guide-card-headline">${activeGuide.headline}</h4>
-                    <p class="guide-card-summary">${activeGuide.instructions}</p>
+        const tabsHtml = allGuides
+            .map((g) => {
+                const isSelected = g.key === activeGuide.key;
+                return `
+                  <button type="button" role="tab"
+                    class="notification-guide-tab ${isSelected ? 'is-active' : ''}"
+                    data-guide-key="${g.key}"
+                    aria-selected="${isSelected ? 'true' : 'false'}"
+                    title="${g.headline}">
+                    <i class="bi ${g.iconClass || 'bi-globe'}" aria-hidden="true"></i>
+                    <span>${g.browserLabel}</span>
+                  </button>
+                `;
+            })
+            .join('');
+
+        const bodyHtml = `
+            <div class="guide-active-card">
+              <div class="guide-card-header">
+                <div class="guide-card-icon">
+                  <i class="bi ${activeGuide.iconClass || 'bi-gear-wide-connected'}" aria-hidden="true"></i>
+                </div>
+                <div class="guide-card-titles">
+                  <h4 class="guide-card-headline">${activeGuide.headline}</h4>
+                  <p class="guide-card-summary">${activeGuide.instructions}</p>
+                </div>
+              </div>
+
+              <!-- Numbered Steps -->
+              <ol class="guide-steps-list">
+                ${activeGuide.steps
+                  .map((step, idx) => `
+                    <li class="guide-step-item">
+                      <span class="guide-step-number" aria-hidden="true">${idx + 1}</span>
+                      <div class="guide-step-content">${step}</div>
+                    </li>
+                  `)
+                  .join('')}
+              </ol>
+
+              <!-- OS Level System Steps -->
+              ${activeGuide.osSteps && activeGuide.osSteps.length > 0 ? `
+                <div class="guide-os-section">
+                  <h5 class="guide-os-title">
+                    <i class="bi bi-shield-lock" aria-hidden="true"></i> System Notification Settings (${activeGuide.osLabel})
+                  </h5>
+                  <ol class="guide-steps-list guide-steps-list--os">
+                    ${activeGuide.osSteps
+                      .map((step, idx) => `
+                        <li class="guide-step-item">
+                          <span class="guide-step-number guide-step-number--os" aria-hidden="true">OS ${idx + 1}</span>
+                          <div class="guide-step-content">${step}</div>
+                        </li>
+                      `)
+                      .join('')}
+                  </ol>
+                </div>
+              ` : ''}
+
+              <!-- Quick Tip -->
+              ${activeGuide.quickTip ? `
+                <div class="guide-quick-tip">
+                  <i class="bi bi-lightbulb-fill" aria-hidden="true"></i>
+                  <div>
+                    <strong>Helpful Tip:</strong> ${activeGuide.quickTip}
                   </div>
                 </div>
-
-                <!-- Numbered Steps -->
-                <ol class="guide-steps-list">
-                  ${activeGuide.steps
-                    .map((step, idx) => `
-                      <li class="guide-step-item">
-                        <span class="guide-step-number" aria-hidden="true">${idx + 1}</span>
-                        <div class="guide-step-content">${step}</div>
-                      </li>
-                    `)
-                    .join('')}
-                </ol>
-
-                <!-- OS Level System Steps -->
-                ${activeGuide.osSteps && activeGuide.osSteps.length > 0 ? `
-                  <div class="guide-os-section">
-                    <h5 class="guide-os-title">
-                      <i class="bi bi-shield-lock" aria-hidden="true"></i> System Notification Settings (${activeGuide.osLabel})
-                    </h5>
-                    <ol class="guide-steps-list guide-steps-list--os">
-                      ${activeGuide.osSteps
-                        .map((step, idx) => `
-                          <li class="guide-step-item">
-                            <span class="guide-step-number guide-step-number--os" aria-hidden="true">OS ${idx + 1}</span>
-                            <div class="guide-step-content">${step}</div>
-                          </li>
-                        `)
-                        .join('')}
-                    </ol>
-                  </div>
-                ` : ''}
-
-                <!-- Quick Tip -->
-                ${activeGuide.quickTip ? `
-                  <div class="guide-quick-tip">
-                    <i class="bi bi-lightbulb-fill" aria-hidden="true"></i>
-                    <div>
-                      <strong>Helpful Tip:</strong> ${activeGuide.quickTip}
-                    </div>
-                  </div>
-                ` : ''}
-              </div>
+              ` : ''}
             </div>
-
-            <!-- Footer Actions -->
-            <div class="notification-guide-footer">
-              <span class="guide-footer-note">
-                <i class="bi bi-info-circle" aria-hidden="true"></i> In-app toast alerts remain active regardless of browser permission.
-              </span>
-              <div class="guide-footer-buttons">
-                <button type="button" class="btn btn-secondary btn-sm" id="guideTestPermBtn">
-                  <i class="bi bi-bell" aria-hidden="true"></i> Test Notifications
-                </button>
-                <button type="button" class="btn btn-primary btn-sm" data-action="close">
-                  Got It
-                </button>
-              </div>
-            </div>
-          </div>
         `;
+
+        const footerHtml = `
+            <span class="guide-footer-note">
+              <i class="bi bi-info-circle" aria-hidden="true"></i> In-app toast alerts remain active regardless of browser permission.
+            </span>
+            <div class="guide-footer-buttons">
+              <button type="button" class="btn btn-secondary btn-sm" id="guideTestPermBtn">
+                <i class="bi bi-bell" aria-hidden="true"></i> Test Notifications
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" data-action="close">
+                Got It
+              </button>
+            </div>
+        `;
+
+        let sheetEl = this.modalEl.querySelector<HTMLElement>('.notification-guide-sheet');
+        if (!sheetEl) {
+            this.modalEl.innerHTML = `
+              <div class="notification-guide-backdrop" data-action="close" aria-hidden="true"></div>
+              <div class="notification-guide-sheet" role="document">
+                <div class="notification-guide-header" id="notificationGuideHeader">${headerHtml}</div>
+                <div class="notification-guide-device-bar" id="notificationGuideDeviceBar">${deviceBarHtml}</div>
+                <div class="notification-guide-tabs" id="notificationGuideTabs" role="tablist" aria-label="Choose your device or browser">${tabsHtml}</div>
+                <div class="notification-guide-body" id="notificationGuideBody" role="tabpanel">${bodyHtml}</div>
+                <div class="notification-guide-footer" id="notificationGuideFooter">${footerHtml}</div>
+              </div>
+            `;
+        } else {
+            const deviceBarEl = sheetEl.querySelector<HTMLElement>('#notificationGuideDeviceBar');
+            const tabsEl = sheetEl.querySelector<HTMLElement>('#notificationGuideTabs');
+            const bodyEl = sheetEl.querySelector<HTMLElement>('#notificationGuideBody');
+            const footerEl = sheetEl.querySelector<HTMLElement>('#notificationGuideFooter');
+
+            if (deviceBarEl) deviceBarEl.innerHTML = deviceBarHtml;
+            if (tabsEl) tabsEl.innerHTML = tabsHtml;
+            if (bodyEl) {
+                bodyEl.classList.remove('guide-fade-in');
+                bodyEl.innerHTML = bodyHtml;
+                // Trigger reflow to restart CSS animation smoothly
+                void bodyEl.offsetWidth;
+                bodyEl.classList.add('guide-fade-in');
+            }
+            if (footerEl) footerEl.innerHTML = footerHtml;
+        }
 
         this.bindEvents();
     }
 
     /**
-     * Binds click events inside the dialog.
+     * Binds click events inside the dialog using robust event delegation.
      */
     private bindEvents(): void {
         if (!this.modalEl) return;
 
-        // Tab switcher
-        const tabs = this.modalEl.querySelectorAll<HTMLButtonElement>('.notification-guide-tab');
-        tabs.forEach((tab) => {
-            tab.addEventListener('click', () => {
-                const guideKey = tab.dataset.guideKey;
+        // Tab switcher with event delegation
+        const tabsEl = this.modalEl.querySelector<HTMLElement>('#notificationGuideTabs');
+        if (tabsEl && !(tabsEl as any)._hasBoundTabs) {
+            (tabsEl as any)._hasBoundTabs = true;
+            tabsEl.addEventListener('click', (e) => {
+                const target = (e.target as HTMLElement).closest<HTMLButtonElement>('.notification-guide-tab');
+                if (!target) return;
+                const guideKey = target.dataset.guideKey;
                 if (guideKey && guideKey !== this.activeGuideKey) {
                     this.activeGuideKey = guideKey;
                     this.renderContent();
                 }
             });
-        });
+        }
 
         // Test notification button
         const testBtn = this.modalEl.querySelector<HTMLButtonElement>('#guideTestPermBtn');
-        testBtn?.addEventListener('click', async () => {
-            if (typeof window === 'undefined' || !('Notification' in window)) {
-                const noteEl = this.modalEl?.querySelector('.guide-footer-note');
-                if (noteEl) {
-                    noteEl.innerHTML = '<i class="bi bi-exclamation-circle" aria-hidden="true"></i> Notification API is not supported by this browser.';
-                }
-                return;
-            }
-
-            try {
-                const res = await Notification.requestPermission();
-                if (res === 'granted') {
-                    try {
-                        new Notification('SJCCC Notifications Enabled!', {
-                            body: 'Milestone reminder alerts will now reach you 24 hours in advance.',
-                            icon: '/assets/icons/168X168.svg',
-                        });
-                    } catch {
-                        // Some mobile browsers fail on new Notification
+        if (testBtn && !(testBtn as any)._hasBoundTestPerm) {
+            (testBtn as any)._hasBoundTestPerm = true;
+            testBtn.addEventListener('click', async () => {
+                if (typeof window === 'undefined' || !('Notification' in window)) {
+                    const noteEl = this.modalEl?.querySelector('.guide-footer-note');
+                    if (noteEl) {
+                        noteEl.innerHTML = '<i class="bi bi-exclamation-circle" aria-hidden="true"></i> Notification API is not supported by this browser.';
                     }
+                    return;
                 }
-                this.renderContent();
-            } catch {
-                this.renderContent();
-            }
-        });
+
+                try {
+                    const res = await Notification.requestPermission();
+                    if (res === 'granted') {
+                        try {
+                            new Notification('SJCCC Notifications Enabled!', {
+                                body: 'Milestone reminder alerts will now reach you 24 hours in advance.',
+                                icon: '/assets/icons/168X168.svg',
+                            });
+                        } catch {
+                            // Some mobile browsers fail on new Notification
+                        }
+                    }
+                    this.renderContent();
+                } catch {
+                    this.renderContent();
+                }
+            });
+        }
     }
 }
 
