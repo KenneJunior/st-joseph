@@ -288,7 +288,7 @@ export class HomeApp {
 
         // Immediate check for any images that failed before hydration
         document.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
-            if (img.complete && img.naturalWidth === 0) {
+            if (img.complete && img.naturalWidth === 0 && !img.dataset.src && img.src && !img.src.startsWith('data:image/svg+xml')) {
                 applyFallback(img);
             }
         });

@@ -9,6 +9,7 @@
 import { NEWS_STORIES, type NewsStory } from '../../data/newsStories.ts';
 import { getBlurredPlaceholder } from '../../data/imagePlaceholders.ts';
 import { initAllBlurredImages } from '../../ui/utils/BlurredImageLoader.ts';
+import { initLazyImages } from '../../ui/utils/LazyImageLoader.ts';
 import type { ScrollReveal } from '../../ui/utils/ScrollReveal.ts';
 
 export interface RenderNewsOptions {
@@ -65,7 +66,8 @@ export function createNewsCardHTML(story: NewsStory): string {
           loading="eager"
         />
         <img
-          src="${story.imageSrc}"
+          data-src="${story.imageSrc}"
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 280'%3E%3C/svg%3E"
           alt="${story.imageAlt}"
           class="news-card__img blurred-img-full"
           loading="lazy"
@@ -243,7 +245,7 @@ export function renderNewsStories(
                 }
             });
             // If image is already completed but failed before listener was attached
-            if (img.complete && img.naturalWidth === 0) {
+            if (img.complete && img.naturalWidth === 0 && !img.dataset.src && img.src && !img.src.startsWith('data:image/svg+xml')) {
                 img.dataset.fallbackApplied = 'true';
                 img.src = DEFAULT_FALLBACK_IMAGE;
             }
@@ -253,8 +255,9 @@ export function renderNewsStories(
     // Wire up interactive smooth card height expansion handlers
     initNewsCardInteractions(container);
 
-    // Wire up progressive blurred-image placeholders
+    // Wire up progressive blurred-image placeholders and Intersection Observer lazy loading
     initAllBlurredImages(container);
+    initLazyImages(container);
 
     // Properly wire ScrollReveal animations
     if (options.scrollReveal) {
@@ -272,6 +275,7 @@ export function renderNewsStories(
         const isContainerRevealed = container.classList.contains('revealed') ||
             Boolean(container.closest('.section-padding')?.classList.contains('revealed'));
         const prefersReducedMotion = typeof window !== 'undefined' &&
+            typeof window.matchMedia === 'function' &&
             window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         if (prefersReducedMotion) {

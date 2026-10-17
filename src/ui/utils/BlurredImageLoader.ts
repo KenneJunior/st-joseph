@@ -6,6 +6,8 @@
  * ============================================================================
  */
 
+import { initLazyImages } from './LazyImageLoader.ts';
+
 export function initBlurredImage(container: HTMLElement): void {
     if (!container || container.dataset.blurredInit === 'true') {
         const fullImg = container.querySelector<HTMLImageElement>('.blurred-img-full, img:not(.blurred-img-placeholder):not(.carousel-image-placeholder):not(.carousel-thumb-placeholder)');
@@ -39,4 +41,5 @@ export function initBlurredImage(container: HTMLElement): void {
 export function initAllBlurredImages(root: ParentNode = document): void {
     const containers = root.querySelectorAll<HTMLElement>('.blurred-img-container');
     containers.forEach((container) => initBlurredImage(container));
+    initLazyImages(root);
 }

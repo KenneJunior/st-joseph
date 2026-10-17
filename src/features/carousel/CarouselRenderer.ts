@@ -8,6 +8,9 @@
 
 import { type CampusSlide, CAMPUS_SLIDES } from '../../data/campusSlides.ts';
 import { getBlurredPlaceholder } from '../../data/imagePlaceholders.ts';
+import { initLazyImages } from '../../ui/utils/LazyImageLoader.ts';
+
+const TRANSPARENT_PIXEL = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3C/svg%3E";
 
 export function renderCarouselSlides(
     trackEl: HTMLElement | null,
@@ -28,7 +31,7 @@ export function renderCarouselSlides(
             <div class="carousel-slide${isActive}" role="group" aria-roledescription="slide" aria-label="${slideNum} of ${total}: ${slide.title}" data-short-caption="${slide.shortCaption}" id="${slide.id}">
               <div class="carousel-image-container blurred-img-container">
                 <img alt="" aria-hidden="true" class="carousel-image-placeholder blurred-img-placeholder" src="${placeholderSrc}" loading="eager">
-                <img alt="${slide.altText}" class="carousel-image blurred-img-full" loading="lazy" src="${slide.imageSrc}" onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');" onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');">
+                <img alt="${slide.altText}" class="carousel-image blurred-img-full" loading="lazy" data-src="${slide.imageSrc}" src="${TRANSPARENT_PIXEL}" onload="this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');" onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg'; this.dataset.fallbackApplied='true'; this.classList.add('is-loaded'); this.parentElement?.classList.add('is-loaded');">
               </div>
               <div class="carousel-overlay"></div>
               <div class="carousel-caption">
@@ -40,4 +43,5 @@ export function renderCarouselSlides(
     }).join('');
 
     trackEl.innerHTML = markup;
+    initLazyImages(trackEl);
 }

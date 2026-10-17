@@ -18,6 +18,7 @@
  */
 
 import { getBlurredPlaceholder } from '../../data/imagePlaceholders.ts';
+import { lazyImageLoader, loadLazyImage } from '../../ui/utils/LazyImageLoader.ts';
 
 export interface CarouselMotionConfig {
     /**
@@ -325,6 +326,9 @@ export class Carousel {
         this.bindObservers();
         this.bindLifecycle();
 
+        this.ensureSlideLoaded(0);
+        this.ensureSlideLoaded(1);
+
         this.resetAutoPlay();
     }
 
@@ -482,7 +486,7 @@ export class Carousel {
                 const imgWrap = document.createElement('div');
                 imgWrap.className = 'carousel-thumb-img-wrap blurred-img-container';
 
-                const fullSrc = img?.getAttribute('src') || '';
+                const fullSrc = img?.getAttribute('data-src') || img?.getAttribute('src') || '';
                 const placeholderSrc = getBlurredPlaceholder(fullSrc);
 
                 const thumbPlaceholder = document.createElement('img');
@@ -493,7 +497,8 @@ export class Carousel {
                 thumbPlaceholder.loading = 'eager';
 
                 const thumbImg = document.createElement('img');
-                thumbImg.src = fullSrc;
+                thumbImg.setAttribute('data-src', fullSrc);
+                thumbImg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3C/svg%3E";
                 thumbImg.alt = `Thumbnail for ${title}`;
                 thumbImg.className = 'carousel-thumb-img blurred-img-full';
                 thumbImg.loading = 'lazy';
@@ -508,6 +513,8 @@ export class Carousel {
                 if (thumbImg.complete && thumbImg.naturalWidth > 0) {
                     markLoaded();
                 }
+
+                lazyImageLoader.observe(thumbImg);
 
                 const hoverBadge = document.createElement('span');
                 hoverBadge.className = 'carousel-thumb-badge';
@@ -1064,6 +1071,9 @@ export class Carousel {
         if (N === 0) return;
 
         const normalizedTarget = ((targetIndex % N) + N) % N;
+        this.ensureSlideLoaded(normalizedTarget);
+        this.ensureSlideLoaded((normalizedTarget + 1) % N);
+        this.ensureSlideLoaded((normalizedTarget - 1 + N) % N);
 
         this.stopSnapAnimation();
 
@@ -1093,6 +1103,18 @@ export class Carousel {
 
         const targetPosition = this.currentPosition + delta;
         this.snapToSlide(targetPosition);
+    }
+
+    /**
+     * Pre-warms or eagerly triggers the image load for a specific slide index.
+     */
+    public ensureSlideLoaded(index: number): void {
+        const slide = this.slides[index];
+        if (!slide) return;
+        const img = slide.querySelector<HTMLImageElement>('.carousel-image[data-src]');
+        if (img) {
+            loadLazyImage(img);
+        }
     }
 
     public nextSlide(): void {
