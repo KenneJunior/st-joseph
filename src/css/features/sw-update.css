@@ -1,0 +1,303 @@
+/* ==========================================================================
+   SJCCC — Service Worker Update Notification Stylesheet
+   Theme-responsive, non-intrusive notification pill/card with collision-free
+   stacking above mobile bottom navigation.
+   ========================================================================== */
+
+:root {
+  --sw-pill-bg: rgba(255, 255, 255, 0.96);
+  --sw-pill-border: rgba(201, 162, 41, 0.38);
+  --sw-pill-text: #07182E;
+  --sw-pill-subtext: #4A5568;
+  --sw-pill-icon-bg: rgba(201, 162, 41, 0.15);
+  --sw-pill-icon-color: #8C6A21;
+  --sw-pill-shadow: 0 14px 38px -4px rgba(7, 24, 46, 0.22),
+                    0 4px 14px -2px rgba(7, 24, 46, 0.10);
+  --sw-pill-btn-primary-bg: linear-gradient(135deg, #c9a229 0%, #b38b1d 100%);
+  --sw-pill-btn-primary-text: #07182E;
+  --sw-pill-btn-primary-hover: #d4a85a;
+  --sw-pill-btn-ghost-bg: transparent;
+  --sw-pill-btn-ghost-text: #4A5568;
+  --sw-pill-btn-ghost-border: rgba(7, 24, 46, 0.20);
+  --sw-pill-btn-ghost-hover-bg: rgba(7, 24, 46, 0.06);
+  --sw-pill-btn-ghost-hover-text: #07182E;
+}
+
+html.dark-mode,
+body.dark-mode,
+[data-theme="dark"] {
+  --sw-pill-bg: rgba(7, 24, 46, 0.94);
+  --sw-pill-border: rgba(201, 162, 41, 0.35);
+  --sw-pill-text: #F4F1EA;
+  --sw-pill-subtext: #D1CFC4;
+  --sw-pill-icon-bg: rgba(201, 162, 41, 0.22);
+  --sw-pill-icon-color: #F3D779;
+  --sw-pill-shadow: 0 18px 45px -6px rgba(0, 0, 0, 0.70),
+                    0 0 18px rgba(201, 162, 41, 0.18);
+  --sw-pill-btn-primary-bg: linear-gradient(135deg, #f0c975 0%, #c9a229 100%);
+  --sw-pill-btn-primary-text: #07182E;
+  --sw-pill-btn-primary-hover: #f3d779;
+  --sw-pill-btn-ghost-bg: rgba(255, 255, 255, 0.05);
+  --sw-pill-btn-ghost-text: #D1CFC4;
+  --sw-pill-btn-ghost-border: rgba(201, 162, 41, 0.28);
+  --sw-pill-btn-ghost-hover-bg: rgba(201, 162, 41, 0.18);
+  --sw-pill-btn-ghost-hover-text: #FFFFFF;
+}
+
+/* ─── Notification Pill Container ─── */
+#sw-update-banner {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index: 3500;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 18px;
+  background: var(--sw-pill-bg);
+  border: 1px solid var(--sw-pill-border);
+  border-radius: var(--radius-pill, 9999px);
+  box-shadow: var(--sw-pill-shadow);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  color: var(--sw-pill-text);
+  font-family: var(--font-sans, 'Inter', system-ui, -apple-system, sans-serif);
+  font-size: 0.9rem;
+  line-height: 1.35;
+  box-sizing: border-box;
+  max-width: min(580px, calc(100vw - 32px));
+  width: auto;
+  pointer-events: auto;
+  animation: sw-pill-slide-up 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 200ms ease,
+              background-color 200ms ease,
+              border-color 200ms ease,
+              box-shadow 200ms ease;
+}
+
+#sw-update-banner.sw-pill--dismissing {
+  opacity: 0;
+  transform: translateX(-50%) translateY(16px);
+  pointer-events: none;
+}
+
+/* ─── Icon Wrap ─── */
+.sw-pill__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: var(--sw-pill-icon-bg);
+  color: var(--sw-pill-icon-color);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.sw-pill__icon {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ─── Text Content ─── */
+.sw-pill__content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.sw-pill__title {
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: -0.01em;
+  color: var(--sw-pill-text);
+  white-space: nowrap;
+}
+
+.sw-pill__meta {
+  font-size: 0.78rem;
+  color: var(--sw-pill-subtext);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Actions Group ─── */
+.sw-pill__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.sw-banner-btn {
+  border: none;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill, 9999px);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  box-sizing: border-box;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sw-banner-btn:focus-visible {
+  outline: 2px solid var(--accent, #c9a229);
+  outline-offset: 2px;
+}
+
+.sw-banner-btn--primary {
+  background: var(--sw-pill-btn-primary-bg);
+  color: var(--sw-pill-btn-primary-text);
+  box-shadow: 0 2px 8px rgba(201, 162, 41, 0.35);
+}
+
+.sw-banner-btn--primary:hover:not(:disabled) {
+  background: var(--sw-pill-btn-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(201, 162, 41, 0.45);
+}
+
+.sw-banner-btn--primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.sw-banner-btn--primary:disabled {
+  opacity: 0.75;
+  cursor: wait;
+}
+
+.sw-banner-btn--ghost {
+  background: var(--sw-pill-btn-ghost-bg);
+  color: var(--sw-pill-btn-ghost-text);
+  border: 1px solid var(--sw-pill-btn-ghost-border);
+}
+
+.sw-banner-btn--ghost:hover {
+  background: var(--sw-pill-btn-ghost-hover-bg);
+  color: var(--sw-pill-btn-ghost-hover-text);
+}
+
+.sw-banner-btn--ghost:active {
+  transform: scale(0.98);
+}
+
+/* Spinner inside updating button */
+.sw-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(7, 24, 46, 0.25);
+  border-top-color: #07182E;
+  border-radius: 50%;
+  animation: sw-spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+/* ─── Mobile Viewport Responsiveness & Safe-Area Avoidance ─── */
+@media (max-width: 768px) {
+  #sw-update-banner {
+    /* Sit cleanly 12px above the mobile bottom bar dock (dock is 52px tall + dock offset) */
+    bottom: calc(var(--dock-bottom-offset, calc(10px + env(safe-area-inset-bottom, 0px))) + 52px + 12px);
+    width: min(440px, calc(100vw - 24px));
+    border-radius: var(--radius-lg, 16px);
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .sw-pill__title {
+    font-size: 0.84rem;
+  }
+
+  .sw-pill__meta {
+    font-size: 0.74rem;
+  }
+
+  .sw-banner-btn {
+    padding: 6px 12px;
+    font-size: 0.78rem;
+    min-height: 36px;
+    min-width: 44px; /* Accessible touch target */
+  }
+}
+
+@media (max-width: 420px) {
+  #sw-update-banner {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .sw-pill__icon-wrap {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+
+  .sw-pill__icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .sw-pill__title {
+    font-size: 0.80rem;
+  }
+
+  .sw-pill__meta {
+    display: none; /* Keep ultra-compact on narrow mobile to avoid clipping actions */
+  }
+
+  .sw-banner-btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ─── Keyframe Animations ─── */
+@keyframes sw-pill-slide-up {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes sw-icon-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sw-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  #sw-update-banner,
+  .sw-pill__icon,
+  .sw-banner-btn {
+    animation: none !important;
+    transition: opacity 150ms ease !important;
+  }
+}

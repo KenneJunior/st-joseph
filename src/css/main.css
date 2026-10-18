@@ -30,6 +30,7 @@
 @import './components/offline-indicator.css';
 @import './components/search-history.css';
 @import './components/blurred-images.css';
+@import './components/pwa-install-card.css';
 
 /* Features */
 @import './features/preloader.css';
@@ -48,6 +49,7 @@
 @import './features/faq.css';
 @import './features/pwa-wco.css';
 @import './features/ai-assistant.css';
+@import './features/sw-update.css';
 
 /* Motion */
 @import './motion/keyframes.css';

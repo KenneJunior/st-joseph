@@ -6,6 +6,7 @@
 /* 1. Shared Infrastructure Reused */
 @import './components/offline-indicator.css';
 @import './components/card-splitter.css';
+@import './features/sw-update.css';
 
 /* 2. Prospectus Design Tokens & Theme Variables */
 @import './prospectus/variables.css';

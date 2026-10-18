@@ -6,6 +6,8 @@
  * ============================================================================
  */
 
+import '../css/features/sw-update.css';
+
 interface UpdateBannerElements {
     updateBtn: HTMLButtonElement | null;
     dismissBtn: HTMLButtonElement | null;
@@ -13,14 +15,39 @@ interface UpdateBannerElements {
 
 const SW_SCRIPT_PATH = '/sw.js';
 const BANNER_ID = 'sw-update-banner';
-const STYLE_ID = 'sw-update-banner-styles';
-const AUTO_DISMISS_MS = 10_000;
+const STORAGE_KEY_UPDATE_POSTPONED = 'sjccc_sw_update_postponed';
 
 const COLORS = {
     deepBlue: '#07182E',
     gold: '#C9A229',
     goldLight: '#F3D779',
 } as const;
+
+function isUpdatePostponed(): boolean {
+    if (typeof window === 'undefined' || typeof sessionStorage === 'undefined') return false;
+    try {
+        return sessionStorage.getItem(STORAGE_KEY_UPDATE_POSTPONED) === 'true';
+    } catch {
+        return false;
+    }
+}
+
+function setUpdatePostponed(): void {
+    if (typeof window === 'undefined' || typeof sessionStorage === 'undefined') return;
+    try {
+        sessionStorage.setItem(STORAGE_KEY_UPDATE_POSTPONED, 'true');
+    } catch (err) {
+        console.warn('Unable to persist update postponement to sessionStorage', err);
+    }
+}
+
+let isRefreshing = false;
+
+function triggerSafeReload(): void {
+    if (isRefreshing) return;
+    isRefreshing = true;
+    window.location.reload();
+}
 
 /**
  * Register the service worker and handle lifecycle events.
@@ -74,6 +101,13 @@ const handleServiceWorkerUpdates = (registration: ServiceWorkerRegistration): vo
                     '%c🔄 New update available!',
                     `color: ${COLORS.goldLight}; font-weight: bold;`
                 );
+                // When an even newer service worker version installs, clear the postponement
+                // so the visitor is presented with the latest release
+                try {
+                    sessionStorage.removeItem(STORAGE_KEY_UPDATE_POSTPONED);
+                } catch {
+                    // Ignore storage access error
+                }
                 showUpdateNotification(registration);
             }
         });
@@ -84,12 +118,8 @@ const handleServiceWorkerUpdates = (registration: ServiceWorkerRegistration): vo
  * Reload the page once the new worker actually takes control.
  */
 const handleControllerChange = (): void => {
-    let refreshing = false;
-
     navigator.serviceWorker.addEventListener('controllerchange', (): void => {
-        if (refreshing) return;
-        refreshing = true;
-        window.location.reload();
+        triggerSafeReload();
     });
 };
 
@@ -109,13 +139,16 @@ const startPeriodicUpdateChecks = (registration: ServiceWorkerRegistration): voi
 /**
  * Create and display an update notification banner.
  */
-const showUpdateNotification = (registration: ServiceWorkerRegistration): void => {
-    if (document.getElementById(BANNER_ID)) {
-        return;
-    }
+export const showUpdateNotification = (registration: ServiceWorkerRegistration): void => {
+    if (typeof document === 'undefined') return;
+    if (document.getElementById(BANNER_ID)) return;
+    if (isUpdatePostponed()) return;
 
     const banner = createUpdateBanner();
     document.body.appendChild(banner);
+
+    // Coordinate with other floating surfaces (e.g. install prompt card)
+    window.dispatchEvent(new CustomEvent('sjccc-update-banner-visible', { detail: { visible: true } }));
 
     const elements: UpdateBannerElements = {
         updateBtn: banner.querySelector<HTMLButtonElement>('#updateBtn'),
@@ -123,10 +156,6 @@ const showUpdateNotification = (registration: ServiceWorkerRegistration): void =
     };
 
     attachBannerEventListeners(elements, banner, registration);
-
-    window.setTimeout((): void => {
-        banner.remove();
-    }, AUTO_DISMISS_MS);
 };
 
 const createUpdateBanner = (): HTMLDivElement => {
@@ -134,11 +163,26 @@ const createUpdateBanner = (): HTMLDivElement => {
     banner.id = BANNER_ID;
     banner.setAttribute('role', 'status');
     banner.setAttribute('aria-live', 'polite');
+    banner.setAttribute('aria-atomic', 'true');
 
     banner.innerHTML = `
-        <span>🔄 New version available!</span>
-        <button id="updateBtn" class="sw-banner-btn sw-banner-btn--primary" type="button">Refresh</button>
-        <button id="dismissBtn" class="sw-banner-btn sw-banner-btn--ghost" type="button">Later</button>
+        <div class="sw-pill__icon-wrap" aria-hidden="true">
+            <svg class="sw-pill__icon" viewBox="0 0 24 24">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+        </div>
+        <div class="sw-pill__content">
+            <strong class="sw-pill__title">Website update available</strong>
+            <span class="sw-pill__meta">A new version of the SJCCC website is ready.</span>
+        </div>
+        <div class="sw-pill__actions">
+            <button id="updateBtn" class="sw-banner-btn sw-banner-btn--primary" type="button">
+                <span class="sw-btn-text">Update now</span>
+            </button>
+            <button id="dismissBtn" class="sw-banner-btn sw-banner-btn--ghost" type="button" aria-label="Postpone website update">
+                Later
+            </button>
+        </div>
     `;
 
     return banner;
@@ -149,97 +193,71 @@ const attachBannerEventListeners = (
     banner: HTMLDivElement,
     registration: ServiceWorkerRegistration
 ): void => {
+    let isUpdating = false;
+
     elements.updateBtn?.addEventListener('click', (): void => {
-        registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
-        banner.remove();
+        if (isUpdating) return;
+        isUpdating = true;
+
+        if (elements.updateBtn) {
+            elements.updateBtn.disabled = true;
+            elements.updateBtn.setAttribute('aria-busy', 'true');
+            elements.updateBtn.innerHTML = `
+                <span class="sw-spinner" aria-hidden="true"></span>
+                <span>Updating...</span>
+            `;
+        }
+        if (elements.dismissBtn) {
+            elements.dismissBtn.disabled = true;
+        }
+
+        const waitingWorker = registration.waiting;
+        if (waitingWorker) {
+            try {
+                waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+            } catch (err) {
+                console.warn('Failed to message waiting worker, reloading directly:', err);
+                triggerSafeReload();
+            }
+        } else if (registration.installing) {
+            // Worker is still installing, wait for installed state then skip waiting
+            registration.installing.addEventListener('statechange', (e) => {
+                const target = e.target as ServiceWorker;
+                if (target.state === 'installed' && registration.waiting) {
+                    try {
+                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                    } catch {
+                        triggerSafeReload();
+                    }
+                }
+            });
+        } else {
+            console.warn('No waiting service worker available to activate');
+            // If no waiting worker is found, trigger safe reload to pick up active worker
+            triggerSafeReload();
+        }
+
+        // Safety fallback in case controllerchange event does not fire within 3.5s
+        window.setTimeout((): void => {
+            triggerSafeReload();
+        }, 3500);
     });
 
     elements.dismissBtn?.addEventListener('click', (): void => {
-        banner.remove();
+        setUpdatePostponed();
+        banner.classList.add('sw-pill--dismissing');
+        window.dispatchEvent(new CustomEvent('sjccc-update-banner-visible', { detail: { visible: false } }));
+        window.setTimeout((): void => {
+            banner.remove();
+        }, 240);
     });
 };
 
+/**
+ * Retained for backwards compatibility. Styles are now included via src/css/features/sw-update.css.
+ */
 export const injectBannerStyles = (): void => {
-    if (document.getElementById(STYLE_ID)) {
-        return;
-    }
-
-    const styleSheet = document.createElement('style');
-    styleSheet.id = STYLE_ID;
-    styleSheet.textContent = `
-        #${BANNER_ID} {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--deep-blue, ${COLORS.deepBlue});
-            color: #ffffff;
-            padding: 1rem 1.5rem;
-            border-radius: 50px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            border: 2px solid ${COLORS.gold};
-            animation: sw-banner-slide-up 0.4s ease;
-        }
-
-        .sw-banner-btn {
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.85rem;
-            transition: background-color 0.2s ease, color 0.2s ease,
-                        transform 0.2s ease, border-color 0.2s ease;
-        }
-
-        .sw-banner-btn--primary {
-            background: ${COLORS.gold};
-            color: ${COLORS.deepBlue};
-            font-weight: 700;
-        }
-
-        .sw-banner-btn--primary:hover,
-        .sw-banner-btn--primary:focus-visible {
-            background: ${COLORS.goldLight};
-            transform: translateY(-2px);
-        }
-
-        .sw-banner-btn--ghost {
-            background: transparent;
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .sw-banner-btn--ghost:hover,
-        .sw-banner-btn--ghost:focus-visible {
-            border-color: ${COLORS.gold};
-            color: ${COLORS.goldLight};
-        }
-
-        @keyframes sw-banner-slide-up {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            #${BANNER_ID} {
-                animation: none;
-            }
-        }
-    `;
-    document.head.appendChild(styleSheet);
+    // No-op: presentation styles now statically compiled in stylesheets
 };
 
 export const initServiceWorker = (): void => {
