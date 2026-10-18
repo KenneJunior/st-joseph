@@ -524,11 +524,6 @@
         <a href="#schoolDatesSection" class="nav-link" title="School Dates" aria-label="School Dates"
           toolDescription="View upcoming school dates and academic milestones for the 2026/2027 year."><i
             class="bi bi-calendar-check nav-icon"></i><span class="nav-text">Dates</span></a>
-        <button type="button" class="nav-link nav-link--reminders" id="navMyRemindersBtn" title="My Reminders" aria-label="My Reminders" aria-haspopup="dialog"
-          toolDescription="View and manage your scheduled academic milestone reminders and notification preferences.">
-          <i class="bi bi-bell nav-icon"></i><span class="nav-text">Reminders</span>
-          <span class="nav-reminders-badge is-zero" id="navRemindersBadge" aria-label="0 reminders active">0</span>
-        </button>
         <a href="#news-events" class="nav-link" title="News" aria-label="News"
           toolDescription="Browse the latest news, updates, and school events."><i
             class="bi bi-newspaper nav-icon"></i><span class="nav-text">News</span></a>
@@ -547,14 +542,34 @@
         <a href="#contact" class="nav-link" title="Contact" aria-label="Contact"
           toolDescription="Go to the contact section to speak with the school or ask for admission information."><i
             class="bi bi-envelope nav-icon"></i><span class="nav-text">Contact</span></a>
-        <a href="/prospectus.html" class="nav-link" title="Prospectus" aria-label="Prospectus"
-          toolDescription="Open the student prospectus for detailed school information and programme details."><i
-            class="bi bi-file-earmark-pdf nav-icon"></i><span class="nav-text">Prospectus</span></a>
-        <a href="#" class="nav-link" id="installApp" title="Install App" aria-label="Install App"
-          toolDescription="install the the site as an app on your device."><i class="bi bi-phone nav-icon"></i><span
-            class="nav-text">Install App</span></a>
       </nav>
       <div class="header-actions">
+        <!-- Academic Milestone Reminders -->
+        <button type="button" class="header-action-btn header-reminders-btn nav-link--reminders" id="navMyRemindersBtn"
+          title="My Reminders" aria-label="My Reminders" aria-haspopup="dialog"
+          toolDescription="View and manage your scheduled academic milestone reminders and notification preferences.">
+          <i class="bi bi-bell-fill header-btn-icon" aria-hidden="true"></i>
+          <span class="header-btn-text">Reminders</span>
+          <span class="nav-reminders-badge is-zero" id="navRemindersBadge" aria-label="0 reminders active">0</span>
+        </button>
+
+        <!-- Student Prospectus Link -->
+        <a href="/prospectus.html" class="header-action-btn header-prospectus-btn" id="headerProspectusBtn"
+          title="Prospectus" aria-label="Prospectus"
+          toolDescription="Open the student prospectus for detailed school information and programme details.">
+          <i class="bi bi-file-earmark-pdf-fill header-btn-icon" aria-hidden="true"></i>
+          <span class="header-btn-text">Prospectus</span>
+        </a>
+
+        <!-- Install App Action -->
+        <button type="button" class="header-action-btn header-install-btn" id="installApp"
+          title="Install App" aria-label="Install App"
+          toolDescription="Install the site as an app on your device.">
+          <i class="bi bi-phone-fill header-btn-icon" aria-hidden="true"></i>
+          <span class="header-btn-text">Install</span>
+        </button>
+
+        <!-- Theme Toggle -->
         <button type="button" class="theme-toggle-btn header-theme-toggle" id="themeToggle"
           title="Switch light/dark mode" aria-label="Switch light/dark mode" data-theme-toggle
           toolDescription="Switch the website between light and dark theme.">
@@ -579,6 +594,8 @@
             </svg>
           </span>
         </button>
+
+        <!-- Menu Toggle for Tablet/Mobile Navigation Drawer -->
         <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation" aria-expanded="false"
           aria-controls="navMenu"
           toolDescription="Open or close the mobile navigation menu so visitors can access page sections easily.">
@@ -958,6 +975,12 @@
                 toolDescription="Choose Google Calendar, Outlook, or download calendar file (.ics).">
                 <i class="bi bi-calendar-plus-fill" aria-hidden="true"></i>
                 <span>Add to Calendar</span>
+              </button>
+              <button type="button" class="btn btn-outline btn-calendar-auto-add" id="bannerAutoAddRemindersBtn"
+                title="Auto-add key academic dates (exams, holidays) to My Reminders"
+                toolDescription="Automatically populate My Reminders with upcoming exams, holidays, and resumptions.">
+                <i class="bi bi-bell-plus-fill" aria-hidden="true"></i>
+                <span>Auto-Add to Reminders</span>
               </button>
             </div>
           </div>

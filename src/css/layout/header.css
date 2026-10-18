@@ -14,6 +14,15 @@
   transition: all 0.3s ease;
 }
 
+#mainHeader.scrolled {
+  box-shadow: 0 4px 20px -2px rgba(2, 12, 26, 0.25);
+}
+
+body.dark-mode #mainHeader.scrolled,
+html.dark-mode #mainHeader.scrolled {
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.55);
+}
+
 @media (max-width: 768px) {
   :root {
     --header-height: 56px;
@@ -38,73 +47,76 @@
   width: 100%;
   height: calc(var(--header-height) + var(--blur-extension));
   z-index: -1;
-  backdrop-filter: blur(var(--blur-intensity)) saturate(150%);
-  -webkit-backdrop-filter: blur(var(--blur-intensity)) saturate(150%);
+  pointer-events: none;
+  backdrop-filter: blur(var(--blur-intensity, 10px)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--blur-intensity, 10px)) saturate(150%);
   background: linear-gradient(
           to bottom,
-          rgba(6, 20, 43, 0.55) 0%,
-          rgba(6, 20, 43, 0.45) 25%,
-          rgba(6, 20, 43, 0.3) 50%,
-          rgba(6, 20, 43, 0.15) 70%,
-          rgba(6, 20, 43, 0.05) 85%,
+          rgba(6, 20, 43, 0.50) 0px,
+          rgba(6, 20, 43, 0.44) var(--header-height),
+          rgba(6, 20, 43, 0.26) calc(var(--header-height) + calc(var(--blur-extension) * 0.35)),
+          rgba(6, 20, 43, 0.10) calc(var(--header-height) + calc(var(--blur-extension) * 0.70)),
           rgba(6, 20, 43, 0) 100%
   );
   mask-image: linear-gradient(
           to bottom,
-          black 0%,
-          black 30%,
-          rgba(0, 0, 0, 0.9) 45%,
-          rgba(0, 0, 0, 0.7) 60%,
-          rgba(0, 0, 0, 0.4) 75%,
-          rgba(0, 0, 0, 0.15) 90%,
+          black 0px,
+          black var(--header-height),
+          rgba(0, 0, 0, 0.90) calc(var(--header-height) + calc(var(--blur-extension) * 0.20)),
+          rgba(0, 0, 0, 0.70) calc(var(--header-height) + calc(var(--blur-extension) * 0.42)),
+          rgba(0, 0, 0, 0.42) calc(var(--header-height) + calc(var(--blur-extension) * 0.65)),
+          rgba(0, 0, 0, 0.16) calc(var(--header-height) + calc(var(--blur-extension) * 0.85)),
           transparent 100%
   );
   -webkit-mask-image: linear-gradient(
           to bottom,
-          black 0%,
-          black 30%,
-          rgba(0, 0, 0, 0.9) 45%,
-          rgba(0, 0, 0, 0.7) 60%,
-          rgba(0, 0, 0, 0.4) 75%,
-          rgba(0, 0, 0, 0.15) 90%,
+          black 0px,
+          black var(--header-height),
+          rgba(0, 0, 0, 0.90) calc(var(--header-height) + calc(var(--blur-extension) * 0.20)),
+          rgba(0, 0, 0, 0.70) calc(var(--header-height) + calc(var(--blur-extension) * 0.42)),
+          rgba(0, 0, 0, 0.42) calc(var(--header-height) + calc(var(--blur-extension) * 0.65)),
+          rgba(0, 0, 0, 0.16) calc(var(--header-height) + calc(var(--blur-extension) * 0.85)),
           transparent 100%
   );
+  transition: backdrop-filter 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              -webkit-backdrop-filter 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: backdrop-filter;
 }
 
-body.dark-mode #mainHeader::before {
+body.dark-mode #mainHeader::before,
+html.dark-mode #mainHeader::before {
   background: linear-gradient(
           to bottom,
-          rgba(2, 12, 26, 0.65) 0%,
-          rgba(2, 12, 26, 0.5) 25%,
-          rgba(2, 12, 26, 0.35) 50%,
-          rgba(2, 12, 26, 0.2) 70%,
-          rgba(2, 12, 26, 0.08) 85%,
+          rgba(2, 12, 26, 0.62) 0px,
+          rgba(2, 12, 26, 0.54) var(--header-height),
+          rgba(2, 12, 26, 0.32) calc(var(--header-height) + calc(var(--blur-extension) * 0.35)),
+          rgba(2, 12, 26, 0.12) calc(var(--header-height) + calc(var(--blur-extension) * 0.70)),
           rgba(2, 12, 26, 0) 100%
   );
 }
 
 #mainHeader.scrolled::before {
-  backdrop-filter: blur(calc(var(--blur-intensity) + 5px)) saturate(160%);
-  -webkit-backdrop-filter: blur(calc(var(--blur-intensity) + 5px)) saturate(160%);
+  backdrop-filter: blur(var(--blur-intensity, 16px)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--blur-intensity, 16px)) saturate(160%);
   background: linear-gradient(
           to bottom,
-          rgba(6, 20, 43, 0.7) 0%,
-          rgba(6, 20, 43, 0.55) 25%,
-          rgba(6, 20, 43, 0.35) 50%,
-          rgba(6, 20, 43, 0.18) 70%,
-          rgba(6, 20, 43, 0.06) 85%,
+          rgba(6, 20, 43, 0.76) 0px,
+          rgba(6, 20, 43, 0.70) var(--header-height),
+          rgba(6, 20, 43, 0.42) calc(var(--header-height) + calc(var(--blur-extension) * 0.35)),
+          rgba(6, 20, 43, 0.16) calc(var(--header-height) + calc(var(--blur-extension) * 0.70)),
           rgba(6, 20, 43, 0) 100%
   );
 }
 
-body.dark-mode #mainHeader.scrolled::before {
+body.dark-mode #mainHeader.scrolled::before,
+html.dark-mode #mainHeader.scrolled::before {
   background: linear-gradient(
           to bottom,
-          rgba(2, 12, 26, 0.8) 0%,
-          rgba(2, 12, 26, 0.6) 25%,
-          rgba(2, 12, 26, 0.4) 50%,
-          rgba(2, 12, 26, 0.22) 70%,
-          rgba(2, 12, 26, 0.1) 85%,
+          rgba(2, 12, 26, 0.86) 0px,
+          rgba(2, 12, 26, 0.80) var(--header-height),
+          rgba(2, 12, 26, 0.50) calc(var(--header-height) + calc(var(--blur-extension) * 0.35)),
+          rgba(2, 12, 26, 0.20) calc(var(--header-height) + calc(var(--blur-extension) * 0.70)),
           rgba(2, 12, 26, 0) 100%
   );
 }
@@ -112,25 +124,38 @@ body.dark-mode #mainHeader.scrolled::before {
 #mainHeader::after {
   content: '';
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
   width: 100%;
   height: 1px;
   background: linear-gradient(
           90deg,
           transparent 0%,
-          rgba(200, 150, 62, 0.3) 20%,
-          rgba(200, 150, 62, 0.5) 50%,
-          rgba(200, 150, 62, 0.3) 80%,
+          rgba(200, 150, 62, 0.25) 15%,
+          rgba(200, 150, 62, 0.50) 50%,
+          rgba(200, 150, 62, 0.25) 85%,
           transparent 100%
   );
   z-index: 3;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #mainHeader.scrolled::after {
   opacity: 1;
+}
+
+body.dark-mode #mainHeader::after,
+html.dark-mode #mainHeader::after {
+  background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(201, 162, 41, 0.25) 15%,
+          rgba(201, 162, 41, 0.55) 50%,
+          rgba(201, 162, 41, 0.25) 85%,
+          transparent 100%
+  );
 }
 
 /* Header Inner */
@@ -241,9 +266,131 @@ body.dark-mode #mainHeader.scrolled::before {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
   z-index: 1001;
+}
+
+/* Header Action Buttons: Reminders, Prospectus, Install App */
+.header-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 13px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-light, #ffffff);
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  box-sizing: border-box;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+
+.header-action-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(201, 162, 41, 0.65);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.24), 0 0 10px rgba(201, 162, 41, 0.18);
+}
+
+.header-action-btn:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.header-action-btn:focus-visible {
+  outline: 2px solid var(--accent, #c9a229);
+  outline-offset: 2px;
+}
+
+.header-action-btn .header-btn-icon {
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-light, #f0c975);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.header-action-btn:hover .header-btn-icon {
+  transform: scale(1.1);
+}
+
+.header-action-btn .header-btn-text {
+  display: inline-block;
+  line-height: 1;
+}
+
+/* Distinct subtle gold highlight for Student Prospectus */
+.header-action-btn.header-prospectus-btn {
+  background: linear-gradient(135deg, rgba(201, 162, 41, 0.20) 0%, rgba(201, 162, 41, 0.08) 100%);
+  border-color: rgba(201, 162, 41, 0.42);
+}
+
+.header-action-btn.header-prospectus-btn:hover {
+  background: linear-gradient(135deg, rgba(201, 162, 41, 0.32) 0%, rgba(201, 162, 41, 0.15) 100%);
+  border-color: var(--accent, #c9a229);
+  color: #ffffff;
+}
+
+/* Reminders Badge inside header action */
+.header-reminders-btn .nav-reminders-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #d97706;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  line-height: 1;
+  margin-left: 2px;
+  transition: transform 0.2s ease;
+}
+
+.header-reminders-btn .nav-reminders-badge.is-zero {
+  display: none;
+}
+
+/* Dark mode theme adaptations */
+body.dark-mode .header-action-btn,
+html.dark-mode .header-action-btn {
+  background: rgba(201, 162, 41, 0.12);
+  border-color: rgba(201, 162, 41, 0.32);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-mode .header-action-btn:hover,
+html.dark-mode .header-action-btn:hover {
+  background: rgba(201, 162, 41, 0.22);
+  border-color: var(--accent, #c9a229);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 14px rgba(201, 162, 41, 0.25);
+}
+
+body.dark-mode .header-action-btn.header-prospectus-btn,
+html.dark-mode .header-action-btn.header-prospectus-btn {
+  background: linear-gradient(135deg, rgba(201, 162, 41, 0.28) 0%, rgba(201, 162, 41, 0.12) 100%);
+  border-color: rgba(201, 162, 41, 0.5);
 }
 
 .header-theme-toggle {

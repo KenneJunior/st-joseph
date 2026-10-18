@@ -39,6 +39,17 @@
     height: 20px;
   }
 
+  .header-actions {
+    gap: 6px;
+  }
+
+  .header-action-btn {
+    height: 38px;
+    padding: 0 10px;
+    font-size: 0.80rem;
+    gap: 5px;
+  }
+
   .logo-text {
     font-size: clamp(0.96rem, 0.86rem + 0.45vw, 1.15rem);
   }
@@ -48,7 +59,7 @@
   }
 
   .logo-motto {
-    font-size: clamp(0.54rem, 0.46rem + 0.20vw, 0.66rem);
+    display: none;
   }
 
   .logo-icon {

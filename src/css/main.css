@@ -57,5 +57,32 @@
 @import './layout/responsive-legacy.css';
 @import './layout/navigation-mobile.css';
 
+/* ==========================================================================
+   CINEMATIC FULL-WIDTH NEWS CARD EXPANSION
+   High-quality cubic-bezier transition, improved box-shadow, and subtle scale
+   transform for cinematic expansion when user clicks 'Full Story'.
+   ========================================================================== */
+.news-card {
+  transition: transform 0.52s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.52s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.news-card.is-expanded {
+  grid-column: 1 / -1 !important;
+  transform: scale(1.012);
+  border-color: rgba(201, 162, 41, 0.7);
+  box-shadow: 0 20px 48px -8px rgba(7, 24, 46, 0.16), 0 0 28px rgba(201, 162, 41, 0.22), inset 0 3px 0 var(--gold, #C9A229);
+  transition: transform 0.52s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.52s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.dark-mode .news-card.is-expanded,
+body.dark-mode .news-card.is-expanded {
+  border-color: rgba(201, 162, 41, 0.75);
+  box-shadow: 0 22px 52px -8px rgba(0, 0, 0, 0.75), 0 0 30px rgba(201, 162, 41, 0.28), inset 0 3px 0 var(--gold, #C9A229);
+}
+
 /* Accessibility MUST remain last */
 @import './core/accessibility.css';

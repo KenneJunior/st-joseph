@@ -25,6 +25,14 @@ export class HeaderScroll {
     public static readonly UPWARD_THRESHOLD_PX: number = 8;
     public static readonly TOP_PAGE_THRESHOLD_PX: number = 80;
 
+    // Header progressive blur transition range and scrolled class hysteresis thresholds
+    public static readonly BLUR_RAMP_DISTANCE_PX: number = 150;
+    public static readonly SCROLLED_ENTER_THRESHOLD_PX: number = 55;
+    public static readonly SCROLLED_EXIT_THRESHOLD_PX: number = 25;
+
+    // Cached blur intensity to prevent redundant DOM style mutations during deep scrolling
+    private lastBlurIntensity: number = -1;
+
     // Direction and pivot tracking for hysteresis
     private scrollPivotY: number = 0;
     private currentDirection: 'up' | 'down' | 'none' = 'none';
@@ -205,15 +213,30 @@ export class HeaderScroll {
         this.lastScrollY = currentScrollY;
 
         if (!this.ticking) {
+            this.ticking = true;
             window.requestAnimationFrame(() => {
-                // Progressive blur - add/remove scrolled class
-                this.header.classList.toggle('scrolled', this.lastScrollY > 60);
+                // Progressive blur - add/remove scrolled class with hysteresis to eliminate boundary jitter
+                const isCurrentlyScrolled = this.header.classList.contains('scrolled');
+                const scrollThreshold = isCurrentlyScrolled
+                    ? HeaderScroll.SCROLLED_EXIT_THRESHOLD_PX
+                    : HeaderScroll.SCROLLED_ENTER_THRESHOLD_PX;
+                const shouldBeScrolled = this.lastScrollY > scrollThreshold;
+                if (isCurrentlyScrolled !== shouldBeScrolled) {
+                    this.header.classList.toggle('scrolled', shouldBeScrolled);
+                }
 
-                // Dynamic blur intensity based on scroll position (capped at 10px on mobile to preserve GPU performance)
+                // Dynamic blur intensity: smooth linear progression without abrupt cliffs
                 const isMobile = window.innerWidth <= 768;
-                const maxBlur = isMobile ? 10 : 15;
-                const blurIntensity = Math.min(maxBlur, (isMobile ? 4 : 5) + (this.lastScrollY / 500));
-                this.header.style.setProperty('--blur-intensity', `${blurIntensity}px`);
+                const minBlur = isMobile ? 4 : 6;
+                const maxBlur = isMobile ? 10 : 16;
+                const scrollProgress = Math.min(1, Math.max(0, this.lastScrollY / HeaderScroll.BLUR_RAMP_DISTANCE_PX));
+                const blurIntensity = Math.round((minBlur + scrollProgress * (maxBlur - minBlur)) * 10) / 10;
+
+                // Cache check: prevent redundant DOM style writes during deep page scrolling
+                if (blurIntensity !== this.lastBlurIntensity) {
+                    this.header.style.setProperty('--blur-intensity', `${blurIntensity}px`);
+                    this.lastBlurIntensity = blurIntensity;
+                }
 
                 // Mobile bottom bar visibility class
                 if (this.bottomBar) {
@@ -222,7 +245,6 @@ export class HeaderScroll {
 
                 this.ticking = false;
             });
-            this.ticking = true;
         }
     };
 
@@ -248,6 +270,14 @@ export class HeaderScroll {
         if (this.resizeObserver) {
             this.resizeObserver.disconnect();
             this.resizeObserver = null;
+        }
+        if (this.userGestureTimer !== null) {
+            window.clearTimeout(this.userGestureTimer);
+            this.userGestureTimer = null;
+        }
+        if (this.programmaticScrollTimer !== null) {
+            window.clearTimeout(this.programmaticScrollTimer);
+            this.programmaticScrollTimer = null;
         }
     }
 }
