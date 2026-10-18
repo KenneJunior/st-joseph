@@ -230,20 +230,16 @@ export class HomeApp {
             });
         }
 
-        // 18. PWA installation prompt
+        // 18. Institutional PWA installation prompt (14-day automatic cooldown, non-modal card)
         new PwaInstallPrompt({
-            title: 'Install SJCCC Mbengwi App',
-            message: 'Add this app to your home screen for quick access and a better experience.',
-            confirmText: 'Yes, Install',
-            cancelText: 'Not now',
+            title: 'Install SJCCC Academic Portal',
+            message: 'Access the college prospectus, academic calendar, and campus handbook anytime — even without internet.',
+            confirmText: 'Install App',
+            cancelText: 'Later',
             type: 'info',
             afterInteraction: true,
-            storageKey: 'pwa-install-prompt',
-            dismissDays: 7,
-            dialogOptions: {
-                timeoutMs: 10000,
-                loading: true,
-            },
+            storageKey: STORAGE_KEYS.PWA_PROMPT,
+            dismissDays: 14,
         });
 
         // 19. Offline connectivity status indicator with Service Worker cache validation
