@@ -90,6 +90,9 @@ const OPTIONAL_PRECACHE_URLS: string[] = [
     '/assets/sjccc-campus.jpg',
     '/assets/sjccc-Classroom.jpg',
     '/assets/mbengwi-map.svg',
+    '/assets/sjccc-sports-instructor.jpg',
+    '/assets/sjccc-sunjo.jpg',
+    '/assets/sjccc-pta.jpg',
 ];
 
 // Approved external CDN hosts (Fonts & Icons only)
