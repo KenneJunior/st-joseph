@@ -2465,6 +2465,56 @@
               </li>
             </ul>
 
+            <!-- Dynamic Google Maps Navigation Quick Scan QR Card -->
+            <div class="location-qr-card" id="locationQrCard" role="region" aria-label="Google Maps Quick Navigation QR Code">
+              <div class="location-qr-visual-wrap">
+                <div class="location-qr-code-box" id="locationQrCodeContainer" title="Click to enlarge Google Maps navigation QR code">
+                  <div class="location-qr-spinner" aria-hidden="true">
+                    <i class="bi bi-arrow-repeat"></i>
+                  </div>
+                </div>
+                <div class="location-qr-badge" aria-hidden="true">
+                  <i class="bi bi-geo-alt-fill"></i>
+                  <span>GPS 6.0315°N</span>
+                </div>
+              </div>
+
+              <div class="location-qr-content">
+                <div class="location-qr-header-row">
+                  <span class="location-qr-pill">
+                    <i class="bi bi-phone" aria-hidden="true"></i> Quick Mobile Scan
+                  </span>
+                  <span class="location-qr-live-indicator" title="Active Google Maps Navigation Route">
+                    <span class="location-qr-pulse-dot" aria-hidden="true"></span> Live Route
+                  </span>
+                </div>
+                <h4 class="location-qr-heading">Scan for Google Maps Navigation</h4>
+                <p class="location-qr-explanation">
+                  Point your smartphone camera to immediately load turn-by-turn driving &amp; transit directions to SJCCC campus gates.
+                </p>
+
+                <div class="location-qr-button-row">
+                  <button type="button" class="location-qr-btn location-qr-btn-primary" id="locationOpenQrModalBtn"
+                    aria-label="Enlarge QR Code for easier scanning or saving">
+                    <i class="bi bi-arrows-fullscreen" aria-hidden="true"></i>
+                    <span>Enlarge QR</span>
+                  </button>
+                  <button type="button" class="location-qr-btn location-qr-btn-outline" id="locationCopyNavUrlBtn"
+                    aria-label="Copy Google Maps navigation link to clipboard">
+                    <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                    <span>Copy GPS Link</span>
+                  </button>
+                  <a href="https://www.google.com/maps/dir/?api=1&destination=6.031509,10.015436" target="_blank"
+                    rel="noopener noreferrer" class="location-qr-btn location-qr-btn-ghost"
+                    aria-label="Direct navigation link (opens in new tab)">
+                    <i class="bi bi-cursor-fill" aria-hidden="true"></i>
+                    <span>Launch Maps</span>
+                  </a>
+                </div>
+                <div class="location-qr-feedback" id="locationQrFeedback" role="status" aria-live="polite"></div>
+              </div>
+            </div>
+
             <div class="location-actions-toolbar">
               <a href="https://maps.google.com/?q=St+Joseph+Secondary+School+Mbengwi+Cameroon" target="_blank"
                 rel="noopener noreferrer" class="btn btn-primary location-action-btn"
@@ -2472,6 +2522,11 @@
                 <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                 <span>Get Driving Directions</span>
               </a>
+              <button type="button" class="location-action-btn location-qr-action-btn" id="locationScanQrBtn"
+                aria-label="Display Google Maps Navigation QR Code">
+                <i class="bi bi-qr-code-scan" aria-hidden="true"></i>
+                <span>Scan Navigation QR</span>
+              </button>
               <a href="#campusMapSection" class="location-action-btn btn-ghost"
                 aria-label="Explore the 6 Virtual Campus Zones">
                 <i class="bi bi-layers" aria-hidden="true"></i>

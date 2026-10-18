@@ -32,6 +32,7 @@ import { renderTimelineMilestones } from '../../features/calendar/TimelineRender
 import { myRemindersController } from '../../features/calendar/MyRemindersController.ts';
 import { VirtualCampusMap } from '../../features/campus/VirtualCampusMap.ts';
 import { LocationMapFacade } from '../../features/location/LocationMapFacade.ts';
+import { LocationQrCode } from '../../features/location/LocationQrCode.ts';
 import { renderNewsStories } from '../../features/news/NewsStoriesRenderer.ts';
 import { EnquiryModal } from '../../features/enquiry/EnquiryModal.ts';
 import { EnquiryForm } from '../../features/enquiry/EnquiryForm.ts';
@@ -170,8 +171,9 @@ export class HomeApp {
         // 13. Virtual Campus Map interactive explorer
         new VirtualCampusMap(HOME_SELECTORS.campusMapContainer);
 
-        // 14. Campus Location & Google Map Interactive Facade
+        // 14. Campus Location & Google Map Interactive Facade & Dynamic Navigation QR Code
         new LocationMapFacade();
+        new LocationQrCode();
 
         // 15. FAQ Accordion & Filtering
         renderFaqItems(document.getElementById('faqAccordion'));
