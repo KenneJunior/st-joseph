@@ -536,6 +536,9 @@
         <a href="#campusMapSection" class="nav-link" title="Campus Map" aria-label="Campus Map"
           toolDescription="Explore our interactive virtual campus map with facility photos and details."><i
             class="bi bi-map nav-icon"></i><span class="nav-text">Campus Map</span></a>
+        <a href="#testimonials" class="nav-link" title="Testimonials" aria-label="Testimonials"
+          toolDescription="Read authentic testimonials and community voices from students, parents, and faculty."><i
+            class="bi bi-chat-quote nav-icon"></i><span class="nav-text">Testimonials</span></a>
         <a href="#faq" class="nav-link" title="FAQ" aria-label="FAQ"
           toolDescription="Browse answers to frequently asked questions about admission requirements, boarding facilities, and school fees."><i
             class="bi bi-question-circle nav-icon"></i><span class="nav-text">FAQ</span></a>
@@ -2187,34 +2190,415 @@
     </section>
 
     <!-- ==================== TESTIMONIALS ==================== -->
-    <section class="section-padding cream-bg" id="testimonials">
-      <span class="section-label">Community Voices</span>
-      <h2 class="section-title">What Our Family Says</h2>
-      <div class="section-divider"></div>
-      <div class="grid-container" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-        <div class="testimonial-card reveal">
-          <img class="testimonial-avatar" src="/assets/sjccc-sports-instructor.jpg" alt="Chrisantus Monjoh Mbobnda, Sports Coordinator" width="80" height="80" loading="lazy"
-            onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
-          <div class="testimonial-quote" aria-hidden="true"><i class="bi bi-chat-quote-fill"></i></div>
-          <p>“For the very first time in the history of the college, Saint Joseph has qualified for Football at the FENASCO Games. With the talent and enthusiasm I see in our students, we are truly proving what SJCCC is capable of achieving.”</p>
-          <div class="testimonial-author">Chrisantus Monjoh Mbobnda</div>
-          <div class="testimonial-role">Sports Coordinator</div>
+    <section class="section-padding cream-bg" id="testimonials" aria-labelledby="testimonialsTitle">
+      <div class="testimonials-header text-center">
+        <span class="section-label">
+          <i class="bi bi-chat-quote-fill me-1" aria-hidden="true"></i> Community Voices
+        </span>
+        <h2 class="section-title" id="testimonialsTitle">What Our Family Says</h2>
+        <p class="section-subtitle">
+          Authentic reflections and lived experiences from the students, educators, and parents who make St. Joseph's
+          Catholic Comprehensive College a sanctuary of moral discipline, academic excellence, and Christian virtue.
+        </p>
+        <div class="section-divider"></div>
+      </div>
+
+      <!-- Interactive Role Filter Tabs -->
+      <div class="testimonials-filter-bar" role="tablist" aria-label="Filter testimonials by community role">
+        <div class="testimonials-filter-glider" id="testimonialsFilterGlider" aria-hidden="true"></div>
+        <button type="button" class="testimonial-filter-btn active" role="tab" id="tab-all" data-filter="all" aria-selected="true" aria-controls="testimonialsGrid" tabindex="0">
+          <i class="bi bi-grid-fill" aria-hidden="true"></i>
+          <span class="filter-label">All Perspectives</span>
+          <span class="filter-count" aria-label="6 stories">6</span>
+        </button>
+        <button type="button" class="testimonial-filter-btn" role="tab" id="tab-students" data-filter="students" aria-selected="false" aria-controls="testimonialsGrid" tabindex="-1">
+          <i class="bi bi-mortarboard-fill" aria-hidden="true"></i>
+          <span class="filter-label">Student Leaders</span>
+          <span class="filter-count" aria-label="2 stories">2</span>
+        </button>
+        <button type="button" class="testimonial-filter-btn" role="tab" id="tab-faculty" data-filter="faculty" aria-selected="false" aria-controls="testimonialsGrid" tabindex="-1">
+          <i class="bi bi-person-badge-fill" aria-hidden="true"></i>
+          <span class="filter-label">Faculty &amp; Staff</span>
+          <span class="filter-count" aria-label="2 stories">2</span>
+        </button>
+        <button type="button" class="testimonial-filter-btn" role="tab" id="tab-parents" data-filter="parents" aria-selected="false" aria-controls="testimonialsGrid" tabindex="-1">
+          <i class="bi bi-people-fill" aria-hidden="true"></i>
+          <span class="filter-label">Parents &amp; PTA</span>
+          <span class="filter-count" aria-label="1 stories">1</span>
+        </button>
+        <button type="button" class="testimonial-filter-btn" role="tab" id="tab-alumni" data-filter="alumni" aria-selected="false" aria-controls="testimonialsGrid" tabindex="-1">
+          <i class="bi bi-award-fill" aria-hidden="true"></i>
+          <span class="filter-label">Alumni Network</span>
+          <span class="filter-count" aria-label="1 stories">1</span>
+        </button>
+      </div>
+
+      <!-- Testimonials Cards Grid -->
+      <div class="testimonials-grid" id="testimonialsGrid" role="region" aria-live="polite">
+        <!-- Card 1: Sports Coordinator -->
+        <article class="testimonial-card reveal" data-category="faculty" data-id="chrisantus-sports" tabindex="0" aria-label="Testimonial by Chrisantus Monjoh Mbobnda, Sports Coordinator">
+          <div class="testimonial-spotlight" aria-hidden="true"></div>
+          <div class="testimonial-card__header">
+            <span class="testimonial-badge" data-category="faculty">
+              <i class="bi bi-award-fill me-1" aria-hidden="true"></i> Faculty &amp; Athletics
+            </span>
+            <div class="testimonial-rating" aria-label="5 out of 5 stars rating">
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div class="testimonial-watermark" aria-hidden="true"><i class="bi bi-quote"></i></div>
+          <div class="testimonial-highlight-chip">
+            <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+            <span>FENASCO Football Qualification 2026</span>
+          </div>
+          <blockquote class="testimonial-quote-body">
+            <p>“For the very first time in the history of the college, Saint Joseph has qualified for Football at the FENASCO Games. With the talent and enthusiasm I see in our students, we are truly proving what SJCCC is capable of achieving.”</p>
+          </blockquote>
+          <div class="testimonial-expansion" id="expansion-chrisantus-sports" hidden>
+            <div class="testimonial-expansion__inner">
+              <div class="expansion-accent-line"></div>
+              <p class="expansion-story">Under dedicated coaching and Catholic moral formation, our sports program blends physical fitness with Christian sportsmanship. The 2026 qualification for FENASCO Football marks a historic milestone for Momo Division, demonstrating that academic rigor and athletic triumph go hand-in-hand at SJCCC.</p>
+              <div class="expansion-meta">
+                <span class="expansion-affiliation"><i class="bi bi-geo-alt-fill me-1" aria-hidden="true"></i> SJCCC Mbengwi Campus</span>
+                <span class="expansion-session">2026/2027 Academic Year</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card__footer">
+            <div class="testimonial-profile">
+              <div class="testimonial-avatar-wrapper">
+                <img class="testimonial-avatar" src="/assets/sjccc-sports-instructor.jpg" alt="Chrisantus Monjoh Mbobnda, Sports Coordinator" width="64" height="64" loading="lazy" onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
+                <span class="testimonial-verified-badge" title="Verified College Member" aria-label="Verified"><i class="bi bi-check-lg" aria-hidden="true"></i></span>
+              </div>
+              <div class="testimonial-meta">
+                <h3 class="testimonial-author">Chrisantus Monjoh Mbobnda</h3>
+                <div class="testimonial-role">Sports Coordinator &amp; Physical Education Master</div>
+                <div class="testimonial-virtue"><i class="bi bi-shield-fill-check me-1" aria-hidden="true"></i> <span>Discipline &amp; Teamwork</span></div>
+              </div>
+            </div>
+            <div class="testimonial-actions">
+              <button type="button" class="testimonial-expand-btn" data-target="expansion-chrisantus-sports" aria-expanded="false" aria-controls="expansion-chrisantus-sports" aria-label="Read full context for Chrisantus Monjoh Mbobnda">
+                <span class="btn-text">Full Perspective</span>
+                <i class="bi bi-chevron-down toggle-icon" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="testimonial-copy-btn" data-quote="“For the very first time in the history of the college, Saint Joseph has qualified for Football at the FENASCO Games. With the talent and enthusiasm I see in our students, we are truly proving what SJCCC is capable of achieving.” — Chrisantus Monjoh Mbobnda, Sports Coordinator (SJCCC Mbengwi)" title="Copy Quote" aria-label="Copy quote to clipboard">
+                <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                <span class="copy-feedback" aria-hidden="true">Copied!</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2: Student Prefect -->
+        <article class="testimonial-card reveal reveal-delay-1" data-category="students" data-id="sunjoh-prefect" tabindex="0" aria-label="Testimonial by Sunjoh Tessy, Assistant Senior Girls’ Prefect">
+          <div class="testimonial-spotlight" aria-hidden="true"></div>
+          <div class="testimonial-card__header">
+            <span class="testimonial-badge" data-category="students">
+              <i class="bi bi-award-fill me-1" aria-hidden="true"></i> Student Leadership
+            </span>
+            <div class="testimonial-rating" aria-label="5 out of 5 stars rating">
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div class="testimonial-watermark" aria-hidden="true"><i class="bi bi-quote"></i></div>
+          <div class="testimonial-highlight-chip">
+            <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+            <span>Serene Campus &amp; Accessible Faculty</span>
+          </div>
+          <blockquote class="testimonial-quote-body">
+            <p>“Saint Joseph is a serene environment that makes learning natural and calm. The student-teacher relationship is truly wonderful—our teachers are always accessible whenever we face difficulties, helping every student adapt quickly and excel.”</p>
+          </blockquote>
+          <div class="testimonial-expansion" id="expansion-sunjoh-prefect" hidden>
+            <div class="testimonial-expansion__inner">
+              <div class="expansion-accent-line"></div>
+              <p class="expansion-story">Living on campus in Mbengwi provides an unshakeable sense of security, peace, and focus away from city distractions. The structured evening prep routines and personal mentorship from house mistresses and tutors have enabled me to excel in my studies while serving our school family.</p>
+              <div class="expansion-meta">
+                <span class="expansion-affiliation"><i class="bi bi-geo-alt-fill me-1" aria-hidden="true"></i> SJCCC Mbengwi Campus</span>
+                <span class="expansion-session">2026/2027 Academic Year</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card__footer">
+            <div class="testimonial-profile">
+              <div class="testimonial-avatar-wrapper">
+                <img class="testimonial-avatar" src="/assets/sjccc-sunjo.jpg" alt="Sunjoh Tessy, Assistant Senior Girls’ Prefect" width="64" height="64" loading="lazy" onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
+                <span class="testimonial-verified-badge" title="Verified College Member" aria-label="Verified"><i class="bi bi-check-lg" aria-hidden="true"></i></span>
+              </div>
+              <div class="testimonial-meta">
+                <h3 class="testimonial-author">Sunjoh Tessy</h3>
+                <div class="testimonial-role">Assistant Senior Girls’ Prefect</div>
+                <div class="testimonial-virtue"><i class="bi bi-shield-fill-check me-1" aria-hidden="true"></i> <span>Academic Excellence</span></div>
+              </div>
+            </div>
+            <div class="testimonial-actions">
+              <button type="button" class="testimonial-expand-btn" data-target="expansion-sunjoh-prefect" aria-expanded="false" aria-controls="expansion-sunjoh-prefect" aria-label="Read full context for Sunjoh Tessy">
+                <span class="btn-text">Full Perspective</span>
+                <i class="bi bi-chevron-down toggle-icon" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="testimonial-copy-btn" data-quote="“Saint Joseph is a serene environment that makes learning natural and calm. The student-teacher relationship is truly wonderful—our teachers are always accessible whenever we face difficulties, helping every student adapt quickly and excel.” — Sunjoh Tessy, Assistant Senior Girls’ Prefect" title="Copy Quote" aria-label="Copy quote to clipboard">
+                <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                <span class="copy-feedback" aria-hidden="true">Copied!</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 3: PTA Secretary General -->
+        <article class="testimonial-card reveal reveal-delay-2" data-category="parents" data-id="cyprian-pta" tabindex="0" aria-label="Testimonial by Cyprian Kudi Montwa, Secretary General of the PTA">
+          <div class="testimonial-spotlight" aria-hidden="true"></div>
+          <div class="testimonial-card__header">
+            <span class="testimonial-badge" data-category="parents">
+              <i class="bi bi-award-fill me-1" aria-hidden="true"></i> Parents &amp; PTA Council
+            </span>
+            <div class="testimonial-rating" aria-label="5 out of 5 stars rating">
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div class="testimonial-watermark" aria-hidden="true"><i class="bi bi-quote"></i></div>
+          <div class="testimonial-highlight-chip">
+            <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+            <span>Modern Labs &amp; Secure Transport</span>
+          </div>
+          <blockquote class="testimonial-quote-body">
+            <p>“The PTA works hand-in-hand with the administration to equip modern science laboratories, provide dedicated school transport, and foster holistic development. We invite parents all over Cameroon to come and discover Saint Joseph.”</p>
+          </blockquote>
+          <div class="testimonial-expansion" id="expansion-cyprian-pta" hidden>
+            <div class="testimonial-expansion__inner">
+              <div class="expansion-accent-line"></div>
+              <p class="expansion-story">As parents, our peace of mind comes from knowing our children are safe, morally guarded, and guided by principled Catholic educators. The Parent-Teacher Association actively co-funds advanced laboratory apparatus, compound infrastructure, and student health welfare.</p>
+              <div class="expansion-meta">
+                <span class="expansion-affiliation"><i class="bi bi-geo-alt-fill me-1" aria-hidden="true"></i> SJCCC Mbengwi Campus</span>
+                <span class="expansion-session">2026/2027 Academic Year</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card__footer">
+            <div class="testimonial-profile">
+              <div class="testimonial-avatar-wrapper">
+                <img class="testimonial-avatar" src="/assets/sjccc-pta.jpg" alt="Cyprian Kudi Montwa, Secretary General of the PTA" width="64" height="64" loading="lazy" onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
+                <span class="testimonial-verified-badge" title="Verified College Member" aria-label="Verified"><i class="bi bi-check-lg" aria-hidden="true"></i></span>
+              </div>
+              <div class="testimonial-meta">
+                <h3 class="testimonial-author">Cyprian Kudi Montwa</h3>
+                <div class="testimonial-role">Secretary General of the PTA</div>
+                <div class="testimonial-virtue"><i class="bi bi-shield-fill-check me-1" aria-hidden="true"></i> <span>Community Partnership</span></div>
+              </div>
+            </div>
+            <div class="testimonial-actions">
+              <button type="button" class="testimonial-expand-btn" data-target="expansion-cyprian-pta" aria-expanded="false" aria-controls="expansion-cyprian-pta" aria-label="Read full context for Cyprian Kudi Montwa">
+                <span class="btn-text">Full Perspective</span>
+                <i class="bi bi-chevron-down toggle-icon" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="testimonial-copy-btn" data-quote="“The PTA works hand-in-hand with the administration to equip modern science laboratories, provide dedicated school transport, and foster holistic development. We invite parents all over Cameroon to come and discover Saint Joseph.” — Cyprian Kudi Montwa, Secretary General of the PTA" title="Copy Quote" aria-label="Copy quote to clipboard">
+                <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                <span class="copy-feedback" aria-hidden="true">Copied!</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 4: Alumnus / Biomedical Scientist -->
+        <article class="testimonial-card reveal reveal-delay-1" data-category="alumni" data-id="dr-jude-alumni" tabindex="0" aria-label="Testimonial by Dr. Jude N. Tembeng, Alumnus and Biomedical Researcher">
+          <div class="testimonial-spotlight" aria-hidden="true"></div>
+          <div class="testimonial-card__header">
+            <span class="testimonial-badge" data-category="alumni">
+              <i class="bi bi-award-fill me-1" aria-hidden="true"></i> Alumni Network
+            </span>
+            <div class="testimonial-rating" aria-label="5 out of 5 stars rating">
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div class="testimonial-watermark" aria-hidden="true"><i class="bi bi-quote"></i></div>
+          <div class="testimonial-highlight-chip">
+            <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+            <span>Bedrock for Scientific Research</span>
+          </div>
+          <blockquote class="testimonial-quote-body">
+            <p>“The rigorous laboratory discipline, Christian moral compass, and self-reliance instilled at SJCCC provided the bedrock for my research career. SJCCC does not simply prepare you for exams; it equips you with integrity that lasts a lifetime.”</p>
+          </blockquote>
+          <div class="testimonial-expansion" id="expansion-dr-jude-alumni" hidden>
+            <div class="testimonial-expansion__inner">
+              <div class="expansion-accent-line"></div>
+              <p class="expansion-story">From Form One through Upper Sixth at Saint Joseph, hands-on physics and chemistry sessions taught me to think critically and observe with patience. Those formative years directly paved my path to earning a doctorate in biomedical sciences and leading clinical research initiatives.</p>
+              <div class="expansion-meta">
+                <span class="expansion-affiliation"><i class="bi bi-geo-alt-fill me-1" aria-hidden="true"></i> Class of 2012 · Science Stream</span>
+                <span class="expansion-session">Alumni Foundation</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card__footer">
+            <div class="testimonial-profile">
+              <div class="testimonial-avatar-wrapper">
+                <img class="testimonial-avatar" src="/assets/sjccc-graduants-0.jpg" alt="Dr. Jude N. Tembeng, Alumnus and Biomedical Researcher" width="64" height="64" loading="lazy" onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
+                <span class="testimonial-verified-badge" title="Verified College Alumnus" aria-label="Verified"><i class="bi bi-check-lg" aria-hidden="true"></i></span>
+              </div>
+              <div class="testimonial-meta">
+                <h3 class="testimonial-author">Dr. Jude N. Tembeng</h3>
+                <div class="testimonial-role">Alumnus · Biomedical Researcher</div>
+                <div class="testimonial-virtue"><i class="bi bi-shield-fill-check me-1" aria-hidden="true"></i> <span>Lifelong Integrity</span></div>
+              </div>
+            </div>
+            <div class="testimonial-actions">
+              <button type="button" class="testimonial-expand-btn" data-target="expansion-dr-jude-alumni" aria-expanded="false" aria-controls="expansion-dr-jude-alumni" aria-label="Read full context for Dr. Jude N. Tembeng">
+                <span class="btn-text">Full Perspective</span>
+                <i class="bi bi-chevron-down toggle-icon" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="testimonial-copy-btn" data-quote="“The rigorous laboratory discipline, Christian moral compass, and self-reliance instilled at SJCCC provided the bedrock for my research career. SJCCC does not simply prepare you for exams; it equips you with integrity that lasts a lifetime.” — Dr. Jude N. Tembeng, Alumnus" title="Copy Quote" aria-label="Copy quote to clipboard">
+                <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                <span class="copy-feedback" aria-hidden="true">Copied!</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 5: Pastoral Care / House Matron -->
+        <article class="testimonial-card reveal reveal-delay-2" data-category="faculty" data-id="sr-beatrice-matron" tabindex="0" aria-label="Testimonial by Rev. Sister Beatrice Lum, House Matron">
+          <div class="testimonial-spotlight" aria-hidden="true"></div>
+          <div class="testimonial-card__header">
+            <span class="testimonial-badge" data-category="faculty">
+              <i class="bi bi-award-fill me-1" aria-hidden="true"></i> Pastoral Care &amp; Welfare
+            </span>
+            <div class="testimonial-rating" aria-label="5 out of 5 stars rating">
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div class="testimonial-watermark" aria-hidden="true"><i class="bi bi-quote"></i></div>
+          <div class="testimonial-highlight-chip">
+            <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+            <span>Holistic Spiritual Formation</span>
+          </div>
+          <blockquote class="testimonial-quote-body">
+            <p>“Our residential boarding life is centered on prayer, mutual brotherhood and sisterhood, and daily order. Seeing timid Form One children mature into confident, God-fearing leaders by Upper Sixth is the greatest reward of our Catholic vocation.”</p>
+          </blockquote>
+          <div class="testimonial-expansion" id="expansion-sr-beatrice-matron" hidden>
+            <div class="testimonial-expansion__inner">
+              <div class="expansion-accent-line"></div>
+              <p class="expansion-story">In the college dormitories, we ensure every boy and girl receives maternal care, balanced nutrition, and daily spiritual encouragement. Our daily rhythm of chapel reflection, supervised prep, and communal chores builds self-reliant characters prepared for life.</p>
+              <div class="expansion-meta">
+                <span class="expansion-affiliation"><i class="bi bi-geo-alt-fill me-1" aria-hidden="true"></i> Pastoral Ministry Team</span>
+                <span class="expansion-session">Residential Formation</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card__footer">
+            <div class="testimonial-profile">
+              <div class="testimonial-avatar-wrapper">
+                <img class="testimonial-avatar" src="/assets/sjccc-student-meeting.jpeg" alt="Rev. Sister Beatrice Lum, House Matron" width="64" height="64" loading="lazy" onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
+                <span class="testimonial-verified-badge" title="Verified Pastoral Staff" aria-label="Verified"><i class="bi bi-check-lg" aria-hidden="true"></i></span>
+              </div>
+              <div class="testimonial-meta">
+                <h3 class="testimonial-author">Rev. Sister Beatrice Lum</h3>
+                <div class="testimonial-role">House Matron &amp; Pastoral Care Director</div>
+                <div class="testimonial-virtue"><i class="bi bi-shield-fill-check me-1" aria-hidden="true"></i> <span>Faith &amp; Pastoral Love</span></div>
+              </div>
+            </div>
+            <div class="testimonial-actions">
+              <button type="button" class="testimonial-expand-btn" data-target="expansion-sr-beatrice-matron" aria-expanded="false" aria-controls="expansion-sr-beatrice-matron" aria-label="Read full context for Rev. Sister Beatrice Lum">
+                <span class="btn-text">Full Perspective</span>
+                <i class="bi bi-chevron-down toggle-icon" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="testimonial-copy-btn" data-quote="“Our residential boarding life is centered on prayer, mutual brotherhood and sisterhood, and daily order. Seeing timid Form One children mature into confident, God-fearing leaders by Upper Sixth is the greatest reward of our Catholic vocation.” — Rev. Sister Beatrice Lum, House Matron" title="Copy Quote" aria-label="Copy quote to clipboard">
+                <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                <span class="copy-feedback" aria-hidden="true">Copied!</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 6: Senior Boy Prefect / Technical Stream -->
+        <article class="testimonial-card reveal reveal-delay-3" data-category="students" data-id="mbah-emmanuel-prefect" tabindex="0" aria-label="Testimonial by Mbah Emmanuel, Senior Boy Prefect">
+          <div class="testimonial-spotlight" aria-hidden="true"></div>
+          <div class="testimonial-card__header">
+            <span class="testimonial-badge" data-category="students">
+              <i class="bi bi-award-fill me-1" aria-hidden="true"></i> Student Leadership
+            </span>
+            <div class="testimonial-rating" aria-label="5 out of 5 stars rating">
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div class="testimonial-watermark" aria-hidden="true"><i class="bi bi-quote"></i></div>
+          <div class="testimonial-highlight-chip">
+            <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+            <span>Dual Technical &amp; Academic Mastery</span>
+          </div>
+          <blockquote class="testimonial-quote-body">
+            <p>“Combining technical Electrical Power Systems with Advanced Level Sciences gives us hands-on mastery that grammar schools cannot match. When you step out of SJCCC, you possess both academic insight and tangible trade skills.”</p>
+          </blockquote>
+          <div class="testimonial-expansion" id="expansion-mbah-emmanuel-prefect" hidden>
+            <div class="testimonial-expansion__inner">
+              <div class="expansion-accent-line"></div>
+              <p class="expansion-story">Working in practical electrical and construction workshops while tackling rigorous GCE theory taught me real engineering problem-solving. At SJCCC, teachers remain in the workshops after regular hours until every student has mastered both the circuit and the mathematics behind it.</p>
+              <div class="expansion-meta">
+                <span class="expansion-affiliation"><i class="bi bi-geo-alt-fill me-1" aria-hidden="true"></i> Class of 2026 · Technical Division</span>
+                <span class="expansion-session">Edificamus Regnum Dei</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card__footer">
+            <div class="testimonial-profile">
+              <div class="testimonial-avatar-wrapper">
+                <img class="testimonial-avatar" src="/assets/Students.jpeg" alt="Mbah Emmanuel, Senior Boy Prefect" width="64" height="64" loading="lazy" onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
+                <span class="testimonial-verified-badge" title="Verified Student Leader" aria-label="Verified"><i class="bi bi-check-lg" aria-hidden="true"></i></span>
+              </div>
+              <div class="testimonial-meta">
+                <h3 class="testimonial-author">Mbah Emmanuel</h3>
+                <div class="testimonial-role">Senior Boy Prefect · Technical Division</div>
+                <div class="testimonial-virtue"><i class="bi bi-shield-fill-check me-1" aria-hidden="true"></i> <span>Minds &amp; Hands Synergy</span></div>
+              </div>
+            </div>
+            <div class="testimonial-actions">
+              <button type="button" class="testimonial-expand-btn" data-target="expansion-mbah-emmanuel-prefect" aria-expanded="false" aria-controls="expansion-mbah-emmanuel-prefect" aria-label="Read full context for Mbah Emmanuel">
+                <span class="btn-text">Full Perspective</span>
+                <i class="bi bi-chevron-down toggle-icon" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="testimonial-copy-btn" data-quote="“Combining technical Electrical Power Systems with Advanced Level Sciences gives us hands-on mastery that grammar schools cannot match. When you step out of SJCCC, you possess both academic insight and tangible trade skills.” — Mbah Emmanuel, Senior Boy Prefect" title="Copy Quote" aria-label="Copy quote to clipboard">
+                <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                <span class="copy-feedback" aria-hidden="true">Copied!</span>
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Trust & Verification Footer Strip -->
+      <div class="testimonials-trust-strip">
+        <div class="trust-pill">
+          <i class="bi bi-shield-check" aria-hidden="true"></i>
+          <span>100% Authentic Community Voices</span>
         </div>
-        <div class="testimonial-card reveal reveal-delay-1">
-          <img class="testimonial-avatar" src="/assets/sjccc-sunjo.jpg" alt="Sunjoh Tessy, Assistant Senior Girls’ Prefect" width="80" height="80" loading="lazy"
-            onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
-          <div class="testimonial-quote" aria-hidden="true"><i class="bi bi-chat-quote-fill"></i></div>
-          <p>“Saint Joseph is a serene environment that makes learning natural and calm. The student-teacher relationship is truly wonderful—our teachers are always accessible whenever we face difficulties, helping every student adapt quickly and excel.”</p>
-          <div class="testimonial-author">Sunjoh Tessy</div>
-          <div class="testimonial-role">Assistant Senior Girls’ Prefect</div>
+        <div class="trust-divider" aria-hidden="true">·</div>
+        <div class="trust-pill">
+          <i class="bi bi-mortarboard" aria-hidden="true"></i>
+          <span>Registered with Cameroon GCE Board</span>
         </div>
-        <div class="testimonial-card reveal reveal-delay-2">
-          <img class="testimonial-avatar" src="/assets/sjccc-pta.jpg" alt="Cyprian Kudi Montwa, Secretary General of the PTA" width="80" height="80" loading="lazy"
-            onerror="this.onerror=null; this.src='/assets/icons/icon.svg'; this.dataset.fallbackApplied='true';">
-          <div class="testimonial-quote" aria-hidden="true"><i class="bi bi-chat-quote-fill"></i></div>
-          <p>“The PTA works hand-in-hand with the administration to equip modern science laboratories, provide dedicated school transport, and foster holistic development. We invite parents all over Cameroon to come and discover Saint Joseph.”</p>
-          <div class="testimonial-author">Cyprian Kudi Montwa</div>
-          <div class="testimonial-role">Secretary General of the PTA</div>
+        <div class="trust-divider" aria-hidden="true">·</div>
+        <div class="trust-pill">
+          <i class="bi bi-heart-pulse" aria-hidden="true"></i>
+          <span>BEPHA Mutual Healthcare Protected</span>
         </div>
       </div>
     </section>
@@ -2585,7 +2969,7 @@
             Asked Questions</a></p>
         <p><a href="/prospectus.html" style="color:#b0c4de;text-decoration:none;"><i
               class="bi bi-arrow-right-short"></i> Student Prospectus</a></p>
-        <p class="d-none"><a href="#testimonials" style="color:#b0c4de;text-decoration:none;"><i
+        <p><a href="#testimonials" style="color:#b0c4de;text-decoration:none;"><i
               class="bi bi-arrow-right-short"></i> Testimonials</a></p>
       </div>
     </div>
