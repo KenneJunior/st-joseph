@@ -1,12 +1,89 @@
 /* ============================================
-   EVENTS & NEWS GRID (Editorial Institutional Redesign)
+   EVENTS & NEWS MASONRY GRID (Editorial Institutional Redesign)
+   Responsive multi-column masonry flow ensuring the featured card
+   commands top prominence across all viewports.
    ============================================ */
 .events-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 28px;
+  column-count: 2;
+  column-gap: 28px;
   max-width: 1140px;
   margin: 0 auto;
+}
+
+/* Progressive enhancement for browsers supporting CSS grid masonry */
+@supports (grid-template-rows: masonry) {
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: masonry;
+    column-gap: 28px;
+    row-gap: 28px;
+    column-count: auto;
+  }
+}
+
+/* Base Event / News Card Structure in Masonry Flow */
+.event-card,
+.news-card {
+  break-inside: avoid-column;
+  page-break-inside: avoid;
+  margin-bottom: 28px;
+  display: block;
+  width: 100%;
+}
+
+@supports (grid-template-rows: masonry) {
+  .event-card,
+  .news-card {
+    margin-bottom: 0;
+  }
+}
+
+/* Prominent Featured Card Architecture */
+.news-card--featured {
+  column-span: all;
+  margin-bottom: 32px;
+  border-color: rgba(201, 162, 41, 0.45);
+  box-shadow: 0 10px 30px rgba(7, 24, 46, 0.08), 0 0 20px rgba(201, 162, 41, 0.12);
+  background: var(--surface-card, #ffffff);
+  position: relative;
+}
+
+.news-card--featured::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #C9A229 0%, #F3D779 50%, #07182E 100%);
+  z-index: 3;
+}
+
+@media (min-width: 992px) {
+  /* On large screens, give the featured card a commanding horizontal split when not expanded */
+  .news-card--featured:not(.is-expanded) {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+  }
+
+  .news-card--featured:not(.is-expanded) .news-card__media {
+    height: 100%;
+    aspect-ratio: auto;
+    min-height: 280px;
+  }
+
+  .news-card--featured:not(.is-expanded) .news-card__content {
+    padding: 28px 30px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .news-card--featured:not(.is-expanded) .news-card__title {
+    font-size: 1.65rem;
+    line-height: 1.22;
+  }
 }
 
 /* Dynamic News Card Grid Expansion States */
@@ -15,7 +92,7 @@
   grid-auto-flow: dense;
 }
 
-/* When any article is expanded, all non-expanded articles occupy half width (span 1) */
+/* When any article is expanded, all non-expanded articles occupy column width */
 .events-grid.has-expanded-card .news-card:not(.is-expanded),
 .events-grid:has(.news-card.is-expanded) .news-card:not(.is-expanded) {
   grid-column: span 1 !important;
@@ -23,37 +100,60 @@
 
 @media (max-width: 1024px) {
   .events-grid {
-    gap: 20px;
+    column-gap: 20px;
+  }
+  .event-card,
+  .news-card {
+    margin-bottom: 20px;
+  }
+  .news-card--featured {
+    margin-bottom: 24px;
   }
 }
 
 @media (max-width: 768px) {
   .events-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    column-count: 2;
+    column-gap: 12px;
     max-width: 100%;
   }
 
+  .event-card,
+  .news-card {
+    margin-bottom: 12px;
+  }
+
   .news-card--featured {
+    column-span: all;
     grid-column: 1 / -1;
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .events-grid {
+    column-count: 1;
+    column-gap: 0;
+  }
+
+  .event-card,
+  .news-card {
+    margin-bottom: 14px;
+  }
+
+  .news-card--featured {
+    margin-bottom: 16px;
   }
 }
 
 @media (max-width: 480px) {
   .events-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 6px;
-  }
-}
-
-@media (max-width: 360px) {
-  .events-grid {
-    grid-template-columns: 1fr;
+    column-count: 1;
   }
 
-  .events-grid.has-expanded-card .news-card:not(.is-expanded),
-  .events-grid:has(.news-card.is-expanded) .news-card:not(.is-expanded) {
-    grid-column: 1 / -1 !important;
+  .event-card,
+  .news-card {
+    margin-bottom: 10px;
   }
 }
 
@@ -683,6 +783,13 @@ body.dark-mode .event-card:hover,
 body.dark-mode .bg-image-news .event-card:hover {
   border-color: rgba(243, 215, 121, 0.6);
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(201, 162, 41, 0.25);
+}
+
+html.dark-mode .news-card--featured,
+body.dark-mode .news-card--featured {
+  background: #0d1f38;
+  border-color: rgba(243, 215, 121, 0.45);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(201, 162, 41, 0.2);
 }
 
 html.dark-mode .news-card__title,
