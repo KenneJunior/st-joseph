@@ -42,6 +42,7 @@ import { OfflineIndicator } from '../../features/offline/OfflineIndicator.ts';
 import { LiquidGlassAdapter } from '../../ui/effects/LiquidGlassAdapter.ts';
 import { CardSplitter } from '../../ui/utils/CardSplitter.ts';
 import { initAllBlurredImages } from '../../ui/utils/BlurredImageLoader.ts';
+import { TestimonialsSection } from '../../features/testimonials/TestimonialsSection.ts';
 
 export class HomeApp {
     constructor() {
@@ -174,6 +175,9 @@ export class HomeApp {
         // 14. Campus Location & Google Map Interactive Facade & Dynamic Navigation QR Code
         new LocationMapFacade();
         new LocationQrCode();
+
+        // 14b. Interactive Testimonials & Community Voices (Spotlight, category glider, story drawers)
+        new TestimonialsSection('#testimonials');
 
         // 15. FAQ Accordion & Filtering
         renderFaqItems(document.getElementById('faqAccordion'));
