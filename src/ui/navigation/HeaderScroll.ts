@@ -25,13 +25,12 @@ export class HeaderScroll {
     public static readonly UPWARD_THRESHOLD_PX: number = 8;
     public static readonly TOP_PAGE_THRESHOLD_PX: number = 80;
 
-    // Header progressive blur transition range and scrolled class hysteresis thresholds
+    // Header scrolled class hysteresis thresholds (activating at 70px, deactivating at 50px)
+    public static readonly SCROLLED_ACTIVATION_THRESHOLD_PX: number = 70;
+    public static readonly SCROLLED_DEACTIVATION_THRESHOLD_PX: number = 50;
+    public static readonly SCROLLED_ENTER_THRESHOLD_PX: number = 70;
+    public static readonly SCROLLED_EXIT_THRESHOLD_PX: number = 50;
     public static readonly BLUR_RAMP_DISTANCE_PX: number = 150;
-    public static readonly SCROLLED_ENTER_THRESHOLD_PX: number = 55;
-    public static readonly SCROLLED_EXIT_THRESHOLD_PX: number = 25;
-
-    // Cached blur intensity to prevent redundant DOM style mutations during deep scrolling
-    private lastBlurIntensity: number = -1;
 
     // Direction and pivot tracking for hysteresis
     private scrollPivotY: number = 0;
@@ -215,28 +214,19 @@ export class HeaderScroll {
         if (!this.ticking) {
             this.ticking = true;
             window.requestAnimationFrame(() => {
-                // Progressive blur - add/remove scrolled class with hysteresis to eliminate boundary jitter
+                // Progressive blur & glass state: add/remove .scrolled class with hysteresis
+                // Activating at 70px, deactivating at 50px to eliminate boundary flickering
                 const isCurrentlyScrolled = this.header.classList.contains('scrolled');
-                const scrollThreshold = isCurrentlyScrolled
-                    ? HeaderScroll.SCROLLED_EXIT_THRESHOLD_PX
-                    : HeaderScroll.SCROLLED_ENTER_THRESHOLD_PX;
-                const shouldBeScrolled = this.lastScrollY > scrollThreshold;
+                const shouldBeScrolled = isCurrentlyScrolled
+                    ? this.lastScrollY > HeaderScroll.SCROLLED_DEACTIVATION_THRESHOLD_PX
+                    : this.lastScrollY >= HeaderScroll.SCROLLED_ACTIVATION_THRESHOLD_PX;
+
                 if (isCurrentlyScrolled !== shouldBeScrolled) {
                     this.header.classList.toggle('scrolled', shouldBeScrolled);
                 }
 
-                // Dynamic blur intensity: smooth linear progression without abrupt cliffs
-                const isMobile = window.innerWidth <= 768;
-                const minBlur = isMobile ? 4 : 6;
-                const maxBlur = isMobile ? 10 : 16;
-                const scrollProgress = Math.min(1, Math.max(0, this.lastScrollY / HeaderScroll.BLUR_RAMP_DISTANCE_PX));
-                const blurIntensity = Math.round((minBlur + scrollProgress * (maxBlur - minBlur)) * 10) / 10;
-
-                // Cache check: prevent redundant DOM style writes during deep page scrolling
-                if (blurIntensity !== this.lastBlurIntensity) {
-                    this.header.style.setProperty('--blur-intensity', `${blurIntensity}px`);
-                    this.lastBlurIntensity = blurIntensity;
-                }
+                // Blur state management is consolidated into CSS classes (.scrolled),
+                // eliminating continuous inline style mutations and forced reflows on every frame.
 
                 // Mobile bottom bar visibility class
                 if (this.bottomBar) {

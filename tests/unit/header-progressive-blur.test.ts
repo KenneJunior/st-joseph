@@ -103,62 +103,58 @@ describe('SJCCC Header Progressive Blur System', () => {
             Object.defineProperty(dom.window, 'innerWidth', { value: w, configurable: true, writable: true });
         };
 
-        it('defines constants for smooth progressive blur ramping and scrolled hysteresis', () => {
-            expect(HeaderScroll.BLUR_RAMP_DISTANCE_PX).toBe(150);
-            expect(HeaderScroll.SCROLLED_ENTER_THRESHOLD_PX).toBe(55);
-            expect(HeaderScroll.SCROLLED_EXIT_THRESHOLD_PX).toBe(25);
+        it('defines constants for scrolled hysteresis with activation (70px) and deactivation (50px) thresholds', () => {
+            expect(HeaderScroll.SCROLLED_ACTIVATION_THRESHOLD_PX).toBe(70);
+            expect(HeaderScroll.SCROLLED_DEACTIVATION_THRESHOLD_PX).toBe(50);
+            expect(HeaderScroll.SCROLLED_ENTER_THRESHOLD_PX).toBe(70);
+            expect(HeaderScroll.SCROLLED_EXIT_THRESHOLD_PX).toBe(50);
         });
 
-        it('initializes --blur-intensity smoothly without sudden jumps', () => {
+        it('initializes in unscrolled state at top of page without continuous inline style overrides', () => {
             setInnerWidth(1200);
             setScrollY(0);
 
             headerScroll = new HeaderScroll(headerEl, bottomBarEl);
-            expect(headerEl.style.getPropertyValue('--blur-intensity')).toBe('6px');
             expect(headerEl.classList.contains('scrolled')).toBe(false);
+            // Consolidated blur management relies on CSS classes rather than continuous inline style writes
+            expect(headerEl.style.getPropertyValue('--blur-intensity')).toBe('');
         });
 
-        it('progressively ramps blur-intensity during scrolling and enters scrolled state with hysteresis', () => {
+        it('enters scrolled state with hysteresis (activating at 70px, deactivating at 50px) to prevent flickering', () => {
             setInnerWidth(1200);
             setScrollY(0);
             headerScroll = new HeaderScroll(headerEl, bottomBarEl);
 
-            // Scroll to 75px (halfway through the 150px ramp, past 55px enter threshold)
+            // Scroll to 60px: below 70px activation threshold -> remains unscrolled
+            setScrollY(60);
+            dom.window.dispatchEvent(new dom.window.Event('scroll'));
+            expect(headerEl.classList.contains('scrolled')).toBe(false);
+
+            // Scroll to 75px: passes 70px activation threshold -> becomes scrolled
             setScrollY(75);
             dom.window.dispatchEvent(new dom.window.Event('scroll'));
-
             expect(headerEl.classList.contains('scrolled')).toBe(true);
-            const intensityHalf = parseFloat(headerEl.style.getPropertyValue('--blur-intensity'));
-            expect(intensityHalf).toBeCloseTo(11.0, 1);
 
-            // Scroll to 150px (full ramp)
+            // Deep scroll to 150px -> remains scrolled
             setScrollY(150);
             dom.window.dispatchEvent(new dom.window.Event('scroll'));
+            expect(headerEl.classList.contains('scrolled')).toBe(true);
 
-            const intensityFull = parseFloat(headerEl.style.getPropertyValue('--blur-intensity'));
-            expect(intensityFull).toBe(16);
+            // Hysteresis test: scroll back up to 60px (between 50px and 70px)
+            // Stays scrolled because it is still above 50px deactivation threshold!
+            setScrollY(60);
+            dom.window.dispatchEvent(new dom.window.Event('scroll'));
+            expect(headerEl.classList.contains('scrolled')).toBe(true);
 
-            // Test hysteresis: scrolling back to 40px keeps .scrolled because it is above 25px exit threshold
+            // Scroll back down to 40px: falls below 50px deactivation threshold -> becomes unscrolled
             setScrollY(40);
             dom.window.dispatchEvent(new dom.window.Event('scroll'));
-            expect(headerEl.classList.contains('scrolled')).toBe(true);
+            expect(headerEl.classList.contains('scrolled')).toBe(false);
 
-            // Scrolling back to 10px (below 25px) removes .scrolled
-            setScrollY(10);
+            // Scroll up to 60px again from unscrolled: below 70px -> stays unscrolled
+            setScrollY(60);
             dom.window.dispatchEvent(new dom.window.Event('scroll'));
             expect(headerEl.classList.contains('scrolled')).toBe(false);
-        });
-
-        it('uses mobile-optimized blur bounds on viewports <= 768px', () => {
-            setInnerWidth(375);
-            setScrollY(0);
-
-            headerScroll = new HeaderScroll(headerEl, bottomBarEl);
-            expect(headerEl.style.getPropertyValue('--blur-intensity')).toBe('4px');
-
-            setScrollY(150);
-            dom.window.dispatchEvent(new dom.window.Event('scroll'));
-            expect(headerEl.style.getPropertyValue('--blur-intensity')).toBe('10px');
         });
 
         it('cleans up event listeners and timers upon destroy()', () => {

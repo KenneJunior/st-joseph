@@ -12,9 +12,11 @@
   align-items: center;
   background: transparent;
   transition: all 0.3s ease;
+  --blur-intensity: 10px;
 }
 
 #mainHeader.scrolled {
+  --blur-intensity: 16px;
   box-shadow: 0 4px 20px -2px rgba(2, 12, 26, 0.25);
 }
 
@@ -28,12 +30,24 @@ html.dark-mode #mainHeader.scrolled {
     --header-height: 56px;
     --blur-extension: 60px;
   }
+  #mainHeader {
+    --blur-intensity: 6px;
+  }
+  #mainHeader.scrolled {
+    --blur-intensity: 12px;
+  }
 }
 
 @media (max-width: 360px) {
   :root {
     --header-height: 50px;
     --blur-extension: 40px;
+  }
+  #mainHeader {
+    --blur-intensity: 5px;
+  }
+  #mainHeader.scrolled {
+    --blur-intensity: 10px;
   }
 }
 
@@ -131,11 +145,14 @@ html.dark-mode #mainHeader.scrolled::before {
   background: linear-gradient(
           90deg,
           transparent 0%,
-          rgba(200, 150, 62, 0.25) 15%,
-          rgba(200, 150, 62, 0.50) 50%,
-          rgba(200, 150, 62, 0.25) 85%,
+          rgba(200, 150, 62, 0.12) 10%,
+          rgba(200, 150, 62, 0.38) 25%,
+          rgba(255, 230, 160, 0.75) 50%,
+          rgba(200, 150, 62, 0.38) 75%,
+          rgba(200, 150, 62, 0.12) 90%,
           transparent 100%
   );
+  box-shadow: 0 1px 2px rgba(200, 150, 62, 0.20);
   z-index: 3;
   opacity: 0;
   pointer-events: none;
@@ -151,11 +168,14 @@ html.dark-mode #mainHeader::after {
   background: linear-gradient(
           90deg,
           transparent 0%,
-          rgba(201, 162, 41, 0.25) 15%,
-          rgba(201, 162, 41, 0.55) 50%,
-          rgba(201, 162, 41, 0.25) 85%,
+          rgba(201, 162, 41, 0.18) 10%,
+          rgba(201, 162, 41, 0.45) 25%,
+          rgba(255, 235, 175, 0.85) 50%,
+          rgba(201, 162, 41, 0.45) 75%,
+          rgba(201, 162, 41, 0.18) 90%,
           transparent 100%
   );
+  box-shadow: 0 1px 3px rgba(201, 162, 41, 0.30);
 }
 
 /* Header Inner */
