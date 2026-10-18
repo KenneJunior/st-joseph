@@ -19,6 +19,9 @@ export function renderTimelineMilestones(
         return;
     }
 
+    const now = new Date();
+    const nowMs = now.getTime();
+
     // Defensive chronological sort on a cloned array using canonical local dates
     const sortedMilestones = [...milestones].sort((a, b) => {
         const cmp = a.localStartDate.localeCompare(b.localStartDate);
@@ -63,6 +66,108 @@ export function renderTimelineMilestones(
             ? `<span class="timeline-card-notice">${m.cardNotice}</span>`
             : '';
 
+        // Dynamic academic countdown initial calculation
+        const startMs = m.startDate.getTime();
+        const endMs = m.endDate.getTime();
+        let countdownStatus: 'upcoming' | 'active' | 'concluded' = 'upcoming';
+        let countdownCompactText = '';
+        let countdownStatusBadge = '';
+        let diffMs = 0;
+        let progressPct = 0;
+
+        if (nowMs < startMs) {
+            countdownStatus = 'upcoming';
+            diffMs = startMs - nowMs;
+            const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+            countdownCompactText = diffDays > 0 ? `Starts in ${diffDays} day${diffDays === 1 ? '' : 's'}` : 'Starts today';
+            countdownStatusBadge = 'Upcoming Date';
+            progressPct = Math.min(95, Math.max(10, 100 - Math.min(100, Math.round((diffDays / 90) * 100))));
+        } else if (nowMs >= startMs && nowMs <= endMs) {
+            countdownStatus = 'active';
+            diffMs = endMs - nowMs;
+            countdownCompactText = 'Happening Now';
+            countdownStatusBadge = 'Active Session';
+            const totalSpan = Math.max(1, endMs - startMs);
+            progressPct = Math.min(100, Math.max(0, Math.round(((nowMs - startMs) / totalSpan) * 100)));
+        } else {
+            countdownStatus = 'concluded';
+            diffMs = 0;
+            countdownCompactText = 'Concluded';
+            countdownStatusBadge = 'Academic Record';
+            progressPct = 100;
+        }
+
+        const days = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+        const hours = Math.max(0, Math.floor((diffMs / (1000 * 60 * 60)) % 24));
+        const mins = Math.max(0, Math.floor((diffMs / (1000 * 60)) % 60));
+        const secs = Math.max(0, Math.floor((diffMs / 1000) % 60));
+
+        const upcomingCardClass = countdownStatus === 'upcoming' ? ' is-upcoming-date' : countdownStatus === 'active' ? ' is-active-date' : ' is-past-date';
+
+        const countdownVisualHtml = `
+            <div class="timeline-countdown-visual${upcomingCardClass}" data-milestone-id="${m.id}" data-status="${countdownStatus}">
+              <!-- Resting Compact Pill Indicator -->
+              <div class="countdown-resting-badge" tabindex="0" role="button" aria-expanded="false" aria-label="Toggle live academic countdown for ${m.title}">
+                <span class="countdown-pulse-beacon" aria-hidden="true"></span>
+                <span class="countdown-resting-label">
+                  <i class="bi ${countdownStatus === 'active' ? 'bi-broadcast-pin text-success' : countdownStatus === 'upcoming' ? 'bi-stopwatch text-accent' : 'bi-check-circle'} me-1" aria-hidden="true"></i>
+                  <span class="countdown-live-label">${countdownCompactText}</span>
+                </span>
+                <span class="countdown-hover-cue" aria-hidden="true">
+                  <span class="cue-text">Live Countdown</span>
+                  <i class="bi bi-chevron-right ms-1"></i>
+                </span>
+              </div>
+
+              <!-- Interactive Card-Based Format (reveals smoothly on hover, focus, or tap) -->
+              <div class="countdown-interactive-card" role="region" aria-label="Academic countdown card for ${m.title}">
+                <div class="countdown-card-header">
+                  <div class="countdown-card-title-group">
+                    <i class="bi bi-clock-history text-accent me-1" aria-hidden="true"></i>
+                    <strong class="countdown-card-heading">Academic Countdown</strong>
+                  </div>
+                  <span class="countdown-card-status-badge status-${countdownStatus}">${countdownStatusBadge}</span>
+                </div>
+
+                <div class="countdown-digits-grid">
+                  <div class="countdown-digit-box">
+                    <span class="countdown-digit countdown-digit--days">${String(days).padStart(2, '0')}</span>
+                    <span class="countdown-digit-sub">DAYS</span>
+                  </div>
+                  <span class="countdown-sep" aria-hidden="true">:</span>
+                  <div class="countdown-digit-box">
+                    <span class="countdown-digit countdown-digit--hours">${String(hours).padStart(2, '0')}</span>
+                    <span class="countdown-digit-sub">HRS</span>
+                  </div>
+                  <span class="countdown-sep" aria-hidden="true">:</span>
+                  <div class="countdown-digit-box">
+                    <span class="countdown-digit countdown-digit--mins">${String(mins).padStart(2, '0')}</span>
+                    <span class="countdown-digit-sub">MIN</span>
+                  </div>
+                  <span class="countdown-sep" aria-hidden="true">:</span>
+                  <div class="countdown-digit-box">
+                    <span class="countdown-digit countdown-digit--secs">${String(secs).padStart(2, '0')}</span>
+                    <span class="countdown-digit-sub">SEC</span>
+                  </div>
+                </div>
+
+                <div class="countdown-timeline-meter">
+                  <div class="countdown-timeline-bar" style="width: ${progressPct}%;" role="progressbar" aria-valuenow="${progressPct}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <div class="countdown-card-footer">
+                  <div class="countdown-target-info">
+                    <i class="bi bi-calendar-event me-1 text-accent" aria-hidden="true"></i>
+                    <span class="countdown-target-datetxt">${m.dateText}</span>
+                  </div>
+                  <button type="button" class="btn-countdown-quick-add" data-milestone-id="${m.id}" title="Toggle 24h reminder for ${m.title}">
+                    <i class="bi bi-bell-plus-fill me-1" aria-hidden="true"></i>
+                    <span>Set Reminder</span>
+                  </button>
+                </div>
+              </div>
+            </div>`;
+
         return `
             <article class="timeline-milestone reveal" data-milestone-id="${m.id}" data-term="${m.term}" data-category="${m.category}" id="${m.id}">
               <div class="timeline-date-column">
@@ -90,6 +195,7 @@ export function renderTimelineMilestones(
                   ${m.timeOrDuration ? `<span><i class="bi ${timeIcon}"></i> ${m.timeOrDuration}</span>` : ''}
                   <span><i class="bi bi-geo-alt-fill"></i> ${m.location}</span>
                 </div>
+                ${countdownVisualHtml}
                 <p class="timeline-card-desc">
                   ${m.description}
                 </p>

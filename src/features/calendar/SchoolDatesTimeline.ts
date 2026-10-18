@@ -41,6 +41,7 @@ export class SchoolDatesTimeline {
     private searchHistoryDropdown: SearchHistoryDropdown | null = null;
     private dragScroller: TimelineDragScroller | null = null;
     private staggerEntrance: TimelineStaggerEntrance | null = null;
+    private countdownIntervalId: number | null = null;
 
     private currentTerm: string = 'all';
     private currentCategory: string = 'all';
@@ -80,6 +81,7 @@ export class SchoolDatesTimeline {
         this.bindDisclosureEvents();
         this.bindCalendarExports();
         this.updateNextMilestoneBanner();
+        this.initAcademicCountdowns();
         this.initDragScroller();
         this.initStaggerEntrance();
         this.initReminders();
@@ -720,7 +722,135 @@ export class SchoolDatesTimeline {
         });
     }
 
+    /**
+     * Initializes dynamic academic countdown ticking and interactive card hover/touch behaviors
+     */
+    private initAcademicCountdowns(): void {
+        this.updateAcademicCountdowns();
+
+        if (typeof window !== 'undefined') {
+            this.countdownIntervalId = window.setInterval(() => {
+                this.updateAcademicCountdowns();
+            }, 1000);
+        }
+
+        const root = this.container || document;
+        const countdownWidgets = root.querySelectorAll<HTMLElement>('.timeline-countdown-visual');
+
+        countdownWidgets.forEach((widget) => {
+            const restingBadge = widget.querySelector<HTMLElement>('.countdown-resting-badge');
+            const quickAddBtn = widget.querySelector<HTMLButtonElement>('.btn-countdown-quick-add');
+            const milestoneId = widget.dataset.milestoneId || '';
+
+            if (restingBadge && restingBadge.dataset.bound !== 'true') {
+                restingBadge.dataset.bound = 'true';
+                const toggleExpanded = (e: Event) => {
+                    e.stopPropagation();
+                    const isExpanded = widget.classList.toggle('is-expanded-countdown');
+                    restingBadge.setAttribute('aria-expanded', String(isExpanded));
+                };
+
+                restingBadge.addEventListener('click', toggleExpanded);
+                restingBadge.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleExpanded(e);
+                    }
+                });
+            }
+
+            if (quickAddBtn && quickAddBtn.dataset.bound !== 'true') {
+                quickAddBtn.dataset.bound = 'true';
+                quickAddBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const cb = root.querySelector<HTMLInputElement>(
+                        `.timeline-remind-me-checkbox[data-milestone-id="${milestoneId}"]`
+                    );
+                    if (cb) {
+                        cb.click();
+                        const isNowChecked = cb.checked;
+                        quickAddBtn.classList.toggle('is-active', isNowChecked);
+                        quickAddBtn.innerHTML = isNowChecked
+                            ? '<i class="bi bi-check2-circle me-1" aria-hidden="true"></i><span>Alert Active</span>'
+                            : '<i class="bi bi-bell-plus-fill me-1" aria-hidden="true"></i><span>Set Reminder</span>';
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Dynamically updates live days, hours, minutes, and seconds countdowns across milestone cards
+     */
+    private updateAcademicCountdowns(): void {
+        const root = this.container || document;
+        const now = new Date();
+        const nowMs = now.getTime();
+
+        ACADEMIC_MILESTONES_2026_2027.forEach((milestone) => {
+            const widget = root.querySelector<HTMLElement>(
+                `.timeline-countdown-visual[data-milestone-id="${milestone.id}"]`
+            );
+            if (!widget) return;
+
+            const startMs = milestone.startDate.getTime();
+            const endMs = milestone.endDate.getTime();
+            let status: 'upcoming' | 'active' | 'concluded' = 'upcoming';
+            let diffMs = 0;
+            let progressPct = 0;
+            let compactText = '';
+
+            if (nowMs < startMs) {
+                status = 'upcoming';
+                diffMs = startMs - nowMs;
+                const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+                compactText = diffDays > 0 ? `Starts in ${diffDays} day${diffDays === 1 ? '' : 's'}` : 'Starts today';
+                progressPct = Math.min(95, Math.max(10, 100 - Math.min(100, Math.round((diffDays / 90) * 100))));
+            } else if (nowMs >= startMs && nowMs <= endMs) {
+                status = 'active';
+                diffMs = endMs - nowMs;
+                compactText = 'Happening Now';
+                const totalSpan = Math.max(1, endMs - startMs);
+                progressPct = Math.min(100, Math.max(0, Math.round(((nowMs - startMs) / totalSpan) * 100)));
+            } else {
+                status = 'concluded';
+                diffMs = 0;
+                compactText = 'Concluded';
+                progressPct = 100;
+            }
+
+            widget.dataset.status = status;
+
+            const days = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+            const hours = Math.max(0, Math.floor((diffMs / (1000 * 60 * 60)) % 24));
+            const mins = Math.max(0, Math.floor((diffMs / (1000 * 60)) % 60));
+            const secs = Math.max(0, Math.floor((diffMs / 1000) % 60));
+
+            const daysEl = widget.querySelector('.countdown-digit--days');
+            const hoursEl = widget.querySelector('.countdown-digit--hours');
+            const minsEl = widget.querySelector('.countdown-digit--mins');
+            const secsEl = widget.querySelector('.countdown-digit--secs');
+            const labelEl = widget.querySelector('.countdown-live-label');
+            const barEl = widget.querySelector<HTMLElement>('.countdown-timeline-bar');
+
+            if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
+            if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+            if (minsEl) minsEl.textContent = String(mins).padStart(2, '0');
+            if (secsEl) secsEl.textContent = String(secs).padStart(2, '0');
+            if (labelEl) labelEl.textContent = compactText;
+            if (barEl) {
+                barEl.style.width = `${progressPct}%`;
+                barEl.setAttribute('aria-valuenow', String(progressPct));
+            }
+        });
+    }
+
     public destroy(): void {
+        if (this.countdownIntervalId !== null) {
+            window.clearInterval(this.countdownIntervalId);
+            this.countdownIntervalId = null;
+        }
         if (this.dragScroller) {
             this.dragScroller.destroy();
             this.dragScroller = null;
