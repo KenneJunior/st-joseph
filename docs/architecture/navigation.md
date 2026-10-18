@@ -40,6 +40,36 @@ The navigation system provides clear orientation across both the interactive mul
 
 ---
 
+## 2.1 Adaptive Top Bar Responsive States & Transitions
+
+The top navigation bar smoothly transitions across five content-aware responsive tiers:
+
+1. **Wide Desktop (`> 1200px`)**:
+   - Full 10-item icon-first `#navMenu` with hover/active text reveal.
+   - Distinct Action Group (Reminders, Prospectus, Install) + 42px circular Theme Toggle.
+   - Menu drawer button is hidden.
+2. **Compact Desktop (`1025px – 1200px`)**:
+   - Progressive spacing on `#navMenu` (`min-width: 36px`, `gap: 2px`).
+   - Progressive padding on `.header-action-btn` (`height: 38px`, `padding: 0 10px`, `font-size: 0.80rem`).
+   - Motto is hidden; zero collision or wrapping between elements.
+3. **Tablet Landscape — Transition A (`881px – 1024px`)**:
+   - Navigation links transition to the off-canvas drawer (`#navMenu`).
+   - `.menu-toggle` appears with matching 38px circular geometry.
+   - `.header-actions` groups 3 Action Pills (Reminders, Prospectus, Install) separated by a subtle hairline divider from 2 Utility Circles (Theme Toggle, Menu Toggle).
+   - Both Theme Toggle and Menu Toggle share identical 38px dimensions and glass styling.
+   - School logo uses clean proportional clamp with motto hidden.
+4. **Pre-Pill Compact Tablet — Transition B (`769px – 880px`)**:
+   - `880px – 769px`: Install button compacts to an icon-only 38px circular button, shifting the hairline divider to follow Prospectus.
+   - `810px – 769px`: Reminders compacts to an icon + badge pill (`.header-btn-text` hidden, live counter visible).
+   - Prospectus retains its prominent gold highlight pill with icon + label for institutional CTA prominence.
+   - Total `.header-actions` width is reduced to ~270px, providing > 200px breathing space next to the logo.
+5. **Mobile & Phablet (`<= 768px`)**:
+   - Top header actions gracefully hide (`display: none !important`).
+   - Top header shows clean school logo at 56px height.
+   - Mobile bottom floating glass pill dock (`.mobile-bottom-bar`) activates with 7 canonical items and capacity tiers.
+
+---
+
 ## 3. Mobile Bottom Dock Architecture
 
 ### A. Canonical Ordering Model
