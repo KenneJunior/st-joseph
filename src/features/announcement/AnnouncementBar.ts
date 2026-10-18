@@ -209,6 +209,7 @@ export class AnnouncementBar {
         this.observeSizeChanges();
         this.scheduleLayoutUpdate();
         window.addEventListener('load', this.boundUpdateLayout, { once: true });
+        window.addEventListener('themechange', this.boundUpdateLayout);
 
         // Record session visit baseline if not already present
         try {
@@ -713,6 +714,7 @@ export class AnnouncementBar {
         this.unsubscribeNoticeRead?.();
         this.resizeObserver?.disconnect();
         window.removeEventListener('load', this.boundUpdateLayout);
+        window.removeEventListener('themechange', this.boundUpdateLayout);
         this.closeBtn?.removeEventListener('click', this.boundDismiss);
         this.bar?.removeEventListener('keydown', this.boundKeydown);
         this.toggleBtn?.removeEventListener('click', this.boundToggleReadMore);

@@ -663,17 +663,16 @@
   <aside id="announcementBar" class="announcement-bar" role="region" aria-label="Important school announcement"
     data-announcement-id="school-resumption-2026" data-priority="urgent" data-published-at="2026-08-21T08:00:00Z">
     <div class="announcement-bar__inner">
-      <!-- Column 1: Urgent Message, Read More & Close -->
+      <!-- Zone A & B: Urgent Message & Expandable Details -->
       <div class="announcement-bar__col announcement-bar__col--primary announcement-bar__content">
         <span class="announcement-priority priority-urgent" data-priority="urgent" role="status"
           aria-label="Priority: Urgent Notice">
           <span class="priority-dot" aria-hidden="true"></span>
-          <i class="bi bi-exclamation-triangle-fill priority-icon" aria-hidden="true"></i>
           <span class="priority-label">Urgent</span>
         </span>
         <div class="announcement-bar__text-wrap">
           <div class="announcement-bar__message">
-            <i class="bi bi-megaphone-fill announcement-bar__icon" aria-hidden="true"></i>
+            <i class="bi bi-megaphone announcement-bar__icon" aria-hidden="true"></i>
             <strong class="announcement-bar__title">School Resumption 2026/2027:</strong>
             <span class="announcement-bar__date">New Students: 21 Aug · Returning: 2 Sept (8:00 AM Prompt)</span>
             <span class="announcement-bar__more-content" id="announcementMoreContent" hidden>
@@ -686,20 +685,22 @@
           <button type="button" class="announcement-bar__toggle-btn" id="announcementToggleBtn" aria-expanded="false"
             aria-controls="announcementMoreContent" data-tooltip="Toggle full announcement details"
             title="Toggle full notice details" toolDescription="Expand or collapse the full announcement text details.">
-            <span class="toggle-text">Read more</span>
+            <span class="toggle-text">Details</span>
             <i class="bi bi-chevron-down" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="announcement-bar__action-btn announcement-bar__close" id="announcementClose"
-            data-tooltip="Dismiss notice banner" aria-label="Dismiss announcement" title="Dismiss notice"
-            toolDescription="Dismiss this important announcement banner from the page.">
-            <i class="bi bi-x-lg" aria-hidden="true"></i>
           </button>
         </div>
       </div>
-      <!-- Column 2: Mark as Read & Historical Announcements Archive -->
+      <!-- Zone C: Consolidated Action Toolbar (Past Notices -> Mark as read -> Separator -> Close) -->
       <div class="announcement-bar__col announcement-bar__col--secondary announcement-bar__actions" role="toolbar"
         aria-label="Announcement actions">
         <div class="announcement-bar__secondary-actions" role="group" aria-label="Secondary announcement actions">
+          <button type="button" class="announcement-bar__action-btn announcement-bar__past-btn"
+            id="viewPastAnnouncementsBtn" aria-haspopup="dialog" aria-controls="pastAnnouncementsModal"
+            data-tooltip="Historical announcements archive" title="View historical school notices archive"
+            toolDescription="Open the historical school announcements modal archive.">
+            <i class="bi bi-clock-history" aria-hidden="true"></i>
+            <span class="action-btn-text past-btn-text">Past Notices</span>
+          </button>
           <button type="button" class="announcement-bar__action-btn announcement-bar__mark-read-btn notice-read-receipt"
             id="announcementMarkReadBtn" aria-pressed="false" data-tooltip="Mark notice as read"
             title="Mark this announcement as read (persists across visits)"
@@ -707,12 +708,11 @@
             <i class="bi bi-check2" aria-hidden="true"></i>
             <span class="action-btn-text mark-read-text">Mark as read</span>
           </button>
-          <button type="button" class="announcement-bar__action-btn announcement-bar__past-btn"
-            id="viewPastAnnouncementsBtn" aria-haspopup="dialog" aria-controls="pastAnnouncementsModal"
-            data-tooltip="Historical announcements archive" title="View historical school notices archive"
-            toolDescription="Open the historical school announcements modal archive.">
-            <i class="bi bi-clock-history" aria-hidden="true"></i>
-            <span class="action-btn-text past-btn-text">Past Notices</span>
+          <span class="announcement-bar__divider" aria-hidden="true"></span>
+          <button type="button" class="announcement-bar__action-btn announcement-bar__close" id="announcementClose"
+            data-tooltip="Dismiss notice banner" aria-label="Dismiss announcement" title="Dismiss notice"
+            toolDescription="Dismiss this important announcement banner from the page.">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
           </button>
         </div>
       </div>
