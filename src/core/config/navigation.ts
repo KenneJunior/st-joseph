@@ -84,7 +84,7 @@ export const CANONICAL_NAV_ITEMS: readonly NavItemDefinition[] = [
         dockOrder: 6,
         inDock: true,
         dockClass: 'mobile-bottom-item--map',
-        relatedSections: ['campus', 'campusMapSection'],
+        relatedSections: ['campus', 'campusMapSection', 'testimonials'],
     },
 ] as const;
 

@@ -91,8 +91,8 @@ export class ScrollSpy {
             }
         });
 
-        // Also track transitional sections (e.g. #about, #news-events, #campus)
-        const transitionalIds = ['about', 'news-events', 'campus', 'faq', 'contact', 'location'];
+        // Also track transitional sections (e.g. #about, #news-events, #campus, #testimonials)
+        const transitionalIds = ['about', 'news-events', 'campus', 'testimonials', 'faq', 'contact', 'location'];
         transitionalIds.forEach((id) => {
             const el = document.getElementById(id);
             if (el) sectionMap.set(id, el);
