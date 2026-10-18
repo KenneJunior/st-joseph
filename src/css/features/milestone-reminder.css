@@ -579,19 +579,34 @@ body.dark-mode .milestone-toast.milestone-toast--info .milestone-toast-icon {
 /* ============================================================================
    NOTIFICATION PERMISSION GUIDANCE MODAL (.notification-guide-overlay)
    ============================================================================ */
-dialog.notification-guide-overlay {
+dialog.notification-guide-overlay,
+.notification-guide-overlay {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  padding: clamp(16px, 3vw, 24px);
   border: none;
   background: transparent;
   z-index: 100010;
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+dialog.notification-guide-overlay::backdrop {
+  background: transparent;
 }
 
 dialog.notification-guide-overlay[hidden] {
@@ -611,10 +626,15 @@ dialog.notification-guide-overlay[hidden] {
 .notification-guide-sheet {
   position: relative;
   z-index: 2;
-  width: calc(100vw - 32px);
+  width: 100%;
   max-width: 660px;
-  max-height: calc(100vh - 48px);
+  max-height: min(calc(100dvh - 40px), 880px);
+  margin: auto !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  align-self: center;
   overflow-y: auto;
+  overflow-x: hidden;
   border-radius: 24px;
   padding: 32px 34px;
   display: flex;
@@ -1167,19 +1187,34 @@ body.dark-mode .notification-guide-overlay .guide-footer-note {
 /* ============================================================================
    MY REMINDERS MODAL (.my-reminders-overlay)
    ============================================================================ */
-dialog.my-reminders-overlay {
+dialog.my-reminders-overlay,
+.my-reminders-overlay {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  padding: clamp(16px, 3vw, 24px);
   border: none;
   background: transparent;
   z-index: 100010;
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+dialog.my-reminders-overlay::backdrop {
+  background: transparent;
 }
 
 dialog.my-reminders-overlay[hidden] {
@@ -1199,10 +1234,15 @@ dialog.my-reminders-overlay[hidden] {
 .my-reminders-sheet {
   position: relative;
   z-index: 2;
-  width: calc(100vw - 32px);
+  width: 100%;
   max-width: 680px;
-  max-height: calc(100vh - 48px);
+  max-height: min(calc(100dvh - 40px), 880px);
+  margin: auto !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  align-self: center;
   overflow-y: auto;
+  overflow-x: hidden;
   border-radius: 24px;
   padding: 32px 34px;
   display: flex;
@@ -3083,10 +3123,38 @@ body.dark-mode .my-reminders-overlay .my-reminders-footer-note {
     font-size: 0.78rem;
   }
 
+  dialog.notification-guide-overlay,
+  .notification-guide-overlay,
+  dialog.my-reminders-overlay,
+  .my-reminders-overlay {
+    padding: 16px 12px;
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
   .notification-guide-sheet,
   .my-reminders-sheet {
-    padding: 16px;
-    width: calc(100vw - 20px);
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    align-self: center;
+    padding: 22px 18px;
+    border-radius: 20px;
+    box-sizing: border-box;
+    max-height: min(calc(100dvh - 32px), 880px);
+  }
+
+  .my-reminders-header__titles {
+    flex: 1;
+    min-width: 0;
   }
 
   .chime-options-grid {
@@ -3102,6 +3170,114 @@ body.dark-mode .my-reminders-overlay .my-reminders-footer-note {
   .my-reminders-tabs {
     flex-wrap: nowrap;
     overflow-x: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  dialog.notification-guide-overlay,
+  .notification-guide-overlay,
+  dialog.my-reminders-overlay,
+  .my-reminders-overlay {
+    padding: 12px 10px;
+    padding-left: max(10px, env(safe-area-inset-left));
+    padding-right: max(10px, env(safe-area-inset-right));
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .notification-guide-sheet,
+  .my-reminders-sheet {
+    padding: 18px 14px;
+    border-radius: 18px;
+    gap: 14px;
+    max-height: min(calc(100dvh - 24px), 880px);
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    align-self: center;
+    box-sizing: border-box;
+  }
+
+  .my-reminders-header {
+    gap: 10px;
+  }
+
+  .my-reminders-title {
+    font-size: 1.25rem;
+  }
+
+  .my-reminders-subtitle {
+    font-size: 0.82rem;
+  }
+
+  .my-reminders-push-card {
+    padding: 14px 14px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+  }
+
+  .push-card-main {
+    gap: 10px;
+  }
+
+  .push-card-icon-badge {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    max-width: 38px;
+    min-height: 38px;
+    max-height: 38px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+  }
+
+  .push-card-title {
+    font-size: 0.9rem;
+  }
+
+  .push-card-desc {
+    font-size: 0.78rem;
+  }
+
+  .my-reminder-card {
+    padding: 14px 14px;
+    border-radius: 14px;
+  }
+
+  .my-history-card {
+    padding: 14px 14px;
+    border-radius: 14px;
+  }
+
+  .custom-form-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .my-reminders-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .my-reminders-footer-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .my-reminders-category-filters {
+    gap: 6px;
+  }
+
+  .category-filter-chip {
+    padding: 5px 10px;
+    font-size: 0.75rem;
   }
 }
 

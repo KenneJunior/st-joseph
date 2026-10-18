@@ -474,6 +474,7 @@ body.dark-mode .timeline-search-input {
   --timeline-pad-right: 14px;
   --timeline-pad-bottom: 28px;
   --timeline-pad-left: 8px;
+  --timeline-blur-height: 54px;
   --timeline-blur-height: 72px;
   --timeline-glass-blur: 26px;
   --timeline-glass-saturation: 165%;
@@ -591,11 +592,13 @@ body.dark-mode .timeline-track-container::-webkit-scrollbar-track {
   opacity: 0;
   visibility: hidden;
 
+  backdrop-filter: blur(14px) saturate(135%);
   backdrop-filter:
     blur(var(--timeline-glass-blur, 26px))
     saturate(var(--timeline-glass-saturation, 165%))
     contrast(var(--timeline-glass-contrast, 108%));
 
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
   -webkit-backdrop-filter:
     blur(var(--timeline-glass-blur, 26px))
     saturate(var(--timeline-glass-saturation, 165%))
@@ -720,13 +723,26 @@ body.dark-mode .timeline-track-container {
   --timeline-bottom-5: rgba(18, 26, 42, 0);
 }
 
+body.dark-mode .timeline-track-container::before {
+  background: linear-gradient(180deg, var(--timeline-top-1) 0%, var(--timeline-top-2) 18%, var(--timeline-top-3) 46%, var(--timeline-top-4) 74%, var(--timeline-top-5) 100%);
+}
+
+body.dark-mode .timeline-track-container::after {
+  background: linear-gradient(0deg, var(--timeline-bottom-1) 0%, var(--timeline-bottom-2) 18%, var(--timeline-bottom-3) 46%, var(--timeline-bottom-4) 74%, var(--timeline-bottom-5) 100%);
+}
+
 /* ── Reveal according to existing scroll-state classes ──────── */
 
-.timeline-track-container.can-scroll-up::before,
+.timeline-track-container.can-scroll-up::before {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
 .timeline-track-container.can-scroll-down::after {
   opacity: 1;
-  visibility: visible;
   transform: translateY(0);
+  visibility: visible;
 }
 
 
@@ -1917,6 +1933,13 @@ body.dark-mode .timeline-reset-filters-btn:hover {
 
   .timeline-advisory-card {
     padding: 7px 6px;
+  }
+}
+
+@media (max-width: 320px) {
+  .timeline-track-container {
+    --timeline-blur-height: 40px;
+    --timeline-glass-blur: 14px;
   }
 }
 
