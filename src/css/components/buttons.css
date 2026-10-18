@@ -143,15 +143,15 @@ body.dark-mode .btn-secondary:hover:not(:disabled),
 }
 
 /* Light theme overrides for outline buttons placed on light canvases */
-html:not(.dark-mode) .btn-outline:not(.hero-buttons .btn-outline):not(.cta-banner .btn-outline),
-[data-theme="light"] .btn-outline:not(.hero-buttons .btn-outline):not(.cta-banner .btn-outline) {
+html:not(.dark-mode) .btn-outline:not(.hero-buttons .btn-outline):not(.cta-banner .btn-outline):not(.next-milestone-banner .btn-outline):not(.btn-calendar-auto-add):not(#bannerAutoAddRemindersBtn),
+[data-theme="light"] .btn-outline:not(.hero-buttons .btn-outline):not(.cta-banner .btn-outline):not(.next-milestone-banner .btn-outline):not(.btn-calendar-auto-add):not(#bannerAutoAddRemindersBtn) {
   background: rgba(7, 24, 46, 0.03);
   color: #07182e;
   border: 1px solid rgba(7, 24, 46, 0.18);
 }
 
-html:not(.dark-mode) .btn-outline:not(.hero-buttons .btn-outline):not(.cta-banner .btn-outline):hover:not(:disabled),
-[data-theme="light"] .btn-outline:not(.hero-buttons .btn-outline):not(.cta-banner .btn-outline):hover:not(:disabled) {
+html:not(.dark-mode) .btn-outline:not(.hero-buttons .btn-outline):not(.cta-banner .btn-outline):not(.next-milestone-banner .btn-outline):not(.btn-calendar-auto-add):not(#bannerAutoAddRemindersBtn):hover:not(:disabled),
+[data-theme="light"] .btn-outline:not(.hero-buttons .btn-outline):not(.cta-banner .btn-outline):not(.next-milestone-banner .btn-outline):not(.btn-calendar-auto-add):not(#bannerAutoAddRemindersBtn):hover:not(:disabled) {
   background: rgba(217, 119, 6, 0.08);
   border-color: var(--accent, #d97706);
   color: #b45309;
