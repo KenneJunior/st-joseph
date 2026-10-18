@@ -81,6 +81,60 @@ function initHeroViewportObserver(): void {
     observer.observe(heroEl);
 }
 
+/**
+ * Smoothly pre-scrolls and centers a news card within the viewport when expanded,
+ * ensuring the user's visual focus remains anchored on the story content.
+ */
+export function preScrollNewsCardToCenter(card: HTMLElement): void {
+    if (typeof window === 'undefined' || !card) return;
+
+    const prefersReducedMotion = typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion || typeof window.scrollTo !== 'function') return;
+
+    const rect = card.getBoundingClientRect();
+    const viewportHeight = window.innerHeight || 800;
+    const navBarHeight = 80;
+
+    // Calculate vertical offset to center the card in viewport, respecting sticky navigation header
+    const cardVisualHeight = Math.min(rect.height || 360, 480);
+    const targetY = (window.scrollY || window.pageYOffset || 0) + rect.top - Math.max(navBarHeight, (viewportHeight - cardVisualHeight) / 2);
+
+    window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: 'smooth',
+    });
+}
+
+/**
+ * Initializes the news card expansion pre-scroll handler to ensure that clicking
+ * 'Full Story' centers the selected article in the viewport.
+ */
+export function initNewsCardExpansionHandler(containerSelector: string = '#newsEventsGrid'): void {
+    const container = document.querySelector<HTMLElement>(containerSelector);
+    if (!container) return;
+
+    container.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement | null;
+        if (!target) return;
+
+        const expandBtn = target.closest<HTMLButtonElement>('.news-card__expand-btn');
+        const card = target.closest<HTMLElement>('.news-card');
+
+        if (!card) return;
+
+        // Skip if clicking an internal hyperlink that is not the expand button
+        if (target.closest('a') && !expandBtn) return;
+
+        // Pre-scroll if the card is about to expand
+        const isExpanding = !card.classList.contains('is-expanded');
+        if (isExpanding) {
+            preScrollNewsCardToCenter(card);
+        }
+    }, true);
+}
+
 // Initialize service worker lifecycle
 initServiceWorker();
 
@@ -88,12 +142,19 @@ initServiceWorker();
 const boot = () => {
     initHomePage();
     initHeroViewportObserver();
+    initNewsCardExpansionHandler();
     new AiAssistantWidget().init();
     log.info('SJCCC Digital Campus initialized');
 };
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
-} else {
-    boot();
+// Boot application when DOM is ready (guarded against test imports)
+const isTestEnv = (typeof process !== 'undefined' && Boolean(process.env?.VITEST || process.env?.NODE_ENV === 'test')) ||
+    (typeof import.meta !== 'undefined' && import.meta.env?.MODE === 'test');
+
+if (!isTestEnv && typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        boot();
+    }
 }

@@ -137,21 +137,143 @@ export function createNewsCardElement(story: NewsStory): HTMLElement {
 }
 
 /**
+ * Collapses a single news card, restoring its default aria attributes,
+ * button text, and collapsed styling.
+ */
+export function collapseNewsCard(card: HTMLElement): void {
+    card.classList.remove('is-expanded');
+
+    const expandBtn = card.querySelector<HTMLButtonElement>('.news-card__expand-btn');
+    const expandable = card.querySelector<HTMLElement>('.news-card__expandable');
+    const btnText = expandBtn?.querySelector<HTMLElement>('.expand-btn-text');
+    const titleText = card.querySelector('.news-card__title')?.textContent?.trim() || 'story';
+
+    if (expandBtn) {
+        expandBtn.setAttribute('aria-expanded', 'false');
+        expandBtn.setAttribute('aria-label', `Read full story details: ${titleText}`);
+    }
+    if (expandable) {
+        expandable.setAttribute('aria-hidden', 'true');
+    }
+    if (btnText) {
+        btnText.textContent = 'Read Full Story';
+    }
+}
+
+/**
+ * Expands a single news card to full width, updating its aria attributes,
+ * button text, and expanded styling.
+ */
+export function expandNewsCard(card: HTMLElement): void {
+    card.classList.add('is-expanded');
+
+    const expandBtn = card.querySelector<HTMLButtonElement>('.news-card__expand-btn');
+    const expandable = card.querySelector<HTMLElement>('.news-card__expandable');
+    const btnText = expandBtn?.querySelector<HTMLElement>('.expand-btn-text');
+    const titleText = card.querySelector('.news-card__title')?.textContent?.trim() || 'story';
+
+    if (expandBtn) {
+        expandBtn.setAttribute('aria-expanded', 'true');
+        expandBtn.setAttribute('aria-label', `Collapse story details: ${titleText}`);
+    }
+    if (expandable) {
+        expandable.setAttribute('aria-hidden', 'false');
+    }
+    if (btnText) {
+        btnText.textContent = 'Show Less';
+    }
+}
+
+/**
+ * Executes a smooth FLIP (First, Last, Invert, Play) transition
+ * across all cards in the grid container so grid reorganization
+ * glides seamlessly at 60fps without layout snapping.
+ */
+function animateGridFLIP(container: HTMLElement, updateDom: () => void): void {
+    const prefersReducedMotion = typeof window !== 'undefined' &&
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const cards = Array.from(container.querySelectorAll<HTMLElement>('.news-card'));
+
+    if (prefersReducedMotion || cards.length === 0 || typeof window === 'undefined') {
+        updateDom();
+        return;
+    }
+
+    // 1. First: Record starting positions
+    const firstRects = new Map<HTMLElement, DOMRect>();
+    cards.forEach((c) => {
+        firstRects.set(c, c.getBoundingClientRect());
+    });
+
+    // 2. Perform DOM mutations
+    updateDom();
+
+    // 3. Last: Measure ending positions
+    const lastRects = new Map<HTMLElement, DOMRect>();
+    cards.forEach((c) => {
+        lastRects.set(c, c.getBoundingClientRect());
+    });
+
+    // 4. Invert & Play
+    cards.forEach((c) => {
+        const first = firstRects.get(c);
+        const last = lastRects.get(c);
+        if (!first || !last) return;
+
+        const dx = first.left - last.left;
+        const dy = first.top - last.top;
+
+        // Animate smoothly if there was a physical layout shift
+        if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+            c.style.transform = `translate(${dx}px, ${dy}px)`;
+            c.style.transition = 'transform 0s';
+
+            // Schedule frame to remove transform and animate smoothly
+            requestAnimationFrame(() => {
+                c.style.transition = 'transform 0.52s cubic-bezier(0.16, 1, 0.3, 1)';
+                c.style.transform = '';
+
+                const handleTransitionEnd = (evt: TransitionEvent) => {
+                    if (evt.target === c && evt.propertyName === 'transform') {
+                        c.style.transition = '';
+                        c.removeEventListener('transitionend', handleTransitionEnd);
+                    }
+                };
+                c.addEventListener('transitionend', handleTransitionEnd);
+            });
+
+            // Safeguard timeout to ensure inline styles are cleaned up
+            window.setTimeout(() => {
+                if (typeof window === 'undefined' || !window) return;
+                if (c.style.transform === '') {
+                    c.style.transition = '';
+                }
+            }, 600);
+        }
+    });
+}
+
+/**
  * Attaches smooth click toggle handlers to all news cards in the container.
- * Clicking either the card body or the dedicated expand button toggles
- * the smooth CSS Grid height transition without layout jumping.
+ * When a user expands an article, it occupies the full width of the news grid
+ * while returning all other articles to half-width. If an expanded article is
+ * closed, the original grid layout is restored.
  */
 export function initNewsCardInteractions(container: HTMLElement): void {
     const cards = Array.from(container.querySelectorAll<HTMLElement>('.news-card'));
+
+    // Synchronize container class if any card is pre-expanded
+    if (container.querySelector('.news-card.is-expanded')) {
+        container.classList.add('has-expanded-card');
+    }
 
     cards.forEach((card) => {
         if (card.dataset.interactionBound === 'true') return;
         card.dataset.interactionBound = 'true';
 
         const expandBtn = card.querySelector<HTMLButtonElement>('.news-card__expand-btn');
-        const expandable = card.querySelector<HTMLElement>('.news-card__expandable');
-        const btnText = expandBtn?.querySelector<HTMLElement>('.expand-btn-text');
-        const titleText = card.querySelector('.news-card__title')?.textContent?.trim() || 'story';
 
         const toggleCard = (e?: Event) => {
             // Do not toggle if the user is clicking on an active hyperlink (<a> tag or inside one)
@@ -162,32 +284,45 @@ export function initNewsCardInteractions(container: HTMLElement): void {
                 }
             }
 
-            const isExpanded = card.classList.contains('is-expanded');
-            const nextState = !isExpanded;
+            const isCurrentlyExpanded = card.classList.contains('is-expanded');
 
-            if (nextState) {
-                card.classList.add('is-expanded');
-                if (expandBtn) {
-                    expandBtn.setAttribute('aria-expanded', 'true');
-                    expandBtn.setAttribute('aria-label', `Collapse story details: ${titleText}`);
+            animateGridFLIP(container, () => {
+                if (isCurrentlyExpanded) {
+                    // Collapse the selected article and restore original grid layout
+                    collapseNewsCard(card);
+                    container.classList.remove('has-expanded-card');
+                } else {
+                    // Transfer full-width state: collapse any other currently expanded article
+                    cards.forEach((otherCard) => {
+                        if (otherCard !== card && otherCard.classList.contains('is-expanded')) {
+                            collapseNewsCard(otherCard);
+                        }
+                    });
+
+                    // Expand the newly selected article across the full grid width
+                    expandNewsCard(card);
+                    container.classList.add('has-expanded-card');
                 }
-                if (expandable) {
-                    expandable.setAttribute('aria-hidden', 'false');
-                }
-                if (btnText) {
-                    btnText.textContent = 'Show Less';
-                }
-            } else {
-                card.classList.remove('is-expanded');
-                if (expandBtn) {
-                    expandBtn.setAttribute('aria-expanded', 'false');
-                    expandBtn.setAttribute('aria-label', `Read full story details: ${titleText}`);
-                }
-                if (expandable) {
-                    expandable.setAttribute('aria-hidden', 'true');
-                }
-                if (btnText) {
-                    btnText.textContent = 'Read Full Story';
+            });
+
+            // When expanding, gently bring card into comfortable viewport alignment if off-screen
+            if (!isCurrentlyExpanded && typeof window !== 'undefined') {
+                const prefersReducedMotion = typeof window.matchMedia === 'function' &&
+                    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                if (!prefersReducedMotion && typeof window.scrollTo === 'function') {
+                    window.setTimeout(() => {
+                        if (typeof window === 'undefined' || !window) return;
+                        const rect = card.getBoundingClientRect();
+                        // If card top is obscured under top nav (< 85px) or pushed too low (> 60% viewport)
+                        if (rect.top < 85 || rect.top > (window.innerHeight || 800) * 0.6) {
+                            const targetY = (window.scrollY || 0) + rect.top - 100;
+                            window.scrollTo({
+                                top: Math.max(0, targetY),
+                                behavior: 'smooth',
+                            });
+                        }
+                    }, 150);
                 }
             }
         };
@@ -199,7 +334,7 @@ export function initNewsCardInteractions(container: HTMLElement): void {
         if (expandBtn) {
             expandBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                toggleCard();
+                toggleCard(e);
             });
         }
 
@@ -207,7 +342,7 @@ export function initNewsCardInteractions(container: HTMLElement): void {
         card.addEventListener('keydown', (e) => {
             if ((e.key === 'Enter' || e.key === ' ') && e.target === card) {
                 e.preventDefault();
-                toggleCard();
+                toggleCard(e);
             }
         });
     });
@@ -230,6 +365,7 @@ export function renderNewsStories(
 
     if (shouldRefresh) {
         container.innerHTML = stories.map((story) => createNewsCardHTML(story)).join('\n');
+        container.classList.remove('has-expanded-card');
     }
 
     const cards = Array.from(container.querySelectorAll<HTMLElement>('.event-card'));
