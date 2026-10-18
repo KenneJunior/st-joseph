@@ -1136,6 +1136,357 @@ body.dark-mode .timeline-mobile-date-text {
   }
 }
 
+/* ==========================================================================
+   DYNAMIC ACADEMIC COUNTDOWN VISUAL & INTERACTIVE CARD FORMAT
+   ========================================================================== */
+.timeline-countdown-visual {
+  position: relative;
+  margin: 0 0 16px 0;
+  perspective: 1000px;
+}
+
+/* Resting Compact Indicator */
+.countdown-resting-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 12px;
+  min-height: 28px;
+  border-radius: var(--radius-pill, 9999px);
+  background: rgba(7, 24, 46, 0.04);
+  border: 1px solid rgba(201, 162, 41, 0.35);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--primary, #07182E);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.countdown-resting-badge:hover,
+.countdown-resting-badge:focus-visible {
+  background: rgba(201, 162, 41, 0.12);
+  border-color: var(--accent, #C9A229);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+body.dark-mode .countdown-resting-badge {
+  background: rgba(201, 162, 41, 0.12);
+  border-color: rgba(243, 215, 121, 0.35);
+  color: #F3D779;
+}
+
+body.dark-mode .countdown-resting-badge:hover,
+body.dark-mode .countdown-resting-badge:focus-visible {
+  background: rgba(201, 162, 41, 0.22);
+  border-color: #F3D779;
+}
+
+/* Pulse Beacon */
+.countdown-pulse-beacon {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent, #C9A229);
+  box-shadow: 0 0 0 0 rgba(201, 162, 41, 0.6);
+  animation: countdownPulse 2s infinite ease-in-out;
+  flex-shrink: 0;
+}
+
+.timeline-countdown-visual.is-active-date .countdown-pulse-beacon {
+  background: #10b981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+}
+
+.timeline-countdown-visual.is-past-date .countdown-pulse-beacon {
+  background: #94a3b8;
+  animation: none;
+}
+
+@keyframes countdownPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(201, 162, 41, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(201, 162, 41, 0);
+  }
+}
+
+.countdown-hover-cue {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.70rem;
+  font-weight: 500;
+  color: var(--text-muted, #7a7a96);
+  opacity: 0.75;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.countdown-resting-badge:hover .countdown-hover-cue,
+.timeline-card:hover .countdown-hover-cue {
+  opacity: 1;
+  color: var(--accent, #C9A229);
+  transform: translateX(2px);
+}
+
+body.dark-mode .countdown-hover-cue {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Interactive Card-Based Format (reveals on hover, focus-within, or tap toggle) */
+.countdown-interactive-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top center;
+  pointer-events: none;
+  margin-top: 0;
+  padding: 0 16px;
+  background: var(--surface-card, #ffffff);
+  border: 1px solid rgba(201, 162, 41, 0.35);
+  border-radius: var(--radius-md, 12px);
+  box-shadow: 0 12px 32px rgba(7, 24, 46, 0.08), 0 0 16px rgba(201, 162, 41, 0.12);
+  transition: max-height 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+              margin-top 0.3s ease,
+              padding 0.3s ease;
+}
+
+body.dark-mode .countdown-interactive-card {
+  background: #091a33;
+  border-color: rgba(243, 215, 121, 0.38);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 20px rgba(201, 162, 41, 0.18);
+}
+
+/* Hover & Focus Unfold Triggers */
+.timeline-milestone:hover .countdown-interactive-card,
+.timeline-card:hover .countdown-interactive-card,
+.timeline-countdown-visual:hover .countdown-interactive-card,
+.timeline-countdown-visual:focus-within .countdown-interactive-card,
+.timeline-countdown-visual.is-expanded-countdown .countdown-interactive-card {
+  max-height: 260px;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  margin-top: 10px;
+  padding: 14px 16px;
+}
+
+/* When upcoming date is hovered, highlight milestone card with warm gold sheen */
+.timeline-milestone:hover .timeline-countdown-visual.is-upcoming-date ~ .timeline-card-desc,
+.timeline-milestone:hover .timeline-card {
+  border-color: rgba(201, 162, 41, 0.55);
+}
+
+/* Countdown Card Header */
+.countdown-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(201, 162, 41, 0.25);
+}
+
+.countdown-card-heading {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--primary, #07182E);
+}
+
+body.dark-mode .countdown-card-heading {
+  color: #ffffff;
+}
+
+.countdown-card-status-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill, 9999px);
+  background: rgba(201, 162, 41, 0.12);
+  color: var(--accent, #C9A229);
+  border: 1px solid rgba(201, 162, 41, 0.3);
+}
+
+.countdown-card-status-badge.status-active {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.countdown-card-status-badge.status-concluded {
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+/* Digits Grid: 4 Interactive Card-based Tiles */
+.countdown-digits-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.countdown-digit-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  padding: 6px 4px;
+  border-radius: 8px;
+  background: var(--surface-secondary, #faf7f0);
+  border: 1px solid rgba(201, 162, 41, 0.3);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03), 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.countdown-digit-box:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent, #C9A229);
+}
+
+body.dark-mode .countdown-digit-box {
+  background: #040e1d;
+  border-color: rgba(201, 162, 41, 0.35);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.countdown-digit {
+  font-family: 'SF Mono', Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--primary, #07182E);
+  font-variant-numeric: tabular-nums;
+}
+
+body.dark-mode .countdown-digit {
+  color: #F3D779;
+}
+
+.countdown-digit-sub {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: var(--accent, #C9A229);
+  margin-top: 3px;
+}
+
+.countdown-sep {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--accent, #C9A229);
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+
+/* Timeline Progress Meter */
+.countdown-timeline-meter {
+  height: 4px;
+  width: 100%;
+  border-radius: 9999px;
+  background: rgba(7, 24, 46, 0.08);
+  overflow: hidden;
+}
+
+body.dark-mode .countdown-timeline-meter {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.countdown-timeline-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #C9A229 0%, #F3D779 100%);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Card Footer: Target Date Summary & Quick Action Button */
+.countdown-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.countdown-target-info {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--text-muted, #7a7a96);
+  font-weight: 500;
+}
+
+body.dark-mode .countdown-target-info {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.btn-countdown-quick-add {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill, 9999px);
+  background: rgba(201, 162, 41, 0.14);
+  border: 1px solid rgba(201, 162, 41, 0.4);
+  color: var(--primary, #07182E);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.btn-countdown-quick-add:hover {
+  background: var(--accent, #C9A229);
+  color: #07182E;
+  transform: translateY(-1px);
+}
+
+.btn-countdown-quick-add.is-active {
+  background: #10b981;
+  color: #ffffff;
+  border-color: #059669;
+}
+
+body.dark-mode .btn-countdown-quick-add {
+  background: rgba(201, 162, 41, 0.2);
+  border-color: rgba(243, 215, 121, 0.45);
+  color: #F3D779;
+}
+
+body.dark-mode .btn-countdown-quick-add:hover {
+  background: #F3D779;
+  color: #07182E;
+}
+
+@media (max-width: 480px) {
+  .countdown-digits-grid {
+    gap: 4px;
+  }
+  .countdown-digit-box {
+    min-width: 44px;
+    padding: 4px 2px;
+  }
+  .countdown-digit {
+    font-size: 1.05rem;
+  }
+  .countdown-digit-sub {
+    font-size: 0.52rem;
+  }
+}
+
 .timeline-card-desc {
   font-size: 0.94rem;
   color: var(--text-body);
@@ -1211,6 +1562,60 @@ body.dark-mode .timeline-card-footer {
 .next-milestone-banner .btn-calendar-action,
 .next-milestone-banner .btn-download-ics {
   color: var(--text-light);
+}
+
+/* Explicit high-contrast white & gold styling for auto-add reminders button on dark banner canvas in both light & dark themes */
+.next-milestone-banner .btn-calendar-auto-add,
+.next-milestone-banner #bannerAutoAddRemindersBtn,
+#bannerAutoAddRemindersBtn {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.next-milestone-banner .btn-calendar-auto-add span,
+.next-milestone-banner #bannerAutoAddRemindersBtn span,
+#bannerAutoAddRemindersBtn span {
+  color: #ffffff !important;
+}
+
+.next-milestone-banner .btn-calendar-auto-add i,
+.next-milestone-banner #bannerAutoAddRemindersBtn i,
+#bannerAutoAddRemindersBtn i {
+  color: var(--accent-glow, #f3d779) !important;
+  font-size: 1.05rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.next-milestone-banner .btn-calendar-auto-add:hover,
+.next-milestone-banner #bannerAutoAddRemindersBtn:hover,
+#bannerAutoAddRemindersBtn:hover {
+  background: rgba(201, 162, 41, 0.28) !important;
+  border-color: var(--accent, #c9a229) !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), 0 0 16px rgba(201, 162, 41, 0.35);
+}
+
+.next-milestone-banner .btn-calendar-auto-add:hover span,
+.next-milestone-banner #bannerAutoAddRemindersBtn:hover span,
+#bannerAutoAddRemindersBtn:hover span {
+  color: #ffffff !important;
+}
+
+.next-milestone-banner .btn-calendar-auto-add:hover i,
+.next-milestone-banner #bannerAutoAddRemindersBtn:hover i,
+#bannerAutoAddRemindersBtn:hover i {
+  color: #ffffff !important;
+  transform: scale(1.15) rotate(-6deg);
 }
 
 .btn-calendar-action i,

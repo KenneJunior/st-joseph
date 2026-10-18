@@ -2102,6 +2102,16 @@ body.dark-mode .my-reminders-overlay .list-toolbar-hint {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.next-milestone-banner .btn-calendar-auto-add,
+.next-milestone-banner #bannerAutoAddRemindersBtn {
+  color: #ffffff !important;
+}
+
+.next-milestone-banner .btn-calendar-auto-add span,
+.next-milestone-banner #bannerAutoAddRemindersBtn span {
+  color: #ffffff !important;
+}
+
 .btn-calendar-auto-add:hover {
   transform: translateY(-1px);
 }
