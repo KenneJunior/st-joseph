@@ -1,124 +1,147 @@
 /* ============================================
-   TESTIMONIALS
+   SJCCC COMMUNITY TESTIMONIALS
+   Polished, institutional cards with authentic
+   community portraits, gold accents, and fluid responsiveness
    ============================================ */
 .testimonial-card {
   background: var(--surface-card);
-  border-radius: var(--radius-lg);
-  padding: 36px 30px;
+  border-radius: var(--radius-lg, 18px);
+  padding: 36px 28px;
   box-shadow: var(--card-shadow);
   text-align: center;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.3s ease;
   border: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 @media (max-width: 1024px) {
   .testimonial-card {
-    padding: 24px 20px;
+    padding: 28px 22px;
   }
 }
 
 @media (max-width: 768px) {
   .testimonial-card {
-    padding: 12px 10px;
-    border-radius: var(--radius-sm);
+    padding: 24px 18px;
+    border-radius: var(--radius-md, 14px);
   }
 }
 
 @media (max-width: 480px) {
   .testimonial-card {
-    padding: 10px 8px;
+    padding: 20px 14px;
   }
 }
 
 .testimonial-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--card-shadow-hover);
+  border-color: rgba(201, 162, 41, 0.45);
 }
 
 .testimonial-avatar {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid var(--accent);
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border: 3px solid var(--accent, #c9a229);
+  margin-bottom: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  background-color: var(--surface-card);
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
   .testimonial-avatar {
-    width: 36px;
-    height: 36px;
-    border-width: 2px;
-    margin-bottom: 3px;
+    width: 68px;
+    height: 68px;
+    border-width: 2.5px;
+    margin-bottom: 12px;
   }
 }
 
 @media (max-width: 480px) {
   .testimonial-avatar {
-    width: 32px;
-    height: 32px;
+    width: 60px;
+    height: 60px;
+    border-width: 2px;
+    margin-bottom: 10px;
   }
 }
 
 .testimonial-quote {
-  font-size: 3rem;
-  color: var(--accent);
+  font-size: 2rem;
+  color: var(--accent, #c9a229);
   line-height: 1;
-  margin-bottom: 8px;
-  font-family: var(--font-heading);
-  opacity: 0.5;
+  margin-bottom: 12px;
+  font-family: var(--font-heading, serif);
+  opacity: 0.65;
 }
 
 @media (max-width: 768px) {
   .testimonial-quote {
-    font-size: 1.35rem;
-    margin-bottom: 1px;
+    font-size: 1.6rem;
+    margin-bottom: 8px;
   }
 }
 
 .testimonial-card p {
   font-style: italic;
   color: var(--text-body);
-  margin-bottom: 16px;
-  line-height: 1.7;
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+  line-height: 1.6;
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 440px;
 }
 
 @media (max-width: 768px) {
   .testimonial-card p {
-    font-size: 0.74rem;
-    line-height: 1.35;
-    margin-bottom: 4px;
+    font-size: 0.92rem;
+    line-height: 1.48;
+    margin-bottom: 14px;
   }
 }
 
 .testimonial-author {
   font-weight: 700;
-  color: var(--primary);
-  font-size: 0.95rem;
+  color: var(--primary, #07182e);
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+html.dark-mode .testimonial-author,
+body.dark-mode .testimonial-author,
+[data-theme="dark"] .testimonial-author {
+  color: var(--text-light, #f4f1ea);
+}
+
+.testimonial-role {
+  font-size: 0.82rem;
+  color: var(--text-muted, #555770);
+  line-height: 1.35;
+  margin-top: 4px;
+}
+
+html.dark-mode .testimonial-role,
+body.dark-mode .testimonial-role,
+[data-theme="dark"] .testimonial-role {
+  color: var(--accent-glow, #f3d779);
 }
 
 @media (max-width: 768px) {
   .testimonial-author {
-    font-size: 0.76rem;
+    font-size: 0.90rem;
   }
-}
-
-body.dark-mode .testimonial-author {
-  color: var(--text-light);
-}
-
-.testimonial-role {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-@media (max-width: 768px) {
   .testimonial-role {
-    font-size: 0.66rem;
+    font-size: 0.76rem;
   }
 }
