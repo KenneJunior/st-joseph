@@ -5,14 +5,16 @@
    ========================================================================== */
 
 :root {
-  --sw-pill-bg: rgba(255, 255, 255, 0.96);
-  --sw-pill-border: rgba(201, 162, 41, 0.38);
+  --sw-pill-bg: rgba(255, 255, 255, 0.88);
+  --sw-pill-border: rgba(201, 162, 41, 0.40);
   --sw-pill-text: #07182E;
   --sw-pill-subtext: #4A5568;
   --sw-pill-icon-bg: rgba(201, 162, 41, 0.15);
   --sw-pill-icon-color: #8C6A21;
   --sw-pill-shadow: 0 14px 38px -4px rgba(7, 24, 46, 0.22),
-                    0 4px 14px -2px rgba(7, 24, 46, 0.10);
+                    0 4px 14px -2px rgba(7, 24, 46, 0.10),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                    inset 0 0 16px rgba(201, 162, 41, 0.08);
   --sw-pill-btn-primary-bg: linear-gradient(135deg, #c9a229 0%, #b38b1d 100%);
   --sw-pill-btn-primary-text: #07182E;
   --sw-pill-btn-primary-hover: #d4a85a;
@@ -26,14 +28,16 @@
 html.dark-mode,
 body.dark-mode,
 [data-theme="dark"] {
-  --sw-pill-bg: rgba(7, 24, 46, 0.94);
-  --sw-pill-border: rgba(201, 162, 41, 0.35);
+  --sw-pill-bg: rgba(7, 24, 46, 0.82);
+  --sw-pill-border: rgba(201, 162, 41, 0.40);
   --sw-pill-text: #F4F1EA;
   --sw-pill-subtext: #D1CFC4;
   --sw-pill-icon-bg: rgba(201, 162, 41, 0.22);
   --sw-pill-icon-color: #F3D779;
   --sw-pill-shadow: 0 18px 45px -6px rgba(0, 0, 0, 0.70),
-                    0 0 18px rgba(201, 162, 41, 0.18);
+                    0 0 18px rgba(201, 162, 41, 0.20),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+                    inset 0 0 20px rgba(201, 162, 41, 0.12);
   --sw-pill-btn-primary-bg: linear-gradient(135deg, #f0c975 0%, #c9a229 100%);
   --sw-pill-btn-primary-text: #07182E;
   --sw-pill-btn-primary-hover: #f3d779;

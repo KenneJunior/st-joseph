@@ -5,8 +5,8 @@
    ========================================================================== */
 
 :root {
-  --pwa-card-bg: rgba(255, 255, 255, 0.96);
-  --pwa-card-border: rgba(201, 162, 41, 0.38);
+  --pwa-card-bg: rgba(255, 255, 255, 0.88);
+  --pwa-card-border: rgba(201, 162, 41, 0.40);
   --pwa-card-text: #07182E;
   --pwa-card-subtext: #4A5568;
   --pwa-card-crest-bg: linear-gradient(135deg, rgba(201, 162, 41, 0.20), rgba(7, 24, 46, 0.06));
@@ -15,8 +15,10 @@
   --pwa-card-tag-bg: rgba(7, 24, 46, 0.05);
   --pwa-card-tag-border: rgba(7, 24, 46, 0.12);
   --pwa-card-tag-text: #07182E;
-  --pwa-card-shadow: 0 16px 42px -6px rgba(7, 24, 46, 0.20),
-                     0 4px 14px -2px rgba(7, 24, 46, 0.08);
+  --pwa-card-shadow: 0 16px 42px -6px rgba(7, 24, 46, 0.22),
+                     0 4px 14px -2px rgba(7, 24, 46, 0.08),
+                     inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                     inset 0 0 20px rgba(201, 162, 41, 0.08);
   --pwa-card-btn-primary-bg: linear-gradient(135deg, #c9a229 0%, #b38b1d 100%);
   --pwa-card-btn-primary-text: #07182E;
   --pwa-card-btn-primary-hover: #d4a85a;
@@ -30,8 +32,8 @@
 html.dark-mode,
 body.dark-mode,
 [data-theme="dark"] {
-  --pwa-card-bg: rgba(7, 24, 46, 0.94);
-  --pwa-card-border: rgba(201, 162, 41, 0.35);
+  --pwa-card-bg: rgba(7, 24, 46, 0.82);
+  --pwa-card-border: rgba(201, 162, 41, 0.40);
   --pwa-card-text: #F4F1EA;
   --pwa-card-subtext: #D1CFC4;
   --pwa-card-crest-bg: rgba(201, 162, 41, 0.20);
@@ -41,7 +43,9 @@ body.dark-mode,
   --pwa-card-tag-border: rgba(201, 162, 41, 0.25);
   --pwa-card-tag-text: #F4F1EA;
   --pwa-card-shadow: 0 20px 48px -8px rgba(0, 0, 0, 0.75),
-                     0 0 18px rgba(201, 162, 41, 0.16);
+                     0 0 18px rgba(201, 162, 41, 0.20),
+                     inset 0 1px 0 rgba(255, 255, 255, 0.16),
+                     inset 0 0 24px rgba(201, 162, 41, 0.12);
   --pwa-card-btn-primary-bg: linear-gradient(135deg, #f0c975 0%, #c9a229 100%);
   --pwa-card-btn-primary-text: #07182E;
   --pwa-card-btn-primary-hover: #f3d779;
