@@ -1,6 +1,6 @@
 {
-  "name": "st-joseph",
-  "description": "St. Joseph's Catholic Comprehensive College (SJCCC) Mbengwi official web portal",
+  "name": "Remix st-joseph",
+  "description": "Imported from GitHub",
   "requestFramePermissions": [],
   "capabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
