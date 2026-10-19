@@ -12,6 +12,7 @@
 
 import { ScrollSpy } from './ScrollSpy.ts';
 import { DockGlider } from './DockGlider.ts';
+import { BottomBarSwipeNavigator } from './BottomBarSwipeNavigator.ts';
 
 export interface MobileNavigationOptions {
     menuToggleId?: string;
@@ -32,6 +33,7 @@ export class MobileNavigation {
     private readonly bottomBar: HTMLElement | null;
     private readonly linkSelector: string;
     private dockGlider: DockGlider | null = null;
+    private swipeNavigator: BottomBarSwipeNavigator | null = null;
 
     constructor(
         menuToggleId: string = 'menuToggle',
@@ -51,9 +53,10 @@ export class MobileNavigation {
     private init(): void {
         if (!this.navMenu) return;
 
-        // Initialize gliding active pill for floating bottom dock
+        // Initialize gliding active pill and swipe-to-navigate for floating bottom dock
         if (this.bottomBar) {
             this.dockGlider = new DockGlider(this.bottomBar.id || 'mobileBottomBar');
+            this.swipeNavigator = new BottomBarSwipeNavigator(this.bottomBar);
         }
 
         // Establish initial accessibility state for mobile drawer/dropdown
@@ -126,6 +129,11 @@ export class MobileNavigation {
             if (bottomIcon) {
                 bottomIcon.className = isActive ? 'bi bi-x-circle-fill' : 'bi bi-grid-fill';
             }
+            if (isActive) {
+                this.dockGlider?.update(this.bottomMenuToggle);
+            } else {
+                this.dockGlider?.scheduleUpdate();
+            }
         }
 
         // Focus first link on open for immediate keyboard interaction
@@ -154,6 +162,7 @@ export class MobileNavigation {
             this.bottomMenuToggle.setAttribute('aria-expanded', 'false');
             const bottomIcon = this.bottomMenuToggle.querySelector('i');
             if (bottomIcon) bottomIcon.className = 'bi bi-grid-fill';
+            this.dockGlider?.scheduleUpdate();
         }
     }
 
@@ -285,5 +294,13 @@ export class MobileNavigation {
     private updateHeaderHeight(): void {
         const headerHeight = this.header?.offsetHeight || 80;
         document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+    }
+
+    public getSwipeNavigator(): BottomBarSwipeNavigator | null {
+        return this.swipeNavigator;
+    }
+
+    public getDockGlider(): DockGlider | null {
+        return this.dockGlider;
     }
 }

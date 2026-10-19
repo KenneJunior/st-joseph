@@ -65,15 +65,26 @@ export const CANONICAL_NAV_ITEMS: readonly NavItemDefinition[] = [
         relatedSections: ['schoolDatesSection'],
     },
     {
+        id: 'news',
+        targetId: 'news-events',
+        href: '#news-events',
+        label: 'News',
+        iconClass: 'bi-newspaper',
+        dockOrder: 5,
+        inDock: true,
+        dockClass: 'mobile-bottom-item--news',
+        relatedSections: ['news-events'],
+    },
+    {
         id: 'results',
         targetId: 'results',
         href: '#results',
         label: 'Results',
         iconClass: 'bi-award-fill',
-        dockOrder: 5,
+        dockOrder: 6,
         inDock: true,
         dockClass: 'mobile-bottom-item--results',
-        relatedSections: ['news-events', 'results'],
+        relatedSections: ['results'],
     },
     {
         id: 'map',
@@ -81,16 +92,36 @@ export const CANONICAL_NAV_ITEMS: readonly NavItemDefinition[] = [
         href: '#campusMapSection',
         label: 'Map',
         iconClass: 'bi-map-fill',
-        dockOrder: 6,
+        dockOrder: 7,
         inDock: true,
         dockClass: 'mobile-bottom-item--map',
         relatedSections: ['campus', 'campusMapSection', 'testimonials'],
+    },
+    {
+        id: 'reminders',
+        targetId: 'bottomMyRemindersBtn',
+        href: '#myReminders',
+        label: 'Reminders',
+        iconClass: 'bi-bell-fill',
+        dockOrder: 8,
+        inDock: true,
+        dockClass: 'mobile-bottom-item--reminders',
+    },
+    {
+        id: 'prospectus',
+        targetId: 'prospectus',
+        href: '/prospectus.html',
+        label: 'Prospectus',
+        iconClass: 'bi-file-earmark-pdf-fill',
+        dockOrder: 99,
+        inDock: false,
+        dockClass: 'mobile-bottom-item--prospectus',
     },
 ] as const;
 
 /**
  * Maps any page section ID to its canonical navigation target.
- * Guarantees that sections outside the primary dock (e.g. #about, #news-events, #campus)
+ * Guarantees that sections outside the primary dock (e.g. #about, #campus)
  * map logically to their parent section without leaving the dock unhighlighted.
  */
 export function getCanonicalTargetForSection(sectionId: string): string | null {
@@ -105,7 +136,7 @@ export function getCanonicalTargetForSection(sectionId: string): string | null {
 
 /**
  * Canonical visual order of all mobile bottom bar items:
- * Theme (1) -> Home (2) -> Academics (3) -> Dates (4) -> Results (5) -> Map (6) -> Menu (7)
+ * Theme (1) -> Home (2) -> Academics (3) -> Dates (4) -> News (5) -> Results (6) -> Map (7) -> Reminders (8) -> Menu (9)
  */
 export const DOCK_CANONICAL_ORDER: readonly string[] = [
     'mobileBottomGlider',
@@ -113,8 +144,10 @@ export const DOCK_CANONICAL_ORDER: readonly string[] = [
     'heroSection',
     'academics',
     'schoolDatesSection',
+    'news-events',
     'results',
     'campusMapSection',
+    'bottomMyRemindersBtn',
     'bottomNavMenuToggle',
 ] as const;
 
@@ -133,6 +166,7 @@ export function enforceDockOrder(dockElement: HTMLElement): void {
         if (target) return target;
         const href = el.getAttribute('href');
         if (href?.startsWith('#')) return href.slice(1);
+        if (href?.includes('prospectus')) return 'prospectus';
         return '';
     };
 

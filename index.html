@@ -636,14 +636,11 @@
       <i class="bi bi-calendar-check-fill" aria-hidden="true"></i>
       <span class="mobile-bottom-label">Dates</span>
     </a>
-    <button type="button" class="mobile-bottom-item mobile-bottom-item--reminders" id="bottomMyRemindersBtn"
-      aria-label="My Reminders" aria-haspopup="dialog" toolDescription="View scheduled reminders and notification preferences">
-      <div class="mobile-bottom-badge-wrapper">
-        <i class="bi bi-bell-fill" aria-hidden="true"></i>
-        <span class="bottom-reminders-badge is-zero" id="bottomRemindersBadge">0</span>
-      </div>
-      <span class="mobile-bottom-label">Reminders</span>
-    </button>
+    <a href="#news-events" class="mobile-bottom-item mobile-bottom-item--news" data-nav-target="news-events"
+      aria-label="News & Events" toolDescription="Browse school news and stories">
+      <i class="bi bi-newspaper" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">News</span>
+    </a>
     <a href="#results" class="mobile-bottom-item mobile-bottom-item--results" data-nav-target="results"
       aria-label="2026 Results" toolDescription="Navigate to GCE Results">
       <i class="bi bi-award-fill" aria-hidden="true"></i>
@@ -654,6 +651,14 @@
       <i class="bi bi-map-fill" aria-hidden="true"></i>
       <span class="mobile-bottom-label">Map</span>
     </a>
+    <button type="button" class="mobile-bottom-item mobile-bottom-item--reminders" id="bottomMyRemindersBtn"
+      aria-label="My Reminders" aria-haspopup="dialog" toolDescription="View scheduled reminders and notification preferences">
+      <div class="mobile-bottom-badge-wrapper">
+        <i class="bi bi-bell-fill" aria-hidden="true"></i>
+        <span class="bottom-reminders-badge is-zero" id="bottomRemindersBadge">0</span>
+      </div>
+      <span class="mobile-bottom-label">Reminders</span>
+    </button>
     <button type="button" class="mobile-bottom-item mobile-bottom-item--menu mobile-bottom-toggle"
       id="bottomNavMenuToggle" aria-label="Open Full Navigation Menu" aria-controls="navMenu" aria-expanded="false"
       toolDescription="Open full navigation drawer">
@@ -978,12 +983,6 @@
                 toolDescription="Choose Google Calendar, Outlook, or download calendar file (.ics).">
                 <i class="bi bi-calendar-plus-fill" aria-hidden="true"></i>
                 <span>Add to Calendar</span>
-              </button>
-              <button type="button" class="btn btn-outline btn-calendar-auto-add" id="bannerAutoAddRemindersBtn"
-                title="Auto-add key academic dates (exams, holidays) to My Reminders"
-                toolDescription="Automatically populate My Reminders with upcoming exams, holidays, and resumptions.">
-                <i class="bi bi-bell-plus-fill" aria-hidden="true"></i>
-                <span>Auto-Add to Reminders</span>
               </button>
             </div>
           </div>
