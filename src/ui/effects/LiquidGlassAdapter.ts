@@ -44,9 +44,41 @@ export interface LiquidGlassAdapterConfig {
     rippleColor?: string;
 }
 
+export const POPUP_SELECTORS = [
+    '#pwaInstallCard',
+    '.pwa-install-card',
+    '#sw-update-banner',
+    '.cd-card',
+    '.dialog-box',
+    '.enquiry-modal-content',
+    '#enquiryModal .modal-content',
+    '.past-announcements-modal__dialog',
+    '.my-reminders-modal__dialog',
+    '.notification-guidance-dialog',
+    '.calendar-action-sheet',
+    '.location-qr-modal',
+    '#offlineStatusIndicator',
+    '.offline-status-indicator',
+];
+
+export const DEFAULT_POPUP_GLASS_CONFIG: LiquidGlassAdapterConfig = {
+    refractiveIndex: 1.54,
+    glassThickness: 75,
+    bezelWidth: 18,
+    refractionScale: 1.08,
+    specularAlpha: 0.55,
+    maxTilt: 2,
+    aberration: 0.02,
+    rippleColor: 'rgba(201, 162, 41, 0.35)', // Catholic Gold brand accent
+};
+
 export class LiquidGlassAdapter {
+    public static readonly shared: LiquidGlassAdapter = new LiquidGlassAdapter();
+
     private isDestroyed = false;
     private cleanups: Array<() => void> = [];
+    private popupObserver: MutationObserver | null = null;
+    private enhancedSurfaces: WeakSet<HTMLElement> = new WeakSet();
 
     /**
      * Checks if the user or system prefers reduced motion.
@@ -99,19 +131,43 @@ export class LiquidGlassAdapter {
     }
 
     /**
-     * Initializes LiquidGlass on targeted elements matching the selector.
+     * Initializes LiquidGlass on targeted elements matching a selector or direct HTMLElement.
      * Wrapped in a try/catch boundary so that any environment limitations
      * gracefully fall back to native CSS backdrop-filter without breaking UI.
      *
-     * @param selector CSS selector of target element(s)
+     * @param target CSS selector string or HTMLElement instance
      * @param config Optional adapter configuration
      */
-    public enhanceSurface(selector: string, config: LiquidGlassAdapterConfig = {}): void {
-        if (typeof window === 'undefined' || this.isDestroyed) return;
+    public enhanceSurface(target: string | HTMLElement, config: LiquidGlassAdapterConfig = {}): void {
+        if (typeof window === 'undefined' || typeof document === 'undefined' || this.isDestroyed) return;
 
         try {
-            const elements = document.querySelectorAll<HTMLElement>(selector);
+            let selector: string;
+            let elements: HTMLElement[] = [];
+
+            if (typeof target === 'string') {
+                selector = target;
+                elements = Array.from(document.querySelectorAll<HTMLElement>(selector));
+            } else if (target && typeof target === 'object' && 'nodeType' in target && target.nodeType === 1) {
+                const el = target as HTMLElement;
+                elements = [el];
+                if (el.id) {
+                    selector = `#${el.id}`;
+                } else {
+                    const tempId = `lg-${Math.random().toString(36).slice(2, 9)}`;
+                    el.setAttribute('data-lg-surface', tempId);
+                    selector = `[data-lg-surface="${tempId}"]`;
+                }
+            } else {
+                return;
+            }
+
             if (!elements || elements.length === 0) return;
+
+            // Filter out already enhanced elements to avoid redundant attachment
+            const unenhanced = elements.filter((el) => !this.enhancedSurfaces.has(el));
+            if (unenhanced.length === 0) return;
+            unenhanced.forEach((el) => this.enhancedSurfaces.add(el));
 
             const options = this.buildOptions(config);
 
@@ -120,7 +176,7 @@ export class LiquidGlassAdapter {
 
             // Attach tactile click/tap ripple effect using the external package's addRipple API
             const rippleColor = config.rippleColor ?? 'rgba(201, 162, 41, 0.32)'; // SJCCC Gold Accent
-            elements.forEach((el) => {
+            unenhanced.forEach((el) => {
                 const handlePointerDown = (event: MouseEvent | PointerEvent) => {
                     // Skip or soften interactive motion if reduced motion is preferred
                     if (LiquidGlassAdapter.prefersReducedMotion()) return;
@@ -146,40 +202,116 @@ export class LiquidGlassAdapter {
         } catch (error) {
             // Graceful degradation: The underlying semantic DOM and existing CSS
             // (backdrop-filter: blur) remain completely functional.
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            if (typeof window !== 'undefined' && (window.location?.hostname === 'localhost' || window.location?.hostname === '127.0.0.1')) {
                 console.warn('[LiquidGlassAdapter] Initialization skipped; falling back to CSS glass:', error);
             }
         }
     }
 
     /**
+     * Enhances a modal dialog, floating notification card, or popup sheet
+     * with physical liquid glass refractive effect, specular highlights, and gold ripple.
+     */
+    public enhancePopup(target: string | HTMLElement, config: LiquidGlassAdapterConfig = {}): void {
+        const mergedConfig = { ...DEFAULT_POPUP_GLASS_CONFIG, ...config };
+        this.enhanceSurface(target, mergedConfig);
+    }
+
+    /**
+     * Static convenience method for enhancing popups via the shared adapter.
+     */
+    public static enhancePopup(target: string | HTMLElement, config: LiquidGlassAdapterConfig = {}): void {
+        LiquidGlassAdapter.shared.enhancePopup(target, config);
+    }
+
+    /**
+     * Initializes a MutationObserver that automatically detects when any popup,
+     * install prompt, update notification, or modal dialog is added to the DOM
+     * and enhances it with LiquidGlass immediately.
+     */
+    public initPopupObserver(): void {
+        if (typeof window === 'undefined' || typeof document === 'undefined' || typeof MutationObserver === 'undefined' || this.isDestroyed) {
+            return;
+        }
+
+        if (this.popupObserver) return;
+
+        // Immediately enhance any existing popups currently mounted in DOM
+        this.enhanceExistingPopups();
+
+        this.popupObserver = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1) { // Node.ELEMENT_NODE
+                            const el = node as HTMLElement;
+                            for (const selector of POPUP_SELECTORS) {
+                                if (typeof el.matches === 'function' && el.matches(selector)) {
+                                    this.enhancePopup(el);
+                                }
+                                if (typeof el.querySelectorAll === 'function') {
+                                    const nested = el.querySelectorAll<HTMLElement>(selector);
+                                    nested.forEach((match) => this.enhancePopup(match));
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        this.popupObserver.observe(document.body, {
+            childList: true,
+            subtree: true,
+        });
+
+        this.cleanups.push(() => {
+            this.popupObserver?.disconnect();
+            this.popupObserver = null;
+        });
+    }
+
+    private enhanceExistingPopups(): void {
+        for (const selector of POPUP_SELECTORS) {
+            const matches = document.querySelectorAll<HTMLElement>(selector);
+            matches.forEach((el) => this.enhancePopup(el));
+        }
+    }
+
+    /**
      * Initializes targeted high-impact glass elements on the SJCCC Homepage:
-     * 1. `#enquiryFab`: Sticky enquiry action button
-     * 2. `#getInTouchBtn`: Hero section interactive contact CTA
+     * 1. Dynamic popup surfaces & observer (Install Card, Update Banner, Modals)
+     * 2. `.map-tour-btn`, `.campus-map-zoom-controls`, `.news-card__category-badge`
+     * 3. `.unified-action-dock`
      */
     public initHomepageSurfaces(): void {
         if (typeof window === 'undefined' || this.isDestroyed) return;
 
+        // Auto-enhance popups (install app, update available, enquiry, etc.)
+        this.initPopupObserver();
+
         this.enhanceSurface('.map-tour-btn');
-        this.enhanceSurface(".campus-map-zoom-controls");
-        this.enhanceSurface(".news-card__category-badge");
-        this.enhanceSurface(".unified-action-dock", {
+        this.enhanceSurface('.campus-map-zoom-controls');
+        this.enhanceSurface('.news-card__category-badge');
+        this.enhanceSurface('.unified-action-dock', {
             refractiveIndex: 1.55,
             glassThickness: 80,
             bezelWidth: 20,
             maxTilt: 1,
             rippleColor: 'rgba(255, 255, 255, 0.5)',
         });
-        // Targeted selection: Hero interactive outline button
     }
 
     /**
      * Initializes targeted high-impact glass elements on the SJCCC Prospectus:
-     * 1. `#downloadPdfBtn`: Floating PDF export / print trigger button
-     * 2. `.motto-bar`: Handbook header motto banner
+     * 1. Dynamic popup surfaces & observer (Update Banner, Modals)
+     * 2. `#downloadPdfBtn`: Floating PDF export / print trigger button
      */
     public initProspectusSurfaces(): void {
         if (typeof window === 'undefined' || this.isDestroyed) return;
+
+        // Auto-enhance popups (update available, dialogs, etc.)
+        this.initPopupObserver();
 
         // Targeted selection: Floating Action Button for PDF download
         this.enhanceSurface('#downloadPdfBtn', {
@@ -189,7 +321,6 @@ export class LiquidGlassAdapter {
             maxTilt: 1,
             rippleColor: 'rgba(255, 255, 255, 0.5)',
         });
-
     }
 
     /**
@@ -197,6 +328,8 @@ export class LiquidGlassAdapter {
      */
     public destroy(): void {
         this.isDestroyed = true;
+        this.popupObserver?.disconnect();
+        this.popupObserver = null;
         this.cleanups.forEach((cleanup) => {
             try {
                 cleanup();

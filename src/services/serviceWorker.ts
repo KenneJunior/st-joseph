@@ -7,6 +7,7 @@
  */
 
 import '../css/features/sw-update.css';
+import { LiquidGlassAdapter } from '../ui/effects/LiquidGlassAdapter.ts';
 
 interface UpdateBannerElements {
     updateBtn: HTMLButtonElement | null;
@@ -146,6 +147,9 @@ export const showUpdateNotification = (registration: ServiceWorkerRegistration):
 
     const banner = createUpdateBanner();
     document.body.appendChild(banner);
+
+    // Apply physical LiquidGlass optical refraction and tactile ripple to update banner
+    LiquidGlassAdapter.enhancePopup(banner);
 
     // Coordinate with other floating surfaces (e.g. install prompt card)
     window.dispatchEvent(new CustomEvent('sjccc-update-banner-visible', { detail: { visible: true } }));
