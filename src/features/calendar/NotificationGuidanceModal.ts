@@ -15,6 +15,7 @@ import {
     getAllNotificationPermissionGuides,
     type DevicePlatformInfo,
 } from '../../core/platform/platformDetection.ts';
+import { LiquidGlassAdapter } from '../../ui/effects/LiquidGlassAdapter.ts';
 
 export class NotificationGuidanceModal {
     private static instance: NotificationGuidanceModal | null = null;
@@ -63,6 +64,10 @@ export class NotificationGuidanceModal {
         }
 
         document.body.classList.add('notification-guide-open');
+
+        // Apply physical LiquidGlass optical refraction and tactile ripple to notification guidance dialog
+        const dialog = modal.querySelector<HTMLElement>('.notification-guidance-dialog') || modal;
+        LiquidGlassAdapter.enhancePopup(dialog);
 
         const closeBtn = modal.querySelector<HTMLElement>('#notificationGuideCloseBtn');
         closeBtn?.focus();

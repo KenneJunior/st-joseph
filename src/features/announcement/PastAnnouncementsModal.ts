@@ -12,6 +12,7 @@
 import { PAST_ANNOUNCEMENTS, type SchoolAnnouncement, type AnnouncementPriorityLevel } from '../../data/pastAnnouncements.ts';
 import { announcementState, announcementEventBus, type NoticeReadPayload } from './announcementState.ts';
 import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
+import { LiquidGlassAdapter } from '../../ui/effects/LiquidGlassAdapter.ts';
 
 export class PastAnnouncementsModal {
     private readonly modal: HTMLElement | null;
@@ -470,6 +471,12 @@ export class PastAnnouncementsModal {
 
         // Suspend background animations while modal is open
         motionSuspension.suspendAll('modal');
+
+        // Apply physical LiquidGlass optical refraction and tactile ripple to announcements dialog
+        const dialog = this.modal.querySelector<HTMLElement>('.past-announcements-modal__dialog');
+        if (dialog) {
+            LiquidGlassAdapter.enhancePopup(dialog);
+        }
 
         setTimeout(() => {
             this.searchInput?.focus();

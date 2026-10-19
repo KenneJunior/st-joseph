@@ -25,6 +25,7 @@ import {
     detectPlatform,
     getNotificationPermissionGuidance,
 } from '../../core/platform/platformDetection.ts';
+import { LiquidGlassAdapter } from '../../ui/effects/LiquidGlassAdapter.ts';
 
 export class MyRemindersController {
     private static instance: MyRemindersController | null = null;
@@ -257,6 +258,10 @@ export class MyRemindersController {
         }
 
         document.body.classList.add('reminders-modal-open');
+
+        // Apply physical LiquidGlass optical refraction and tactile ripple to reminders modal dialog
+        const dialog = modal.querySelector<HTMLElement>('.my-reminders-modal__dialog') || modal;
+        LiquidGlassAdapter.enhancePopup(dialog);
 
         // Focus first close button or primary action
         const closeBtn = modal.querySelector<HTMLElement>('#myRemindersCloseBtn');

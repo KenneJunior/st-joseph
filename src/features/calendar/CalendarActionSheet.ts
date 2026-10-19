@@ -25,6 +25,7 @@ import {
     getCalendarExportGuidance,
     type DevicePlatformInfo,
 } from '../../core/platform/platformDetection';
+import { LiquidGlassAdapter } from '../../ui/effects/LiquidGlassAdapter.ts';
 
 export class CalendarActionSheet {
     private static instance: CalendarActionSheet | null = null;
@@ -405,6 +406,12 @@ export class CalendarActionSheet {
             }
         }
         document.body.classList.add('calendar-modal-open');
+
+        // Apply physical LiquidGlass optical refraction and tactile ripple to calendar action sheet
+        const sheet = this.dialogEl?.querySelector<HTMLElement>('.calendar-action-sheet') || this.dialogEl;
+        if (sheet) {
+            LiquidGlassAdapter.enhancePopup(sheet);
+        }
 
         // Focus first actionable element inside sheet
         setTimeout(() => {
