@@ -430,26 +430,42 @@
 
     .header-inner {
         width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
     
     .logo-container {
         gap: 0.55rem;
+        min-width: 0;
+        flex: 1 1 auto;
+        max-width: calc(100% - 95px);
     }
 
     .logo-icon {
         font-size: 0.85rem;
         padding: 0.22rem 0.45rem;
         border-radius: 6px;
+        flex-shrink: 0;
     }
     
     .logo-text {
+        min-width: 0;
+        flex: 1 1 auto;
         font-size: clamp(0.82rem, 2.5vw, 0.94rem);
         line-height: 1.15;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     .logo-text small {
+        min-width: 0;
         font-size: 0.60rem;
         line-height: 1.15;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     .logo-motto {
