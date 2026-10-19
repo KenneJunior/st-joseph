@@ -545,6 +545,30 @@ body.drawer-open {
     display: none !important;
   }
 
+  /* Expand school brand container to full available width in .header-inner (prevents calc(100% - 320px) truncation) */
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 16px;
+    gap: 10px;
+  }
+
+  .logo-container {
+    max-width: 100%;
+    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .logo-text {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
   /* ─── Mobile Bottom Floating Glass Pill Dock ─── */
   .mobile-bottom-bar {
     --dock-bg: #ffffff;
@@ -567,15 +591,15 @@ body.drawer-open {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2px;
+    gap: 1px;
     position: fixed;
     left: 50%;
     right: auto;
     bottom: var(--dock-bottom-offset);
-    width: min(468px, calc(100vw - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
-    max-width: calc(100vw - 20px);
+    width: min(600px, calc(100vw - 12px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+    max-width: calc(100vw - 12px);
     height: 52px;
-    padding: 4px 6px;
+    padding: 3px 4px;
     border-radius: var(--dock-radius);
     z-index: var(--z-drawer, 3000);
     background: var(--dock-bg);
@@ -643,13 +667,13 @@ body.drawer-open {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
-    height: 44px;
-    min-height: 44px;
-    min-width: 44px;
+    gap: 1px;
+    height: 46px;
+    min-height: 38px;
+    min-width: 0;
     flex: 1 1 0;
-    max-width: 72px;
-    padding: 3px 4px;
+    max-width: 60px;
+    padding: 2px 2px;
     color: var(--dock-item-color);
     text-decoration: none;
     background: transparent;
@@ -713,26 +737,26 @@ body.drawer-open {
     transition: color 240ms ease, font-weight 240ms ease;
   }
 
-  /* ─── Gliding Active Pill Indicator (Smooth Sliding Motion) ─── */
+  /* ─── Prominent Gliding Active Pill Indicator (Luminous Sliding Gold Capsule) ─── */
   .mobile-bottom-glider {
     position: absolute;
-    top: 4px;
-    bottom: 4px;
+    top: 3px;
+    bottom: 3px;
     left: 0;
-    height: calc(100% - 8px);
+    height: calc(100% - 6px);
     border-radius: var(--radius-pill, 9999px);
-    background: var(--dock-active-bg);
-    border: 1px solid var(--dock-active-border);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65),
-                0 2px 10px rgba(201, 162, 41, 0.20),
-                0 0 14px rgba(201, 162, 41, 0.12);
+    background: linear-gradient(135deg, #d4a85a 0%, #f5db8b 45%, #e6ba50 75%, #d4a85a 100%);
+    border: 1.5px solid #ffffff;
+    box-shadow: 0 4px 18px rgba(201, 162, 41, 0.45),
+                0 2px 6px rgba(0, 0, 0, 0.14),
+                inset 0 1px 1px rgba(255, 255, 255, 0.9);
     pointer-events: none;
     z-index: 1;
     opacity: 0;
     transform: translate3d(0, 0, 0);
-    transition: transform 380ms cubic-bezier(0.25, 1, 0.35, 1),
-                width 380ms cubic-bezier(0.25, 1, 0.35, 1),
-                opacity 200ms ease;
+    transition: transform 320ms cubic-bezier(0.2, 0.85, 0.3, 1.15),
+                width 320ms cubic-bezier(0.2, 0.85, 0.3, 1.15),
+                opacity 180ms ease;
     will-change: transform, width;
     box-sizing: border-box;
   }
@@ -740,51 +764,90 @@ body.drawer-open {
   html.dark-mode .mobile-bottom-glider,
   body.dark-mode .mobile-bottom-glider,
   [data-theme='dark'] .mobile-bottom-glider {
-    background: var(--dock-active-bg);
-    border-color: var(--dock-active-border);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18),
-                0 2px 14px rgba(0, 0, 0, 0.45),
-                0 0 16px rgba(201, 162, 41, 0.28);
+    background: linear-gradient(135deg, #c9a229 0%, #f3d779 45%, #ffd978 70%, #b8860b 100%);
+    border: 1.5px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 22px rgba(201, 162, 41, 0.65),
+                0 0 16px rgba(243, 215, 121, 0.45),
+                inset 0 1px 1px rgba(255, 255, 255, 0.95);
   }
 
-  /* Gliding Gold Dot Indicator at bottom of the sliding capsule */
+  /* Active Gliding Pill Accent Dot Indicator */
   .mobile-bottom-glider::after {
     content: '';
     position: absolute;
-    bottom: 3px;
+    bottom: 2px;
     left: 50%;
     transform: translateX(-50%);
     width: 14px;
     height: 2.5px;
-    background: var(--dock-active-dot);
+    background: #06152b;
     border-radius: 999px;
-    opacity: 0.95;
-    box-shadow: 0 0 8px var(--dock-active-dot);
-    transition: background-color 200ms ease, box-shadow 200ms ease;
+    opacity: 0.85;
+    transition: background-color 200ms ease;
   }
 
-  /* Active Destination Treatment: Clean typographic & icon elevation (Pill handled by Glider) */
+  /* Active Destination Treatment: Luminous St. Joseph's Gold Pill with Crisp High-Contrast Legibility */
   .mobile-bottom-item.active,
   .mobile-bottom-item[aria-current="location"] {
-    color: var(--dock-active-color) !important;
-    background: transparent !important;
-    border-color: transparent !important;
-    box-shadow: none !important;
+    background: linear-gradient(135deg, rgba(201, 162, 41, 0.95) 0%, rgba(247, 220, 141, 0.98) 45%, rgba(212, 168, 90, 0.95) 100%) !important;
+    border: 1.5px solid #ffffff !important;
+    box-shadow: 0 4px 14px rgba(201, 162, 41, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.85) !important;
+    color: #06152b !important;
+    border-radius: var(--radius-pill, 9999px);
+    z-index: 3;
+  }
+
+  html.dark-mode .mobile-bottom-item.active,
+  body.dark-mode .mobile-bottom-item.active,
+  [data-theme='dark'] .mobile-bottom-item.active {
+    background: linear-gradient(135deg, #c9a229 0%, #f7dc8d 45%, #ffd978 70%, #d4a85a 100%) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 4px 18px rgba(201, 162, 41, 0.65), 0 0 12px rgba(243, 215, 121, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+    color: #06152b !important;
   }
 
   .mobile-bottom-item.active i,
   .mobile-bottom-item[aria-current="location"] i {
-    transform: translateY(-1px) scale(1.10);
-    color: var(--dock-active-color);
+    transform: translateY(-1px) scale(1.15);
+    color: #06152b !important;
+    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.7));
   }
 
   .mobile-bottom-item.active .mobile-bottom-label,
   .mobile-bottom-item[aria-current="location"] .mobile-bottom-label {
-    font-weight: 700;
-    color: var(--dock-active-color);
+    font-weight: 800 !important;
+    color: #06152b !important;
+    letter-spacing: -0.1px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
   }
 
-  /* Per-item static dot removed in favor of the gliding indicator dot */
+  /* Specific high-visibility treatment when Menu Drawer toggle is active/open */
+  .mobile-bottom-item--menu.active {
+    background: linear-gradient(135deg, #c9a229 0%, #fbe3a1 45%, #e6ba50 100%) !important;
+    border: 1.5px solid #ffffff !important;
+    box-shadow: 0 4px 18px rgba(201, 162, 41, 0.65), 0 0 14px rgba(243, 215, 121, 0.5) !important;
+  }
+
+  .mobile-bottom-item--menu.active i {
+    transform: scale(1.2);
+    color: #06152b !important;
+    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.8));
+  }
+
+  .mobile-bottom-item--menu.active .mobile-bottom-label {
+    color: #06152b !important;
+    font-weight: 800 !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+
+  /* Specific styling for Reminders button when active in bottom dock */
+  .mobile-bottom-item--reminders.active .bottom-reminders-badge {
+    background: #06152b !important;
+    color: #f7dc8d !important;
+    border-color: #f7dc8d !important;
+  }
+
+  /* Per-item static dot removed in favor of the prominent sliding pill */
   .mobile-bottom-item.active::after,
   .mobile-bottom-item[aria-current="location"]::after {
     display: none !important;
@@ -893,40 +956,48 @@ body.drawer-open {
   .header-inner {
     padding: 0 12px;
     gap: 8px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .logo-container {
     gap: 8px;
+    max-width: 100%;
+    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .logo-icon {
-    width: 46px;
-    height: 46px;
-    min-width: 38px;
-    min-height: 38px;
-    font-size: 0.86rem;
+    width: 40px;
+    height: 40px;
+    min-width: 36px;
+    min-height: 36px;
+    font-size: 0.85rem;
+    flex-shrink: 0;
   }
 
   .logo-text {
-    font-size: clamp(0.92rem, 0.82rem + 0.45vw, 1.04rem);
+    min-width: 0;
+    flex: 1 1 auto;
+    font-size: clamp(0.90rem, 0.80rem + 0.40vw, 1.02rem);
     line-height: 1.15;
     letter-spacing: 0.2px;
   }
 
   .logo-text small {
-    font-size: clamp(0.60rem, 0.54rem + 0.22vw, 0.68rem);
-    line-height: 1.15;
-    letter-spacing: 0.3px;
-  }
-
-  .logo-motto {
     display: block;
-    font-size: clamp(0.50rem, 0.44rem + 0.20vw, 0.60rem);
+    min-width: 0;
+    font-size: clamp(0.58rem, 0.52rem + 0.18vw, 0.66rem);
     line-height: 1.15;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.25px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .logo-motto {
+    display: none !important;
   }
 
   .menu-toggle {
@@ -963,37 +1034,46 @@ body.drawer-open {
   .header-inner {
     padding: 0 8px;
     gap: 6px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .logo-container {
     gap: 6px;
+    max-width: 100%;
+    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .logo-icon {
-    width: 42px;
-    height: 42px;
-    min-width: 36px;
-    min-height: 36px;
-    font-size: 0.82rem;
+    width: 36px;
+    height: 36px;
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 0.80rem;
+    flex-shrink: 0;
   }
 
   .logo-text {
-    font-size: clamp(0.86rem, 0.78rem + 0.38vw, 0.92rem);
+    min-width: 0;
+    flex: 1 1 auto;
+    font-size: clamp(0.82rem, 0.74rem + 0.35vw, 0.90rem);
     line-height: 1.14;
   }
 
   .logo-text small {
-    font-size: clamp(0.56rem, 0.50rem + 0.22vw, 0.62rem);
-    line-height: 1.14;
-  }
-
-  .logo-motto {
     display: block;
-    font-size: clamp(0.46rem, 0.40rem + 0.20vw, 0.52rem);
+    min-width: 0;
+    font-size: clamp(0.54rem, 0.48rem + 0.18vw, 0.60rem);
     line-height: 1.14;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .logo-motto {
+    display: none !important;
   }
 
   /* Preserve touch target size >= 44px */
@@ -1007,80 +1087,97 @@ body.drawer-open {
 }
 
 /* ============================================================
-   RESPONSIVE CAPACITY & PILL GEOMETRY FOR MOBILE BOTTOM DOCK (320px - 768px)
-   Canonical Order: 1.Theme 2.Home 3.Academics 4.Dates 5.Results 6.Map 7.Menu
+   RESPONSIVE BOTTOM DOCK CAPACITY: ALL ICONS FIT IN THE PILL
+   Canonical Order: Theme, Home, Academics, Dates, Reminders, Results, News, Map, Prospectus, Menu
    ============================================================ */
 
-/* < 360px: 4 items -> Theme, Home, Academics, Menu */
+/* < 360px: Very Narrow Mobile Viewports */
 @media (max-width: 359px) {
   .mobile-bottom-bar {
-    width: min(304px, calc(100vw - 16px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+    width: calc(100vw - 8px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
     height: 48px;
-    padding: 3px 5px;
-    --dock-bottom-offset: calc(8px + env(safe-area-inset-bottom, 0px));
+    padding: 2px 2px;
+    gap: 0px;
+    --dock-bottom-offset: calc(6px + env(safe-area-inset-bottom, 0px));
   }
 
   .mobile-bottom-glider {
-    top: 3px;
-    bottom: 3px;
-    height: calc(100% - 6px);
-  }
-
-  .mobile-bottom-item {
-    height: 40px;
-    min-height: 40px;
-    min-width: 40px;
-    padding: 2px 3px;
-  }
-
-  .mobile-bottom-item--dates,
-  .mobile-bottom-item--results,
-  .mobile-bottom-item--map {
-    display: none !important;
-  }
-}
-
-/* 360px - 413px: 5 items -> Theme, Home, Academics, Dates, Menu */
-@media (min-width: 360px) and (max-width: 413px) {
-  .mobile-bottom-bar {
-    width: min(358px, calc(100vw - 20px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
-    height: 50px;
-    padding: 3px 5px;
-  }
-
-  .mobile-bottom-glider {
-    top: 3px;
-    bottom: 3px;
-    height: calc(100% - 6px);
+    top: 2px;
+    bottom: 2px;
+    height: calc(100% - 4px);
   }
 
   .mobile-bottom-item {
     height: 42px;
-    min-height: 42px;
-    min-width: 42px;
+    min-height: 36px;
+    padding: 1px 1px;
+    max-width: none;
   }
 
-  .mobile-bottom-item--results,
-  .mobile-bottom-item--map {
-    display: none !important;
+  .mobile-bottom-item i {
+    font-size: 0.88rem;
+  }
+
+  .mobile-bottom-label {
+    font-size: 0.38rem;
+    letter-spacing: -0.3px;
   }
 }
 
-/* 414px - 599px: 6 items -> Theme, Home, Academics, Dates, Results, Menu */
-@media (min-width: 414px) and (max-width: 599px) {
+/* 360px - 480px: Standard Mobile Phones */
+@media (min-width: 360px) and (max-width: 480px) {
   .mobile-bottom-bar {
-    width: min(416px, calc(100vw - 22px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+    width: calc(100vw - 10px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+    height: 50px;
+    padding: 2px 3px;
+    gap: 1px;
   }
 
-  .mobile-bottom-item--map {
-    display: none !important;
+  .mobile-bottom-glider {
+    top: 2px;
+    bottom: 2px;
+    height: calc(100% - 4px);
+  }
+
+  .mobile-bottom-item {
+    height: 44px;
+    min-height: 38px;
+    padding: 2px 1px;
+    max-width: none;
+  }
+
+  .mobile-bottom-item i {
+    font-size: 0.94rem;
+  }
+
+  .mobile-bottom-label {
+    font-size: 0.44rem;
+    letter-spacing: -0.2px;
   }
 }
 
-/* 600px - 768px: All 7 items -> Theme, Home, Academics, Dates, Results, Map, Menu */
-@media (min-width: 600px) and (max-width: 768px) {
+/* 481px - 767px: Large Mobile & Phablets */
+@media (min-width: 481px) and (max-width: 767px) {
+  .mobile-bottom-bar {
+    width: min(600px, calc(100vw - 16px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+    height: 52px;
+    padding: 3px 5px;
+    gap: 2px;
+  }
+
   .mobile-bottom-item {
-    display: flex;
+    height: 46px;
+    min-height: 40px;
+    padding: 2px 3px;
+    max-width: 58px;
+  }
+
+  .mobile-bottom-item i {
+    font-size: 1.02rem;
+  }
+
+  .mobile-bottom-label {
+    font-size: 0.52rem;
   }
 }
 

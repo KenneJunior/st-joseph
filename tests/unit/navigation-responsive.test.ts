@@ -73,6 +73,18 @@ describe('SJCCC Top Navigation — Responsive Spacing, Adaptive Layout & Transit
         it('aligns header height reduction to 768px in header.css', () => {
             expect(headerCss).toContain('@media (max-width: 768px) {\n  :root {\n    --header-height: 56px;');
         });
+
+        it('expands logo-container to 100% max-width on mobile to prevent calc(100% - 320px) truncation of school name', () => {
+            expect(navMobileCss).toContain('/* Expand school brand container to full available width in .header-inner (prevents calc(100% - 320px) truncation) */');
+            expect(navMobileCss).toContain('.logo-container {\n    max-width: 100%;\n    width: 100%;\n    flex: 1 1 auto;\n    min-width: 0;\n  }');
+        });
+
+        it('ensures school name in logo-text and small is properly sized and visible at <= 480px and <= 360px', () => {
+            expect(navMobileCss).toContain('@media (max-width: 480px)');
+            expect(navMobileCss).toContain('@media (max-width: 360px)');
+            expect(navMobileCss).toContain('font-size: clamp(0.90rem, 0.80rem + 0.40vw, 1.02rem);');
+            expect(navMobileCss).toContain('font-size: clamp(0.82rem, 0.74rem + 0.35vw, 0.90rem);');
+        });
     });
 
     describe('Desktop Intermediate Range (1025px - 1200px)', () => {
