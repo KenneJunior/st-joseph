@@ -152,11 +152,9 @@ describe('SJCCC Calendar — Next Milestone Auto-Add Reminders Button Visibility
     const timelineCss = fs.readFileSync(path.join(rootDir, 'src/css/features/calendar-timeline.css'), 'utf-8');
     const $ = cheerio.load(indexHtml);
 
-    it('verifies #bannerAutoAddRemindersBtn exists in DOM within .next-milestone-banner', () => {
+    it('verifies #bannerAutoAddRemindersBtn is removed from DOM per user request', () => {
         const btn = $('.next-milestone-banner #bannerAutoAddRemindersBtn');
-        expect(btn.length).toBe(1);
-        expect(btn.hasClass('btn-calendar-auto-add')).toBe(true);
-        expect(btn.text()).toContain('Auto-Add to Reminders');
+        expect(btn.length).toBe(0);
     });
 
     it('excludes #bannerAutoAddRemindersBtn from light mode dark-blue text override in buttons.css', () => {

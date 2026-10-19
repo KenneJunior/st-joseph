@@ -576,9 +576,9 @@ export class SchoolDatesTimeline {
             });
         });
 
-        // Auto-add key academic dates to My Reminders button in banner or timeline
+        // Auto-add key academic dates to My Reminders button in timeline
         const autoAddButtons = this.container?.querySelectorAll<HTMLButtonElement>(
-            '#bannerAutoAddRemindersBtn, .btn-calendar-auto-add, #timelineAutoAddRemindersBtn, .timeline-auto-add-btn'
+            '#timelineAutoAddRemindersBtn, .timeline-auto-add-btn, .btn-calendar-auto-add'
         );
         autoAddButtons?.forEach((btn) => {
             btn.addEventListener('click', (e) => {
