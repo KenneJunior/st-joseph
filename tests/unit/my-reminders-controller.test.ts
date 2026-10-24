@@ -948,5 +948,136 @@ describe('MyRemindersController - Navbar, Bottom Dock & Reminders Management', (
         expect(customItem).toBeDefined();
         expect(customItem!.category).toBe('Assignments');
     });
+
+    it('ensures snooze flyout is hidden by default and only displays when snooze button is clicked', () => {
+        const now = Date.now();
+        milestoneReminderService.saveReminder({
+            milestoneId: 'snooze-toggle-test',
+            title: 'Chemistry Lab Exam',
+            dateText: '10 Nov 2026',
+            location: 'Lab 2',
+            description: 'Practical exam',
+            eventTime: now + 72 * 3600 * 1000,
+            reminderTime: now + 24 * 3600 * 1000,
+            createdAt: now,
+            category: 'Exams',
+        });
+
+        controller.open();
+        const modal = document.getElementById('myRemindersModal')!;
+        const flyout = modal.querySelector<HTMLElement>('#snoozeFlyout-snooze-toggle-test')!;
+        const snoozeBtn = modal.querySelector<HTMLButtonElement>('.my-reminder-snooze-btn[data-milestone-id="snooze-toggle-test"]')!;
+
+        expect(flyout).not.toBeNull();
+        expect(snoozeBtn).not.toBeNull();
+
+        // 1. Initially hidden before clicking
+        expect(flyout.hasAttribute('hidden')).toBe(true);
+        expect(snoozeBtn.getAttribute('aria-expanded')).toBe('false');
+
+        // 2. Click button to reveal
+        snoozeBtn.click();
+        expect(flyout.hasAttribute('hidden')).toBe(false);
+        expect(snoozeBtn.getAttribute('aria-expanded')).toBe('true');
+
+        // 3. Click button again to hide
+        snoozeBtn.click();
+        expect(flyout.hasAttribute('hidden')).toBe(true);
+        expect(snoozeBtn.getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('allows setting custom snooze duration in hours', () => {
+        const now = Date.now();
+        milestoneReminderService.saveReminder({
+            milestoneId: 'custom-duration-test',
+            title: 'PTA General Assembly',
+            dateText: '12 Nov 2026',
+            location: 'Jubilee Hall',
+            description: 'General assembly',
+            eventTime: now + 48 * 3600 * 1000, // 48 hours away
+            reminderTime: now + 12 * 3600 * 1000,
+            createdAt: now,
+            category: 'General',
+        });
+
+        controller.open();
+        const modal = document.getElementById('myRemindersModal')!;
+        const snoozeBtn = modal.querySelector<HTMLButtonElement>('.my-reminder-snooze-btn[data-milestone-id="custom-duration-test"]')!;
+        snoozeBtn.click();
+
+        const flyout = modal.querySelector<HTMLElement>('#snoozeFlyout-custom-duration-test')!;
+        const customToggle = flyout.querySelector<HTMLButtonElement>('.btn-snooze-custom-toggle')!;
+        expect(customToggle).not.toBeNull();
+
+        // Click custom toggle to open custom options panel
+        customToggle.click();
+        const customContainer = flyout.querySelector<HTMLElement>('#snoozeCustomContainer-custom-duration-test')!;
+        expect(customContainer.hasAttribute('hidden')).toBe(false);
+
+        // Enter 4 hours
+        const durationInput = customContainer.querySelector<HTMLInputElement>('#snoozeCustomDurationVal-custom-duration-test')!;
+        const applyBtn = customContainer.querySelector<HTMLButtonElement>('.btn-apply-custom-duration')!;
+        expect(durationInput).not.toBeNull();
+        expect(applyBtn).not.toBeNull();
+
+        durationInput.value = '4';
+        applyBtn.click();
+
+        // Verify reminder is snoozed by 4 hours
+        const updated = milestoneReminderService.getAllStoredReminders()['custom-duration-test'];
+        expect(updated).toBeDefined();
+        expect(updated.snoozedUntil).toBeDefined();
+        expect(updated.snoozedUntil).toBeGreaterThan(now + 3 * 3600 * 1000);
+        expect(updated.snoozedUntil).toBeLessThanOrEqual(now + 5 * 3600 * 1000);
+    });
+
+    it('allows setting custom exact datetime snooze and blocks past event date', () => {
+        const now = Date.now();
+        const eventTime = now + 24 * 3600 * 1000; // 24 hours away
+        milestoneReminderService.saveReminder({
+            milestoneId: 'custom-datetime-test',
+            title: 'Tuition Fee Deadline',
+            dateText: '14 Nov 2026',
+            location: 'Bursary',
+            description: 'Fee payment',
+            eventTime,
+            reminderTime: now + 2 * 3600 * 1000,
+            createdAt: now,
+            category: 'Fees',
+        });
+
+        controller.open();
+        const modal = document.getElementById('myRemindersModal')!;
+        const snoozeBtn = modal.querySelector<HTMLButtonElement>('.my-reminder-snooze-btn[data-milestone-id="custom-datetime-test"]')!;
+        snoozeBtn.click();
+
+        const flyout = modal.querySelector<HTMLElement>('#snoozeFlyout-custom-datetime-test')!;
+        const customToggle = flyout.querySelector<HTMLButtonElement>('.btn-snooze-custom-toggle')!;
+        customToggle.click();
+
+        // Switch to datetime tab
+        const dateTab = flyout.querySelector<HTMLButtonElement>('.snooze-mode-tab[data-mode="datetime"]')!;
+        dateTab.click();
+
+        const dateInput = flyout.querySelector<HTMLInputElement>('#snoozeCustomDatetimeVal-custom-datetime-test')!;
+        const applyDateBtn = flyout.querySelector<HTMLButtonElement>('.btn-apply-custom-datetime')!;
+
+        // Attempting to set past the event date (e.g. eventTime + 5 hours)
+        const pastEventDate = new Date(eventTime + 5 * 3600 * 1000);
+        dateInput.value = pastEventDate.toISOString().slice(0, 16);
+        applyDateBtn.click();
+
+        const errBox = flyout.querySelector<HTMLElement>('#snoozeCustomError-custom-datetime-test')!;
+        expect(errBox.hasAttribute('hidden')).toBe(false);
+        expect(errBox.textContent).toContain('Cannot snooze past');
+
+        // Now set valid target (now + 6 hours)
+        const validDate = new Date(now + 6 * 3600 * 1000);
+        dateInput.value = validDate.toISOString().slice(0, 16);
+        applyDateBtn.click();
+
+        const updated = milestoneReminderService.getAllStoredReminders()['custom-datetime-test'];
+        expect(updated.snoozedUntil).toBeDefined();
+    });
 });
 

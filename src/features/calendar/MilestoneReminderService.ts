@@ -149,7 +149,7 @@ export function inferReminderCategory(title: string, desc?: string, originalCate
     return 'General';
 }
 
-export type SnoozeDurationHours = 1 | 6 | 12;
+export type SnoozeDurationHours = 1 | 6 | 12 | number;
 
 export interface SnoozeOptionInfo {
     hours: SnoozeDurationHours;
@@ -1284,13 +1284,73 @@ export class MilestoneReminderService {
     }
 
     /**
-     * Snoozes a reminder by 1, 6, or 12 hours.
-     * Rejects delays that would go after the milestone's scheduled date/time.
+     * Validates a candidate snooze target timestamp against current time and milestone event time.
+     */
+    public validateSnoozeTarget(
+        milestoneId: string,
+        targetTime: number,
+        now: number = Date.now()
+    ): { valid: boolean; reason?: string; eventTime: number } {
+        const stored = this.getAllStoredReminders();
+        const item = stored[milestoneId];
+        const milestone = this.findMilestone(milestoneId);
+        const eventTime = item?.eventTime || (milestone ? this.getMilestoneStartTime(milestone) : now + 24 * 3600 * 1000);
+
+        if (isNaN(targetTime) || targetTime <= now) {
+            return {
+                valid: false,
+                reason: 'Snooze time must be set in the future.',
+                eventTime,
+            };
+        }
+        if (targetTime > eventTime) {
+            const dateStr = new Date(eventTime).toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+            });
+            return {
+                valid: false,
+                reason: `Cannot snooze past the milestone event date (${dateStr}).`,
+                eventTime,
+            };
+        }
+        return { valid: true, eventTime };
+    }
+
+    /**
+     * Snoozes a reminder by a duration in hours (e.g. 1h, 6h, 12h, or custom hours).
+     * Rejects delays that would go after the milestone's scheduled date/time or <= now.
      */
     public snoozeReminder(
         milestoneId: string,
         hours: SnoozeDurationHours,
         now: number = Date.now()
+    ): { success: boolean; snoozedUntil?: number; message: string } {
+        if (!hours || isNaN(hours) || hours <= 0) {
+            const errMessage = 'Invalid snooze duration: hours must be greater than zero.';
+            this.showToast({
+                type: 'warning',
+                title: 'Invalid Snooze',
+                message: errMessage,
+                duration: 5000,
+            });
+            return { success: false, message: errMessage };
+        }
+        const ms = hours * 60 * 60 * 1000;
+        const targetTime = now + ms;
+        return this.snoozeReminderUntil(milestoneId, targetTime, now, hours);
+    }
+
+    /**
+     * Snoozes a reminder until a specific target timestamp (e.g. exact date & time chosen by user).
+     * Rejects delays that are in the past or after the milestone's scheduled date/time.
+     */
+    public snoozeReminderUntil(
+        milestoneId: string,
+        targetTime: number,
+        now: number = Date.now(),
+        customHours?: number
     ): { success: boolean; snoozedUntil?: number; message: string } {
         const stored = this.getAllStoredReminders();
         const item = stored[milestoneId];
@@ -1298,12 +1358,25 @@ export class MilestoneReminderService {
             return { success: false, message: 'Reminder record not found.' };
         }
 
-        const ms = hours * 60 * 60 * 1000;
-        const targetTime = now + ms;
+        if (targetTime <= now) {
+            const errMessage = 'Cannot snooze to a time in the past or present. Please choose a future time.';
+            this.showToast({
+                type: 'warning',
+                title: 'Invalid Snooze Time',
+                message: errMessage,
+                duration: 5000,
+            });
+            return { success: false, message: errMessage };
+        }
 
         // Invariant check: let it not go after the date of the reminder
         if (targetTime > item.eventTime) {
-            const errMessage = `Cannot snooze by ${hours}h: would exceed the milestone date (${new Date(item.eventTime).toLocaleDateString()}).`;
+            const milestoneDateStr = new Date(item.eventTime).toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+            });
+            const errMessage = `Cannot snooze: would exceed the milestone date (${milestoneDateStr}).`;
             this.showToast({
                 type: 'warning',
                 title: 'Snooze Blocked',
@@ -1337,11 +1410,15 @@ export class MilestoneReminderService {
             day: 'numeric',
         });
 
+        const durationText = customHours !== undefined
+            ? `${customHours} hour${customHours === 1 ? '' : 's'}`
+            : `custom time (${formattedTargetDate} at ${formattedTargetTime})`;
+
         // Record to notification history
         this.recordNotificationHistory({
             milestoneId: item.milestoneId,
             title: `Reminder Snoozed: ${item.title}`,
-            body: `Snoozed for ${hours} hour${hours === 1 ? '' : 's'}. Next alert will fire on ${formattedTargetDate} at ${formattedTargetTime}.`,
+            body: `Snoozed for ${durationText}. Next alert will fire on ${formattedTargetDate} at ${formattedTargetTime}.`,
             timestamp: now,
             type: 'milestone',
             suppressed: false,
@@ -1352,7 +1429,7 @@ export class MilestoneReminderService {
         this.showToast({
             type: 'success',
             title: 'Reminder Snoozed',
-            message: `"${item.title}" snoozed for ${hours} hour${hours === 1 ? '' : 's'}. Next alert: ${formattedTargetDate} at ${formattedTargetTime}.`,
+            message: `"${item.title}" snoozed until ${formattedTargetDate} at ${formattedTargetTime}.`,
             dateBadge: item.dateText,
             duration: 6000,
         });
@@ -1362,7 +1439,7 @@ export class MilestoneReminderService {
         return {
             success: true,
             snoozedUntil: targetTime,
-            message: `Snoozed for ${hours} hour${hours === 1 ? '' : 's'}.`,
+            message: `Snoozed until ${formattedTargetDate} at ${formattedTargetTime}.`,
         };
     }
 

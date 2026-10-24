@@ -26,6 +26,12 @@ import {
     getNotificationPermissionGuidance,
 } from '../../core/platform/platformDetection.ts';
 
+function formatDateTimeLocalInput(timestamp: number): string {
+    const d = new Date(timestamp);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 export class MyRemindersController {
     private static instance: MyRemindersController | null = null;
 
@@ -171,9 +177,16 @@ export class MyRemindersController {
             }
         });
 
-        // Close on Escape key
+        // Close on Escape key (closes open snooze flyout first if active)
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && this.isOpen) {
+                const openFlyout = this.modalEl?.querySelector<HTMLElement>('.my-reminder-snooze-flyout:not([hidden])');
+                if (openFlyout) {
+                    openFlyout.setAttribute('hidden', '');
+                    openFlyout.classList.remove('is-open');
+                    this.modalEl?.querySelectorAll('.my-reminder-snooze-btn').forEach((b) => b.setAttribute('aria-expanded', 'false'));
+                    return;
+                }
                 this.close();
             }
         };
@@ -768,32 +781,110 @@ export class MyRemindersController {
                                   <i class="bi bi-calendar-plus" aria-hidden="true"></i> Add to Calendar
                                 </button>
 
-                                <!-- Snooze Option for Reminder Item -->
-                                <div class="my-reminder-snooze-wrapper">
-                                  <button type="button" class="btn btn-outline btn-sm my-reminder-snooze-btn"
-                                    data-milestone-id="${item.milestoneId}"
-                                    aria-haspopup="true"
-                                    aria-expanded="false"
-                                    title="Snooze this reminder (1h, 6h, or 12h without exceeding milestone date)">
-                                    <i class="bi bi-alarm" aria-hidden="true"></i>
-                                    <span>Snooze</span>
-                                    <i class="bi bi-chevron-down" aria-hidden="true"></i>
-                                  </button>
-                                  <div class="my-reminder-snooze-flyout" id="snoozeFlyout-${item.milestoneId}" hidden>
-                                    <div class="snooze-flyout-label">Delay alert by:</div>
-                                    <div class="snooze-chips-row">
-                                      ${snoozeOptions.map((opt) => `
-                                        <button type="button" class="btn-snooze-chip ${!opt.valid ? 'is-disabled' : ''}"
+                                  <!-- Snooze Option for Reminder Item -->
+                                  <div class="my-reminder-snooze-wrapper">
+                                    <button type="button" class="btn btn-outline btn-sm my-reminder-snooze-btn"
+                                      data-milestone-id="${item.milestoneId}"
+                                      aria-haspopup="true"
+                                      aria-expanded="false"
+                                      title="Snooze this reminder (1h, 6h, 12h, or custom time without exceeding milestone date)">
+                                      <i class="bi bi-alarm" aria-hidden="true"></i>
+                                      <span>Snooze</span>
+                                      <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                                    </button>
+                                    <div class="my-reminder-snooze-flyout" id="snoozeFlyout-${item.milestoneId}" hidden>
+                                      <div class="snooze-flyout-label">Delay alert by:</div>
+                                      <div class="snooze-chips-row">
+                                        ${snoozeOptions.map((opt) => `
+                                          <button type="button" class="btn-snooze-chip ${!opt.valid ? 'is-disabled' : ''}"
+                                            data-milestone-id="${item.milestoneId}"
+                                            data-hours="${opt.hours}"
+                                            ${!opt.valid ? 'disabled title="Cannot snooze past the reminder date"' : `title="Delay alert by ${opt.label}"`}>
+                                            +${opt.hours}h
+                                            ${!opt.valid ? '<span class="snooze-chip-disallowed">Past date</span>' : ''}
+                                          </button>
+                                        `).join('')}
+                                        <button type="button" class="btn-snooze-chip btn-snooze-custom-toggle"
                                           data-milestone-id="${item.milestoneId}"
-                                          data-hours="${opt.hours}"
-                                          ${!opt.valid ? 'disabled title="Cannot snooze past the reminder date"' : `title="Delay alert by ${opt.label}"`}>
-                                          +${opt.hours}h
-                                          ${!opt.valid ? '<span class="snooze-chip-disallowed">Past date</span>' : ''}
+                                          title="Choose custom duration or exact date/time"
+                                          aria-expanded="false"
+                                          aria-controls="snoozeCustomContainer-${item.milestoneId}">
+                                          <i class="bi bi-sliders2" aria-hidden="true"></i>
+                                          <span>Custom</span>
                                         </button>
-                                      `).join('')}
+                                      </div>
+
+                                      <!-- Expandable Custom Snooze Section -->
+                                      <div class="snooze-custom-container" id="snoozeCustomContainer-${item.milestoneId}" hidden>
+                                        <div class="snooze-custom-header">
+                                          <span class="snooze-custom-title">Custom Snooze</span>
+                                          <button type="button" class="snooze-custom-close-btn" data-milestone-id="${item.milestoneId}" aria-label="Close custom snooze options">
+                                            <i class="bi bi-x" aria-hidden="true"></i>
+                                          </button>
+                                        </div>
+
+                                        <div class="snooze-mode-tabs" role="tablist" aria-label="Snooze input mode">
+                                          <button type="button" class="snooze-mode-tab is-active" data-mode="duration" data-milestone-id="${item.milestoneId}">
+                                            Duration
+                                          </button>
+                                          <button type="button" class="snooze-mode-tab" data-mode="datetime" data-milestone-id="${item.milestoneId}">
+                                            Date &amp; Time
+                                          </button>
+                                        </div>
+
+                                        <!-- Mode 1: Duration -->
+                                        <div class="snooze-mode-panel snooze-mode-duration" id="snoozeModeDuration-${item.milestoneId}">
+                                          <div class="snooze-input-row">
+                                            <input type="number"
+                                              class="snooze-input-number snooze-custom-duration-val"
+                                              id="snoozeCustomDurationVal-${item.milestoneId}"
+                                              data-milestone-id="${item.milestoneId}"
+                                              min="1"
+                                              max="720"
+                                              value="2"
+                                              step="1"
+                                              aria-label="Custom snooze amount" />
+                                            <select class="snooze-unit-select snooze-custom-duration-unit"
+                                              id="snoozeCustomDurationUnit-${item.milestoneId}"
+                                              data-milestone-id="${item.milestoneId}"
+                                              aria-label="Custom snooze unit">
+                                              <option value="hours" selected>Hour(s)</option>
+                                              <option value="days">Day(s)</option>
+                                            </select>
+                                            <button type="button" class="btn btn-primary btn-xs btn-apply-custom-duration"
+                                              data-milestone-id="${item.milestoneId}"
+                                              title="Apply custom snooze duration">
+                                              Set
+                                            </button>
+                                          </div>
+                                        </div>
+
+                                        <!-- Mode 2: Exact Date & Time -->
+                                        <div class="snooze-mode-panel snooze-mode-datetime" id="snoozeModeDatetime-${item.milestoneId}" hidden>
+                                          <div class="snooze-datetime-row">
+                                            <input type="datetime-local"
+                                              class="snooze-input-datetime snooze-custom-datetime-val"
+                                              id="snoozeCustomDatetimeVal-${item.milestoneId}"
+                                              data-milestone-id="${item.milestoneId}"
+                                              min="${formatDateTimeLocalInput(Date.now() + 5 * 60 * 1000)}"
+                                              max="${formatDateTimeLocalInput(item.eventTime)}"
+                                              value="${formatDateTimeLocalInput(Math.max(Date.now() + 5 * 60 * 1000, Math.min(item.eventTime - 60 * 1000, Date.now() + 2 * 3600 * 1000)))}"
+                                              aria-label="Custom snooze exact date and time" />
+                                            <button type="button" class="btn btn-primary btn-xs btn-apply-custom-datetime"
+                                              data-milestone-id="${item.milestoneId}"
+                                              title="Apply custom snooze time">
+                                              Set
+                                            </button>
+                                          </div>
+                                        </div>
+
+                                        <div class="snooze-custom-hint" id="snoozeCustomHint-${item.milestoneId}">
+                                          Must be before ${new Date(item.eventTime).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                                        </div>
+                                        <div class="snooze-custom-error" id="snoozeCustomError-${item.milestoneId}" hidden role="alert"></div>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
                               </div>
                             </div>
                           `;
@@ -1490,39 +1581,229 @@ export class MyRemindersController {
             });
         });
 
-        // Card Snooze flyout triggers
+        // Card Snooze flyout triggers (only show when clicked)
         const snoozeBtns = this.modalEl.querySelectorAll<HTMLButtonElement>('.my-reminder-snooze-btn');
         snoozeBtns.forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 const milestoneId = btn.dataset.milestoneId;
                 if (!milestoneId) return;
                 const flyout = this.modalEl?.querySelector<HTMLElement>(`#snoozeFlyout-${milestoneId}`);
                 if (flyout) {
                     const isHidden = flyout.hasAttribute('hidden');
-                    // Hide any other open flyouts
-                    this.modalEl?.querySelectorAll('.my-reminder-snooze-flyout').forEach((f) => f.setAttribute('hidden', ''));
+                    // Hide any other open flyouts first
+                    this.modalEl?.querySelectorAll('.my-reminder-snooze-flyout').forEach((f) => {
+                        f.setAttribute('hidden', '');
+                        f.classList.remove('is-open');
+                    });
+                    this.modalEl?.querySelectorAll('.my-reminder-snooze-btn').forEach((b) => {
+                        b.setAttribute('aria-expanded', 'false');
+                    });
+
                     if (isHidden) {
                         flyout.removeAttribute('hidden');
+                        flyout.classList.add('is-open');
                         btn.setAttribute('aria-expanded', 'true');
                     } else {
                         flyout.setAttribute('hidden', '');
+                        flyout.classList.remove('is-open');
                         btn.setAttribute('aria-expanded', 'false');
                     }
                 }
             });
         });
 
-        // Card Snooze duration choice chips (+1h, +6h, +12h)
-        const snoozeChips = this.modalEl.querySelectorAll<HTMLButtonElement>('.btn-snooze-chip');
+        // Close snooze flyouts when clicking outside
+        this.modalEl.addEventListener('click', (e) => {
+            const target = e.target as HTMLElement | null;
+            if (!target) return;
+            if (!target.closest('.my-reminder-snooze-wrapper')) {
+                this.modalEl?.querySelectorAll('.my-reminder-snooze-flyout').forEach((f) => {
+                    f.setAttribute('hidden', '');
+                    f.classList.remove('is-open');
+                });
+                this.modalEl?.querySelectorAll('.my-reminder-snooze-btn').forEach((b) => {
+                    b.setAttribute('aria-expanded', 'false');
+                });
+            }
+        });
+
+        // Card Snooze preset duration chips (+1h, +6h, +12h)
+        const snoozeChips = this.modalEl.querySelectorAll<HTMLButtonElement>('.btn-snooze-chip[data-hours]');
         snoozeChips.forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const milestoneId = btn.dataset.milestoneId;
                 const hours = Number(btn.dataset.hours) as SnoozeDurationHours;
-                if (milestoneId && hours) {
+                if (milestoneId && !isNaN(hours)) {
                     milestoneReminderService.snoozeReminder(milestoneId, hours);
                     this.renderModalContent();
+                }
+            });
+        });
+
+        // Toggle custom snooze expandable container
+        const customToggleBtns = this.modalEl.querySelectorAll<HTMLButtonElement>('.btn-snooze-custom-toggle');
+        customToggleBtns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const milestoneId = btn.dataset.milestoneId;
+                if (!milestoneId) return;
+                const container = this.modalEl?.querySelector<HTMLElement>(`#snoozeCustomContainer-${milestoneId}`);
+                if (container) {
+                    const isHidden = container.hasAttribute('hidden');
+                    if (isHidden) {
+                        container.removeAttribute('hidden');
+                        btn.classList.add('is-active');
+                        btn.setAttribute('aria-expanded', 'true');
+                        const durInput = container.querySelector<HTMLInputElement>(`#snoozeCustomDurationVal-${milestoneId}`);
+                        durInput?.focus();
+                    } else {
+                        container.setAttribute('hidden', '');
+                        btn.classList.remove('is-active');
+                        btn.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+        });
+
+        // Close custom snooze container
+        const customCloseBtns = this.modalEl.querySelectorAll<HTMLButtonElement>('.snooze-custom-close-btn');
+        customCloseBtns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const milestoneId = btn.dataset.milestoneId;
+                if (!milestoneId) return;
+                const container = this.modalEl?.querySelector<HTMLElement>(`#snoozeCustomContainer-${milestoneId}`);
+                const toggleBtn = this.modalEl?.querySelector<HTMLButtonElement>(`.btn-snooze-custom-toggle[data-milestone-id="${milestoneId}"]`);
+                if (container) {
+                    container.setAttribute('hidden', '');
+                    toggleBtn?.classList.remove('is-active');
+                    toggleBtn?.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+
+        // Switch custom snooze mode tabs (Duration vs Date & Time)
+        const modeTabs = this.modalEl.querySelectorAll<HTMLButtonElement>('.snooze-mode-tab');
+        modeTabs.forEach((tab) => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const milestoneId = tab.dataset.milestoneId;
+                const mode = tab.dataset.mode;
+                if (!milestoneId || !mode) return;
+
+                const parentFlyout = tab.closest('.my-reminder-snooze-flyout');
+                if (!parentFlyout) return;
+
+                parentFlyout.querySelectorAll<HTMLButtonElement>('.snooze-mode-tab').forEach((t) => {
+                    t.classList.toggle('is-active', t.dataset.mode === mode);
+                });
+
+                const durPanel = parentFlyout.querySelector<HTMLElement>(`#snoozeModeDuration-${milestoneId}`);
+                const datePanel = parentFlyout.querySelector<HTMLElement>(`#snoozeModeDatetime-${milestoneId}`);
+                const errBox = parentFlyout.querySelector<HTMLElement>(`#snoozeCustomError-${milestoneId}`);
+                if (errBox) errBox.setAttribute('hidden', '');
+
+                if (mode === 'duration') {
+                    durPanel?.removeAttribute('hidden');
+                    datePanel?.setAttribute('hidden', '');
+                } else {
+                    durPanel?.setAttribute('hidden', '');
+                    datePanel?.removeAttribute('hidden');
+                }
+            });
+        });
+
+        // Apply Custom Duration
+        const applyDurationBtns = this.modalEl.querySelectorAll<HTMLButtonElement>('.btn-apply-custom-duration');
+        applyDurationBtns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const milestoneId = btn.dataset.milestoneId;
+                if (!milestoneId) return;
+
+                const valInput = this.modalEl?.querySelector<HTMLInputElement>(`#snoozeCustomDurationVal-${milestoneId}`);
+                const unitSelect = this.modalEl?.querySelector<HTMLSelectElement>(`#snoozeCustomDurationUnit-${milestoneId}`);
+                const errBox = this.modalEl?.querySelector<HTMLElement>(`#snoozeCustomError-${milestoneId}`);
+
+                const val = Number(valInput?.value);
+                const unit = unitSelect?.value || 'hours';
+
+                if (!val || isNaN(val) || val <= 0) {
+                    if (errBox) {
+                        errBox.textContent = 'Please enter a valid positive number.';
+                        errBox.removeAttribute('hidden');
+                    }
+                    return;
+                }
+
+                const totalHours = unit === 'days' ? val * 24 : val;
+                const now = Date.now();
+                const targetTime = now + totalHours * 3600 * 1000;
+
+                const validation = milestoneReminderService.validateSnoozeTarget(milestoneId, targetTime, now);
+                if (!validation.valid) {
+                    if (errBox) {
+                        errBox.textContent = validation.reason || 'Invalid snooze duration.';
+                        errBox.removeAttribute('hidden');
+                    }
+                    return;
+                }
+
+                const result = milestoneReminderService.snoozeReminder(milestoneId, totalHours, now);
+                if (result.success) {
+                    this.renderModalContent();
+                } else if (errBox) {
+                    errBox.textContent = result.message;
+                    errBox.removeAttribute('hidden');
+                }
+            });
+        });
+
+        // Apply Custom Date & Time
+        const applyDatetimeBtns = this.modalEl.querySelectorAll<HTMLButtonElement>('.btn-apply-custom-datetime');
+        applyDatetimeBtns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const milestoneId = btn.dataset.milestoneId;
+                if (!milestoneId) return;
+
+                const dtInput = this.modalEl?.querySelector<HTMLInputElement>(`#snoozeCustomDatetimeVal-${milestoneId}`);
+                const errBox = this.modalEl?.querySelector<HTMLElement>(`#snoozeCustomError-${milestoneId}`);
+
+                if (!dtInput?.value) {
+                    if (errBox) {
+                        errBox.textContent = 'Please select a date and time.';
+                        errBox.removeAttribute('hidden');
+                    }
+                    return;
+                }
+
+                const parsedTime = new Date(dtInput.value).getTime();
+                const now = Date.now();
+
+                const validation = milestoneReminderService.validateSnoozeTarget(milestoneId, parsedTime, now);
+                if (!validation.valid) {
+                    if (errBox) {
+                        errBox.textContent = validation.reason || 'Invalid snooze date and time.';
+                        errBox.removeAttribute('hidden');
+                    }
+                    return;
+                }
+
+                const result = milestoneReminderService.snoozeReminderUntil(milestoneId, parsedTime, now);
+                if (result.success) {
+                    this.renderModalContent();
+                } else if (errBox) {
+                    errBox.textContent = result.message;
+                    errBox.removeAttribute('hidden');
                 }
             });
         });
