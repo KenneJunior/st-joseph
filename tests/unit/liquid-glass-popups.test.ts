@@ -15,7 +15,7 @@ describe('LiquidGlassAdapter — Dynamic Popups & Notifications Integration', ()
 
     beforeEach(() => {
         dom = new JSDOM('<!DOCTYPE html><html><head></head><body><button id="installApp">Install</button></body></html>', {
-            url: 'https://sjccc.edu.cm/',
+            url: 'https://sjccc.vercel.app.cm/',
         });
         window = dom.window;
         document = window.document;
@@ -48,15 +48,16 @@ describe('LiquidGlassAdapter — Dynamic Popups & Notifications Integration', ()
         document.body.innerHTML = '<button id="installApp">Install</button>';
     });
 
-    it('declares canonical popup selectors covering install card, update banner, and modals', () => {
-        expect(POPUP_SELECTORS).toContain('#pwaInstallCard');
-        expect(POPUP_SELECTORS).toContain('.pwa-install-card');
-        expect(POPUP_SELECTORS).toContain('#sw-update-banner');
-        expect(POPUP_SELECTORS).toContain('.cd-card');
-        expect(POPUP_SELECTORS).toContain('.dialog-box');
-        expect(POPUP_SELECTORS).toContain('.enquiry-modal-content');
-        expect(POPUP_SELECTORS).toContain('.past-announcements-modal__dialog');
-        expect(POPUP_SELECTORS).toContain('.my-reminders-modal__dialog');
+    it('declares canonical popup selectors covering install card, update banner, and offline indicators', () => {
+        expect(POPUP_SELECTORS).toEqual([
+            '#pwaInstallCard',
+            '.pwa-install-card',
+            '#sw-update-banner',
+            '#offlineStatusIndicator',
+            '.offline-status-indicator',
+        ]);
+        expect(POPUP_SELECTORS).not.toContain('.cd-card');
+        expect(POPUP_SELECTORS).not.toContain('.dialog-box');
     });
 
     it('provides specialized popup glass optics with rich thickness and gold ripple', () => {

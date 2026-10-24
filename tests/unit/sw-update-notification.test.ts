@@ -11,7 +11,7 @@ describe('Service Worker Update Notification Subsystem', () => {
 
     beforeEach(() => {
         dom = new JSDOM('<!DOCTYPE html><html><head></head><body><div id="root"></div></body></html>', {
-            url: 'https://sjccc.edu.cm/',
+            url: 'https://sjccc.vercel.app/',
         });
         window = dom.window;
         document = window.document;

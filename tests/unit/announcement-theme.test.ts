@@ -184,4 +184,26 @@ describe('Announcement Bar Theme Responsiveness', () => {
 
         bar.destroy();
     });
+
+    it('validates that .past-item-footer and GCE card footers are theme responsive across light and dark modes', () => {
+        const announcementCssPath = path.resolve(process.cwd(), 'src/css/features/announcement.css');
+        const announcementCss = fs.readFileSync(announcementCssPath, 'utf-8');
+
+        // Verify .past-item-footer tokens and classes
+        expect(announcementCss).toContain('--past-item-footer-bg:');
+        expect(announcementCss).toContain('.past-item-footer');
+        expect(announcementCss).toContain('html.dark-mode .past-item-footer');
+        expect(announcementCss).toContain("[data-theme='dark'] .past-item-footer");
+
+        const resultsCssPath = path.resolve(process.cwd(), 'src/css/features/gce-results.css');
+        const resultsCss = fs.readFileSync(resultsCssPath, 'utf-8');
+
+        // Verify GCE results card footer tokens and theme responsiveness
+        expect(resultsCss).toContain('--gce-card-footer-bg:');
+        expect(resultsCss).toContain('--gce-card-footer-radius:');
+        expect(resultsCss).toContain('.gce-card-footer-note');
+        expect(resultsCss).toContain('html.dark-mode .gce-card-footer-note');
+        expect(resultsCss).toContain("[data-theme='dark'] .gce-card-footer-note");
+    });
 });
+

@@ -11,7 +11,7 @@ describe('Institutional PWA Install Card Subsystem', () => {
 
     beforeEach(() => {
         dom = new JSDOM('<!DOCTYPE html><html><head></head><body><button id="installApp">Install</button></body></html>', {
-            url: 'https://sjccc.edu.cm/',
+            url: 'https://sjccc.vercel.app/',
         });
         window = dom.window;
         document = window.document;

@@ -128,7 +128,7 @@ describe('Calendar Serializer & Provider URLs', () => {
         expect(ics).toContain('VERSION:2.0\r\n');
         expect(ics).toContain('PRODID:-//SJCCC Mbengwi//Academic Calendar 2026-2027//EN\r\n');
         expect(ics).toContain('BEGIN:VEVENT\r\n');
-        expect(ics).toContain(`UID:${sampleTimedMilestone.id}-sjccc-2026-2027@sjccc.edu.cm\r\n`);
+        expect(ics).toContain(`UID:${sampleTimedMilestone.id}-sjccc-2026-2027@sjccc.vercel.app\r\n`);
         expect(ics).toContain('DTSTART:20260821T070000Z\r\n');
         expect(ics).toContain('DTEND:20260821T150000Z\r\n');
         expect(ics).toContain('END:VEVENT\r\n');
@@ -437,7 +437,7 @@ describe('Canonical Dataset Completeness & Serialization Invariants', () => {
             const ics = generateIcs(m);
             expect(ics).toContain('BEGIN:VCALENDAR');
             expect(ics).toContain('END:VCALENDAR');
-            expect(ics).toContain(`UID:${m.id}-sjccc-2026-2027@sjccc.edu.cm`);
+            expect(ics).toContain(`UID:${m.id}-sjccc-2026-2027@sjccc.vercel.app`);
 
             // Google
             const gUrl = buildGoogleCalendarUrl(m);

@@ -93,4 +93,41 @@ describe('SJCCC Top Navigation — Responsive Spacing, Adaptive Layout & Transit
             expect(responsiveLegacyCss).toContain('.logo-motto {\n    display: none;\n  }');
         });
     });
+
+    describe('Enhanced Desktop Navigation & Anti-Overflow Architecture', () => {
+        const indexHtml = fs.readFileSync(path.join(rootDir, 'index.html'), 'utf-8');
+        const navCss = fs.readFileSync(path.join(rootDir, 'src/css/layout/navigation.css'), 'utf-8');
+
+        it('anchors header-actions with margin-left: auto to prevent right-corner push-out', () => {
+            expect(headerCss).toContain('.header-actions {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  flex-shrink: 0;\n  margin-left: auto;');
+        });
+
+        it('defines desktop responsive action compaction for 1025px - 1360px to preserve Theme Toggle & Prospectus visibility', () => {
+            expect(headerCss).toContain('@media (max-width: 1360px) and (min-width: 1025px)');
+            expect(headerCss).toContain('.header-action-btn.header-install-btn {\n    width: 38px;\n    height: 38px;\n    min-width: 38px;');
+            expect(headerCss).toContain('.header-action-btn.header-reminders-btn {\n    padding: 0 9px;\n    min-width: 42px;');
+        });
+
+        it('structures #navMenu with all 11 section links directly in desktop navigation', () => {
+            expect(indexHtml).toContain('href="#heroSection"');
+            expect(indexHtml).toContain('href="#about"');
+            expect(indexHtml).toContain('href="#academics"');
+            expect(indexHtml).toContain('href="#schoolDatesSection"');
+            expect(indexHtml).toContain('href="#news-events"');
+            expect(indexHtml).toContain('href="#results"');
+            expect(indexHtml).toContain('href="#campus"');
+            expect(indexHtml).toContain('href="#campusMapSection"');
+            expect(indexHtml).toContain('href="#testimonials"');
+            expect(indexHtml).toContain('href="#faq"');
+            expect(indexHtml).toContain('href="#contact"');
+        });
+
+        it('implements icon-first navigation with hover-to-reveal text so more icons fit without overflow', () => {
+            // Text is collapsed by default (max-width: 0) so icon fits
+            expect(navCss).toContain('#navMenu .nav-text {\n  display: inline-block;\n  max-width: 0;\n  opacity: 0;\n  overflow: hidden;');
+            // Text reveals smoothly on hover, focus, or active
+            expect(navCss).toContain('#navMenu a.nav-link:hover .nav-text,\n#navMenu a.nav-link:focus-visible .nav-text,\n#navMenu a.nav-link.active .nav-text {\n  max-width: 120px;\n  opacity: 1;');
+        });
+    });
 });
+
