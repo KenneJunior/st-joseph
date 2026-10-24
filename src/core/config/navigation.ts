@@ -103,10 +103,10 @@ export const CANONICAL_NAV_ITEMS: readonly NavItemDefinition[] = [
         href: '#location',
         label: 'Location',
         iconClass: 'bi-geo-alt-fill',
-        dockOrder: 8.5,
-        inDock: false,
+        dockOrder: 8,
+        inDock: true,
         dockClass: 'mobile-bottom-item--location',
-        relatedSections: ['location'],
+        relatedSections: ['location', 'faq', 'contact'],
     },
     {
         id: 'reminders',
@@ -114,7 +114,7 @@ export const CANONICAL_NAV_ITEMS: readonly NavItemDefinition[] = [
         href: '#myReminders',
         label: 'Reminders',
         iconClass: 'bi-bell-fill',
-        dockOrder: 8,
+        dockOrder: 9,
         inDock: true,
         dockClass: 'mobile-bottom-item--reminders',
     },
@@ -132,7 +132,7 @@ export const CANONICAL_NAV_ITEMS: readonly NavItemDefinition[] = [
 
 /**
  * Maps any page section ID to its canonical navigation target.
- * Guarantees that sections outside the primary dock (e.g. #about, #campus)
+ * Guarantees that sections outside the primary dock (e.g. #about, #campus, #faq, #contact)
  * map logically to their parent section without leaving the dock unhighlighted.
  */
 export function getCanonicalTargetForSection(sectionId: string): string | null {
@@ -147,9 +147,10 @@ export function getCanonicalTargetForSection(sectionId: string): string | null {
 
 /**
  * Canonical visual order of all mobile bottom bar items:
- * Theme (1) -> Home (2) -> Academics (3) -> Dates (4) -> News (5) -> Results (6) -> Map (7) -> Reminders (8) -> Menu (9)
+ * Theme (1) -> Home (2) -> Academics (3) -> Dates (4) -> News (5) -> Results (6) -> Map (7) -> Location (8) -> Reminders (9) -> Menu (10)
  */
 export const DOCK_CANONICAL_ORDER: readonly string[] = [
+    'mobileBottomProgressTrack',
     'mobileBottomGlider',
     'bottomThemeToggle',
     'heroSection',
@@ -158,6 +159,7 @@ export const DOCK_CANONICAL_ORDER: readonly string[] = [
     'news-events',
     'results',
     'campusMapSection',
+    'location',
     'bottomMyRemindersBtn',
     'bottomNavMenuToggle',
 ] as const;

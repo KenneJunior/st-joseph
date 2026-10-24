@@ -93,6 +93,46 @@ export class MobileNavigation {
         this.bindOutsideClick();
         this.bindEscapeKey();
         this.bindFocusTrap();
+
+        // 6. Progressive bottom pill scaling according to pill length
+        this.updatePillScale();
+        window.addEventListener('resize', () => this.updatePillScale(), { passive: true });
+        window.addEventListener('orientationchange', () => this.updatePillScale(), { passive: true });
+        if (typeof ResizeObserver !== 'undefined' && this.bottomBar) {
+            const ro = new ResizeObserver(() => this.updatePillScale());
+            ro.observe(this.bottomBar);
+        }
+    }
+
+    /**
+     * Scales the number of section icons rendered in the floating bottom dock pill
+     * based on the length/width of the pill, ensuring comfortable touch targets
+     * and preventing icon overcrowding.
+     * Minimum 4 sections (Home, Academics, Map, Location), scaling to 5, 6, or 7.
+     */
+    public updatePillScale(): void {
+        if (!this.bottomBar) return;
+        const width = this.bottomBar.getBoundingClientRect().width || this.bottomBar.offsetWidth;
+        if (width <= 0) return;
+
+        let tier: '4' | '5' | '6' | '7' = '4';
+        if (width >= 580) {
+            tier = '7';
+        } else if (width >= 500) {
+            tier = '6';
+        } else if (width >= 410) {
+            tier = '5';
+        } else {
+            tier = '4';
+        }
+
+        if (this.bottomBar.getAttribute('data-pill-tier') !== tier) {
+            this.bottomBar.setAttribute('data-pill-tier', tier);
+            this.dockGlider?.scheduleUpdate(true);
+            if (ScrollSpy.instance) {
+                ScrollSpy.instance.syncCurrentTarget();
+            }
+        }
     }
 
     /**
@@ -102,6 +142,52 @@ export class MobileNavigation {
         if (!this.bottomBar) return false;
         return typeof window !== 'undefined' &&
             window.matchMedia(`(max-width: ${MobileNavigation.BOTTOM_BAR_BREAKPOINT_PX}px)`).matches;
+    }
+
+    /**
+     * Revokes active status from utility controls (bottom menu toggle and my reminders button)
+     * and restores active navigation status to the visible section tab corresponding to current scroll.
+     */
+    public static restoreActiveSectionTab(): void {
+        const bottomBar = document.getElementById('mobileBottomBar');
+        if (!bottomBar) return;
+
+        // 1. Explicitly revoke active class from utility modals & drawer buttons
+        const bottomMenuToggle = document.getElementById('bottomNavMenuToggle');
+        const bottomMyRemindersBtn = document.getElementById('bottomMyRemindersBtn');
+        bottomMenuToggle?.classList.remove('active');
+        bottomMenuToggle?.setAttribute('aria-expanded', 'false');
+        bottomMyRemindersBtn?.classList.remove('active');
+        bottomMyRemindersBtn?.setAttribute('aria-expanded', 'false');
+
+        // 2. Identify the active section according to ScrollSpy (or fallback to heroSection)
+        if (ScrollSpy.instance) {
+            ScrollSpy.instance.syncCurrentTarget();
+        } else {
+            const currentTarget = 'heroSection';
+            const bottomLinks = bottomBar.querySelectorAll<HTMLAnchorElement>('a.mobile-bottom-item');
+            let matchedLink: HTMLElement | null = null;
+            bottomLinks.forEach((link) => {
+                const target = link.getAttribute('data-nav-target') || link.getAttribute('href')?.replace(/^#/, '');
+                const isMatch = target === currentTarget;
+                link.classList.toggle('active', isMatch);
+                if (isMatch) {
+                    link.setAttribute('aria-current', 'location');
+                    matchedLink = link;
+                } else {
+                    link.removeAttribute('aria-current');
+                }
+            });
+            if (!matchedLink) {
+                const homeLink = bottomBar.querySelector<HTMLElement>('a.mobile-bottom-item--home, a.mobile-bottom-item');
+                if (homeLink) {
+                    homeLink.classList.add('active');
+                    homeLink.setAttribute('aria-current', 'location');
+                    matchedLink = homeLink;
+                }
+            }
+            DockGlider.instance?.update(matchedLink);
+        }
     }
 
     public toggleMenu(): void {
@@ -130,9 +216,18 @@ export class MobileNavigation {
                 bottomIcon.className = isActive ? 'bi bi-x-circle-fill' : 'bi bi-grid-fill';
             }
             if (isActive) {
+                // Deactivate other tabs in bottom bar so Menu is highlighted while open
+                if (this.bottomBar) {
+                    this.bottomBar.querySelectorAll<HTMLElement>('.mobile-bottom-item').forEach((item) => {
+                        if (item !== this.bottomMenuToggle) {
+                            item.classList.remove('active');
+                            item.removeAttribute('aria-current');
+                        }
+                    });
+                }
                 this.dockGlider?.update(this.bottomMenuToggle);
             } else {
-                this.dockGlider?.scheduleUpdate();
+                MobileNavigation.restoreActiveSectionTab();
             }
         }
 
@@ -162,7 +257,7 @@ export class MobileNavigation {
             this.bottomMenuToggle.setAttribute('aria-expanded', 'false');
             const bottomIcon = this.bottomMenuToggle.querySelector('i');
             if (bottomIcon) bottomIcon.className = 'bi bi-grid-fill';
-            this.dockGlider?.scheduleUpdate();
+            MobileNavigation.restoreActiveSectionTab();
         }
     }
 
@@ -187,6 +282,11 @@ export class MobileNavigation {
         bottomLinks.forEach((link) => {
             link.addEventListener('click', () => {
                 this.closeMenu();
+                // Revoke active from menu and reminders
+                this.bottomMenuToggle?.classList.remove('active');
+                const remindersBtn = document.getElementById('bottomMyRemindersBtn');
+                remindersBtn?.classList.remove('active');
+
                 const target = link.getAttribute('data-nav-target') || link.getAttribute('href')?.replace(/^#/, '');
                 if (target) {
                     bottomLinks.forEach((l) => {

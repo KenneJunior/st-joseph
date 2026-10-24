@@ -613,6 +613,9 @@
 
   <!-- Mobile Bottom Tab Bar (Compact mode navigation for devices < 768px) -->
   <nav class="mobile-bottom-bar" id="mobileBottomBar" aria-label="Mobile Navigation">
+    <div class="mobile-bottom-progress-track" id="mobileBottomProgressTrack" aria-hidden="true">
+      <div class="mobile-bottom-progress-fill" id="mobileBottomProgressFill"></div>
+    </div>
     <div class="mobile-bottom-glider" id="mobileBottomGlider" aria-hidden="true"></div>
     <button type="button" class="mobile-bottom-item mobile-bottom-item--theme" id="bottomThemeToggle" data-theme-toggle
       aria-label="Switch theme" title="Switch theme" toolDescription="Switch the website between light and dark theme.">
@@ -653,6 +656,11 @@
       aria-label="Campus Map" toolDescription="View Campus Map">
       <i class="bi bi-map-fill" aria-hidden="true"></i>
       <span class="mobile-bottom-label">Map</span>
+    </a>
+    <a href="#location" class="mobile-bottom-item mobile-bottom-item--location" data-nav-target="location"
+      aria-label="Location" toolDescription="View Campus Location &amp; Directions">
+      <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+      <span class="mobile-bottom-label">Location</span>
     </a>
     <button type="button" class="mobile-bottom-item mobile-bottom-item--reminders" id="bottomMyRemindersBtn"
       aria-label="My Reminders" aria-haspopup="dialog" toolDescription="View scheduled reminders and notification preferences">
