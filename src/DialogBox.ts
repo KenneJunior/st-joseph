@@ -98,7 +98,7 @@ const DIALOG_CSS =`/* ==========================================================
     --cd-accent: #6366f1;
     --cd-accent-glow: #8b5cf6;
     --cd-accent-light: #a5b4fc;
-    --cd-surface-glass: rgba(255, 255, 255, 0.03);
+    --cd-surface-glass: rgba(255, 255, 255, 0.015);
     --cd-border-glass: rgba(255, 255, 255, 0.08);
     --cd-text-main: #ffffff;
     --cd-text-muted: #9ca3af;
@@ -218,7 +218,7 @@ const DIALOG_CSS =`/* ==========================================================
 /* Wrapper to enforce border-radius hiding the internal bleeds */
 .cd-content-wrapper {
     position: relative;
-    background: rgba(15, 23, 42, 0.48); /* Deep dark base */
+    background: rgba(15, 23, 42, 0.20); /* Deep dark base */
     border-radius: 24px;
     border: 1px solid var(--cd-border-glass);
     overflow: hidden;
@@ -228,7 +228,46 @@ const DIALOG_CSS =`/* ==========================================================
 .cd-blur{
     backdrop-filter: blur(5px) saturate(180%);
     -webkit-backdrop-filter: blur(5px) saturate(180%);
-    }
+}
+
+/* Solid Color Fallback: iOS Safari, browsers without backdrop-filter, or reduced transparency */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .cd-card {
+    background: #0f172a !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .cd-content-wrapper {
+    background: #0f172a !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .cd-card {
+    background: #0f172a !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .cd-content-wrapper {
+    background: #0f172a !important;
+  }
+}
+
+.no-liquid-glass .cd-card,
+.no-backdrop-filter .cd-card,
+.cd-card.glass-fallback,
+.cd-card[data-glass-fallback="true"] {
+  background: #0f172a !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.no-liquid-glass .cd-content-wrapper,
+.no-backdrop-filter .cd-content-wrapper,
+.cd-card.glass-fallback .cd-content-wrapper,
+.cd-card[data-glass-fallback="true"] .cd-content-wrapper {
+  background: #0f172a !important;
+}
 
 /* ─── Icon & Header ─────────────────────────────────── */
 .cd-strips {
