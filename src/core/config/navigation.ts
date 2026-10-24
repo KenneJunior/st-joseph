@@ -98,6 +98,17 @@ export const CANONICAL_NAV_ITEMS: readonly NavItemDefinition[] = [
         relatedSections: ['campus', 'campusMapSection', 'testimonials'],
     },
     {
+        id: 'location',
+        targetId: 'location',
+        href: '#location',
+        label: 'Location',
+        iconClass: 'bi-geo-alt-fill',
+        dockOrder: 8.5,
+        inDock: false,
+        dockClass: 'mobile-bottom-item--location',
+        relatedSections: ['location'],
+    },
+    {
         id: 'reminders',
         targetId: 'bottomMyRemindersBtn',
         href: '#myReminders',

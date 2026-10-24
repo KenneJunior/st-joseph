@@ -108,7 +108,7 @@ describe('SJCCC Top Navigation — Responsive Spacing, Adaptive Layout & Transit
             expect(headerCss).toContain('.header-action-btn.header-reminders-btn {\n    padding: 0 9px;\n    min-width: 42px;');
         });
 
-        it('structures #navMenu with all 11 section links directly in desktop navigation', () => {
+        it('structures #navMenu with all 12 section links directly in desktop navigation', () => {
             expect(indexHtml).toContain('href="#heroSection"');
             expect(indexHtml).toContain('href="#about"');
             expect(indexHtml).toContain('href="#academics"');
@@ -117,6 +117,7 @@ describe('SJCCC Top Navigation — Responsive Spacing, Adaptive Layout & Transit
             expect(indexHtml).toContain('href="#results"');
             expect(indexHtml).toContain('href="#campus"');
             expect(indexHtml).toContain('href="#campusMapSection"');
+            expect(indexHtml).toContain('href="#location"');
             expect(indexHtml).toContain('href="#testimonials"');
             expect(indexHtml).toContain('href="#faq"');
             expect(indexHtml).toContain('href="#contact"');
