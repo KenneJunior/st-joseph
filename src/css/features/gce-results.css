@@ -7,6 +7,22 @@
    - Fluid typography (320px to 1440px)
    - Auto-fit minmax(300px, 1fr) grid layout
    ============================================================ */
+:root {
+  --gce-card-footer-bg: #fff0f0;
+  --gce-card-footer-border: rgba(220, 38, 38, 0.15);
+  --gce-card-footer-color: #2d1818;
+  --gce-card-footer-strong: #1a0808;
+  --gce-card-footer-radius: 13px;
+}
+
+html.dark-mode,
+body.dark-mode,
+[data-theme='dark'] {
+  --gce-card-footer-bg: rgba(255, 240, 240, 0.08);
+  --gce-card-footer-border: rgba(255, 240, 240, 0.16);
+  --gce-card-footer-color: rgba(255, 240, 240, 0.90);
+  --gce-card-footer-strong: #ffffff;
+}
 
 /* Section Container & Themed Background */
 .gce-results-section {
@@ -1015,26 +1031,52 @@ body.dark-mode .gce-dist-row.top-tier .gce-dist-badge,
   color: var(--accent-glow);
 }
 
-/* Card Callout Footer Note */
+/* Card Callout Footer Note — Theme Responsive */
 .gce-card-footer-note,
-.fluid-type-card .gce-card-footer-note {
+.fluid-type-card .gce-card-footer-note,
+main#main-content section#results article:nth-of-type(1) > footer,
+main#main-content section#results article:nth-of-type(2) > footer,
+main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1),
+main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) {
   margin-top: auto;
-  padding-top: clamp(6px, 0.6vw + 4px, 14px);
-  border-top: 1px solid var(--border-light);
+  padding: clamp(8px, 0.8vw + 4px, 12px) clamp(10px, 1vw + 4px, 16px);
+  background-color: var(--gce-card-footer-bg, #fff0f0);
+  border: 1px solid var(--gce-card-footer-border, rgba(220, 38, 38, 0.15));
+  border-radius: var(--gce-card-footer-radius, 13px);
   font-size: clamp(0.62rem, 0.56rem + 0.18vw, 0.82rem);
-  color: var(--text-muted);
+  color: var(--gce-card-footer-color, #2d1818);
   display: flex;
   align-items: center;
-  gap: clamp(4px, 0.3vw + 2px, 8px);
+  gap: clamp(6px, 0.4vw + 3px, 10px);
   line-height: clamp(1.25, 0.05vw + 1.25, 1.4);
-  transition: all var(--duration-fast, 200ms) var(--ease-standard);
+  transition: background-color var(--duration-fast, 200ms) var(--ease-standard),
+              border-color var(--duration-fast, 200ms) var(--ease-standard),
+              color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+.gce-card-footer-note strong {
+  color: var(--gce-card-footer-strong, #1a0808);
 }
 
 html.dark-mode .gce-card-footer-note,
 body.dark-mode .gce-card-footer-note,
-.dark-mode .gce-card-footer-note {
-  color: rgba(255, 255, 255, 0.72);
-  border-color: rgba(255, 255, 255, 0.1);
+.dark-mode .gce-card-footer-note,
+[data-theme='dark'] .gce-card-footer-note,
+html.dark-mode main#main-content section#results article > footer,
+body.dark-mode main#main-content section#results article > footer,
+[data-theme='dark'] main#main-content section#results article > footer,
+html.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article > footer,
+body.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article > footer,
+[data-theme='dark'] main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article > footer {
+  background-color: var(--gce-card-footer-bg, rgba(255, 240, 240, 0.08));
+  border-color: var(--gce-card-footer-border, rgba(255, 240, 240, 0.16));
+  color: var(--gce-card-footer-color, rgba(255, 240, 240, 0.90));
+}
+
+html.dark-mode .gce-card-footer-note strong,
+body.dark-mode .gce-card-footer-note strong,
+.dark-mode .gce-card-footer-note strong {
+  color: var(--gce-card-footer-strong, #ffffff);
 }
 
 .gce-card-footer-note i {
