@@ -719,8 +719,13 @@ body.drawer-open {
     font-size: 0.98rem;
     line-height: 1;
     color: inherit;
-    transition: transform 240ms cubic-bezier(0.25, 1, 0.35, 1),
-                color 240ms ease;
+    display: inline-block;
+    transform: translateY(0) scale(1) rotate(0deg);
+    transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1),
+                color 240ms ease,
+                filter 240ms ease;
+    will-change: transform;
+    transform-origin: center center;
   }
 
   .mobile-bottom-label {
@@ -847,11 +852,91 @@ body.drawer-open {
     color: #06152b !important;
   }
 
+  /* ─── Cinematic Spring Animation Keyframes for Bottom Bar Active Icons ─── */
+  @keyframes cinematic-bottom-icon-spring {
+    0% {
+      transform: translateY(0) scale(1) rotate(0deg);
+    }
+    18% {
+      transform: translateY(-5px) scale(1.36) rotate(-4.5deg);
+      filter: drop-shadow(0 4px 12px rgba(201, 162, 41, 0.75)) drop-shadow(0 1px 0 rgba(255, 255, 255, 0.9));
+    }
+    38% {
+      transform: translateY(1.5px) scale(1.05) rotate(2.5deg);
+    }
+    58% {
+      transform: translateY(-2.2px) scale(1.22) rotate(-1.5deg);
+      filter: drop-shadow(0 2px 8px rgba(201, 162, 41, 0.5)) drop-shadow(0 1px 0 rgba(255, 255, 255, 0.85));
+    }
+    76% {
+      transform: translateY(-0.5px) scale(1.13) rotate(0.6deg);
+    }
+    90% {
+      transform: translateY(-1.2px) scale(1.17) rotate(-0.2deg);
+    }
+    100% {
+      transform: translateY(-1px) scale(1.15) rotate(0deg);
+      filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.7));
+    }
+  }
+
+  @keyframes cinematic-bottom-menu-spring {
+    0% {
+      transform: scale(1) rotate(0deg);
+    }
+    20% {
+      transform: scale(1.40) rotate(52deg);
+      filter: drop-shadow(0 4px 14px rgba(201, 162, 41, 0.8)) drop-shadow(0 1px 0 rgba(255, 255, 255, 0.95));
+    }
+    42% {
+      transform: scale(1.10) rotate(38deg);
+    }
+    62% {
+      transform: scale(1.26) rotate(48deg);
+      filter: drop-shadow(0 2px 8px rgba(201, 162, 41, 0.55)) drop-shadow(0 1px 0 rgba(255, 255, 255, 0.85));
+    }
+    80% {
+      transform: scale(1.18) rotate(43.5deg);
+    }
+    100% {
+      transform: scale(1.20) rotate(45deg);
+      filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.8));
+    }
+  }
+
+  @keyframes cinematic-bottom-bell-spring {
+    0% {
+      transform: translateY(0) scale(1) rotate(0deg);
+    }
+    18% {
+      transform: translateY(-4.5px) scale(1.34) rotate(-18deg);
+      filter: drop-shadow(0 4px 12px rgba(201, 162, 41, 0.75)) drop-shadow(0 1px 0 rgba(255, 255, 255, 0.9));
+    }
+    36% {
+      transform: translateY(1.2px) scale(1.06) rotate(15deg);
+    }
+    54% {
+      transform: translateY(-2.2px) scale(1.22) rotate(-9deg);
+    }
+    72% {
+      transform: translateY(-0.6px) scale(1.13) rotate(5deg);
+    }
+    88% {
+      transform: translateY(-1.2px) scale(1.17) rotate(-1.5deg);
+    }
+    100% {
+      transform: translateY(-1px) scale(1.15) rotate(0deg);
+      filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.7));
+    }
+  }
+
   .mobile-bottom-item.active i,
   .mobile-bottom-item[aria-current="location"] i {
-    transform: translateY(-1px) scale(1.15);
+    animation: cinematic-bottom-icon-spring 640ms cubic-bezier(0.19, 1, 0.22, 1) both;
     color: #06152b !important;
     filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.7));
+    transform-origin: center center;
+    will-change: transform, filter;
   }
 
   .mobile-bottom-item.active .mobile-bottom-label,
@@ -870,9 +955,11 @@ body.drawer-open {
   }
 
   .mobile-bottom-item--menu.active i {
-    transform: scale(1.2);
+    animation: cinematic-bottom-menu-spring 660ms cubic-bezier(0.19, 1, 0.22, 1) both;
     color: #06152b !important;
     filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.8));
+    transform-origin: center center;
+    will-change: transform, filter;
   }
 
   .mobile-bottom-item--menu.active .mobile-bottom-label {
@@ -882,6 +969,14 @@ body.drawer-open {
   }
 
   /* Specific styling for Reminders button when active in bottom dock */
+  .mobile-bottom-item--reminders.active i {
+    animation: cinematic-bottom-bell-spring 660ms cubic-bezier(0.19, 1, 0.22, 1) both;
+    color: #06152b !important;
+    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.7));
+    transform-origin: center 25%;
+    will-change: transform, filter;
+  }
+
   .mobile-bottom-item--reminders.active .bottom-reminders-badge {
     background: #06152b !important;
     color: #f7dc8d !important;
@@ -1304,6 +1399,17 @@ body.drawer-open {
   .mobile-bottom-item,
   .mobile-bottom-item i {
     transition: none !important;
+    animation: none !important;
+  }
+  .mobile-bottom-item.active i,
+  .mobile-bottom-item[aria-current="location"] i,
+  .mobile-bottom-item--reminders.active i {
+    animation: none !important;
+    transform: translateY(-1px) scale(1.15) !important;
+  }
+  .mobile-bottom-item--menu.active i {
+    animation: none !important;
+    transform: scale(1.2) !important;
   }
 }
 

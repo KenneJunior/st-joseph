@@ -104,7 +104,40 @@ export class BottomBarSwipeNavigator {
     }
 
     /**
-     * Determines the zero-based index of the currently active bottom navigation item.
+     * Returns all in-page section items in the bottom navigation bar,
+     * strictly excluding utility action buttons (Theme toggle, Reminders modal, and Menu drawer).
+     */
+    public getSectionItems(): HTMLElement[] {
+        if (!this.bottomBar) return [];
+        return Array.from(
+            this.bottomBar.querySelectorAll<HTMLElement>('.mobile-bottom-item')
+        ).filter((item) => {
+            const style = window.getComputedStyle(item);
+            if (style.display === 'none' || style.visibility === 'hidden') return false;
+
+            // Must be an anchor link or explicitly declared section nav target
+            const isAnchor = item.tagName.toLowerCase() === 'a';
+            const hasNavTarget = Boolean(
+                item.getAttribute('data-nav-target') ||
+                item.getAttribute('href')?.startsWith('#')
+            );
+
+            // Exclude utility buttons (Theme, Reminders, Menu)
+            const isUtilityButton =
+                item.classList.contains('mobile-bottom-item--theme') ||
+                item.classList.contains('mobile-bottom-item--reminders') ||
+                item.classList.contains('mobile-bottom-item--menu') ||
+                item.classList.contains('mobile-bottom-toggle') ||
+                item.id === 'bottomThemeToggle' ||
+                item.id === 'bottomMyRemindersBtn' ||
+                item.id === 'bottomNavMenuToggle';
+
+            return (isAnchor || hasNavTarget) && !isUtilityButton;
+        });
+    }
+
+    /**
+     * Determines the zero-based index of the currently active bottom navigation item across all items.
      */
     public getCurrentIndex(): number {
         const items = this.getNavItems();
@@ -119,30 +152,63 @@ export class BottomBarSwipeNavigator {
     }
 
     /**
-     * Navigates to the next bottom navigation tab.
+     * Determines the zero-based index of the currently active section among section items.
+     */
+    public getCurrentSectionIndex(): number {
+        const sections = this.getSectionItems();
+        if (sections.length === 0) return -1;
+
+        const activeIdx = sections.findIndex((item) =>
+            item.classList.contains('active') ||
+            item.getAttribute('aria-current') === 'location'
+        );
+
+        if (activeIdx !== -1) return activeIdx;
+
+        // Fallback to active section detected by ScrollSpy if available
+        if (typeof window !== 'undefined' && ScrollSpy.instance) {
+            const spySectionId = ScrollSpy.instance.getActiveSectionId();
+            if (spySectionId) {
+                const spyIdx = sections.findIndex((s) => {
+                    const target = s.getAttribute('data-nav-target') || s.getAttribute('href')?.replace(/^#/, '');
+                    return target === spySectionId;
+                });
+                if (spyIdx !== -1) return spyIdx;
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * Navigates to the next section in the bottom navigation bar.
+     * Guaranteed to stop at the last section and will NEVER advance to or activate
+     * the Reminders or Menu action buttons.
      */
     public nextTab(): boolean {
-        const items = this.getNavItems();
-        if (items.length <= 1) return false;
+        const sections = this.getSectionItems();
+        if (sections.length <= 1) return false;
 
-        const currentIdx = this.getCurrentIndex();
-        if (currentIdx < items.length - 1) {
-            this.goToItem(items[currentIdx + 1]);
+        const currentSectionIdx = this.getCurrentSectionIndex();
+        if (currentSectionIdx >= 0 && currentSectionIdx < sections.length - 1) {
+            this.goToItem(sections[currentSectionIdx + 1]);
             return true;
         }
         return false;
     }
 
     /**
-     * Navigates to the previous bottom navigation tab.
+     * Navigates to the previous section in the bottom navigation bar.
+     * Guaranteed to stop at the first section and will NEVER advance to or activate
+     * the Theme toggle button.
      */
     public prevTab(): boolean {
-        const items = this.getNavItems();
-        if (items.length <= 1) return false;
+        const sections = this.getSectionItems();
+        if (sections.length <= 1) return false;
 
-        const currentIdx = this.getCurrentIndex();
-        if (currentIdx > 0) {
-            this.goToItem(items[currentIdx - 1]);
+        const currentSectionIdx = this.getCurrentSectionIndex();
+        if (currentSectionIdx > 0) {
+            this.goToItem(sections[currentSectionIdx - 1]);
             return true;
         }
         return false;
@@ -300,18 +366,26 @@ export class BottomBarSwipeNavigator {
     }
 
     /**
-     * Checks if a touch event target is an interactive child that handles its own drag/touch gestures.
+     * Checks if a touch event target is an interactive child, carousel, map, or overlay
+     * that handles its own horizontal drag or swipe gestures.
+     * Prevents page swipe interference in carousel sections like Testimonials and Campus Life.
      */
-    private isInteractiveElement(el: HTMLElement): boolean {
-        // Exclude carousels, timeline drag scrollers, interactive maps, modals, form inputs
+    public isInteractiveElement(el: HTMLElement): boolean {
+        if (!el || typeof el.closest !== 'function') return false;
+
         return Boolean(
             el.closest(
-                '.carousel-container, #mainCarousel, .timeline-track-container, ' +
-                '.timeline-milestones-track, #campusMapEmbed, .map-container, ' +
-                'dialog[open], .my-reminders-overlay, .enquiry-modal.is-active, ' +
+                // 1. Community Testimonials Section & Carousel
+                '#testimonials, .testimonials-carousel, .testimonials-stage, .testimonials-grid, .testimonials-track, .testimonial-card, .testimonials-filter-bar, #testimonialsPagination, ' +
+                // 2. Campus Life Highlights Section & 3D Carousel
+                '#campus, .carousel-wrapper, .carousel-container, #mainCarousel, .carousel-track, .carousel-thumbnails-wrapper, .carousel-thumbnails, #carouselThumbnails, ' +
+                // 3. Academic Calendar Timeline Scrubber & Virtual Campus Map
+                '.timeline-track-container, .timeline-milestones-track, #campusMapContainer, .campus-map-interactive-container, .campus-map-viewport, #campusMapCanvasWrap, #campusMapEmbed, .map-container, ' +
+                // 4. Modals, Sheets, Overlays & Form Inputs
+                'dialog[open], .my-reminders-overlay, .enquiry-modal.is-active, .past-modal-overlay, ' +
                 'input, textarea, select, button[data-interactive]'
             ) ||
-            document.body.classList.contains('drawer-open')
+            document.body?.classList.contains('drawer-open')
         );
     }
 
