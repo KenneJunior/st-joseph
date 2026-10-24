@@ -132,4 +132,99 @@ describe('LiquidGlassAdapter — Dynamic Popups & Notifications Integration', ()
 
         adapter.destroy();
     });
+
+    it('enforces reduced background opacity across all elements implementing the liquid glass effect', async () => {
+        const { readFileSync } = await import('fs');
+        const { resolve } = await import('path');
+
+        // 1. PWA install card stylesheet
+        const pwaCss = readFileSync(resolve(process.cwd(), 'src/css/components/pwa-install-card.css'), 'utf-8');
+        const pwaLightMatch = pwaCss.match(/--pwa-card-bg:\s*rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/);
+        const pwaDarkMatch = pwaCss.match(/--pwa-card-bg:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
+        expect(pwaLightMatch).not.toBeNull();
+        expect(pwaDarkMatch).not.toBeNull();
+        expect(parseFloat(pwaLightMatch![1])).toBeLessThanOrEqual(0.60);
+        expect(parseFloat(pwaDarkMatch![1])).toBeLessThanOrEqual(0.50);
+
+        // 2. Service Worker update banner stylesheet
+        const swCss = readFileSync(resolve(process.cwd(), 'src/css/features/sw-update.css'), 'utf-8');
+        const swLightMatch = swCss.match(/--sw-pill-bg:\s*rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/);
+        const swDarkMatch = swCss.match(/--sw-pill-bg:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
+        expect(swLightMatch).not.toBeNull();
+        expect(swDarkMatch).not.toBeNull();
+        expect(parseFloat(swLightMatch![1])).toBeLessThanOrEqual(0.60);
+        expect(parseFloat(swDarkMatch![1])).toBeLessThanOrEqual(0.50);
+
+        // 3. Offline indicator pill and card panel
+        const offlineCss = readFileSync(resolve(process.cwd(), 'src/css/components/offline-indicator.css'), 'utf-8');
+        const offlinePillMatch = offlineCss.match(/\.offline-indicator-pill\s*\{[^}]*background:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
+        const offlinePanelMatch = offlineCss.match(/\.offline-card-panel\s*\{[^}]*background:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
+        expect(offlinePillMatch).not.toBeNull();
+        expect(offlinePanelMatch).not.toBeNull();
+        expect(parseFloat(offlinePillMatch![1])).toBeLessThanOrEqual(0.15);
+        expect(parseFloat(offlinePanelMatch![1])).toBeLessThanOrEqual(0.40);
+
+        // 4. ConfirmDialog surface glass and content wrapper
+        const dialogCss = readFileSync(resolve(process.cwd(), 'src/css/components/dialog.css'), 'utf-8');
+        const dialogSurfaceMatch = dialogCss.match(/--cd-surface-glass:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
+        const dialogWrapperMatch = dialogCss.match(/\.cd-content-wrapper\s*\{[^}]*background:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
+        expect(dialogSurfaceMatch).not.toBeNull();
+        expect(dialogWrapperMatch).not.toBeNull();
+        expect(parseFloat(dialogSurfaceMatch![1])).toBeLessThanOrEqual(0.15);
+        expect(parseFloat(dialogWrapperMatch![1])).toBeLessThanOrEqual(0.30);
+    });
+
+    it('enforces solid color fallbacks when liquid glass / backdrop-filter is unsupported or reduced transparency is active', async () => {
+        const { readFileSync } = await import('fs');
+        const { resolve } = await import('path');
+
+        const stylesheets = [
+            'src/css/components/pwa-install-card.css',
+            'src/css/features/sw-update.css',
+            'src/css/components/offline-indicator.css',
+            'src/css/components/dialog.css',
+        ];
+
+        for (const file of stylesheets) {
+            const css = readFileSync(resolve(process.cwd(), file), 'utf-8');
+
+            // Must include @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)))
+            expect(css).toMatch(/@supports\s+not\s*\(/);
+
+            // Must include @media (prefers-reduced-transparency: reduce)
+            expect(css).toContain('prefers-reduced-transparency: reduce');
+
+            // Must include class/attribute fallback selectors
+            expect(css).toMatch(/(?:no-liquid-glass|glass-fallback|data-glass-fallback)/);
+
+            // Must use solid background fallback
+            expect(css).toMatch(/backdrop-filter:\s*none\s*!important/);
+        }
+    });
+
+    it('supports runtime detection and marks fallback on elements when liquid glass is unsupported', () => {
+        const testEl = document.createElement('div');
+        testEl.className = 'test-surface';
+        document.body.appendChild(testEl);
+
+        // Test markGlassFallback directly
+        LiquidGlassAdapter.markGlassFallback([testEl]);
+        expect(testEl.getAttribute('data-glass-fallback')).toBe('true');
+        expect(testEl.classList.contains('glass-fallback')).toBe(true);
+        expect(document.documentElement.classList.contains('no-liquid-glass')).toBe(true);
+
+        // Test isSupported when CSS.supports is missing or false
+        (globalThis as any).CSS = {
+            supports: vi.fn().mockReturnValue(false),
+        };
+        expect(LiquidGlassAdapter.isSupported()).toBe(false);
+
+        // Test isSupported when prefers-reduced-transparency is true
+        (globalThis as any).CSS.supports = vi.fn().mockReturnValue(true);
+        window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+            matches: query.includes('prefers-reduced-transparency'),
+            media: query,
+        }));
+        expect(LiquidGlassAdapter.isSupported()).toBe(false);
+    });
 });

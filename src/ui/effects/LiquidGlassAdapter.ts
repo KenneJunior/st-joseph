@@ -72,6 +72,53 @@ export class LiquidGlassAdapter {
     private enhancedSurfaces: WeakSet<HTMLElement> = new WeakSet();
 
     /**
+     * Checks if the user or system prefers reduced transparency.
+     */
+    public static prefersReducedTransparency(): boolean {
+        if (typeof window === 'undefined' || !window.matchMedia) return false;
+        return window.matchMedia('(prefers-reduced-transparency: reduce)').matches;
+    }
+
+    /**
+     * Checks if liquid glass / backdrop-filter optics are supported in this browser environment.
+     * Evaluates CSS.supports for backdrop-filter and -webkit-backdrop-filter,
+     * and checks whether user prefers reduced transparency.
+     */
+    public static isSupported(): boolean {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return false;
+
+        // If user requests reduced transparency, transparent glass must yield to solid colors
+        if (LiquidGlassAdapter.prefersReducedTransparency()) {
+            return false;
+        }
+
+        // Check CSS backdrop-filter support (standard or webkit prefixed for iOS Safari)
+        if (typeof CSS !== 'undefined' && typeof CSS.supports === 'function') {
+            const hasStandard = CSS.supports('backdrop-filter', 'blur(1px)');
+            const hasWebkit = CSS.supports('-webkit-backdrop-filter', 'blur(1px)');
+            if (!hasStandard && !hasWebkit) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Applies fallback solid-color attributes and classes to elements
+     * so that low-opacity elements display opaque solid institutional colors.
+     */
+    public static markGlassFallback(elements: HTMLElement[]): void {
+        elements.forEach((el) => {
+            el.setAttribute('data-glass-fallback', 'true');
+            el.classList.add('glass-fallback');
+        });
+        if (typeof document !== 'undefined' && document.documentElement) {
+            document.documentElement.classList.add('no-liquid-glass');
+        }
+    }
+
+    /**
      * Checks if the user or system prefers reduced motion.
      */
     public static prefersReducedMotion(): boolean {
@@ -124,7 +171,7 @@ export class LiquidGlassAdapter {
     /**
      * Initializes LiquidGlass on targeted elements matching a selector or direct HTMLElement.
      * Wrapped in a try/catch boundary so that any environment limitations
-     * gracefully fall back to native CSS backdrop-filter without breaking UI.
+     * gracefully fall back to native CSS backdrop-filter or solid color without breaking UI.
      *
      * @param target CSS selector string or HTMLElement instance
      * @param config Optional adapter configuration
@@ -132,9 +179,9 @@ export class LiquidGlassAdapter {
     public enhanceSurface(target: string | HTMLElement, config: LiquidGlassAdapterConfig = {}): void {
         if (typeof window === 'undefined' || typeof document === 'undefined' || this.isDestroyed) return;
 
+        let elements: HTMLElement[] = [];
         try {
             let selector: string;
-            let elements: HTMLElement[] = [];
 
             if (typeof target === 'string') {
                 selector = target;
@@ -154,6 +201,13 @@ export class LiquidGlassAdapter {
             }
 
             if (!elements || elements.length === 0) return;
+
+            // If liquid glass is not supported (e.g. reduced-transparency, unsupported backdrop-filter),
+            // mark elements for solid color fallback immediately.
+            if (!LiquidGlassAdapter.isSupported()) {
+                LiquidGlassAdapter.markGlassFallback(elements);
+                return;
+            }
 
             // Filter out already enhanced elements to avoid redundant attachment
             const unenhanced = elements.filter((el) => !this.enhancedSurfaces.has(el));
@@ -191,10 +245,10 @@ export class LiquidGlassAdapter {
                 });
             });
         } catch (error) {
-            // Graceful degradation: The underlying semantic DOM and existing CSS
-            // (backdrop-filter: blur) remain completely functional.
+            // Graceful degradation: Mark elements with fallback so solid color styling takes over cleanly
+            LiquidGlassAdapter.markGlassFallback(elements);
             if (typeof window !== 'undefined' && (window.location?.hostname === 'localhost' || window.location?.hostname === '127.0.0.1')) {
-                console.warn('[LiquidGlassAdapter] Initialization skipped; falling back to CSS glass:', error);
+                console.warn('[LiquidGlassAdapter] Initialization skipped; falling back to solid CSS glass:', error);
             }
         }
     }

@@ -5,7 +5,8 @@
    ========================================================================== */
 
 :root {
-  --sw-pill-bg: rgba(255, 255, 255, 0.88);
+  --sw-pill-bg: rgba(255, 255, 255, 0.55);
+  --sw-pill-bg-solid: #ffffff;
   --sw-pill-border: rgba(201, 162, 41, 0.40);
   --sw-pill-text: #07182E;
   --sw-pill-subtext: #4A5568;
@@ -28,7 +29,8 @@
 html.dark-mode,
 body.dark-mode,
 [data-theme="dark"] {
-  --sw-pill-bg: rgba(7, 24, 46, 0.82);
+  --sw-pill-bg: rgba(7, 24, 46, 0.45);
+  --sw-pill-bg-solid: #07182E;
   --sw-pill-border: rgba(201, 162, 41, 0.40);
   --sw-pill-text: #F4F1EA;
   --sw-pill-subtext: #D1CFC4;
@@ -79,6 +81,32 @@ body.dark-mode,
               background-color 200ms ease,
               border-color 200ms ease,
               box-shadow 200ms ease;
+}
+
+/* Solid Color Fallback: iOS Safari, browsers without backdrop-filter, or reduced transparency */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  #sw-update-banner {
+    background: var(--sw-pill-bg-solid) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  #sw-update-banner {
+    background: var(--sw-pill-bg-solid) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+.no-liquid-glass #sw-update-banner,
+.no-backdrop-filter #sw-update-banner,
+#sw-update-banner.glass-fallback,
+#sw-update-banner[data-glass-fallback="true"] {
+  background: var(--sw-pill-bg-solid) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 #sw-update-banner.sw-pill--dismissing {

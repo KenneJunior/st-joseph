@@ -428,5 +428,46 @@ describe('Bottom Nav Pill — Progressive Section Scaling & Active State Revocat
             expect(bottomBar.getAttribute('data-scroll-progress')).toBe('50');
         });
     });
+
+    describe('5. Mobile Bottom Bar Cinematic Spring Animation on Active Transition', () => {
+        it('declares cinematic spring keyframe animations with physics-modeled damped oscillations', async () => {
+            const { readFileSync } = await import('fs');
+            const { resolve } = await import('path');
+            const css = readFileSync(resolve(process.cwd(), 'src/css/layout/navigation-mobile.css'), 'utf-8');
+
+            expect(css).toContain('@keyframes cinematic-bottom-icon-spring');
+            expect(css).toContain('@keyframes cinematic-bottom-menu-spring');
+            expect(css).toContain('@keyframes cinematic-bottom-bell-spring');
+
+            // Verify multi-stage harmonic overshoot and settling
+            expect(css).toMatch(/@keyframes cinematic-bottom-icon-spring[\s\S]*?0%\s*\{[\s\S]*?translateY\(0\)[\s\S]*?scale\(1\)/);
+            expect(css).toMatch(/@keyframes cinematic-bottom-icon-spring[\s\S]*?scale\(1\.36\)/);
+            expect(css).toMatch(/@keyframes cinematic-bottom-icon-spring[\s\S]*?100%\s*\{[\s\S]*?translateY\(-1px\)\s*scale\(1\.15\)/);
+        });
+
+        it('binds cinematic spring animation to active icons with hardware acceleration and transform-origin', async () => {
+            const { readFileSync } = await import('fs');
+            const { resolve } = await import('path');
+            const css = readFileSync(resolve(process.cwd(), 'src/css/layout/navigation-mobile.css'), 'utf-8');
+
+            expect(css).toContain('animation: cinematic-bottom-icon-spring');
+            expect(css).toContain('animation: cinematic-bottom-menu-spring');
+            expect(css).toContain('animation: cinematic-bottom-bell-spring');
+
+            // Base icon must be inline-block with smooth spring return transition
+            expect(css).toMatch(/\.mobile-bottom-item\s+i\s*\{[^}]*display:\s*inline-block;/);
+            expect(css).toMatch(/\.mobile-bottom-item\s+i\s*\{[^}]*transition:\s*transform/);
+        });
+
+        it('suppresses cinematic spring animations under prefers-reduced-motion', async () => {
+            const { readFileSync } = await import('fs');
+            const { resolve } = await import('path');
+            const css = readFileSync(resolve(process.cwd(), 'src/css/layout/navigation-mobile.css'), 'utf-8');
+
+            const reducedMotionBlock = css.match(/@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{([\s\S]*?)\}\s*\}/);
+            expect(reducedMotionBlock).not.toBeNull();
+            expect(reducedMotionBlock![1]).toContain('animation: none !important');
+        });
+    });
 });
 
