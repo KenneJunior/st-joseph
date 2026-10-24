@@ -877,11 +877,15 @@ body.dark-mode .notification-guide-overlay .guide-status-badge--default {
 }
 
 /* Tabs */
+#notificationGuideTabs,
 .notification-guide-tabs {
   display: flex;
-  gap: 5px;
+  align-items: center;
+  gap: 6px;
+  min-height: 52px;
+  flex-shrink: 0;
   overflow-x: auto;
-  padding: 5px;
+  padding: 6px;
   border-radius: 14px;
   background: rgba(7, 24, 46, 0.05);
   border: 1px solid rgba(7, 24, 46, 0.06);
@@ -893,8 +897,11 @@ body.dark-mode .notification-guide-overlay .guide-status-badge--default {
   display: none;
 }
 
+.notification-guide-overlay[data-theme="dark"] #notificationGuideTabs,
 .notification-guide-overlay[data-theme="dark"] .notification-guide-tabs,
+html.dark-mode .notification-guide-overlay #notificationGuideTabs,
 html.dark-mode .notification-guide-overlay .notification-guide-tabs,
+body.dark-mode .notification-guide-overlay #notificationGuideTabs,
 body.dark-mode .notification-guide-overlay .notification-guide-tabs {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.08);
@@ -905,6 +912,8 @@ body.dark-mode .notification-guide-overlay .notification-guide-tabs {
   align-items: center;
   gap: 7px;
   padding: 8px 15px;
+  min-height: 40px;
+  flex-shrink: 0;
   border-radius: 9px;
   font-size: 0.81rem;
   font-weight: 600;
@@ -2469,14 +2478,24 @@ body.dark-mode .my-reminder-category-select {
   background: #ffffff;
   border: 1px solid rgba(7, 24, 46, 0.12);
   border-radius: 10px;
-  padding: 8px 10px;
+  padding: 10px 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   z-index: 50;
-  min-width: 220px;
-  display: flex;
+  min-width: 250px;
+  max-width: 320px;
+  display: none;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+}
+
+.my-reminder-snooze-flyout:not([hidden]),
+.my-reminder-snooze-flyout.is-open {
+  display: flex;
   animation: snoozeFlyoutIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.my-reminder-snooze-flyout[hidden] {
+  display: none !important;
 }
 
 @keyframes snoozeFlyoutIn {
@@ -2548,6 +2567,13 @@ body.dark-mode .my-reminders-overlay .btn-snooze-chip {
   border-color: var(--accent, #c9a229);
 }
 
+.btn-snooze-chip.is-active,
+.btn-snooze-chip.btn-snooze-custom-toggle.is-active {
+  background: var(--accent, #c9a229);
+  color: #07182E;
+  border-color: var(--accent, #c9a229);
+}
+
 .btn-snooze-chip:disabled,
 .btn-snooze-chip.is-disabled {
   opacity: 0.45;
@@ -2560,6 +2586,220 @@ body.dark-mode .my-reminders-overlay .btn-snooze-chip {
   font-size: 0.65rem;
   color: #ef4444;
   font-weight: 500;
+}
+
+/* ─── Custom Snooze Expandable Container ─── */
+.snooze-custom-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(7, 24, 46, 0.14);
+  animation: snoozeFlyoutIn 0.15s ease-out;
+}
+
+.snooze-custom-container[hidden] {
+  display: none !important;
+}
+
+.my-reminders-overlay[data-theme="dark"] .snooze-custom-container,
+html.dark-mode .my-reminders-overlay .snooze-custom-container,
+body.dark-mode .my-reminders-overlay .snooze-custom-container {
+  border-top-color: rgba(255, 255, 255, 0.14);
+}
+
+.snooze-custom-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.snooze-custom-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.my-reminders-overlay[data-theme="dark"] .snooze-custom-title,
+html.dark-mode .my-reminders-overlay .snooze-custom-title,
+body.dark-mode .my-reminders-overlay .snooze-custom-title {
+  color: #94a3b8;
+}
+
+.snooze-custom-close-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.snooze-custom-close-btn:hover {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.my-reminders-overlay[data-theme="dark"] .snooze-custom-close-btn:hover,
+html.dark-mode .my-reminders-overlay .snooze-custom-close-btn:hover,
+body.dark-mode .my-reminders-overlay .snooze-custom-close-btn:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Tabs: Duration vs Exact Date & Time */
+.snooze-mode-tabs {
+  display: flex;
+  background: rgba(7, 24, 46, 0.05);
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.my-reminders-overlay[data-theme="dark"] .snooze-mode-tabs,
+html.dark-mode .my-reminders-overlay .snooze-mode-tabs,
+body.dark-mode .my-reminders-overlay .snooze-mode-tabs {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.snooze-mode-tab {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 6px;
+  border-radius: 4px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.my-reminders-overlay[data-theme="dark"] .snooze-mode-tab,
+html.dark-mode .my-reminders-overlay .snooze-mode-tab,
+body.dark-mode .my-reminders-overlay .snooze-mode-tab {
+  color: #94a3b8;
+}
+
+.snooze-mode-tab.is-active {
+  background: #ffffff;
+  color: #07182e;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+}
+
+.my-reminders-overlay[data-theme="dark"] .snooze-mode-tab.is-active,
+html.dark-mode .my-reminders-overlay .snooze-mode-tab.is-active,
+body.dark-mode .my-reminders-overlay .snooze-mode-tab.is-active {
+  background: #1e293b;
+  color: #f8fafc;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.snooze-mode-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.snooze-mode-panel[hidden] {
+  display: none !important;
+}
+
+.snooze-input-row,
+.snooze-datetime-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.snooze-input-number {
+  width: 58px;
+  padding: 4px 6px;
+  border: 1px solid rgba(7, 24, 46, 0.18);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #0f172a;
+  background: #ffffff;
+  text-align: center;
+}
+
+.snooze-unit-select {
+  flex: 1;
+  padding: 4px 6px;
+  border: 1px solid rgba(7, 24, 46, 0.18);
+  border-radius: 6px;
+  font-size: 0.76rem;
+  color: #0f172a;
+  background: #ffffff;
+}
+
+.snooze-input-datetime {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 6px;
+  border: 1px solid rgba(7, 24, 46, 0.18);
+  border-radius: 6px;
+  font-size: 0.74rem;
+  color: #0f172a;
+  background: #ffffff;
+}
+
+.my-reminders-overlay[data-theme="dark"] .snooze-input-number,
+.my-reminders-overlay[data-theme="dark"] .snooze-unit-select,
+.my-reminders-overlay[data-theme="dark"] .snooze-input-datetime,
+html.dark-mode .my-reminders-overlay .snooze-input-number,
+html.dark-mode .my-reminders-overlay .snooze-unit-select,
+html.dark-mode .my-reminders-overlay .snooze-input-datetime,
+body.dark-mode .my-reminders-overlay .snooze-input-number,
+body.dark-mode .my-reminders-overlay .snooze-unit-select,
+body.dark-mode .my-reminders-overlay .snooze-input-datetime {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #f1f5f9;
+}
+
+.snooze-input-number:focus,
+.snooze-unit-select:focus,
+.snooze-input-datetime:focus {
+  outline: none;
+  border-color: var(--accent, #c9a229);
+  box-shadow: 0 0 0 2px rgba(201, 162, 41, 0.2);
+}
+
+.snooze-custom-hint {
+  font-size: 0.68rem;
+  color: #64748b;
+  line-height: 1.3;
+}
+
+.my-reminders-overlay[data-theme="dark"] .snooze-custom-hint,
+html.dark-mode .my-reminders-overlay .snooze-custom-hint,
+body.dark-mode .my-reminders-overlay .snooze-custom-hint {
+  color: #94a3b8;
+}
+
+.snooze-custom-error {
+  font-size: 0.68rem;
+  color: #ef4444;
+  font-weight: 600;
+  line-height: 1.3;
+  padding: 3px 6px;
+  background: rgba(239, 68, 68, 0.08);
+  border-radius: 4px;
+}
+
+.snooze-custom-error[hidden] {
+  display: none !important;
 }
 
 /* ─── Snooze Active Banner on Card ─── */
@@ -2656,10 +2896,18 @@ body.dark-mode .my-reminders-overlay .my-reminder-snoozed-alert {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   z-index: 9999;
   min-width: 200px;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 6px;
+}
+
+.milestone-toast-snooze-flyout:not([hidden]) {
+  display: flex;
   animation: snoozeFlyoutIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.milestone-toast-snooze-flyout[hidden] {
+  display: none !important;
 }
 
 .milestone-toast[data-theme="dark"] .milestone-toast-snooze-flyout,
@@ -3113,8 +3361,8 @@ body.dark-mode .my-reminders-overlay .my-reminders-footer-note {
   100% { transform: scale(1); }
 }
 
-/* Responsive adjustments */
-@media (max-width: 640px) {
+/* Responsive adjustments for 729px downward to very small devices */
+@media (max-width: 729px) {
   .milestone-toast-container {
     bottom: 16px;
     right: 12px;
@@ -3133,13 +3381,14 @@ body.dark-mode .my-reminders-overlay .my-reminders-footer-note {
     font-size: 0.78rem;
   }
 
+  /* ── 1. MY REMINDERS MODAL & NOTIFICATION GUIDE OVERLAYS ── */
   dialog.notification-guide-overlay,
   .notification-guide-overlay,
   dialog.my-reminders-overlay,
   .my-reminders-overlay {
-    padding: 16px 12px;
-    padding-left: max(12px, env(safe-area-inset-left));
-    padding-right: max(12px, env(safe-area-inset-right));
+    padding: clamp(8px, 2.5vw, 16px);
+    padding-left: max(clamp(8px, 2.5vw, 16px), env(safe-area-inset-left));
+    padding-right: max(clamp(8px, 2.5vw, 16px), env(safe-area-inset-right));
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
@@ -3148,146 +3397,603 @@ body.dark-mode .my-reminders-overlay .my-reminders-footer-note {
     margin: 0 !important;
   }
 
+  /* ── 1. MY REMINDERS SHEET & 3. NOTIFICATION GUIDE SHEET CONTAINERS ── */
   .notification-guide-sheet,
   .my-reminders-sheet {
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 auto !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
     align-self: center;
-    padding: 22px 18px;
-    border-radius: 20px;
+    padding: clamp(14px, 3.5vw, 22px);
+    border-radius: clamp(14px, 3.5vw, 20px);
     box-sizing: border-box;
-    max-height: min(calc(100dvh - 32px), 880px);
+    max-height: min(calc(100dvh - 24px), 880px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    gap: 14px;
+  }
+
+  /* ── 1. MY REMINDERS SHEET CHILDREN ── */
+  .my-reminders-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .my-reminders-header__titles {
     flex: 1;
     min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
-  .chime-options-grid {
-    grid-template-columns: 1fr;
+  .my-reminders-title {
+    font-size: clamp(1.15rem, 3.8vw, 1.35rem);
+    line-height: 1.25;
+    margin: 4px 0 4px;
+    word-break: break-word;
+  }
+
+  .my-reminders-subtitle {
+    font-size: clamp(0.76rem, 2.4vw, 0.84rem);
+    line-height: 1.45;
+    word-break: break-word;
+  }
+
+  .my-reminders-close-btn {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+  }
+
+  .my-reminders-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 4px;
+  }
+
+  .my-reminders-tab {
+    padding: 6px clamp(10px, 2.5vw, 14px);
+    font-size: clamp(0.74rem, 2.4vw, 0.82rem);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .my-reminders-push-card {
+    padding: clamp(12px, 3vw, 16px);
+    border-radius: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .push-card-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .push-card-title {
+    font-size: clamp(0.88rem, 2.8vw, 0.98rem);
+    word-break: break-word;
+  }
+
+  .push-card-desc {
+    font-size: clamp(0.74rem, 2.4vw, 0.82rem);
+    line-height: 1.45;
+    word-break: break-word;
   }
 
   .push-card-mute-row {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .my-reminders-tabs {
-    flex-wrap: nowrap;
-    overflow-x: auto;
+  .my-reminders-category-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
   }
-}
 
-@media (max-width: 480px) {
-  dialog.notification-guide-overlay,
-  .notification-guide-overlay,
-  dialog.my-reminders-overlay,
-  .my-reminders-overlay {
-    padding: 12px 10px;
-    padding-left: max(10px, env(safe-area-inset-left));
-    padding-right: max(10px, env(safe-area-inset-right));
-    align-items: center;
+  .category-filter-chip {
+    padding: 4px clamp(6px, 2vw, 10px);
+    font-size: clamp(0.68rem, 2.3vw, 0.76rem);
+    flex-shrink: 0;
+  }
+
+  .my-reminders-list-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px clamp(8px, 2.5vw, 14px);
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 12px;
+  }
+
+  .list-toolbar-info {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .list-toolbar-title {
+    font-size: clamp(0.78rem, 2.5vw, 0.84rem);
+    word-break: break-word;
+  }
+
+  .list-toolbar-hint {
+    font-size: clamp(0.68rem, 2.2vw, 0.74rem);
+    line-height: 1.35;
+  }
+
+  .list-toolbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .list-toolbar-actions .btn {
+    flex: 1 1 calc(50% - 4px);
+    font-size: clamp(0.7rem, 2.3vw, 0.76rem);
+    padding: 6px 8px;
     justify-content: center;
+    text-align: center;
+    min-width: 0;
+  }
+
+  .my-reminders-custom-form {
+    padding: clamp(12px, 3vw, 16px);
+    border-radius: 14px;
+    width: 100%;
     box-sizing: border-box;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-  }
-
-  .notification-guide-sheet,
-  .my-reminders-sheet {
-    padding: 18px 14px;
-    border-radius: 18px;
-    gap: 14px;
-    max-height: min(calc(100dvh - 24px), 880px);
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    align-self: center;
-    box-sizing: border-box;
-  }
-
-  .my-reminders-header {
-    gap: 10px;
-  }
-
-  .my-reminders-title {
-    font-size: 1.25rem;
-  }
-
-  .my-reminders-subtitle {
-    font-size: 0.82rem;
-  }
-
-  .my-reminders-push-card {
-    padding: 14px 14px;
-    border-radius: 14px;
-    margin-bottom: 12px;
-  }
-
-  .push-card-main {
-    gap: 10px;
-  }
-
-  .push-card-icon-badge {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
-    max-width: 38px;
-    min-height: 38px;
-    max-height: 38px;
-    border-radius: 10px;
-    font-size: 1.1rem;
-  }
-
-  .push-card-title {
-    font-size: 0.9rem;
-  }
-
-  .push-card-desc {
-    font-size: 0.78rem;
-  }
-
-  .my-reminder-card {
-    padding: 14px 14px;
-    border-radius: 14px;
-  }
-
-  .my-history-card {
-    padding: 14px 14px;
-    border-radius: 14px;
   }
 
   .custom-form-row {
     flex-direction: column;
     gap: 8px;
+    width: 100%;
+  }
+
+  .custom-form-field {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .custom-form-input,
+  .custom-form-select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    font-size: 0.82rem;
+  }
+
+  .custom-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .my-reminder-card {
+    padding: clamp(12px, 3vw, 16px);
+    border-radius: 14px;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .my-reminder-card__header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .my-reminder-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 6px;
+    font-size: clamp(0.68rem, 2.3vw, 0.74rem);
+    min-width: 0;
+  }
+
+  .my-reminder-card__top-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .my-reminder-category-select {
+    font-size: 0.72rem;
+    padding: 2px 4px;
+    max-width: 100px;
+  }
+
+  .my-reminder-title {
+    font-size: clamp(0.92rem, 3.2vw, 1.05rem);
+    word-break: break-word;
+    line-height: 1.35;
+    width: 100%;
+  }
+
+  .my-reminder-date-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    font-size: clamp(0.72rem, 2.4vw, 0.78rem);
+    word-break: break-word;
+  }
+
+  .my-reminder-snoozed-alert {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    font-size: clamp(0.72rem, 2.4vw, 0.76rem);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .snoozed-alert-info {
+    word-break: break-word;
+    min-width: 0;
+  }
+
+  .my-reminder-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .my-reminder-jump-btn,
+  .my-reminder-calendar-btn {
+    flex: 1 1 calc(50% - 4px);
+    font-size: clamp(0.7rem, 2.4vw, 0.76rem);
+    padding: 6px 8px;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .my-reminder-snooze-wrapper {
+    flex: 1 1 100%;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .my-reminder-snooze-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: clamp(0.72rem, 2.4vw, 0.78rem);
+    padding: 6px 10px;
+  }
+
+  .my-reminder-snooze-flyout {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    margin-top: 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .snooze-chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    width: 100%;
+  }
+
+  .btn-snooze-chip {
+    flex: 1 1 auto;
+    justify-content: center;
+    font-size: clamp(0.68rem, 2.3vw, 0.74rem);
+    padding: 4px 6px;
+    text-align: center;
+  }
+
+  .snooze-custom-container {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .snooze-input-row,
+  .snooze-datetime-row {
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .snooze-input-datetime {
+    width: 100%;
+    flex: 1 1 100%;
+    min-width: 0;
+    font-size: clamp(0.7rem, 2.3vw, 0.75rem);
+  }
+
+  .snooze-custom-hint,
+  .snooze-custom-error {
+    word-break: break-word;
+  }
+
+  .chime-options-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .chime-option-card {
+    padding: 10px 12px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .my-reminders-footer {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .my-reminders-footer-actions {
     width: 100%;
-    justify-content: flex-end;
+    justify-content: stretch;
   }
 
-  .my-reminders-category-filters {
+  .my-reminders-footer-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ── 3. NOTIFICATION GUIDE SHEET CHILDREN ── */
+  .notification-guide-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .notification-guide-header__titles {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .notification-guide-title {
+    font-size: clamp(1.15rem, 3.8vw, 1.35rem);
+    line-height: 1.25;
+    margin: 4px 0 4px;
+    word-break: break-word;
+  }
+
+  .notification-guide-subtitle {
+    font-size: clamp(0.76rem, 2.4vw, 0.84rem);
+    line-height: 1.45;
+    word-break: break-word;
+  }
+
+  .notification-guide-device-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: clamp(8px, 2.5vw, 12px) clamp(10px, 3vw, 16px);
+    border-radius: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: clamp(0.74rem, 2.4vw, 0.82rem);
+  }
+
+  .device-detected-info {
+    display: flex;
+    align-items: center;
     gap: 6px;
+    min-width: 0;
+    word-break: break-word;
   }
 
-  .category-filter-chip {
-    padding: 5px 10px;
-    font-size: 0.75rem;
+  .guide-status-badge {
+    font-size: clamp(0.68rem, 2.2vw, 0.74rem);
+    padding: 2px 8px;
+    flex-shrink: 0;
+  }
+
+  #notificationGuideTabs,
+  .notification-guide-tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 48px;
+    flex-shrink: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 4px;
+    border-radius: 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .notification-guide-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px clamp(8px, 2.5vw, 14px);
+    min-height: 38px;
+    font-size: clamp(0.72rem, 2.4vw, 0.8rem);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .guide-active-card {
+    padding: clamp(12px, 3vw, 18px);
+    border-radius: clamp(12px, 3vw, 16px);
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .guide-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .guide-card-icon {
+    width: clamp(34px, 8vw, 42px);
+    height: clamp(34px, 8vw, 42px);
+    font-size: clamp(1rem, 2.6vw, 1.25rem);
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .guide-card-headline {
+    font-size: clamp(0.92rem, 3.2vw, 1.05rem);
+    word-break: break-word;
+    line-height: 1.3;
+  }
+
+  .guide-card-summary {
+    font-size: clamp(0.74rem, 2.5vw, 0.82rem);
+    line-height: 1.45;
+    word-break: break-word;
+  }
+
+  .guide-steps-list {
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .guide-step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .guide-step-number {
+    width: clamp(24px, 6vw, 28px);
+    height: clamp(24px, 6vw, 28px);
+    font-size: clamp(0.7rem, 2.2vw, 0.76rem);
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .guide-step-content {
+    font-size: clamp(0.76rem, 2.5vw, 0.84rem);
+    line-height: 1.45;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .guide-os-section {
+    padding: clamp(10px, 2.5vw, 14px) clamp(10px, 3vw, 16px);
+    border-radius: 12px;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .guide-os-title {
+    font-size: clamp(0.8rem, 2.6vw, 0.86rem);
+    word-break: break-word;
+  }
+
+  .guide-quick-tip {
+    padding: clamp(10px, 2.5vw, 14px);
+    border-radius: 12px;
+    font-size: clamp(0.74rem, 2.4vw, 0.8rem);
+    line-height: 1.45;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    word-break: break-word;
+  }
+
+  .notification-guide-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding-top: 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .guide-footer-note {
+    font-size: clamp(0.7rem, 2.3vw, 0.76rem);
+    line-height: 1.4;
+    word-break: break-word;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .guide-close-cta,
+  .notification-guide-footer .btn {
+    width: 100%;
+    justify-content: center;
+    font-size: clamp(0.78rem, 2.6vw, 0.84rem);
+    padding: 8px 14px;
+  }
+}
+
+/* Extra adjustments for ultra-small screens <= 420px */
+@media (max-width: 420px) {
+  .list-toolbar-actions .btn {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .my-reminder-jump-btn,
+  .my-reminder-calendar-btn {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .mute-row-title-with-badge {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
