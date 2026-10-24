@@ -9,7 +9,6 @@
 
 import '../../css/components/dialog.css';
 import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
-import { LiquidGlassAdapter } from '../effects/LiquidGlassAdapter.ts';
 
 // ─── Type definitions ──────────────────────────────────────────────────────
 
@@ -396,15 +395,6 @@ export class ConfirmDialog {
         this.#overlay!.classList.add('cd-visible');
         this.#card!.classList.add('cd-visible');
         motionSuspension.suspendAll('modal');
-        if (this.#card) {
-            LiquidGlassAdapter.enhancePopup(this.#card, {
-                refractiveIndex: 1.54,
-                glassThickness: 75,
-                bezelWidth: 18,
-                specularAlpha: 0.55,
-                rippleColor: opts.accent ? `${opts.accent}44` : 'rgba(201, 162, 41, 0.35)',
-            });
-        }
         opts.onOpen?.();
     }
 

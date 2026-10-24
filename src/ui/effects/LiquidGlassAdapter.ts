@@ -48,15 +48,6 @@ export const POPUP_SELECTORS = [
     '#pwaInstallCard',
     '.pwa-install-card',
     '#sw-update-banner',
-    '.cd-card',
-    '.dialog-box',
-    '.enquiry-modal-content',
-    '#enquiryModal .modal-content',
-    '.past-announcements-modal__dialog',
-    '.my-reminders-modal__dialog',
-    '.notification-guidance-dialog',
-    '.calendar-action-sheet',
-    '.location-qr-modal',
     '#offlineStatusIndicator',
     '.offline-status-indicator',
 ];
@@ -279,48 +270,23 @@ export class LiquidGlassAdapter {
     }
 
     /**
-     * Initializes targeted high-impact glass elements on the SJCCC Homepage:
-     * 1. Dynamic popup surfaces & observer (Install Card, Update Banner, Modals)
-     * 2. `.map-tour-btn`, `.campus-map-zoom-controls`, `.news-card__category-badge`
-     * 3. `.unified-action-dock`
+     * Initializes targeted popup observer on the SJCCC Homepage.
      */
     public initHomepageSurfaces(): void {
         if (typeof window === 'undefined' || this.isDestroyed) return;
 
-        // Auto-enhance popups (install app, update available, enquiry, etc.)
+        // Auto-enhance popups (install app, update available, offline status indicator)
         this.initPopupObserver();
-
-        this.enhanceSurface('.map-tour-btn');
-        this.enhanceSurface('.campus-map-zoom-controls');
-        this.enhanceSurface('.news-card__category-badge');
-        this.enhanceSurface('.unified-action-dock', {
-            refractiveIndex: 1.55,
-            glassThickness: 80,
-            bezelWidth: 20,
-            maxTilt: 1,
-            rippleColor: 'rgba(255, 255, 255, 0.5)',
-        });
     }
 
     /**
-     * Initializes targeted high-impact glass elements on the SJCCC Prospectus:
-     * 1. Dynamic popup surfaces & observer (Update Banner, Modals)
-     * 2. `#downloadPdfBtn`: Floating PDF export / print trigger button
+     * Initializes targeted popup observer on the SJCCC Prospectus.
      */
     public initProspectusSurfaces(): void {
         if (typeof window === 'undefined' || this.isDestroyed) return;
 
-        // Auto-enhance popups (update available, dialogs, etc.)
+        // Auto-enhance popups (update available, offline status indicator)
         this.initPopupObserver();
-
-        // Targeted selection: Floating Action Button for PDF download
-        this.enhanceSurface('#downloadPdfBtn', {
-            refractiveIndex: 1.55,
-            glassThickness: 80,
-            bezelWidth: 20,
-            maxTilt: 1,
-            rippleColor: 'rgba(255, 255, 255, 0.5)',
-        });
     }
 
     /**
