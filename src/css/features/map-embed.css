@@ -967,22 +967,25 @@ body.dark-mode .location-action-btn.btn-ghost:hover {
 }
 
 .location-qr-badge {
-  font-size: 0.62rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  font-family: monospace;
-  color: var(--primary, #07182E);
-  background: rgba(201, 162, 41, 0.18);
-  border: 1px solid rgba(201, 162, 41, 0.35);
-  border-radius: 4px;
-  padding: 2px 6px;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+  color: #07182E;
+  background: linear-gradient(135deg, rgba(201, 162, 41, 0.20) 0%, rgba(201, 162, 41, 0.10) 100%);
+  border: 1px solid rgba(201, 162, 41, 0.42);
+  border-radius: 6px;
+  padding: 3px 8px;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   white-space: nowrap;
+  letter-spacing: 0.25px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .location-qr-badge i {
   color: #b45309;
+  font-size: 0.70rem;
 }
 
 .location-qr-content {
@@ -1185,6 +1188,10 @@ body.dark-mode .location-action-btn.btn-ghost:hover {
   border-radius: var(--radius-lg, 16px);
   width: 100%;
   max-width: 440px;
+  max-height: min(calc(100dvh - 32px), 720px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   padding: 24px 22px;
   box-sizing: border-box;
   transform: scale(0.94) translateY(12px);
@@ -1396,6 +1403,135 @@ body.dark-mode .location-action-btn.btn-ghost:hover {
 /* ==========================================================================
    RESPONSIVE ADJUSTMENTS FOR LOCATION QR CARD
    ========================================================================== */
+/* Responsive adjustments for Location QR Modal and Card for 729px downward to very small screens */
+@media (max-width: 729px) {
+  .location-qr-modal-backdrop {
+    padding: clamp(8px, 2.5vw, 16px);
+    padding-left: max(clamp(8px, 2.5vw, 16px), env(safe-area-inset-left));
+    padding-right: max(clamp(8px, 2.5vw, 16px), env(safe-area-inset-right));
+  }
+
+  .location-qr-modal-dialog {
+    width: min(100%, calc(100vw - 16px));
+    max-width: 420px;
+    max-height: min(calc(100dvh - 24px), 680px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: clamp(14px, 4vw, 22px);
+    border-radius: clamp(12px, 3.5vw, 16px);
+    box-sizing: border-box;
+  }
+
+  .location-modal-close-btn {
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+
+  .location-modal-header {
+    margin-bottom: 12px;
+    padding-right: 32px;
+  }
+
+  .location-modal-kicker {
+    font-size: clamp(0.68rem, 2.3vw, 0.72rem);
+  }
+
+  .location-modal-title {
+    font-size: clamp(1.15rem, 4vw, 1.35rem);
+    line-height: 1.25;
+    word-break: break-word;
+  }
+
+  .location-modal-subtitle {
+    font-size: clamp(0.74rem, 2.5vw, 0.82rem);
+    line-height: 1.4;
+    word-break: break-word;
+  }
+
+  .location-modal-qr-frame {
+    margin: 8px 0 12px;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .location-modal-qr-target {
+    width: clamp(150px, 46vw, 205px);
+    height: clamp(150px, 46vw, 205px);
+    padding: clamp(8px, 2.5vw, 12px);
+    border-radius: 12px;
+    box-sizing: border-box;
+  }
+
+  .location-modal-center-emblem {
+    width: clamp(26px, 7vw, 32px);
+    height: clamp(26px, 7vw, 32px);
+    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+  }
+
+  .location-modal-scan-hint {
+    font-size: clamp(0.68rem, 2.2vw, 0.72rem);
+    text-align: center;
+  }
+
+  .location-modal-meta-box {
+    padding: clamp(8px, 2.5vw, 12px);
+    border-radius: 8px;
+    font-size: clamp(0.72rem, 2.4vw, 0.78rem);
+    margin-bottom: 12px;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .location-modal-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: baseline;
+  }
+
+  .location-modal-meta-value {
+    word-break: break-all;
+    font-size: clamp(0.68rem, 2.2vw, 0.74rem);
+  }
+
+  .location-modal-meta-desc {
+    word-break: break-word;
+    font-size: clamp(0.7rem, 2.3vw, 0.76rem);
+  }
+
+  .location-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .location-modal-btn {
+    width: 100%;
+    flex: 1 1 100%;
+    min-height: 38px;
+    font-size: clamp(0.76rem, 2.5vw, 0.82rem);
+    padding: 8px 12px;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .location-modal-toast {
+    font-size: 0.72rem;
+    min-height: 16px;
+    margin-top: 6px;
+    word-break: break-word;
+  }
+}
+
 @media (max-width: 580px) {
   .location-qr-card {
     flex-direction: column;
@@ -1414,10 +1550,6 @@ body.dark-mode .location-action-btn.btn-ghost:hover {
 
   .location-qr-button-row {
     justify-content: center;
-  }
-
-  .location-modal-btn {
-    flex: 1 1 100%;
   }
 }
 
@@ -1469,4 +1601,20 @@ html.dark-mode .location-qr-action-btn:hover,
 body.dark-mode .location-qr-action-btn:hover {
   background: rgba(201, 162, 41, 0.22);
   color: #ffffff;
+}
+
+/* Dark Mode Override for Location QR GPS Badge */
+html.dark-mode .location-qr-badge,
+body.dark-mode .location-qr-badge,
+[data-theme="dark"] .location-qr-badge {
+  color: #f8fafc;
+  background: linear-gradient(135deg, rgba(201, 162, 41, 0.28) 0%, rgba(15, 30, 54, 0.85) 100%);
+  border-color: rgba(201, 162, 41, 0.55);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+html.dark-mode .location-qr-badge i,
+body.dark-mode .location-qr-badge i,
+[data-theme="dark"] .location-qr-badge i {
+  color: var(--gold-light, #F3D779);
 }

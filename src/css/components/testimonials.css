@@ -8,20 +8,67 @@
   position: relative;
   overflow: hidden;
   background-color: var(--surface-secondary, #faf7f0);
-  background-image:
-    radial-gradient(ellipse at 50% 0%, rgba(201, 162, 41, 0.08) 0%, transparent 70%),
-    radial-gradient(circle at 90% 80%, rgba(7, 24, 46, 0.03) 0%, transparent 50%);
   padding-top: clamp(64px, 8vw, 100px);
   padding-bottom: clamp(64px, 8vw, 100px);
+}
+
+/* Atmospheric Campus Yard Background Image */
+#testimonials::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('/assets/sjccc-Yard.jpg');
+  background-position: center 35%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.11;
+  filter: saturate(1.1) contrast(1.05);
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Measured Multi-Stop Gradient Scrim for WCAG 4.5:1 Text Contrast */
+#testimonials::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      var(--surface-secondary, #faf7f0) 0%,
+      rgba(250, 247, 240, 0.90) 18%,
+      rgba(250, 247, 240, 0.82) 50%,
+      rgba(250, 247, 240, 0.92) 85%,
+      var(--surface-secondary, #faf7f0) 100%),
+    radial-gradient(ellipse at 50% 0%, rgba(201, 162, 41, 0.10) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 html.dark-mode #testimonials,
 body.dark-mode #testimonials,
 [data-theme="dark"] #testimonials {
   background-color: #040e1d;
-  background-image:
-    radial-gradient(ellipse at 50% 0%, rgba(201, 162, 41, 0.12) 0%, transparent 75%),
-    radial-gradient(circle at 90% 80%, rgba(13, 31, 56, 0.4) 0%, transparent 60%);
+}
+
+html.dark-mode #testimonials::before,
+body.dark-mode #testimonials::before,
+[data-theme="dark"] #testimonials::before {
+  opacity: 0.14;
+  filter: saturate(0.95) brightness(0.85);
+}
+
+html.dark-mode #testimonials::after,
+body.dark-mode #testimonials::after,
+[data-theme="dark"] #testimonials::after {
+  background:
+    linear-gradient(180deg,
+      #040e1d 0%,
+      rgba(4, 14, 29, 0.90) 18%,
+      rgba(4, 14, 29, 0.82) 50%,
+      rgba(4, 14, 29, 0.92) 85%,
+      #040e1d 100%),
+    radial-gradient(ellipse at 50% 0%, rgba(201, 162, 41, 0.14) 0%, transparent 75%);
 }
 
 /* Header & Subtitle Typography */
