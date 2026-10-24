@@ -25,6 +25,8 @@ import {
     detectPlatform,
     getNotificationPermissionGuidance,
 } from '../../core/platform/platformDetection.ts';
+import { MobileNavigation } from '../../ui/navigation/MobileNavigation.ts';
+import { DockGlider } from '../../ui/navigation/DockGlider.ts';
 
 function formatDateTimeLocalInput(timestamp: number): string {
     const d = new Date(timestamp);
@@ -256,6 +258,21 @@ export class MyRemindersController {
 
         this.topNavBtn?.setAttribute('aria-expanded', 'true');
         this.bottomNavBtn?.setAttribute('aria-expanded', 'true');
+        this.bottomNavBtn?.classList.add('active');
+
+        // Deactivate other bottom bar tabs while Reminders modal is open
+        const bottomBar = document.getElementById('mobileBottomBar');
+        if (bottomBar) {
+            bottomBar.querySelectorAll<HTMLElement>('.mobile-bottom-item').forEach((item) => {
+                if (item !== this.bottomNavBtn) {
+                    item.classList.remove('active');
+                    item.removeAttribute('aria-current');
+                }
+            });
+            if (this.bottomNavBtn) {
+                DockGlider.instance?.update(this.bottomNavBtn);
+            }
+        }
 
         this.renderModalContent();
 
@@ -285,6 +302,7 @@ export class MyRemindersController {
 
         this.topNavBtn?.setAttribute('aria-expanded', 'false');
         this.bottomNavBtn?.setAttribute('aria-expanded', 'false');
+        this.bottomNavBtn?.classList.remove('active'); // Revoke active class!
 
         if (typeof (this.modalEl as HTMLDialogElement).close === 'function') {
             try {
@@ -296,6 +314,9 @@ export class MyRemindersController {
         this.modalEl.classList.remove('is-open');
         this.modalEl.hidden = true;
         document.body.classList.remove('reminders-modal-open');
+
+        // Restore active section tab in mobile bottom dock
+        MobileNavigation.restoreActiveSectionTab();
 
         // Restore focus
         if (this.lastFocusedEl && typeof this.lastFocusedEl.focus === 'function') {
