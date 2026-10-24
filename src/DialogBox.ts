@@ -115,7 +115,7 @@ const DIALOG_CSS =`/* ==========================================================
     justify-content: center;
     padding: 20px;
     z-index: 9999;
-    background: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.4), rgba(0, 0, 0, 0.9));
+    background: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.28), rgba(0, 0, 0, 0.76));
     perspective: 1200px; /* The secret sauce for the 3D entrance */
     opacity: 0;
     transition: opacity 0.5s ease;
@@ -218,7 +218,7 @@ const DIALOG_CSS =`/* ==========================================================
 /* Wrapper to enforce border-radius hiding the internal bleeds */
 .cd-content-wrapper {
     position: relative;
-    background: rgba(15, 23, 42, 0.65); /* Deep dark base */
+    background: rgba(15, 23, 42, 0.48); /* Deep dark base */
     border-radius: 24px;
     border: 1px solid var(--cd-border-glass);
     overflow: hidden;
