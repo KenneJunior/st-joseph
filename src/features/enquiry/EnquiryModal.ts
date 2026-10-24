@@ -7,7 +7,6 @@
  */
 
 import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
-import { LiquidGlassAdapter } from '../../ui/effects/LiquidGlassAdapter.ts';
 
 export class EnquiryModal {
     private fabElements: HTMLElement[];
@@ -71,12 +70,6 @@ export class EnquiryModal {
 
         // Suspend background animations (ScrollEngine, ParticleSystem, VirtualCampusMap, DOM particles)
         motionSuspension.suspendAll('modal');
-
-        // Apply physical LiquidGlass optical refraction and tactile ripple to enquiry modal card
-        const content = this.modal.querySelector<HTMLElement>('.modal-content');
-        if (content) {
-            LiquidGlassAdapter.enhancePopup(content);
-        }
 
         setTimeout(() => {
             const firstInput = this.modal?.querySelector<HTMLInputElement>('input:not([type="checkbox"])');

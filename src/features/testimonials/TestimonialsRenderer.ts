@@ -1,7 +1,8 @@
 /**
  * ============================================================================
  * SJCCC – Testimonials HTML Component Renderer
- * Dynamically renders the premium interactive filter tabs and testimonial cards
+ * Dynamically renders the mobile-first carousel showcase with interactive filter
+ * tabs, touch-navigable card stage, position counter, and pagination dots.
  * ============================================================================
  */
 
@@ -30,7 +31,7 @@ export function renderTestimonialsSection(container: HTMLElement | null): void {
             </span>
             <h2 class="section-title">What Our Family Says</h2>
             <p class="section-subtitle">
-                Authentic reflections from the students, educators, and parents who make St. Joseph's
+                Authentic reflections and lived experiences from the students, educators, and parents who make St. Joseph's
                 Catholic Comprehensive College a sanctuary of moral discipline, academic excellence, and Christian virtue.
             </p>
             <div class="section-divider"></div>
@@ -57,9 +58,54 @@ export function renderTestimonialsSection(container: HTMLElement | null): void {
             ).join('')}
         </div>
 
-        <!-- Testimonials Cards Grid -->
-        <div class="testimonials-grid" id="testimonialsGrid" role="region" aria-live="polite">
-            ${TESTIMONIALS_DATA.map((item, idx) => renderCardHtml(item, idx)).join('')}
+        <!-- Testimonials Carousel Showcase -->
+        <div class="testimonials-carousel" role="region" aria-roledescription="carousel" aria-label="Community Testimonials">
+            
+            <!-- Viewport Stage with Hardware Accelerated Track -->
+            <div class="testimonials-stage" id="testimonialsStage" aria-live="polite">
+                <div class="testimonials-grid testimonials-track" id="testimonialsGrid" role="group">
+                    ${TESTIMONIALS_DATA.map((item, idx) => renderCardHtml(item, idx)).join('')}
+                </div>
+            </div>
+
+            <!-- Carousel Navigation Controls & Indicator -->
+            <div class="testimonials-carousel-controls">
+                <button type="button"
+                    class="testimonial-nav-btn testimonial-prev-btn"
+                    id="testimonialsPrevBtn"
+                    aria-label="Previous testimonial"
+                    title="Previous testimonial">
+                    <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                </button>
+
+                <div class="testimonials-counter" id="testimonialsCounter" aria-live="polite" aria-atomic="true">
+                    <span class="counter-current" id="testimonialsCurrentIndex">1</span>
+                    <span class="counter-divider">of</span>
+                    <span class="counter-total" id="testimonialsTotalCount">${TESTIMONIALS_DATA.length}</span>
+                </div>
+
+                <div class="testimonials-pagination-dots" id="testimonialsPagination" role="tablist" aria-label="Select testimonial">
+                    <span class="testimonial-pagination-glider" id="testimonialPaginationGlider" aria-hidden="true" data-target-index="0"></span>
+                    ${TESTIMONIALS_DATA.map((item, idx) => `
+                        <button type="button"
+                            class="testimonial-dot ${idx === 0 ? 'is-active' : ''}"
+                            role="tab"
+                            aria-selected="${idx === 0 ? 'true' : 'false'}"
+                            aria-label="Testimonial ${idx + 1}: ${item.name}"
+                            data-index="${idx}"
+                            tabindex="${idx === 0 ? '0' : '-1'}">
+                        </button>
+                    `).join('')}
+                </div>
+
+                <button type="button"
+                    class="testimonial-nav-btn testimonial-next-btn"
+                    id="testimonialsNextBtn"
+                    aria-label="Next testimonial"
+                    title="Next testimonial">
+                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
 
         <!-- Trust & Verification Footer Strip -->
@@ -84,12 +130,15 @@ export function renderTestimonialsSection(container: HTMLElement | null): void {
 
 function renderCardHtml(item: TestimonialItem, index: number): string {
     const delayClass = index === 0 ? '' : `reveal-delay-${Math.min(index, 3)}`;
+    const activeClass = index === 0 ? 'is-active' : '';
 
     return `
-        <article class="testimonial-card reveal ${delayClass}"
+        <article class="testimonial-card ${activeClass} reveal ${delayClass}"
             data-category="${item.category}"
             data-id="${item.id}"
-            tabindex="0"
+            data-index="${index}"
+            tabindex="${index === 0 ? '0' : '-1'}"
+            aria-hidden="${index === 0 ? 'false' : 'true'}"
             aria-label="Testimonial by ${item.name}, ${item.role}">
             
             <!-- Interactive Cursor Dynamic Spotlight -->

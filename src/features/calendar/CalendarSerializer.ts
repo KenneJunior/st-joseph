@@ -96,7 +96,7 @@ export function generateIcs(milestone: AcademicMilestone, now = new Date()): str
         : '';
     const description = `${scheduleNotice}${escapeIcsText(milestone.description)} | Academic Year 2026/2027 | St. Joseph Catholic Comprehensive College, Mbengwi`;
     const location = escapeIcsText(milestone.location);
-    const uid = `${milestone.id}-sjccc-2026-2027@sjccc.edu.cm`;
+    const uid = `${milestone.id}-sjccc-2026-2027@sjccc.vercel.app`;
 
     const rawLines = [
         'BEGIN:VCALENDAR',
