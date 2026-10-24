@@ -130,5 +130,29 @@ describe('SJCCC Top Navigation — Responsive Spacing, Adaptive Layout & Transit
             expect(navCss).toContain('#navMenu a.nav-link:hover .nav-text,\n#navMenu a.nav-link:focus-visible .nav-text,\n#navMenu a.nav-link.active .nav-text {\n  max-width: 120px;\n  opacity: 1;');
         });
     });
+
+    describe('Top Nav Bar Cinematic Spring Animation on Active Transition', () => {
+        const navCss = fs.readFileSync(path.join(rootDir, 'src/css/layout/navigation.css'), 'utf-8');
+
+        it('defines cinematic-topnav-icon-spring and cinematic-topnav-pill-spring keyframe animations', () => {
+            expect(navCss).toContain('@keyframes cinematic-topnav-icon-spring');
+            expect(navCss).toContain('@keyframes cinematic-topnav-pill-spring');
+
+            // Verify multi-stage harmonic overshoot and settling
+            expect(navCss).toMatch(/@keyframes cinematic-topnav-icon-spring[\s\S]*?scale\(1\.36\)/);
+            expect(navCss).toMatch(/@keyframes cinematic-topnav-icon-spring[\s\S]*?100%\s*\{[\s\S]*?scale\(1\.14\)/);
+        });
+
+        it('binds spring animation to active top navigation links and icons', () => {
+            expect(navCss).toMatch(/#navMenu\s+a\.nav-link\.active\s+\.nav-icon[\s\S]*?animation:\s*cinematic-topnav-icon-spring/);
+            expect(navCss).toMatch(/#navMenu\s+a\.nav-link\.active[\s\S]*?animation:\s*cinematic-topnav-pill-spring/);
+        });
+
+        it('suppresses spring animation when prefers-reduced-motion is active', () => {
+            const reducedMotionBlock = navCss.match(/@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{([\s\S]*?)\}\s*$/);
+            expect(reducedMotionBlock).not.toBeNull();
+            expect(reducedMotionBlock![1]).toContain('animation: none !important');
+        });
+    });
 });
 

@@ -130,7 +130,7 @@ describe('BottomBarSwipeNavigator – Swipe-to-Navigate & Tab Order', () => {
         expect(items[2].classList.contains('active')).toBe(false);
     });
 
-    it('dispatches click on button tabs when navigating to them', () => {
+    it('dispatches click on button tabs when navigating to them directly via goToItem', () => {
         const items = navigatorInstance.getNavItems();
         const remindersBtn = items[7];
         const clickSpy = vi.fn();
@@ -141,19 +141,128 @@ describe('BottomBarSwipeNavigator – Swipe-to-Navigate & Tab Order', () => {
         expect(remindersBtn.classList.contains('active')).toBe(true);
     });
 
-    it('clamps navigation at tab boundaries', () => {
-        // Navigate all the way to last item (index 8)
+    it('identifies in-page section items excluding utility buttons (Theme, Reminders, Menu)', () => {
+        const sectionItems = navigatorInstance.getSectionItems();
+        expect(sectionItems).toHaveLength(6);
+        expect(sectionItems[0].getAttribute('data-nav-target')).toBe('heroSection');
+        expect(sectionItems[1].getAttribute('data-nav-target')).toBe('academics');
+        expect(sectionItems[2].getAttribute('data-nav-target')).toBe('schoolDatesSection');
+        expect(sectionItems[3].getAttribute('data-nav-target')).toBe('news-events');
+        expect(sectionItems[4].getAttribute('data-nav-target')).toBe('results');
+        expect(sectionItems[5].getAttribute('data-nav-target')).toBe('campusMapSection');
+
+        // Excludes utility buttons
+        const ids = sectionItems.map((s) => s.id);
+        expect(ids).not.toContain('bottomThemeToggle');
+        expect(ids).not.toContain('bottomMyRemindersBtn');
+        expect(ids).not.toContain('bottomNavMenuToggle');
+    });
+
+    it('clamps navigation at section boundaries and NEVER activates Reminders, Menu, or Theme on swipe', () => {
+        const items = navigatorInstance.getNavItems();
+        const remindersBtn = items[7];
+        const menuBtn = items[8];
+        const themeBtn = items[0];
+
+        const remindersClickSpy = vi.fn();
+        const menuClickSpy = vi.fn();
+        const themeClickSpy = vi.fn();
+
+        remindersBtn.addEventListener('click', remindersClickSpy);
+        menuBtn.addEventListener('click', menuClickSpy);
+        themeBtn.addEventListener('click', themeClickSpy);
+
+        // Navigate all the way forward with repeated swipe left (nextTab)
         for (let i = 0; i < 15; i++) {
             navigatorInstance.nextTab();
         }
-        expect(navigatorInstance.getCurrentIndex()).toBe(8);
+
+        // Must end at the LAST section (campusMapSection, index 6 in all items, index 5 in section items)
+        expect(navigatorInstance.getCurrentIndex()).toBe(6);
         expect(navigatorInstance.nextTab()).toBe(false);
 
-        // Navigate all the way back to first item (index 0)
+        // Neither Reminders nor Menu must be active or clicked
+        expect(remindersBtn.classList.contains('active')).toBe(false);
+        expect(menuBtn.classList.contains('active')).toBe(false);
+        expect(remindersClickSpy).not.toHaveBeenCalled();
+        expect(menuClickSpy).not.toHaveBeenCalled();
+
+        // Navigate all the way backward with repeated swipe right (prevTab)
         for (let i = 0; i < 15; i++) {
             navigatorInstance.prevTab();
         }
-        expect(navigatorInstance.getCurrentIndex()).toBe(0);
+
+        // Must end at the FIRST section (heroSection, index 1 in all items, index 0 in section items)
+        expect(navigatorInstance.getCurrentIndex()).toBe(1);
         expect(navigatorInstance.prevTab()).toBe(false);
+
+        // Theme toggle must NOT be active or clicked
+        expect(themeBtn.classList.contains('active')).toBe(false);
+        expect(themeClickSpy).not.toHaveBeenCalled();
+    });
+
+    it('excludes carousel sections (testimony and campus life) from page-wide swipe navigation', () => {
+        // Create mock DOM structure for Testimony and Campus Life sections
+        const main = document.querySelector('main')!;
+
+        // 1. Testimonial carousel structure
+        const testimonialsSection = document.createElement('section');
+        testimonialsSection.id = 'testimonials';
+        testimonialsSection.innerHTML = `
+            <div class="testimonials-carousel">
+                <div class="testimonials-stage" id="testimonialsStage">
+                    <div class="testimonials-grid testimonials-track" id="testimonialsGrid">
+                        <article class="testimonial-card" id="testCard1">
+                            <p class="quote">Great Catholic school</p>
+                            <button type="button" class="testimonial-expand-btn">Read more</button>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        `;
+        main.appendChild(testimonialsSection);
+
+        // 2. Campus Life carousel structure
+        const campusSection = document.createElement('section');
+        campusSection.id = 'campus';
+        campusSection.innerHTML = `
+            <div class="carousel-wrapper">
+                <div class="carousel-container" id="mainCarousel">
+                    <div class="carousel-track" id="carouselTrack">
+                        <div class="carousel-slide">Slide 1</div>
+                    </div>
+                </div>
+                <div class="carousel-thumbnails-wrapper">
+                    <nav class="carousel-thumbnails" id="carouselThumbnails"></nav>
+                </div>
+            </div>
+        `;
+        main.appendChild(campusSection);
+
+        // Verify elements inside #testimonials are flagged as interactive
+        const quoteEl = testimonialsSection.querySelector('.quote') as HTMLElement;
+        const cardEl = testimonialsSection.querySelector('#testCard1') as HTMLElement;
+        const expandBtn = testimonialsSection.querySelector('.testimonial-expand-btn') as HTMLElement;
+        const stageEl = testimonialsSection.querySelector('#testimonialsStage') as HTMLElement;
+
+        expect(navigatorInstance.isInteractiveElement(quoteEl)).toBe(true);
+        expect(navigatorInstance.isInteractiveElement(cardEl)).toBe(true);
+        expect(navigatorInstance.isInteractiveElement(expandBtn)).toBe(true);
+        expect(navigatorInstance.isInteractiveElement(stageEl)).toBe(true);
+        expect(navigatorInstance.isInteractiveElement(testimonialsSection)).toBe(true);
+
+        // Verify elements inside #campus are flagged as interactive
+        const slideEl = campusSection.querySelector('.carousel-slide') as HTMLElement;
+        const trackEl = campusSection.querySelector('#carouselTrack') as HTMLElement;
+        const thumbNav = campusSection.querySelector('#carouselThumbnails') as HTMLElement;
+
+        expect(navigatorInstance.isInteractiveElement(slideEl)).toBe(true);
+        expect(navigatorInstance.isInteractiveElement(trackEl)).toBe(true);
+        expect(navigatorInstance.isInteractiveElement(thumbNav)).toBe(true);
+        expect(navigatorInstance.isInteractiveElement(campusSection)).toBe(true);
+
+        // Verify standard section content is NOT flagged as interactive (eligible for page swipe)
+        const heroSection = document.getElementById('heroSection')!;
+        expect(navigatorInstance.isInteractiveElement(heroSection)).toBe(false);
     });
 });
