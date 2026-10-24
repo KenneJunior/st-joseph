@@ -39,6 +39,10 @@ export class ScrollSpy {
     private isProgrammaticScroll: boolean = false;
     private programmaticTimer: number | null = null;
 
+    private progressFill: HTMLElement | null = null;
+    private scrollRafId: number | null = null;
+    private onScrollBound: (() => void) | null = null;
+
     constructor(navLinkSelector: string = '#navMenu a.nav-link:not(#installApp)') {
         ScrollSpy.instance = this;
         this.navLinks = document.querySelectorAll<HTMLAnchorElement>(navLinkSelector);
@@ -60,6 +64,7 @@ export class ScrollSpy {
 
         this.setupObserver();
         this.bindClickGuards();
+        this.bindScrollTracking();
         this.handleInitialState();
 
         // Listen to browser Back/Forward hash changes
@@ -100,10 +105,13 @@ export class ScrollSpy {
 
         // Convert to sorted array based on DOM position
         const sortedElements = Array.from(sectionMap.entries()).map(([id, section]) => ({ id, section }));
+        const followingMask = typeof Node !== 'undefined' ? Node.DOCUMENT_POSITION_FOLLOWING : 4;
+        const precedingMask = typeof Node !== 'undefined' ? Node.DOCUMENT_POSITION_PRECEDING : 2;
+
         sortedElements.sort((a, b) => {
             const pos = a.section.compareDocumentPosition(b.section);
-            if (pos & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
-            if (pos & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+            if (pos & followingMask) return -1;
+            if (pos & precedingMask) return 1;
             return 0;
         });
 
@@ -128,6 +136,8 @@ export class ScrollSpy {
      * Sets up IntersectionObserver with an active reading band below the sticky header
      */
     private setupObserver(): void {
+        if (typeof IntersectionObserver === 'undefined') return;
+
         const headerHeight = this.getHeaderHeight();
         // Active zone: from just below header (-headerHeight px) down to upper 45% of viewport (-50%)
         const rootMargin = `-${Math.max(60, headerHeight)}px 0px -50% 0px`;
@@ -160,65 +170,154 @@ export class ScrollSpy {
     }
 
     /**
-     * Evaluates currently intersecting sections using deterministic selection:
-     * 1. Top of page safeguard (scrollY <= 50) -> #heroSection
-     * 2. Bottom of page safeguard -> bottom section
-     * 3. Section spanning the active reading anchor line
-     * 4. Section closest to active reading line
-     * 5. Document order tie-breaker
+     * Binds real-time scroll tracking with requestAnimationFrame throttling
+     * to update scroll progress and active section indicators as the user moves through content.
      */
-    private evaluateActiveSection(): void {
-        // Guard 1: At top of page, Hero is always active
-        if (window.scrollY <= 50) {
-            this.setActiveTarget('heroSection');
-            return;
-        }
+    private bindScrollTracking(): void {
+        this.progressFill = document.getElementById('mobileBottomProgressFill');
 
-        // Guard 2: At bottom of page, last section is active
-        const scrollBottom = window.innerHeight + window.scrollY;
-        const totalHeight = document.documentElement.scrollHeight;
-        if (scrollBottom >= totalHeight - 40) {
-            const lastTracked = this.trackedSections[this.trackedSections.length - 1];
-            if (lastTracked) {
-                this.setActiveTarget(lastTracked.id);
-                return;
+        this.onScrollBound = () => this.onScroll();
+        window.addEventListener('scroll', this.onScrollBound, { passive: true });
+
+        // Initial progress calculation
+        this.updateScrollProgressAndActiveSection();
+    }
+
+    private onScroll(): void {
+        if (this.scrollRafId !== null) return;
+        this.scrollRafId = requestAnimationFrame(() => {
+            this.scrollRafId = null;
+            this.updateScrollProgressAndActiveSection();
+        });
+    }
+
+    /**
+     * Calculates the overall scroll progress through page content as a ratio between 0.0 and 1.0.
+     */
+    public getScrollProgress(): number {
+        const docEl = document.documentElement;
+        const body = document.body;
+        const scrollTop = window.scrollY || docEl.scrollTop || body?.scrollTop || 0;
+        const scrollHeight = Math.max(
+            docEl.scrollHeight || 0,
+            body?.scrollHeight || 0,
+            docEl.offsetHeight || 0,
+            body?.offsetHeight || 0
+        );
+        const clientHeight = window.innerHeight || docEl.clientHeight || 1;
+        const maxScroll = Math.max(1, scrollHeight - clientHeight);
+        return Math.min(1, Math.max(0, scrollTop / maxScroll));
+    }
+
+    /**
+     * Updates the continuous reading progress track on the bottom pill using GPU-accelerated scaleX transform.
+     */
+    public updateProgressIndicator(progress: number): void {
+        if (this.progressFill) {
+            this.progressFill.style.transform = `scaleX(${progress})`;
+        }
+        if (this.bottomBar) {
+            const pct = Math.round(progress * 100);
+            this.bottomBar.style.setProperty('--scroll-progress', `${(progress * 100).toFixed(1)}%`);
+            this.bottomBar.setAttribute('data-scroll-progress', pct.toString());
+        }
+    }
+
+    /**
+     * Computes relative viewport bounds for a section, supporting getBoundingClientRect
+     * as well as offsetTop/offsetHeight fallback for test environments.
+     */
+    private getSectionRect(section: HTMLElement, scrollY: number): { top: number; bottom: number } {
+        if (typeof section.getBoundingClientRect === 'function') {
+            const clientRect = section.getBoundingClientRect();
+            if (clientRect && (clientRect.top !== 0 || clientRect.bottom !== 0 || clientRect.height !== 0)) {
+                return { top: clientRect.top, bottom: clientRect.bottom };
             }
         }
 
-        if (this.intersectingSections.size === 0) {
-            return;
+        const offsetTop = section.offsetTop ?? 0;
+        const offsetHeight = section.offsetHeight || 500;
+        const top = offsetTop - scrollY;
+        return { top, bottom: top + offsetHeight };
+    }
+
+    /**
+     * Evaluates active section based on current scroll position and section boundaries.
+     */
+    public evaluateActiveSectionFromScroll(): string | null {
+        if (this.trackedSections.length === 0) return null;
+
+        const docEl = document.documentElement;
+        const body = document.body;
+        const scrollY = window.scrollY || docEl.scrollTop || body?.scrollTop || 0;
+        const scrollHeight = Math.max(
+            docEl.scrollHeight || 0,
+            body?.scrollHeight || 0,
+            docEl.offsetHeight || 0,
+            body?.offsetHeight || 0
+        );
+        const clientHeight = window.innerHeight || docEl.clientHeight || 1;
+
+        // Guard 1: At top of page (scrollY <= 50) -> always heroSection
+        if (scrollY <= 50) {
+            return 'heroSection';
         }
 
+        // Guard 2: Near bottom of page (within 60px of the bottom) -> last section
+        if (clientHeight + scrollY >= scrollHeight - 60) {
+            const last = this.trackedSections[this.trackedSections.length - 1];
+            return last ? last.id : null;
+        }
+
+        // Reading line: just below sticky header
         const headerHeight = this.getHeaderHeight();
-        const activeAnchorY = headerHeight + 24;
+        const readingLine = headerHeight + 30;
 
-        let bestSection: HTMLElement | null = null;
-        let minDistance = Infinity;
+        let candidateAboveReadingLine: string | null = null;
+        let smallestDistanceAbove = Infinity;
 
-        // Step 1: Check if any intersecting section directly spans across the active anchor line
-        for (const [section] of this.intersectingSections) {
-            const rect = section.getBoundingClientRect();
-            if (rect.top <= activeAnchorY && rect.bottom > activeAnchorY) {
-                bestSection = section;
-                break;
+        for (let i = 0; i < this.trackedSections.length; i++) {
+            const { section, id } = this.trackedSections[i];
+            const rect = this.getSectionRect(section, scrollY);
+
+            // Direct span match: section contains the reading line
+            if (rect.top <= readingLine && rect.bottom > readingLine) {
+                return id;
             }
-        }
 
-        // Step 2: If none directly spans the anchor line, find the section closest to it
-        if (!bestSection) {
-            for (const [section] of this.intersectingSections) {
-                const rect = section.getBoundingClientRect();
-                const distance = Math.abs(rect.top - activeAnchorY);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    bestSection = section;
+            // Track candidate whose top is closest above reading line
+            if (rect.top <= readingLine) {
+                const dist = readingLine - rect.top;
+                if (dist < smallestDistanceAbove) {
+                    smallestDistanceAbove = dist;
+                    candidateAboveReadingLine = id;
                 }
             }
         }
 
-        if (bestSection && bestSection.id) {
-            this.setActiveTarget(bestSection.id);
+        return candidateAboveReadingLine || this.trackedSections[0]?.id || 'heroSection';
+    }
+
+    /**
+     * Updates both the progress bar fill and the active section based on real-time scroll position.
+     */
+    public updateScrollProgressAndActiveSection(): void {
+        const progress = this.getScrollProgress();
+        this.updateProgressIndicator(progress);
+
+        if (!this.isProgrammaticScroll) {
+            const newActiveId = this.evaluateActiveSectionFromScroll();
+            if (newActiveId) {
+                this.setActiveTarget(newActiveId);
+            }
         }
+    }
+
+    /**
+     * Evaluates currently intersecting sections using deterministic selection.
+     */
+    private evaluateActiveSection(): void {
+        this.updateScrollProgressAndActiveSection();
     }
 
     /**
@@ -229,11 +328,68 @@ export class ScrollSpy {
     }
 
     /**
+     * Re-synchronizes current active section target and bottom glider
+     */
+    public syncCurrentTarget(): void {
+        const target = this.currentActiveSectionId || 'heroSection';
+        this.currentActiveSectionId = null;
+        this.setActiveTarget(target);
+    }
+
+    /**
+     * Resolves canonical dock target to a currently visible tab in the bottom bar,
+     * gracefully falling back through adjacent page sections when lower-priority
+     * icons are scaled down in compact pill tiers.
+     */
+    private resolveVisibleBottomTarget(targetId: string | null): string | null {
+        if (!targetId || !this.bottomBar) return targetId;
+
+        const isVisible = (el: HTMLElement | null): boolean => {
+            if (!el) return false;
+            if (el.style.display === 'none') return false;
+            if (typeof window !== 'undefined' && typeof window.getComputedStyle === 'function') {
+                return window.getComputedStyle(el).display !== 'none';
+            }
+            return true;
+        };
+
+        const directLink = this.bottomBar.querySelector<HTMLElement>(
+            `a.mobile-bottom-item[data-nav-target="${targetId}"], a.mobile-bottom-item[href="#${targetId}"]`
+        );
+        if (directLink && isVisible(directLink)) {
+            return targetId;
+        }
+
+        const fallbackChain: Record<string, string[]> = {
+            'schoolDatesSection': ['academics', 'heroSection'],
+            'news-events': ['schoolDatesSection', 'academics', 'campusMapSection'],
+            'results': ['campusMapSection', 'location', 'news-events'],
+            'faq': ['location', 'campusMapSection'],
+            'testimonials': ['campusMapSection', 'location'],
+            'about': ['heroSection'],
+            'campus': ['campusMapSection'],
+            'contact': ['location'],
+        };
+
+        const candidates = fallbackChain[targetId] || [];
+        for (const cand of candidates) {
+            const candLink = this.bottomBar.querySelector<HTMLElement>(
+                `a.mobile-bottom-item[data-nav-target="${cand}"], a.mobile-bottom-item[href="#${cand}"]`
+            );
+            if (candLink && isVisible(candLink)) {
+                return cand;
+            }
+        }
+
+        return 'heroSection';
+    }
+
+    /**
      * Sets the active section ID and updates both desktop nav and mobile bottom dock
      */
-    public setActiveTarget(sectionId: string): void {
+    public setActiveTarget(sectionId: string, force: boolean = false): void {
         const cleanId = sectionId.replace(/^#/, '');
-        if (this.currentActiveSectionId === cleanId) return;
+        if (!force && this.currentActiveSectionId === cleanId) return;
         this.currentActiveSectionId = cleanId;
 
         // 1. Update Desktop Navigation (#navMenu)
@@ -251,27 +407,43 @@ export class ScrollSpy {
         // 2. Update Mobile Bottom Dock (#mobileBottomBar)
         let activeBottomLink: HTMLElement | null = null;
         if (this.bottomLinks) {
-            const canonicalDockTarget = getCanonicalTargetForSection(cleanId);
+            // Guard: If Menu or Reminders modal is currently open, don't steal active state
+            const menuToggle = document.getElementById('bottomNavMenuToggle');
+            const remindersBtn = document.getElementById('bottomMyRemindersBtn');
+            const isMenuOpen = menuToggle?.classList.contains('active');
+            const isRemindersOpen = remindersBtn?.classList.contains('active');
 
-            this.bottomLinks.forEach((bLink) => {
-                const target = bLink.getAttribute('data-nav-target') || bLink.getAttribute('href')?.replace(/^#/, '');
-                const isMatch = canonicalDockTarget !== null && target === canonicalDockTarget;
+            if (!isMenuOpen && !isRemindersOpen) {
+                const canonicalDockTarget = this.resolveVisibleBottomTarget(getCanonicalTargetForSection(cleanId));
 
-                bLink.classList.toggle('active', isMatch);
-                if (isMatch) {
-                    bLink.setAttribute('aria-current', 'location');
-                    activeBottomLink = bLink;
+                let hasReachedActive = false;
+                this.bottomLinks.forEach((bLink) => {
+                    const target = bLink.getAttribute('data-nav-target') || bLink.getAttribute('href')?.replace(/^#/, '');
+                    const isMatch = canonicalDockTarget !== null && target === canonicalDockTarget;
+
+                    bLink.classList.toggle('active', isMatch);
+                    if (isMatch) {
+                        hasReachedActive = true;
+                        bLink.setAttribute('aria-current', 'location');
+                        bLink.classList.remove('is-passed');
+                        activeBottomLink = bLink;
+                    } else {
+                        bLink.removeAttribute('aria-current');
+                        if (!hasReachedActive && canonicalDockTarget !== null) {
+                            bLink.classList.add('is-passed');
+                        } else {
+                            bLink.classList.remove('is-passed');
+                        }
+                    }
+                });
+
+                // 3. Gliding Active Pill Transition for Mobile Bottom Dock
+                if (activeBottomLink) {
+                    DockGlider.instance?.update(activeBottomLink);
                 } else {
-                    bLink.removeAttribute('aria-current');
+                    DockGlider.instance?.update(null);
                 }
-            });
-        }
-
-        // 3. Gliding Active Pill Transition for Mobile Bottom Dock
-        if (activeBottomLink) {
-            DockGlider.instance?.update(activeBottomLink);
-        } else {
-            DockGlider.instance?.update(null);
+            }
         }
     }
 
@@ -344,11 +516,20 @@ export class ScrollSpy {
     }
 
     /**
-     * Cleanup and destroy observer
+     * Cleanup and destroy observer and scroll listeners
      */
     public destroy(): void {
         if (this.programmaticTimer !== null) {
             window.clearTimeout(this.programmaticTimer);
+            this.programmaticTimer = null;
+        }
+        if (this.scrollRafId !== null) {
+            cancelAnimationFrame(this.scrollRafId);
+            this.scrollRafId = null;
+        }
+        if (this.onScrollBound) {
+            window.removeEventListener('scroll', this.onScrollBound);
+            this.onScrollBound = null;
         }
         this.observer?.disconnect();
         this.intersectingSections.clear();

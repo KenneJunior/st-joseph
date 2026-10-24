@@ -6,7 +6,7 @@
     --cd-accent: #c9a229;
     --cd-accent-glow: #d4a85a;
     --cd-accent-light: #f3d779;
-    --cd-surface-glass: rgba(7, 24, 46, 0.45);
+    --cd-surface-glass: rgba(7, 24, 46, 0.22);
     --cd-border-glass: rgba(201, 162, 41, 0.25);
     --cd-text-main: #ffffff;
     --cd-text-muted: #d1cfc4;
@@ -23,7 +23,7 @@
     justify-content: center;
     padding: 20px;
     z-index: var(--z-dialog, 6000);
-    background: radial-gradient(circle at 50% 50%, rgba(7, 24, 46, 0.6), rgba(2, 12, 26, 0.95));
+    background: radial-gradient(circle at 50% 50%, rgba(7, 24, 46, 0.42), rgba(2, 12, 26, 0.80));
     perspective: 1200px;
     opacity: 0;
     transition: opacity 0.4s ease;
@@ -125,7 +125,7 @@
 /* Wrapper to enforce border-radius hiding the internal bleeds */
 .cd-content-wrapper {
     position: relative;
-    background: rgba(7, 24, 46, 0.88);
+    background: rgba(7, 24, 46, 0.58);
     border-radius: 24px;
     border: 1px solid var(--cd-border-glass);
     overflow: hidden;
