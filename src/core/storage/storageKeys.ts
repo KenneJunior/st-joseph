@@ -34,6 +34,10 @@ export const STORAGE_KEYS = {
     NOTIFICATIONS_MUTED: 'sjccc-notifications-muted',
     /** LocalStorage key for sent notification history (last 5 sent notifications) */
     NOTIFICATION_HISTORY: 'sjccc-notification-history',
+    /** LocalStorage key for user performance preference ('auto' | 'full' | 'balanced' | 'lite') */
+    PERFORMANCE_PREFERENCE: 'sjccc-performance-preference',
+    /** LocalStorage key for resolved runtime performance profile hint ('full' | 'balanced' | 'lite') */
+    PERFORMANCE_PROFILE: 'sjccc-performance-profile',
 } as const;
 
 export type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];

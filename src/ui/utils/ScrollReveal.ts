@@ -6,6 +6,8 @@
  * ============================================================================
  */
 
+import { performanceManager } from '../../core/performance/PerformanceManager.ts';
+
 export interface ScrollRevealOptions {
     activeClass?: string;
     threshold?: number;
@@ -35,8 +37,9 @@ export class ScrollReveal {
 
         const activeClass = options.activeClass ?? 'revealed';
 
-        // Accessibility: If user requested reduced motion, reveal instantly
-        if (this.prefersReducedMotion()) {
+        // Accessibility or Lite Mode: reveal instantly without delay
+        const isLite = !performanceManager.getCapabilities().allowComplexTransitions;
+        if (this.prefersReducedMotion() || isLite) {
             elements.forEach((el) => el.classList.add(activeClass));
             return;
         }
@@ -91,8 +94,9 @@ export class ScrollReveal {
 
         if (!items.length) return;
 
-        // If reduced motion is requested, reveal immediately without animation or delay
-        if (this.prefersReducedMotion()) {
+        // If reduced motion or Lite Mode is requested, reveal immediately without animation or delay
+        const isLite = !performanceManager.getCapabilities().allowComplexTransitions;
+        if (this.prefersReducedMotion() || isLite) {
             containerEl.classList.add(activeClass);
             items.forEach((item) => item.classList.add(activeClass));
             return;

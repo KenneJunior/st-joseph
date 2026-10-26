@@ -25,6 +25,41 @@
     })();
   </script>
 
+  <!-- Intelligent Adaptive Performance Early Restoration (Prevents flash of blur/animations) -->
+  <script>
+    (function () {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var urlOverride = params.get('performance');
+        var prefKey = 'sjccc-performance-preference';
+        var profileKey = 'sjccc-performance-profile';
+        var storedPref = localStorage.getItem(prefKey);
+        var storedProfile = localStorage.getItem(profileKey);
+
+        var effectiveMode = null;
+        if (urlOverride && (urlOverride === 'lite' || urlOverride === 'full' || urlOverride === 'balanced')) {
+          effectiveMode = urlOverride;
+        } else if (storedPref === 'lite' || storedPref === 'full' || storedPref === 'balanced') {
+          effectiveMode = storedPref;
+        } else if (storedPref !== 'lite' && storedPref !== 'balanced' && typeof navigator !== 'undefined' && navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 8) {
+          // Capable multi-core desktop defaults to full
+          effectiveMode = 'full';
+        } else if (storedProfile === 'lite' || storedProfile === 'full' || storedProfile === 'balanced') {
+          effectiveMode = storedProfile;
+        }
+
+        if (effectiveMode) {
+          document.documentElement.setAttribute('data-performance-mode', effectiveMode);
+          document.documentElement.classList.remove('perf-mode-full', 'perf-mode-balanced', 'perf-mode-lite', 'lite-mode');
+          document.documentElement.classList.add('perf-mode-' + effectiveMode);
+          if (effectiveMode === 'lite') {
+            document.documentElement.classList.add('lite-mode');
+          }
+        }
+      } catch (e) { }
+    })();
+  </script>
+
   <!-- Immediate Image Fallback Guard (Intercepts broken image links before paint) -->
   <script>
     (function () {

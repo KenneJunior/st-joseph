@@ -12,6 +12,7 @@ import './css/scrollEffect.css';
 import { initServiceWorker } from './services/serviceWorker.ts';
 import { initHomePage } from './pages/home/home.ts';
 import { motionSuspension } from './core/physics/MotionSuspension.ts';
+import { performanceManager } from './core/performance/PerformanceManager.ts';
 import { AiAssistantWidget } from './features/ai-assistant/AiAssistantWidget.ts';
 import { logger } from './core/logger/index.ts';
 import './core/diagnostics/index.ts';
@@ -140,11 +141,14 @@ initServiceWorker();
 
 // Boot application when DOM is ready
 const boot = () => {
+    // 0. Intelligent Adaptive Performance assessment & profile synchronization
+    performanceManager.recalculate();
+
     initHomePage();
     initHeroViewportObserver();
     initNewsCardExpansionHandler();
     new AiAssistantWidget().init();
-    log.info('SJCCC Digital Campus initialized');
+    log.info(`SJCCC Digital Campus initialized [Perf: ${performanceManager.getProfile().toUpperCase()}]`);
 };
 
 // Boot application when DOM is ready (guarded against test imports)

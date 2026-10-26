@@ -8,6 +8,7 @@
 
 import { gaussianRandom } from '../../core/physics/spring.ts';
 import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
+import { performanceManager } from '../../core/performance/PerformanceManager.ts';
 
 export interface Particle {
     x: number;
@@ -115,6 +116,7 @@ export class ParticleSystem {
     private loadHandler: (() => void) | null = null;
     private heroObserver: IntersectionObserver | null = null;
     private unsubscribeSuspension: (() => void) | null = null;
+    private unsubscribePerf: (() => void) | null = null;
 
     constructor(canvas: HTMLCanvasElement, options?: ParticleSystemConfig) {
         this.canvas = canvas;
@@ -376,17 +378,23 @@ export class ParticleSystem {
             return this.config.count;
         }
 
+        const caps = performanceManager.getCapabilities();
+        if (!caps.allowContinuousCanvas || caps.dustDensity <= 0) {
+            return 0;
+        }
+
+        const effectiveDensity = Math.min(this.config.density, caps.dustDensity);
         const isMobile = this.width <= 768;
         if (isMobile) {
             // Strict smartphone cap: <= 16 motes
-            return Math.min(16, Math.max(6, Math.round(14 * this.config.density)));
+            return Math.min(16, Math.max(6, Math.round(14 * effectiveDensity)));
         }
 
         const area = this.width * this.height;
         // 1920 x 1080 ≈ 2.07M px -> base ~45 motes at density = 0.65
-        const rawCount = Math.round((area / 30000) * this.config.density);
-        const minCount = Math.max(12, Math.round(18 * this.config.density));
-        const maxCount = Math.max(minCount, Math.round(75 * this.config.density));
+        const rawCount = Math.round((area / 30000) * effectiveDensity);
+        const minCount = Math.max(12, Math.round(18 * effectiveDensity));
+        const maxCount = Math.max(minCount, Math.round(75 * effectiveDensity));
 
         return Math.min(Math.max(rawCount, minCount), maxCount);
     }
@@ -685,8 +693,24 @@ export class ParticleSystem {
         // 8. Setup scroll reaction
         this.setupScrollReaction();
 
-        // 9. Start animation loop if motion is permitted and not suspended
-        if (!this.prefersReducedMotion() && !motionSuspension.isSuspended('particleSystem')) {
+        // 8b. Subscribe to central performance capability updates
+        this.unsubscribePerf = performanceManager.subscribe((caps) => {
+            if (!caps.allowContinuousCanvas || caps.dustDensity <= 0) {
+                this.stopAnimationLoop();
+                this.clear();
+                this.canvas.style.visibility = 'hidden';
+            } else {
+                this.canvas.style.visibility = 'visible';
+                this.updateConfig({ density: caps.dustDensity });
+                if (!this.isRunning && !motionSuspension.isSuspended('particleSystem') && !this.prefersReducedMotion()) {
+                    this.startAnimationLoop();
+                }
+            }
+        });
+
+        // 9. Start animation loop if motion is permitted, canvas is allowed, and not suspended
+        const initialCaps = performanceManager.getCapabilities();
+        if (initialCaps.allowContinuousCanvas && !this.prefersReducedMotion() && !motionSuspension.isSuspended('particleSystem')) {
             this.startAnimationLoop();
         }
     }
@@ -696,6 +720,11 @@ export class ParticleSystem {
      */
     public destroy(): void {
         this.stopAnimationLoop();
+
+        if (this.unsubscribePerf) {
+            this.unsubscribePerf();
+            this.unsubscribePerf = null;
+        }
 
         if (this.heroObserver) {
             this.heroObserver.disconnect();

@@ -6,6 +6,7 @@
 
 import { initProspectusPage } from './pages/prospectus/prospectus.ts';
 import { initServiceWorker } from './services/serviceWorker.ts';
+import { performanceManager } from './core/performance/PerformanceManager.ts';
 import { logger } from './core/logger/index.ts';
 import './core/diagnostics/index.ts';
 
@@ -15,8 +16,11 @@ const log = logger.child('Prospectus');
 initServiceWorker();
 
 const boot = () => {
+    // Synchronize performance profile on prospectus page
+    performanceManager.recalculate();
+
     initProspectusPage();
-    log.info('SJCCC Prospectus document initialized');
+    log.info(`SJCCC Prospectus document initialized [Perf: ${performanceManager.getProfile().toUpperCase()}]`);
 };
 
 if (document.readyState === 'loading') {

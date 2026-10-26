@@ -18,6 +18,7 @@
  */
 
 import {LiquidGlass} from '@kennejunior/liquidglass';
+import { performanceManager } from '../../core/performance/PerformanceManager.ts';
 
 export interface LiquidGlassAdapterConfig {
     /** Refractive index for optical bending (defaults to 1.45 - 1.6) */
@@ -87,6 +88,11 @@ export class LiquidGlassAdapter {
     public static isSupported(): boolean {
         if (typeof window === 'undefined' || typeof document === 'undefined') return false;
 
+        // If central performance manager disabled liquid glass (e.g. Lite mode), yield to solid fallback
+        if (!performanceManager.getCapabilities().enableLiquidGlass) {
+            return false;
+        }
+
         // If user requests reduced transparency, transparent glass must yield to solid colors
         if (LiquidGlassAdapter.prefersReducedTransparency()) {
             return false;
@@ -131,10 +137,13 @@ export class LiquidGlassAdapter {
      */
     public static isMobileOrConstrained(): boolean {
         if (typeof window === 'undefined') return false;
+        const caps = performanceManager.getCapabilities();
+        if (caps.profile === 'lite' || !caps.enableTilt) {
+            return true;
+        }
         const isSmallScreen = window.innerWidth <= 768;
         const hasCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-        const isLowCoreCount = typeof navigator !== 'undefined' && (navigator.hardwareConcurrency ?? 8) <= 4;
-        return isSmallScreen || hasCoarsePointer || isLowCoreCount;
+        return isSmallScreen || hasCoarsePointer;
     }
 
     /**
@@ -143,6 +152,8 @@ export class LiquidGlassAdapter {
     private buildOptions(customConfig: LiquidGlassAdapterConfig = {}) {
         const reducedMotion = LiquidGlassAdapter.prefersReducedMotion();
         const isMobile = LiquidGlassAdapter.isMobileOrConstrained();
+        const caps = performanceManager.getCapabilities();
+        const allowTilt = caps.enableTilt && !reducedMotion && !isMobile;
 
         return {
             refractiveIndex: customConfig.refractiveIndex ?? 1.5,
@@ -151,11 +162,11 @@ export class LiquidGlassAdapter {
             refractionScale: customConfig.refractionScale ?? (isMobile ? 0.9 : 1.15),
             specularAlpha: customConfig.specularAlpha ?? 0.5,
             // Disable or clamp tilt under reduced-motion or mobile conditions
-            maxTilt: reducedMotion ? 1 : (isMobile ? 1 : (customConfig.maxTilt ?? 6)),
-            magneticPull: reducedMotion || isMobile ? 0 : 8,
+            maxTilt: allowTilt ? (customConfig.maxTilt ?? 6) : 0,
+            magneticPull: allowTilt ? 8 : 0,
             aberration: reducedMotion ? 0 : (customConfig.aberration ?? 0.03),
             // Disable ambient orb and mobile gyroscope listeners on mobile/reduced-motion to conserve battery and CPU
-            enableOrb: !reducedMotion && !isMobile && (customConfig.enableOrb ?? true),
+            enableOrb: !reducedMotion && !isMobile && caps.allowContinuousCanvas && (customConfig.enableOrb ?? true),
             orbColor: customConfig.orbColor ?? 'rgba(201, 162, 41, 0.12)', // SJCCC Catholic Gold brand accent
             enableMobileSupport: false, // Explicitly avoid continuous orientation listeners to save battery
             reducedMotion: reducedMotion,

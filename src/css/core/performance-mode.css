@@ -1,0 +1,451 @@
+/**
+ * ============================================================================
+ * SJCCC – Centralized Adaptive Performance Mode Stylesheet (performance-mode.css)
+ *
+ * Implements Theme-Aware Solid Surface Rendering for Lite Mode:
+ * Every existing surface that relies on backdrop-filter: blur(...) or
+ * -webkit-backdrop-filter is systematically transitioned to high-contrast,
+ * theme-aware solid surfaces with crisp borders and refined shadows.
+ *
+ * Activated automatically when html[data-performance-mode="lite"] or .perf-mode-lite is applied.
+ * ============================================================================
+ */
+
+/* ==========================================================================
+   1. GLOBAL BACKDROP-FILTER ELIMINATION IN LITE MODE
+   ========================================================================== */
+html[data-performance-mode="lite"] *,
+html[data-performance-mode="lite"] *::before,
+html[data-performance-mode="lite"] *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* ==========================================================================
+   2. HEADER & NAVIGATION SURFACES
+   ========================================================================== */
+
+/* Main Sticky Header */
+html[data-performance-mode="lite"] #mainHeader,
+html[data-performance-mode="lite"] #mainHeader.scrolled {
+  background:#ede2e25c !important;
+  border-bottom: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
+  box-shadow: 0 2px 8px -1px rgba(7, 24, 46, 0.08) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode #mainHeader,
+html[data-performance-mode="lite"].dark-mode #mainHeader.scrolled,
+html[data-performance-mode="lite"][data-theme="dark"] #mainHeader,
+html[data-performance-mode="lite"][data-theme="dark"] #mainHeader.scrolled {
+  background: #0e182853 !important;
+  border-bottom: 1px solid var(--section-boundary, rgba(255, 255, 255, 0.08)) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Mobile Bottom Dock Navigation */
+html[data-performance-mode="lite"] #mobileBottomBar,
+html[data-performance-mode="lite"] .mobile-bottom-bar {
+  background: #FFFFFF !important;
+  border-top: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
+  box-shadow: 0 -2px 10px rgba(7, 24, 46, 0.06) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode #mobileBottomBar,
+html[data-performance-mode="lite"].dark-mode .mobile-bottom-bar,
+html[data-performance-mode="lite"][data-theme="dark"] #mobileBottomBar,
+html[data-performance-mode="lite"][data-theme="dark"] .mobile-bottom-bar {
+  background: #0a1424 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.45) !important;
+}
+
+html[data-performance-mode="lite"] #mobileBottom-item,
+html[data-performance-mode="lite"] .mobile-bottom-item {
+  color: var(--color-text-primary) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode #mobileBottom-item,
+html[data-performance-mode="lite"].dark-mode .mobile-bottom-item,
+html[data-performance-mode="lite"][data-theme="dark"] #mobileBottom-item,
+html[data-performance-mode="lite"][data-theme="dark"] .mobile-bottom-item {
+  color: #f5f7fb !important;
+}
+
+/* Mobile Nav Menu Drawer */
+html[data-performance-mode="lite"] #navMenu,
+html[data-performance-mode="lite"] .nav-menu {
+  background: #FFFFFF !important;
+}
+
+html[data-performance-mode="lite"].dark-mode #navMenu,
+html[data-performance-mode="lite"].dark-mode .nav-menu,
+html[data-performance-mode="lite"][data-theme="dark"] #navMenu,
+html[data-performance-mode="lite"][data-theme="dark"] .nav-menu {
+  background: #07182e !important;
+}
+
+/* ==========================================================================
+   3. ANNOUNCEMENT BAR
+   ========================================================================== */
+html[data-performance-mode="lite"] #announcementBar,
+html[data-performance-mode="lite"] .announcement-bar {
+  background: var(--bg-section-feature, #EDE5D8) !important;
+  border-bottom: 1px solid var(--color-border-brand, rgba(201, 162, 41, 0.35)) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode #announcementBar,
+html[data-performance-mode="lite"].dark-mode .announcement-bar,
+html[data-performance-mode="lite"][data-theme="dark"] #announcementBar,
+html[data-performance-mode="lite"][data-theme="dark"] .announcement-bar {
+  background: #0f1e33 !important;
+  border-bottom: 1px solid rgba(212, 168, 90, 0.35) !important;
+}
+
+/* ==========================================================================
+   4. HERO CONTROLS & HUD
+   ========================================================================== */
+html[data-performance-mode="lite"] .hero-pause-btn {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: var(--color-text-primary, #07182e) !important;
+  border: 1px solid rgba(7, 24, 46, 0.2) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .hero-pause-btn,
+html[data-performance-mode="lite"][data-theme="dark"] .hero-pause-btn {
+  background: #111d33 !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-performance-mode="lite"] .scroll-progress-hud,
+html[data-performance-mode="lite"] #scrollProgress {
+  background: rgba(2, 12, 26, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+/* ==========================================================================
+   5. CARDS & CONTENT SURFACES
+   ========================================================================== */
+
+/* Event Cards */
+html[data-performance-mode="lite"] .event-card {
+  background: #FFFFFF !important;
+  border: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
+  box-shadow: 0 4px 16px rgba(7, 24, 46, 0.06) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .event-card,
+html[data-performance-mode="lite"][data-theme="dark"] .event-card {
+  background: var(--surface-card, #1A2D44) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Academic Pillars */
+html[data-performance-mode="lite"] .pillar {
+  background: var(--surface-card, #FAF7F0) !important;
+  border: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .pillar,
+html[data-performance-mode="lite"][data-theme="dark"] .pillar {
+  background: var(--surface-card, #1A2D44) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Stat Cards */
+html[data-performance-mode="lite"] .stat-card {
+  background: #FFFFFF !important;
+  border: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .stat-card,
+html[data-performance-mode="lite"][data-theme="dark"] .stat-card {
+  background: var(--surface-card, #1A2D44) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Testimonial Cards & Quote Bubbles */
+html[data-performance-mode="lite"] .testimonial-card,
+html[data-performance-mode="lite"] .testimonial-quote-bubble {
+  background: var(--surface-card, #FAF7F0) !important;
+  border: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .testimonial-card,
+html[data-performance-mode="lite"].dark-mode .testimonial-quote-bubble,
+html[data-performance-mode="lite"][data-theme="dark"] .testimonial-card,
+html[data-performance-mode="lite"][data-theme="dark"] .testimonial-quote-bubble {
+  background: var(--surface-card, #1A2D44) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* News Cards */
+html[data-performance-mode="lite"] .news-card {
+  background: #FFFFFF !important;
+  border: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .news-card,
+html[data-performance-mode="lite"][data-theme="dark"] .news-card {
+  background: var(--surface-card, #1A2D44) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Campus Map Cards & HUD */
+html[data-performance-mode="lite"] .map-hud,
+html[data-performance-mode="lite"] .campus-map-card,
+html[data-performance-mode="lite"] .facility-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(7, 24, 46, 0.1) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .map-hud,
+html[data-performance-mode="lite"].dark-mode .campus-map-card,
+html[data-performance-mode="lite"].dark-mode .facility-card,
+html[data-performance-mode="lite"][data-theme="dark"] .map-hud,
+html[data-performance-mode="lite"][data-theme="dark"] .campus-map-card,
+html[data-performance-mode="lite"][data-theme="dark"] .facility-card {
+  background: #0d1a2d !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ==========================================================================
+   6. MODAL DIALOGS, ACTION SHEETS & POPUPS
+   ========================================================================== */
+
+/* Enquiry Modal */
+html[data-performance-mode="lite"] .enquiry-modal,
+html[data-performance-mode="lite"] .enquiry-modal__card {
+  background: #FFFFFF !important;
+  box-shadow: var(--shadow-modal, 0 32px 72px -12px rgba(0, 0, 0, 0.35)) !important;
+  border: 1px solid rgba(7, 24, 46, 0.1) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .enquiry-modal,
+html[data-performance-mode="lite"].dark-mode .enquiry-modal__card,
+html[data-performance-mode="lite"][data-theme="dark"] .enquiry-modal,
+html[data-performance-mode="lite"][data-theme="dark"] .enquiry-modal__card {
+  background: #0b1525 !important;
+  box-shadow: 0 32px 72px -12px rgba(0, 0, 0, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-performance-mode="lite"] .enquiry-modal-backdrop,
+html[data-performance-mode="lite"] .modal-backdrop,
+html[data-performance-mode="lite"] .cd-overlay {
+  background: rgba(2, 12, 26, 0.75) !important;
+}
+
+/* Past Announcements Modal */
+html[data-performance-mode="lite"] .past-announcements-modal,
+html[data-performance-mode="lite"] .past-announcements-modal__card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(7, 24, 46, 0.1) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .past-announcements-modal,
+html[data-performance-mode="lite"].dark-mode .past-announcements-modal__card,
+html[data-performance-mode="lite"][data-theme="dark"] .past-announcements-modal,
+html[data-performance-mode="lite"][data-theme="dark"] .past-announcements-modal__card {
+  background: #0b1525 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Notification Guidance Modal */
+html[data-performance-mode="lite"] #notificationGuidanceModal,
+html[data-performance-mode="lite"] .guidance-modal-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(7, 24, 46, 0.1) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode #notificationGuidanceModal,
+html[data-performance-mode="lite"].dark-mode .guidance-modal-card,
+html[data-performance-mode="lite"][data-theme="dark"] #notificationGuidanceModal,
+html[data-performance-mode="lite"][data-theme="dark"] .guidance-modal-card {
+  background: #0b1525 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Calendar Action Sheet */
+html[data-performance-mode="lite"] #calendarActionSheet,
+html[data-performance-mode="lite"] .calendar-action-sheet {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(7, 24, 46, 0.12) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode #calendarActionSheet,
+html[data-performance-mode="lite"].dark-mode .calendar-action-sheet,
+html[data-performance-mode="lite"][data-theme="dark"] #calendarActionSheet,
+html[data-performance-mode="lite"][data-theme="dark"] .calendar-action-sheet {
+  background: #0b1525 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Confirm Dialog */
+html[data-performance-mode="lite"] .cd-card,
+html[data-performance-mode="lite"] .cd-content-wrapper {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(7, 24, 46, 0.1) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .cd-card,
+html[data-performance-mode="lite"].dark-mode .cd-content-wrapper,
+html[data-performance-mode="lite"][data-theme="dark"] .cd-card,
+html[data-performance-mode="lite"][data-theme="dark"] .cd-content-wrapper {
+  background: #0b1525 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ==========================================================================
+   7. FLOATING TOASTS, CARDS & DROPDOWNS
+   ========================================================================== */
+
+/* Offline Status Indicator Pill & Panel */
+html[data-performance-mode="lite"] .offline-indicator-pill,
+html[data-performance-mode="lite"] .offline-card-panel {
+  background: #FAF7F0 !important;
+  color: #07182e !important;
+  border: 1px solid rgba(7, 24, 46, 0.15) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .offline-indicator-pill,
+html[data-performance-mode="lite"].dark-mode .offline-card-panel,
+html[data-performance-mode="lite"][data-theme="dark"] .offline-indicator-pill,
+html[data-performance-mode="lite"][data-theme="dark"] .offline-card-panel {
+  background: #0d1a2d !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* PWA Install Card */
+html[data-performance-mode="lite"] #pwaInstallCard,
+html[data-performance-mode="lite"] .pwa-install-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(7, 24, 46, 0.12) !important;
+  box-shadow: 0 8px 32px rgba(7, 24, 46, 0.14) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode #pwaInstallCard,
+html[data-performance-mode="lite"].dark-mode .pwa-install-card,
+html[data-performance-mode="lite"][data-theme="dark"] #pwaInstallCard,
+html[data-performance-mode="lite"][data-theme="dark"] .pwa-install-card {
+  background: #0d1a2d !important;
+  border: 1px solid rgba(201, 162, 41, 0.35) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Service Worker Update Banner */
+html[data-performance-mode="lite"] #sw-update-banner {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(7, 24, 46, 0.12) !important;
+  box-shadow: 0 8px 32px rgba(7, 24, 46, 0.14) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode #sw-update-banner,
+html[data-performance-mode="lite"][data-theme="dark"] #sw-update-banner {
+  background: #0d1a2d !important;
+  border: 1px solid rgba(201, 162, 41, 0.35) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Search History Dropdown */
+html[data-performance-mode="lite"] .search-history-dropdown {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(7, 24, 46, 0.12) !important;
+  box-shadow: 0 8px 24px rgba(7, 24, 46, 0.12) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .search-history-dropdown,
+html[data-performance-mode="lite"][data-theme="dark"] .search-history-dropdown {
+  background: #0d1a2d !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* AI Guidance Assistant Widget */
+html[data-performance-mode="lite"] .ai-chat-bubble,
+html[data-performance-mode="lite"] .ai-chat-window,
+html[data-performance-mode="lite"] .ai-chat-header {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(7, 24, 46, 0.1) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .ai-chat-bubble,
+html[data-performance-mode="lite"].dark-mode .ai-chat-window,
+html[data-performance-mode="lite"].dark-mode .ai-chat-header,
+html[data-performance-mode="lite"][data-theme="dark"] .ai-chat-bubble,
+html[data-performance-mode="lite"][data-theme="dark"] .ai-chat-window,
+html[data-performance-mode="lite"][data-theme="dark"] .ai-chat-header {
+  background: #0b1525 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Glass Buttons */
+html[data-performance-mode="lite"] .btn-glass,
+html[data-performance-mode="lite"] .liquid-glass-btn {
+  background: var(--sj-navy-800, #0a1f3f) !important;
+  color: #FFFFFF !important;
+  border: 1px solid var(--sj-navy-700, #0f2d5c) !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .btn-glass,
+html[data-performance-mode="lite"].dark-mode .liquid-glass-btn,
+html[data-performance-mode="lite"][data-theme="dark"] .btn-glass,
+html[data-performance-mode="lite"][data-theme="dark"] .liquid-glass-btn {
+  background: #182A41 !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* LiquidGlass Fallback Elements */
+html[data-performance-mode="lite"] [data-glass-fallback="true"],
+html[data-performance-mode="lite"] .glass-fallback {
+  background: #FFFFFF !important;
+}
+
+html[data-performance-mode="lite"].dark-mode [data-glass-fallback="true"],
+html[data-performance-mode="lite"].dark-mode .glass-fallback,
+html[data-performance-mode="lite"][data-theme="dark"] [data-glass-fallback="true"],
+html[data-performance-mode="lite"][data-theme="dark"] .glass-fallback {
+  background: #0d1a2d !important;
+}
+
+/* ==========================================================================
+   8. DISABLING EXPENSIVE CONTINUOUS ANIMATIONS & FILTERS IN LITE MODE
+   ========================================================================== */
+
+/* Dust Canvas is completely suppressed in Lite Mode */
+html[data-performance-mode="lite"] #dustCanvas,
+html[data-performance-mode="lite"] .dust-particles-canvas {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Floating Hero DOM particles */
+html[data-performance-mode="lite"] .hero-particles,
+html[data-performance-mode="lite"] .hero-particle {
+  display: none !important;
+}
+
+/* Preloader particles */
+html[data-performance-mode="lite"] .preloader-particles {
+  display: none !important;
+}
+
+/* Eliminate expensive CSS filter: blur() calls */
+html[data-performance-mode="lite"] .blur-filter,
+html[data-performance-mode="lite"] [style*="blur("] {
+  filter: none !important;
+}
+
+/* Simplify transition durations */
+html[data-performance-mode="lite"] .reveal {
+  transition-duration: 200ms !important;
+}

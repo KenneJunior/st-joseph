@@ -59,6 +59,12 @@
 @import './layout/responsive-legacy.css';
 @import './layout/navigation-mobile.css';
 
+/* Intelligent Adaptive Performance System */
+@import './core/performance-mode.css';
+
+/* Accessibility MUST remain last */
+@import './core/accessibility.css';
+
 /* ==========================================================================
    CINEMATIC FULL-WIDTH NEWS CARD EXPANSION
    High-quality cubic-bezier transition, improved box-shadow, and subtle scale
@@ -85,6 +91,3 @@ body.dark-mode .news-card.is-expanded {
   border-color: rgba(201, 162, 41, 0.75);
   box-shadow: 0 22px 52px -8px rgba(0, 0, 0, 0.75), 0 0 30px rgba(201, 162, 41, 0.28), inset 0 3px 0 var(--gold, #C9A229);
 }
-
-/* Accessibility MUST remain last */
-@import './core/accessibility.css';

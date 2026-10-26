@@ -15,11 +15,13 @@
  */
 
 import { motionSuspension } from '../../core/physics/MotionSuspension.ts';
+import { performanceManager } from '../../core/performance/PerformanceManager.ts';
 
 export class HeroParticles {
     private idleHandle: number | null = null;
     private timerHandle: ReturnType<typeof setTimeout> | null = null;
     private unsubscribeSuspension: (() => void) | null = null;
+    private unsubscribePerf: (() => void) | null = null;
 
     constructor(containerId: string = 'heroParticles', count = 40) {
         if (typeof window === 'undefined') return;
@@ -29,21 +31,23 @@ export class HeroParticles {
             return;
         }
 
-        // On smartphone screens (<= 768px), disable redundant DOM particles entirely:
-        // The regulated lightweight canvas provides sufficient ambient depth without redundant DOM layer pressure.
-        if (window.innerWidth <= 768) {
+        // Consult central performance policy
+        const caps = performanceManager.getCapabilities();
+        if (!caps.allowParticles || caps.particleCount <= 0) {
             return;
         }
+
+        const effectiveCount = Math.min(count, caps.particleCount);
 
         // Defer particle generation so critical header and hero content render instantly
         if ('requestIdleCallback' in window) {
             this.idleHandle = (window as Window & { requestIdleCallback: (cb: IdleRequestCallback, opts?: IdleRequestOptions) => number }).requestIdleCallback(
-                () => this.init(containerId, count),
+                () => this.init(containerId, effectiveCount),
                 { timeout: 1500 }
             );
         } else {
             this.timerHandle = setTimeout(() => {
-                requestAnimationFrame(() => this.init(containerId, count));
+                requestAnimationFrame(() => this.init(containerId, effectiveCount));
             }, 120);
         }
     }
@@ -77,9 +81,20 @@ export class HeroParticles {
                 p.style.animationPlayState = suspended ? 'paused' : 'running';
             });
         });
+
+        // React to central performance profile changes
+        this.unsubscribePerf = performanceManager.subscribe((caps) => {
+            if (!caps.allowParticles || caps.particleCount <= 0) {
+                container.innerHTML = '';
+            }
+        });
     }
 
     public destroy(): void {
+        if (this.unsubscribePerf) {
+            this.unsubscribePerf();
+            this.unsubscribePerf = null;
+        }
         if (this.unsubscribeSuspension) {
             this.unsubscribeSuspension();
             this.unsubscribeSuspension = null;

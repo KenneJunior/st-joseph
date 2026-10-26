@@ -14,6 +14,8 @@
  * window.sjcccDiagnostics() or window.__SJCCC_DIAGNOSTICS__.printReport()
  */
 
+import { performanceManager } from '../performance/PerformanceManager.ts';
+
 export interface DiagnosticReport {
     timestamp: string;
     environment: {
@@ -34,6 +36,17 @@ export interface DiagnosticReport {
         systemColorScheme: 'dark' | 'light' | 'no-preference';
         activeTheme: 'dark' | 'light';
         storedTheme: string | null;
+    };
+    performance?: {
+        preference: string;
+        profile: string;
+        source: string;
+        allowBackdropBlur: boolean;
+        hardwareConcurrency?: number;
+        deviceMemory?: number;
+        hasWebGL: boolean;
+        hasWebGL2: boolean;
+        maxTextureSize?: number;
     };
     connectivity: {
         online: boolean;
@@ -151,6 +164,17 @@ export class SystemDiagnostics {
                 activeTheme: isDarkTheme ? 'dark' : 'light',
                 storedTheme,
             },
+            performance: {
+                preference: performanceManager.getPreference(),
+                profile: performanceManager.getProfile(),
+                source: performanceManager.getResolutionSource(),
+                allowBackdropBlur: performanceManager.getCapabilities().allowBackdropBlur,
+                hardwareConcurrency: performanceManager.getSnapshot()?.hardwareConcurrency,
+                deviceMemory: performanceManager.getSnapshot()?.deviceMemory,
+                hasWebGL: performanceManager.getSnapshot()?.hasWebGL ?? false,
+                hasWebGL2: performanceManager.getSnapshot()?.hasWebGL2 ?? false,
+                maxTextureSize: performanceManager.getSnapshot()?.maxTextureSize,
+            },
             connectivity: {
                 online: nav.onLine,
                 connectionType: nav.connection?.effectiveType,
@@ -199,6 +223,14 @@ export class SystemDiagnostics {
                 activeTheme: 'light',
                 storedTheme: null,
             },
+            performance: {
+                preference: performanceManager.getPreference(),
+                profile: performanceManager.getProfile(),
+                source: performanceManager.getResolutionSource(),
+                allowBackdropBlur: performanceManager.getCapabilities().allowBackdropBlur,
+                hasWebGL: false,
+                hasWebGL2: false,
+            },
             connectivity: { online: true },
             storage: {
                 localStorageAvailable: false,
@@ -221,6 +253,9 @@ export class SystemDiagnostics {
             console.log(`%cEnvironment: %c${data.environment.mode} (Dev: ${data.environment.isDev})`, 'font-weight: bold;', 'color: #38BDF8;');
             console.log(`%cViewport:    %c${data.viewport.width}x${data.viewport.height} @ ${data.viewport.dpr}x (${data.viewport.orientation})`, 'font-weight: bold;', 'color: #10B981;');
             console.log(`%cTheming:     %cActive: ${data.preferences.activeTheme} | System: ${data.preferences.systemColorScheme} | Reduced-Motion: ${data.preferences.reducedMotion}`, 'font-weight: bold;', 'color: #F59E0B;');
+            if (data.performance) {
+                console.log(`%cPerformance: %cProfile: ${data.performance.profile.toUpperCase()} (Source: ${data.performance.source} | Pref: ${data.performance.preference} | Blur: ${data.performance.allowBackdropBlur})`, 'font-weight: bold;', data.performance.profile === 'lite' ? 'color: #EF4444;' : data.performance.profile === 'balanced' ? 'color: #F59E0B;' : 'color: #10B981;');
+            }
             console.log(`%cNetwork:     %cOnline: ${data.connectivity.online}${data.connectivity.connectionType ? ` (${data.connectivity.connectionType})` : ''}`, 'font-weight: bold;', data.connectivity.online ? 'color: #10B981;' : 'color: #EF4444;');
             console.log(`%cServiceWorker: %cSupported: ${data.serviceWorker.supported} | Controller: ${data.serviceWorker.controllerActive} | State: ${data.serviceWorker.state || 'none'}`, 'font-weight: bold;', 'color: #38BDF8;');
             if (data.serviceWorker.cacheNames && data.serviceWorker.cacheNames.length > 0) {

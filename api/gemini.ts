@@ -661,23 +661,6 @@ export async function processGeminiQuery(
  * Standard Web Fetch API Handler (e.g. Edge, Vercel Serverless Functions)
  */
 export async function POST(request: Request): Promise<Response> {
-    // 0. Validation check: verify if GEMINI_API_KEY is defined before interacting with Gemini service
-    if (!isApiKeyConfigured()) {
-        return new Response(
-            JSON.stringify({
-                error: 'AUTH',
-                message: 'Gemini service is unavailable: GEMINI_API_KEY is not defined. Please configure the GEMINI_API_KEY environment variable on the server.',
-            }),
-            {
-                status: 503,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-store',
-                },
-            }
-        );
-    }
-
     const contentLength = request.headers.get('content-length');
     if (contentLength && parseInt(contentLength, 10) > MAX_REQUEST_BODY_BYTES) {
         return new Response(
@@ -687,6 +670,23 @@ export async function POST(request: Request): Promise<Response> {
             }),
             {
                 status: 413,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-store',
+                },
+            }
+        );
+    }
+
+    // 0. Validation check: verify if GEMINI_API_KEY is defined before interacting with Gemini service
+    if (!isApiKeyConfigured()) {
+        return new Response(
+            JSON.stringify({
+                error: 'AUTH',
+                message: 'Gemini service is unavailable: GEMINI_API_KEY is not defined. Please configure the GEMINI_API_KEY environment variable on the server.',
+            }),
+            {
+                status: 503,
                 headers: {
                     'Content-Type': 'application/json',
                     'Cache-Control': 'no-store',
