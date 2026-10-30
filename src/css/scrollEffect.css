@@ -80,18 +80,19 @@
     animation: heroFadeInUp 0.5s var(--ease-cinematic) 0s both;
 }
 
-/* Subtle typing animation caret for hero school heading */
+/* Subtle typing animation caret for hero school heading (GPU-composited & layout-neutral) */
 .hero-typing-caret {
-    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
     width: clamp(2px, 0.25vw, 4px);
     height: 0.85em;
-    vertical-align: -0.05em;
     background: var(--gold-light, #f0c975);
-    margin-left: clamp(2px, 0.2vw, 5px);
     border-radius: 2px;
     box-shadow: 0 0 12px rgba(240, 201, 117, 0.85);
     animation: heroCaretBlink 0.72s ease-in-out infinite;
-    will-change: opacity;
+    will-change: transform, opacity;
 }
 
 @keyframes heroCaretBlink {
@@ -126,13 +127,26 @@
 
 .gold-shimmer {
     background: linear-gradient(120deg, #d4a853 0%, #fbe3a1 25%, #8c6a21 50%, #fbe3a1 75%, #d4a853 100%);
-    background-size: 200% auto;
+    background-size: 100% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: shimmer 11s linear infinite;
+    display: inline-block;
+    transform: translateZ(0);
+    will-change: opacity;
+    animation: goldShimmerComposited 6s ease-in-out infinite alternate;
 }
 
-@keyframes shimmer { to { background-position: 200% center; } }
+@keyframes goldShimmerComposited {
+    0% {
+        opacity: 0.90;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.94;
+    }
+}
 
 /* =========================================
    3. 3D TRANSFORMATION ENGINE
@@ -143,6 +157,7 @@
     z-index: 10;
     width: 100%;
     max-width: 900px;
+    min-height: clamp(100px, 14vh, 160px);
     display: grid;
     place-items: center;
     /* Injected by js */

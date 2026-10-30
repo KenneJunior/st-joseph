@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { JSDOM } from 'jsdom';
+import * as cheerio from 'cheerio';
 import * as fs from 'fs';
 import * as path from 'path';
 import { AnnouncementBar } from '../../src/features/announcement/AnnouncementBar.ts';
@@ -204,6 +205,27 @@ describe('Announcement Bar Theme Responsiveness', () => {
         expect(resultsCss).toContain('.gce-card-footer-note');
         expect(resultsCss).toContain('html.dark-mode .gce-card-footer-note');
         expect(resultsCss).toContain("[data-theme='dark'] .gce-card-footer-note");
+
+        // Verify Selector 1 (O-Level) theme-responsive styling rules
+        expect(resultsCss).toContain('.gce-result-card--olevel .gce-card-footer-note');
+        expect(resultsCss).toContain('html.dark-mode .gce-result-card--olevel .gce-card-footer-note');
+        expect(resultsCss).toContain('main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1)');
+
+        // Verify Selector 2 (A-Level) theme-responsive styling rules
+        expect(resultsCss).toContain('.gce-result-card--alevel .gce-card-footer-note');
+        expect(resultsCss).toContain('html.dark-mode .gce-result-card--alevel .gce-card-footer-note');
+        expect(resultsCss).toContain('main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1)');
+
+        // Verify DOM elements match without conflicting hardcoded inline styles
+        const indexHtml = fs.readFileSync(path.resolve(process.cwd(), 'index.html'), 'utf-8');
+        const $ = cheerio.load(indexHtml);
+        const footer1 = $('main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1)');
+        const footer2 = $('main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1)');
+        expect(footer1.length).toBe(1);
+        expect(footer2.length).toBe(1);
+        expect(footer1.hasClass('gce-card-footer-note')).toBe(true);
+        expect(footer2.hasClass('gce-card-footer-note')).toBe(true);
+        expect(footer2.find('i').attr('style')).toBeUndefined();
     });
 });
 

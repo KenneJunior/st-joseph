@@ -1,0 +1,716 @@
+# Exported Chat from Chrome DevTools AI Assistance
+
+**Export Timestamp (UTC):** 2026-10-26T15:44:30.659Z
+
+---
+
+## User
+
+What performance issues exist on the page?
+
+## AI
+
+### Learning skills: Performance, CSS and styling, Network requests
+
+**Code executed:**
+```
+learnSkills('performance', 'styling', 'network')
+```
+
+**Data returned:**
+```
+Skill performance loaded. Instructions:
+You are an expert web performance assistant integrated into Chrome DevTools.
+Your goal is to provide actionable advice about web page performance by analyzing a trace.
+
+# Investigation Workflow
+
+1. **Insight Inspection (`getInsightDetails`)**:
+   - When asked about performance bottlenecks or Core Web Vitals (LCP, INP, CLS), never reply using only the initial summary.
+   - Always call `getInsightDetails` with the relevant `insightSetId` and `insightName` (e.g. `LCPBreakdown`, `LCPDiscovery`, `RenderBlocking`, `CLSCulprits`, `INPBreakdown`, `ThirdParties`) to obtain full diagnostics, subpart timing breakdowns, and candidate elements.
+   - For LCP investigations, inspect both `LCPBreakdown` and `LCPDiscovery` (TTFB, load delay, load duration, render delay).
+
+2. **Main Thread & Network Inspection (`getTraceMainThreadSummary` & `getTraceNetworkSummary`)**:
+   - Call `getTraceMainThreadSummary` with specific period labels (e.g. `nav-to-lcp`, `lcp-ttfb`, `lcp-render-delay`, `trace-bounds`, or insight names) to uncover main thread bottlenecks. Look for aggregated cost across small frequent tasks, not just single long tasks.
+   - Use `getTraceNetworkSummary` with time bounds to inspect network requests during specific phases.
+
+3. **Call Tree, Event & Source Inspection**:
+   - Use `getDetailedCallTree` to retrieve bottom-up execution trees for expensive main thread tasks.
+   - Use `getTraceEventByKey` to inspect timing and payload data for individual events.
+   - Use `getFunctionCode` or `getResourceContent` to inspect the source code and identify root causes.
+
+4. **UI Selection & Trace Recording**:
+   - Use `selectTraceEventByKey` to reveal and select an event in the Performance Flamechart if requested.
+   - Use `recordPerformanceTrace` when the user requests a fresh live trace measurement.
+
+# Considerations
+
+- Base all advice on empirical data retrieved through function calls. Never guess.
+- Ensure all time units in your response are in milliseconds (ms), rounded to the nearest whole number.
+- Never output raw microsecond bounds (e.g., `{min: ...}`) or raw `eventKey` strings in running text.
+Skill styling loaded. Instructions:
+You are an expert CSS, styling, and layout debugging assistant.
+The user selected a DOM element in DevTools and asks a query about the element or page styles.
+
+# Tools & Workflow
+
+1. **Inspect CSS Properties (`getStyles`)**:
+   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.
+   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like "all" or "*".
+   - Always consider the CSS cascade, inheritance, and stacking contexts.
+
+2. **Inspect Geometry, DOM Traversal, or Modify Styles (`executeJavaScript`)**:
+   - Use `executeJavaScript` when you need to inspect computed geometry, bounding boxes, traverse related DOM nodes (`$0.parentElement`, `$0.children`), or modify styles on `$0`.
+   - Geometry & layout inspection example:
+     ```javascript
+     const rect = $0.getBoundingClientRect();
+     const data = {
+       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},
+       computedDisplay: window.getComputedStyle($0).display,
+       parentDisplay: $0.parentElement ? window.getComputedStyle($0.parentElement).display : null,
+     };
+     ```
+   - Style modification example (ALWAYS use `setElementStyles`):
+     ```javascript
+     await setElementStyles($0, {
+       display: 'flex',
+       justifyContent: 'center',
+     });
+     ```
+   - `setElementStyles` is an internal mechanism for you; do not mention `setElementStyles` directly to the user.
+
+# Considerations
+
+* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.
+* After applying a style fix, ask the user to verify if the visual change resolved their issue.
+Skill network loaded. Instructions:
+You are an expert network request debugging assistant.
+
+# Tools & Workflow
+
+1. **Discover Requests (`listNetworkRequests`)**:
+   - Call `listNetworkRequests` to discover recorded network requests matching the active origin.
+   - Inspect the returned list for URLs, status codes, durations, transfer sizes, and unique request `id` values.
+
+2. **Inspect Request Details (`getNetworkRequestDetails`)**:
+   - Call `getNetworkRequestDetails` with the specific request `id` to obtain full headers, timing phases (DNS, initial connection, SSL, TTFB, content download), status text, and response body.
+
+# Considerations
+
+* **Privacy**: If the request or response payload contains sensitive personal data, authorization tokens, or API secrets, redact or generalize it in your response.
+* **Origin Lock**: Only requests belonging to the conversation's established origin can be inspected.
+```
+
+### Recording a performance trace
+
+### Analyzing data
+
+**Trace summary:**
+````
+URL: http://localhost:4000/
+Trace bounds: {min: 6054513424µs, max: 6067350072µs}
+CPU throttling: none
+Network throttling: none
+
+# Available insight sets
+
+The following is a list of insight sets. An insight set covers a specific part of the trace, split by navigations. The insights within each insight set are specific to that part of the trace. Be sure to consider the insight set id and bounds when calling functions. If no specific insight set or navigation is mentioned, assume the user is referring to the first one.
+
+## insight set id: NAVIGATION_0
+
+URL: http://localhost:4000/
+Bounds: {min: 6054523646µs, max: 6067350072µs}
+Metrics (lab / observed):
+  - LCP: 6544 ms, event: (eventKey: r-39489, ts: 6061067391), nodeId: 62
+  - LCP breakdown:
+    - TTFB: 56 ms, bounds: {min: 6054523646µs, max: 6054579983.000001µs}
+    - Render delay: 6,487 ms, bounds: {min: 6054579983.000001µs, max: 6061067391µs}
+  - CLS: 0.22, event: (eventKey: s-97480, ts: 6064567983)
+Metrics (field / real users): n/a – no data for this page in CrUX
+Available insights:
+  - insight name: RenderBlocking
+    description: Requests are blocking the page’s initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.
+    relevant trace bounds: {min: 6054599939µs, max: 6059873454µs}
+    estimated metric savings: FCP 2325 ms, LCP 2325 ms
+    example question: Show me the most impactful render-blocking requests that I should focus on
+    example question: How can I reduce the number of render-blocking requests?
+  - insight name: ImageDelivery
+    description: Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery).
+    relevant trace bounds: {min: 6054599636µs, max: 6060480615µs}
+    estimated metric savings: FCP 0 ms, LCP 150 ms
+    estimated wasted bytes: 1.8 MB
+    example question: What should I do to improve and optimize the time taken to fetch and display images on the page?
+    example question: Are all images on my site optimized?
+  - insight name: LCPBreakdown
+    description: Each [subpart has specific improvement strategies](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.
+    relevant trace bounds: {min: 6054523646µs, max: 6061067391µs}
+    example question: Help me optimize my LCP score
+    example question: Which LCP subpart was most problematic?
+    example question: What can I do to reduce the LCP time for this page load?
+  - insight name: CLSCulprits
+    description: Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://developer.chrome.com/docs/performance/insights/cls-culprit), such as elements being added, removed, or their fonts changing as the page loads.
+    relevant trace bounds: {min: 6064567983µs, max: 6068342988µs}
+    example question: Help me optimize my CLS score
+    example question: How can I prevent layout shifts on this page?
+  - insight name: NetworkDependencyTree
+    description: [Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load
+    relevant trace bounds: {min: 6054525036µs, max: 6061512366µs}
+    example question: How do I optimize my network dependency tree?
+  - insight name: DocumentLatency
+    description: Your first network request is the most important. [Reduce its latency](https://developer.chrome.com/docs/performance/insights/document-latency) by avoiding redirects, ensuring a fast server response, and enabling text compression.
+    relevant trace bounds: {min: 6054525036µs, max: 6054750835µs}
+    estimated metric savings: FCP 0 ms, LCP 0 ms
+    estimated wasted bytes: 141.5 kB
+    example question: How do I decrease the initial loading time of my page?
+    example question: Did anything slow down the request for this document?
+  - insight name: FontDisplay
+    description: Consider setting [font-display](https://developer.chrome.com/docs/performance/insights/font-display) to swap or optional to ensure text is consistently visible. swap can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).
+    relevant trace bounds: {min: 6059955176µs, max: 6060482978µs}
+    estimated metric savings: FCP 280 ms
+    example question: How can I update my CSS to avoid layout shifts caused by incorrect `font-display` properties?
+  - insight name: DOMSize
+    description: A large DOM can increase the duration of style calculations and layout reflows, impacting page responsiveness. A large DOM will also increase memory usage. [Learn how to avoid an excessive DOM size](https://developer.chrome.com/docs/performance/insights/dom-size).
+    relevant trace bounds: {min: 6059888978µs, max: 6064758802µs}
+    example question: How can I reduce the size of my DOM?
+  - insight name: ThirdParties
+    description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page’s content.
+    relevant trace bounds: {min: 6054599939µs, max: 6064999266µs}
+    example question: Which third parties are having the largest impact on my page performance?
+  - insight name: ForcedReflow
+    description: A forced reflow occurs when JavaScript queries geometric properties (such as offsetWidth) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about [forced reflows](https://developer.chrome.com/docs/performance/insights/forced-reflow) and possible mitigations.
+    relevant trace bounds: {min: 6060918334µs, max: 6067340987µs}
+    example question: How can I avoid forced reflows and layout thrashing?
+    example question: What is forced reflow and why is it problematic?
+````
+
+**Critical requests:**
+````
+# Critical network requests
+
+
+Network requests data:
+
+
+
+allUrls = [0: http://localhost:4000/, 1: http://localhost:4000/src/main.ts?t=1793028933342, 2: http://localhost:4000/src/features/ai-assistant/AiAssistantWidget.ts?t=1793027176075, 3: http://localhost:4000/src/features/ai-assistant/geminiService.ts, 4: http://localhost:4000/src/features/ai-assistant/offlineIntentEngine.ts, 5: http://localhost:4000/src/data/sjcccKnowledge.ts, 6: http://localhost:4000/src/data/admissionRequirements.ts, 7: http://localhost:4000/src/data/collegeProfile.ts, 8: http://localhost:4000/src/features/ai-assistant/knowledgeFormatter.ts, 9: http://localhost:4000/src/features/ai-assistant/dateUtils.ts, 10: http://localhost:4000/src/core/storage/AiChatHistoryStore.ts?t=1793027176075, 11: http://localhost:4000/src/features/ai-assistant/pageContext.ts, 12: http://localhost:4000/src/pages/home/home.ts?t=1793027213164, 13: http://localhost:4000/src/features/calendar/SchoolDatesTimeline.ts?t=1793027176075, 14: http://localhost:4000/src/features/calendar/CalendarActionSheet.ts, 15: http://localhost:4000/src/features/calendar/CalendarSerializer.ts, 16: http://localhost:4000/src/features/calendar/CalendarTimezone.ts, 17: http://localhost:4000/src/features/calendar/MilestoneReminderService.ts?t=1793027176075, 18: http://localhost:4000/src/features/calendar/NotificationGuidanceModal.ts, 19: http://localhost:4000/src/features/calendar/TimelineDragScroller.ts, 20: http://localhost:4000/src/features/calendar/TimelineStaggerEntrance.ts, 21: http://localhost:4000/src/data/academicCalendar.ts, 22: http://localhost:4000/src/features/faq/FaqRenderer.ts, 23: http://localhost:4000/src/data/faqData.ts, 24: http://localhost:4000/src/data/academicPrograms.ts, 25: http://localhost:4000/src/data/tuitionFees.ts, 26: http://localhost:4000/src/features/faq/FaqSection.ts?t=1793027176075, 27: http://localhost:4000/src/ui/utils/SearchHistoryDropdown.ts, 28: http://localhost:4000/src/core/storage/SearchHistoryStore.ts, 29: http://localhost:4000/src/features/announcement/AnnouncementBar.ts?t=1793027176075, 30: http://localhost:4000/src/features/announcement/PastAnnouncementsModal.ts, 31: http://localhost:4000/src/data/pastAnnouncements.ts, 32: http://localhost:4000/src/features/announcement/announcementState.ts, 33: http://localhost:4000/src/ui/effects/LiquidGlassAdapter.ts?t=1793027213164, 34: http://localhost:4000/node_modules/.vite/deps/@kennejunior_liquidglass.js?v=2fb9fdae, 35: http://localhost:4000/src/features/enquiry/EnquiryForm.ts, 36: http://localhost:4000/src/services/enquiryService.ts, 37: http://localhost:4000/src/features/location/LocationQrCode.ts, 38: http://localhost:4000/node_modules/.vite/deps/qrcode.js?v=2fb9fdae, 39: http://localhost:4000/src/features/pwa/PwaInstallPrompt.ts?t=1793027213164, 40: http://localhost:4000/src/css/components/pwa-install-card.css, 41: http://localhost:4000/src/features/news/NewsStoriesRenderer.ts, 42: http://localhost:4000/src/data/newsStories.ts, 43: http://localhost:4000/src/features/campus/VirtualCampusMap.ts, 44: http://localhost:4000/src/data/campusZones.ts, 45: http://localhost:4000/src/features/calendar/MyRemindersController.ts?t=1793027176075, 46: http://localhost:4000/src/features/calendar/MilestoneChimeSynthesizer.ts?t=1793027176075, 47: http://localhost:4000/src/features/preloader/Preloader.ts?t=1793027176075, 48: http://localhost:4000/src/features/preloader/preloaderAnimations.ts, 49: http://localhost:4000/src/features/carousel/Carousel.ts, 50: http://localhost:4000/src/data/imagePlaceholders.ts, 51: http://localhost:4000/src/ui/utils/LazyImageLoader.ts, 52: http://localhost:4000/src/features/carousel/CarouselRenderer.ts, 53: http://localhost:4000/src/data/campusSlides.ts, 54: http://localhost:4000/src/features/hero/ScrollEngine.ts?t=1793027213164, 55: http://localhost:4000/src/features/hero/ParticleSystem.ts?t=1793027213164, 56: http://localhost:4000/src/ui/utils/TextSplitter.ts, 57: http://localhost:4000/src/core/physics/spring.ts, 58: http://localhost:4000/src/ui/navigation/MobileNavigation.ts, 59: http://localhost:4000/src/ui/navigation/DockGlider.ts, 60: http://localhost:4000/src/ui/navigation/BottomBarSwipeNavigator.ts, 61: http://localhost:4000/src/ui/navigation/ScrollSpy.ts, 62: http://localhost:4000/src/core/config/navigation.ts, 63: http://localhost:4000/src/features/testimonials/TestimonialsSection.ts, 64: http://localhost:4000/src/ui/utils/BlurredImageLoader.ts, 65: http://localhost:4000/src/ui/utils/CardSplitter.ts, 66: http://localhost:4000/src/features/offline/OfflineIndicator.ts?t=1793027213164, 67: http://localhost:4000/src/features/enquiry/SmoothTypingEffect.ts, 68: http://localhost:4000/src/features/enquiry/EnquiryModal.ts, 69: http://localhost:4000/src/features/location/LocationMapFacade.ts, 70: http://localhost:4000/src/features/calendar/TimelineRenderer.ts, 71: http://localhost:4000/src/features/academic/AcademicLevelToggles.ts, 72: http://localhost:4000/src/core/platform/platformDetection.ts, 73: http://localhost:4000/src/features/hero/heroMessages.ts, 74: http://localhost:4000/src/features/hero/TimedHeroRotator.ts, 75: http://localhost:4000/src/features/hero/HeroTitleTyping.ts, 76: http://localhost:4000/src/features/hero/HeroParticles.ts?t=1793027213164, 77: http://localhost:4000/src/ui/utils/CounterAnimation.ts, 78: http://localhost:4000/src/ui/utils/ScrollReveal.ts?t=1793027213164, 79: http://localhost:4000/src/ui/utils/SmoothScroll.ts, 80: http://localhost:4000/src/ui/navigation/HeaderScroll.ts, 81: http://localhost:4000/src/core/theme/ThemeManager.ts?t=1793027176075, 82: http://localhost:4000/src/core/storage/storageKeys.ts?t=1793027176075, 83: http://localhost:4000/src/core/config/selectors.ts, 84: http://localhost:4000/src/core/diagnostics/index.ts?t=1793027213164, 85: http://localhost:4000/src/core/diagnostics/SystemDiagnostics.ts?t=1793027213164, 86: http://localhost:4000/src/core/logger/index.ts, 87: http://localhost:4000/src/core/logger/logLevels.ts, 88: http://localhost:4000/src/core/logger/Logger.ts, 89: http://localhost:4000/src/services/serviceWorker.ts?t=1793027213164, 90: http://localhost:4000/src/css/features/sw-update.css, 91: http://localhost:4000/src/core/performance/PerformanceManager.ts?t=1793027213164, 92: http://localhost:4000/src/core/performance/DeviceCapabilityDetector.ts, 93: http://localhost:4000/src/css/main.css?t=1793028933342, 94: http://localhost:4000/src/core/physics/MotionSuspension.ts, 95: http://localhost:4000/src/css/scrollEffect.css, 96: https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap, 97: https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2, 98: https://fonts.gstatic.com/s/playfairdisplay/v40/nuFkD-vYSZviVYUb_rj3ij__anPXDTnogkk7.woff2, 99: https://fonts.gstatic.com/s/playfairdisplay/v40/nuFiD-vYSZviVYUb_rj3ij__anPXDTzYgA.woff2, 100: https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css, 101: https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6, 102: http://localhost:4000/manifest.json, 103: http://localhost:4000/@vite/client, 104: http://localhost:4000/node_modules/vite/dist/client/env.mjs, 105: http://localhost:4000/src/css/main.css]
+
+0;s-1418;1 ms;6 ms;58 ms;227 ms;226 ms;2 ms;169 ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.1;f;;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:43:58 GMT|Content-Type: text/html|Vary: Origin, Sec-Fetch-Dest]
+1;s-1686;77 ms;135 ms;148 ms;251 ms;174 ms;3 ms;103 ms;200;text/javascript;High;High;High;f;http/1.1;f;0;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:43:58 GMT|Content-Type: text/javascript|Vary: Origin]
+2;s-32540;5,961 ms;5,985 ms;6,000 ms;6,048 ms;87 ms;10 ms;47 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:04 GMT|Content-Type: text/javascript|Vary: Origin]
+3;s-36217;6,354 ms;6,486 ms;6,497 ms;6,819 ms;465 ms;9 ms;322 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,2;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+4;s-43588;6,833 ms;6,920 ms;6,940 ms;6,951 ms;118 ms;11 ms;11 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,2,3;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+5;s-48053;6,953 ms;6,957 ms;6,966 ms;6,973 ms;20 ms;6 ms;8 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,2,3,4;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+6;s-48861;6,974 ms;6,978 ms;6,984 ms;6,989 ms;15 ms;2 ms;5 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,2,3,4,5;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+7;s-48848;6,974 ms;6,977 ms;6,983 ms;6,988 ms;14 ms;2 ms;5 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,2,3,4,5;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+8;s-43602;6,833 ms;6,924 ms;6,946 ms;6,952 ms;119 ms;12 ms;6 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,2,3;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+9;s-48079;6,954 ms;6,958 ms;6,966 ms;6,974 ms;20 ms;6 ms;8 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,2,3,8;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+10;s-36225;6,355 ms;6,486 ms;6,497 ms;6,820 ms;465 ms;9 ms;322 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,2;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+11;s-36232;6,355 ms;6,488 ms;6,500 ms;6,818 ms;464 ms;10 ms;318 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,2;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+12;s-32529;5,961 ms;5,972 ms;5,990 ms;6,045 ms;85 ms;5 ms;56 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:04 GMT|Content-Type: text/javascript|Vary: Origin]
+13;s-35988;6,350 ms;6,442 ms;6,455 ms;6,808 ms;459 ms;5 ms;354 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+14;s-43420;6,829 ms;6,872 ms;6,897 ms;6,905 ms;76 ms;11 ms;8 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,13;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+15;s-46362;6,906 ms;6,941 ms;6,957 ms;6,966 ms;61 ms;5 ms;10 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,13,14;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+16;s-48540;6,967 ms;6,975 ms;6,981 ms;6,983 ms;16 ms;4 ms;2 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,13,14,15;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+17;s-43434;6,830 ms;6,888 ms;6,919 ms;6,923 ms;93 ms;23 ms;3 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,13;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+18;s-46917;6,923 ms;6,947 ms;6,963 ms;6,972 ms;49 ms;6 ms;9 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,13,17;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+19;s-43421;6,830 ms;6,879 ms;6,897 ms;6,904 ms;74 ms;10 ms;7 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,13;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+20;s-43429;6,830 ms;6,879 ms;6,897 ms;6,903 ms;73 ms;10 ms;6 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,13;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+21;s-43399;6,829 ms;6,871 ms;6,888 ms;6,898 ms;69 ms;9 ms;10 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,13;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+22;s-35979;6,350 ms;6,441 ms;6,454 ms;6,808 ms;458 ms;4 ms;354 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+23;s-43389;6,829 ms;6,871 ms;6,889 ms;6,899 ms;70 ms;10 ms;10 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,22;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+24;s-46057;6,900 ms;6,941 ms;6,956 ms;6,966 ms;66 ms;5 ms;10 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,22,23;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+25;s-46030;6,899 ms;6,934 ms;6,956 ms;6,966 ms;66 ms;10 ms;9 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,22,23;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+26;s-35977;6,349 ms;6,436 ms;6,450 ms;6,807 ms;457 ms;9 ms;356 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+27;s-43380;6,829 ms;6,870 ms;6,887 ms;6,898 ms;70 ms;9 ms;11 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,26;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+28;s-46007;6,899 ms;6,926 ms;6,947 ms;6,953 ms;53 ms;12 ms;6 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,26,27;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+29;s-35961;6,349 ms;6,426 ms;6,442 ms;6,805 ms;456 ms;7 ms;363 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+30;s-43358;6,828 ms;6,864 ms;6,878 ms;6,886 ms;58 ms;9 ms;8 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,29;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+31;s-45511;6,887 ms;6,926 ms;6,946 ms;6,952 ms;65 ms;11 ms;6 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,29,30;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+32;s-43365;6,828 ms;6,865 ms;6,878 ms;6,887 ms;58 ms;9 ms;8 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,29;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+33;s-36043;6,352 ms;6,469 ms;6,485 ms;6,815 ms;463 ms;10 ms;330 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+34;s-43550;6,832 ms;6,914 ms;6,940 ms;6,950 ms;118 ms;17 ms;10 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,33;[];[Cache-Control: max-age=31536000,immutable|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+35;s-36024;6,351 ms;6,467 ms;6,477 ms;6,815 ms;463 ms;3 ms;337 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+36;s-43530;6,832 ms;6,913 ms;6,934 ms;6,937 ms;106 ms;11 ms;4 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,35;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+37;s-36011;6,351 ms;6,454 ms;6,468 ms;6,811 ms;460 ms;8 ms;343 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+38;s-43488;6,831 ms;6,898 ms;6,925 ms;6,934 ms;104 ms;13 ms;9 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,37;[];[Cache-Control: max-age=31536000,immutable|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+39;s-36034;6,352 ms;6,468 ms;6,478 ms;6,814 ms;462 ms;3 ms;336 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+40;s-43517;6,831 ms;6,899 ms;6,925 ms;6,934 ms;102 ms;12 ms;9 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,39;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+41;s-36012;6,351 ms;6,455 ms;6,469 ms;6,812 ms;460 ms;8 ms;343 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+42;s-43503;6,831 ms;6,898 ms;6,924 ms;6,933 ms;101 ms;11 ms;9 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,41;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+43;s-36001;6,351 ms;6,450 ms;6,465 ms;6,811 ms;460 ms;11 ms;345 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+44;s-43475;6,831 ms;6,890 ms;6,913 ms;6,918 ms;87 ms;16 ms;5 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,43;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+45;s-35994;6,350 ms;6,443 ms;6,466 ms;6,810 ms;460 ms;15 ms;344 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+46;s-43449;6,830 ms;6,889 ms;6,912 ms;6,918 ms;87 ms;16 ms;5 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,45;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+47;s-35967;6,349 ms;6,427 ms;6,441 ms;6,805 ms;456 ms;6 ms;364 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+48;s-43339;6,828 ms;6,856 ms;6,870 ms;6,875 ms;47 ms;6 ms;5 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,47;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+49;s-35954;6,349 ms;6,409 ms;6,440 ms;6,804 ms;455 ms;15 ms;364 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+50;s-43300;6,827 ms;6,854 ms;6,869 ms;6,875 ms;48 ms;6 ms;6 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,49;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+51;s-43306;6,827 ms;6,855 ms;6,869 ms;6,874 ms;47 ms;6 ms;5 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,49;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+52;s-35958;6,349 ms;6,425 ms;6,441 ms;6,804 ms;456 ms;6 ms;364 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+53;s-43319;6,828 ms;6,855 ms;6,870 ms;6,874 ms;46 ms;6 ms;4 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,52;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+54;s-35940;6,348 ms;6,399 ms;6,426 ms;6,802 ms;454 ms;21 ms;376 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+55;s-43273;6,827 ms;6,844 ms;6,865 ms;6,868 ms;41 ms;5 ms;3 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,54;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+56;s-43259;6,826 ms;6,844 ms;6,864 ms;6,866 ms;40 ms;10 ms;2 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,54;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+57;s-43258;6,826 ms;6,835 ms;6,854 ms;6,860 ms;34 ms;14 ms;6 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,54;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+58;s-35916;6,347 ms;6,374 ms;6,396 ms;6,798 ms;451 ms;16 ms;402 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+59;s-43199;6,825 ms;6,834 ms;6,853 ms;6,860 ms;35 ms;13 ms;7 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,58;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+60;s-43208;6,825 ms;6,834 ms;6,853 ms;6,859 ms;34 ms;14 ms;6 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,58;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+61;s-35918;6,347 ms;6,376 ms;6,396 ms;6,798 ms;451 ms;16 ms;402 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+62;s-43227;6,826 ms;6,835 ms;6,854 ms;6,859 ms;33 ms;14 ms;5 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12,61;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+63;s-36061;6,353 ms;6,479 ms;6,491 ms;6,817 ms;464 ms;6 ms;326 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+64;s-36054;6,352 ms;6,478 ms;6,488 ms;6,816 ms;464 ms;3 ms;328 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+65;s-36050;6,352 ms;6,475 ms;6,486 ms;6,816 ms;463 ms;7 ms;330 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+66;s-36040;6,352 ms;6,469 ms;6,478 ms;6,814 ms;462 ms;3 ms;336 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+67;s-36030;6,352 ms;6,467 ms;6,477 ms;6,813 ms;461 ms;3 ms;336 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+68;s-36021;6,351 ms;6,461 ms;6,475 ms;6,812 ms;461 ms;8 ms;338 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+69;s-36005;6,351 ms;6,451 ms;6,466 ms;6,812 ms;461 ms;11 ms;346 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+70;s-35992;6,350 ms;6,443 ms;6,460 ms;6,809 ms;459 ms;10 ms;349 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+71;s-35972;6,349 ms;6,435 ms;6,449 ms;6,806 ms;457 ms;9 ms;357 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+72;s-35950;6,348 ms;6,408 ms;6,435 ms;6,803 ms;455 ms;11 ms;367 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+73;s-35944;6,348 ms;6,407 ms;6,434 ms;6,803 ms;454 ms;9 ms;368 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+74;s-35943;6,348 ms;6,406 ms;6,425 ms;6,801 ms;453 ms;16 ms;376 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+75;s-35938;6,348 ms;6,398 ms;6,424 ms;6,801 ms;453 ms;20 ms;376 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+76;s-35933;6,348 ms;6,398 ms;6,408 ms;6,800 ms;453 ms;3 ms;392 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+77;s-35928;6,348 ms;6,397 ms;6,408 ms;6,800 ms;452 ms;3 ms;392 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+78;s-35925;6,347 ms;6,396 ms;6,406 ms;6,800 ms;452 ms;1 ms;394 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+79;s-35923;6,347 ms;6,391 ms;6,406 ms;6,799 ms;452 ms;1 ms;394 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+80;s-35914;6,347 ms;6,373 ms;6,396 ms;6,797 ms;450 ms;16 ms;402 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+81;s-35910;6,347 ms;6,361 ms;6,395 ms;6,797 ms;450 ms;22 ms;401 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:04 GMT|Content-Type: text/javascript|Vary: Origin]
+82;s-35905;6,346 ms;6,360 ms;6,395 ms;6,796 ms;450 ms;23 ms;401 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:04 GMT|Content-Type: text/javascript|Vary: Origin]
+83;s-35897;6,346 ms;6,355 ms;6,390 ms;6,392 ms;45 ms;20 ms;1 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,12;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:04 GMT|Content-Type: text/javascript|Vary: Origin]
+84;s-32554;5,961 ms;5,991 ms;6,005 ms;6,051 ms;90 ms;6 ms;46 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:04 GMT|Content-Type: text/javascript|Vary: Origin]
+85;s-36283;6,356 ms;6,498 ms;6,513 ms;6,821 ms;465 ms;4 ms;307 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,84;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+86;s-32549;5,961 ms;5,989 ms;6,005 ms;6,049 ms;88 ms;6 ms;44 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:04 GMT|Content-Type: text/javascript|Vary: Origin]
+87;s-36273;6,355 ms;6,494 ms;6,513 ms;6,821 ms;465 ms;5 ms;307 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,86;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+88;s-36258;6,355 ms;6,492 ms;6,509 ms;6,820 ms;465 ms;6 ms;311 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,86;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+89;s-32527;5,960 ms;5,972 ms;5,989 ms;6,047 ms;86 ms;6 ms;58 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:04 GMT|Content-Type: text/javascript|Vary: Origin]
+90;s-36179;6,354 ms;6,480 ms;6,497 ms;6,818 ms;464 ms;11 ms;321 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,89;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+91;s-32536;5,961 ms;5,973 ms;5,990 ms;6,046 ms;85 ms;5 ms;56 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:04 GMT|Content-Type: text/javascript|Vary: Origin]
+92;s-36167;6,354 ms;6,479 ms;6,494 ms;6,817 ms;464 ms;8 ms;323 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1,91;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:05 GMT|Content-Type: text/javascript|Vary: Origin]
+93;s-32473;5,960 ms;5,968 ms;6,000 ms;6,051 ms;91 ms;26 ms;51 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:04 GMT|Content-Type: text/javascript|Vary: Origin]
+94;s-32533;5,961 ms;5,973 ms;5,990 ms;6,044 ms;84 ms;5 ms;55 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:04 GMT|Content-Type: text/javascript|Vary: Origin]
+95;s-32500;5,960 ms;5,971 ms;5,984 ms;6,044 ms;84 ms;8 ms;60 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,1;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:44:04 GMT|Content-Type: text/javascript|Vary: Origin]
+96;s-1673;76 ms;4,861 ms;5,349 ms;5,350 ms;5,274 ms;61 ms;1 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;h2;f;0;[];[content-encoding: gzip|x-content-type-options: nosniff|expires: Mon, 26 Oct 2026 21:23:11 GMT|alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000|date: Mon, 26 Oct 2026 21:23:11 GMT|content-type: text/css; charset=utf-8|vary: Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site|last-modified: Mon, 26 Oct 2026 21:23:11 GMT|x-frame-options: SAMEORIGIN|strict-transport-security: max-age=31536000|link: <https://fonts.gstatic.com>; rel=preconnect; crossorigin|cache-control: private, max-age=86400, stale-while-revalidate=604800|timing-allow-origin: *|cross-origin-opener-policy: <redacted>|cross-origin-resource-policy: <redacted>|access-control-allow-origin: *|x-xss-protection: 0|server: ESF]
+97;s-29613;5,386 ms;5,388 ms;6,373 ms;6,394 ms;1,008 ms;632 ms;21 ms;200;font/woff2;VeryHigh;VeryHigh;VeryHigh;f;h3;f;0,96;[];[age: 434110|report-to: {"group":"apps-themes","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/apps-themes"}]}|x-content-type-options: nosniff|expires: Thu, 21 Oct 2027 20:48:02 GMT|alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000|date: Wed, 21 Oct 2026 20:48:02 GMT|last-modified: Tue, 09 Sep 2025 18:33:53 GMT|content-type: font/woff2|cache-control: public, max-age=31536000|timing-allow-origin: *|cross-origin-opener-policy: <redacted>|cross-origin-resource-policy: <redacted>|content-security-policy-report-only: <redacted>|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|x-xss-protection: 0|server: sffe]
+98;s-30013;5,437 ms;5,441 ms;6,372 ms;6,386 ms;948 ms;508 ms;14 ms;200;font/woff2;VeryHigh;VeryHigh;VeryHigh;f;h3;f;0,96;[];[age: 434073|report-to: {"group":"apps-themes","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/apps-themes"}]}|x-content-type-options: nosniff|expires: Thu, 21 Oct 2027 20:48:39 GMT|alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000|date: Wed, 21 Oct 2026 20:48:39 GMT|last-modified: Wed, 10 Sep 2025 16:48:50 GMT|content-type: font/woff2|cache-control: public, max-age=31536000|timing-allow-origin: *|cross-origin-opener-policy: <redacted>|cross-origin-resource-policy: <redacted>|content-security-policy-report-only: <redacted>|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|x-xss-protection: 0|server: sffe]
+99;s-29973;5,432 ms;5,435 ms;6,319 ms;6,375 ms;943 ms;455 ms;56 ms;200;font/woff2;VeryHigh;VeryHigh;VeryHigh;f;h3;f;0,96;[];[age: 434073|report-to: {"group":"apps-themes","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/apps-themes"}]}|x-content-type-options: nosniff|expires: Thu, 21 Oct 2027 20:48:39 GMT|alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000|date: Wed, 21 Oct 2026 20:48:39 GMT|last-modified: Wed, 10 Sep 2025 16:48:54 GMT|content-type: font/woff2|cache-control: public, max-age=31536000|timing-allow-origin: *|cross-origin-opener-policy: <redacted>|cross-origin-resource-policy: <redacted>|content-security-policy-report-only: <redacted>|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|x-xss-protection: 0|server: sffe]
+100;s-1678;76 ms;127 ms;396 ms;401 ms;325 ms;92 ms;6 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;h2;f;0;[];[access-control-expose-headers: *|content-encoding: br|cf-cache-status: <redacted>|etag: <redacted>|age: 333577|report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=HthQ2TZny7VSIfmMNRUThVaxE5XGJnnFdRFKk%2BnIwEI0fMuCdToFwuKa5OXOLtYmkc0hC4UZRt0q6W9dnhHVZyKUow%2BTsb3Wwlo46EYXTmha%2FdQk2y2bdTC7pbkFTLuGZPTHF5BW7yg1xl7AaCI%3D"}]}|x-content-type-options: nosniff|x-jsd-version-type: <redacted>|alt-svc: h3=":443"; ma=86400|x-cache: <redacted>|date: Mon, 26 Oct 2026 21:23:06 GMT|content-type: text/css; charset=utf-8|x-served-by: <redacted>|vary: Accept-Encoding|strict-transport-security: max-age=31536000; includeSubDomains; preload|cache-control: public, max-age=31536000, s-maxage=31536000, immutable|timing-allow-origin: *|nel: {"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}|cross-origin-resource-policy: <redacted>|cf-ray: <redacted>|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: cloudflare|x-jsd-version: <redacted>]
+101;s-29965;5,432 ms;5,437 ms;5,721 ms;5,959 ms;528 ms;149 ms;238 ms;200;font/woff2;VeryHigh;VeryHigh;VeryHigh;f;h2;f;0,100;[];[access-control-expose-headers: *|cf-cache-status: <redacted>|etag: <redacted>|age: 491333|report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=yld2jexRAdwGTSikAZRTx8eTvdSaGYovaqsf0k%2BaB4cbcY8Nl0%2FyaS2SbQe3ez0xOxO%2F%2BkJDp4NMOoHjifVbtKbtPb0a5n7wRMzdk%2B8EA476%2BuUMgkRptXiklbyS8ElNv1zD%2FHd611XaMiq3cbM%3D"}]}|x-content-type-options: nosniff|x-jsd-version-type: <redacted>|alt-svc: h3=":443"; ma=86400|x-cache: <redacted>|date: Mon, 26 Oct 2026 21:23:12 GMT|content-type: font/woff2|x-served-by: <redacted>|vary: Accept-Encoding|strict-transport-security: max-age=31536000; includeSubDomains; preload|cache-control: public, max-age=31536000, s-maxage=31536000, immutable|timing-allow-origin: *|nel: {"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}|cross-origin-resource-policy: <redacted>|cf-ray: <redacted>|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: cloudflare|x-jsd-version: <redacted>]
+102;s-6041;258 ms;263 ms;265 ms;269 ms;11 ms;0.6 ms;4 ms;200;application/json;Medium;Medium;Medium;f;http/1.1;f;0;[];[Cache-Control: no-cache|ETag: <redacted>|Connection: keep-alive|Content-Length: <redacted>|Keep-Alive: <redacted>|Date: Mon, 26 Oct 2026 15:43:58 GMT|Content-Type: application/json|Vary: Origin|Last-Modified: Sat, 24 Oct 2026 03:26:40 GMT]
+103;s-1666;75 ms;113 ms;141 ms;237 ms;162 ms;10 ms;96 ms;200;text/javascript;High;High;High;f;http/1.1;f;0;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:43:58 GMT|Content-Type: text/javascript|Vary: Origin]
+104;s-5911;256 ms;258 ms;261 ms;262 ms;6 ms;0.6 ms;1 ms;200;text/javascript;High;High;High;f;http/1.1;f;0,103;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Access-Control-Allow-Origin: http://localhost:4000|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:43:58 GMT|Content-Type: text/javascript|Vary: Origin]
+105;s-1684;77 ms;135 ms;154 ms;223 ms;146 ms;9 ms;69 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.1;f;0;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:43:58 GMT|Content-Type: text/css|Vary: Origin]
+95;s-1683;77 ms;134 ms;140 ms;204 ms;127 ms;4 ms;63 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.1;f;0;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:43:58 GMT|Content-Type: text/css|Vary: Origin]
+````
+
+**Main thread activities:**
+````
+# Main thread bottom-up summary
+
+This is the bottom-up summary for the entire trace. Only the top 10 activities (sorted by self time) are shown. An activity is all the aggregated time spent on the same type of work. For example, it can be all the time spent in a specific JavaScript function, or all the time spent in a specific browser rendering stage (like layout, v8 compile, parsing html). "Self time" represents the aggregated time spent directly in an activity, across all occurrences. "Total time" represents the aggregated time spent in an activity or any of its children.
+
+- self: 2,673 ms, total: 2,675 ms, source: Paint
+- self: 1,338 ms, total: 1,338 ms, source: Layout
+- self: 847 ms, total: 6,769 ms, source: Task
+- self: 727 ms, total: 733 ms, source: Recalculate style
+- self: 157 ms, total: 157 ms, source: Layerize
+- self: 155 ms, total: 155 ms, source: Pre-paint
+- self: 127 ms, total: 134 ms, source: Commit
+- self: 62 ms, total: 62 ms, source: Compile script
+- self: 54 ms, total: 54 ms, source: probeGpu (url: http://localhost:4000/src/core/performance/DeviceCapabilityDetector.ts, line: 75, column: 9)
+- self: 48 ms, total: 804 ms, source: Function call
+````
+
+**Third party summary:**
+````
+# 3rd party summary
+
+- name: localhost, main thread time: 378 ms, network transfer size: 16 MB
+- name: Zotero Connector, main thread time: 118 ms, network transfer size: 0 B
+- name: Plasma Integration, main thread time: 12 ms, network transfer size: 0 B
+- name: Vercel, main thread time: 4 ms, network transfer size: 0 B
+- name: Block Site, main thread time: 2 ms, network transfer size: 0 B
+````
+
+**Longest tasks:**
+````
+# Longest tasks
+
+- total time: 646 ms, event: (eventKey: r-49897, ts: 6061571991)
+- total time: 587 ms, event: (eventKey: r-28888, ts: 6059888705)
+- total time: 387 ms, event: (eventKey: r-37869, ts: 6060918325)
+````
+
+### Investigating insight LCPBreakdown
+
+**Code executed:**
+```
+getInsightDetails('NAVIGATION_0', 'LCPBreakdown')
+```
+
+**Data returned:**
+```
+## Insight Title: LCP breakdown
+
+## Insight Summary:
+This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 subparts (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
+
+## Detailed analysis:
+The Largest Contentful Paint (LCP) time for this navigation was 6,544 ms.
+The LCP element (H1 class='school-name', nodeId: 62) is text and was not fetched from the network.
+
+We can break this time down into the 2 subparts that combine to make the LCP time:
+
+- Time to first byte: 56 ms (0.9% of total LCP time)
+- Element render delay: 6,487 ms (99.1% of total LCP time)
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/docs/performance/insights/lcp-breakdown
+- https://web.dev/articles/lcp
+- https://web.dev/articles/optimize-lcp
+```
+
+### Investigating insight RenderBlocking
+
+**Code executed:**
+```
+getInsightDetails('NAVIGATION_0', 'RenderBlocking')
+```
+
+**Data returned:**
+```
+## Insight Title: Render-blocking requests
+
+## Insight Summary:
+This insight identifies network requests that were render-blocking. Render-blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render-blocking network request and prioritize your suggestions to the user based on the impact of each render-blocking request.
+
+## Detailed analysis:
+Here is a list of the network requests that were render-blocking on this page and their duration:
+
+
+Network requests data:
+
+
+
+allUrls = [0: https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap, 1: http://localhost:4000/, 2: https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css, 3: http://localhost:4000/src/css/main.css, 4: http://localhost:4000/src/css/scrollEffect.css]
+
+0;s-1673;76 ms;4,861 ms;5,349 ms;5,350 ms;5,274 ms;61 ms;1 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;h2;f;1;[];[content-encoding: gzip|x-content-type-options: nosniff|expires: Mon, 26 Oct 2026 21:23:11 GMT|alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000|date: Mon, 26 Oct 2026 21:23:11 GMT|content-type: text/css; charset=utf-8|vary: Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site|last-modified: Mon, 26 Oct 2026 21:23:11 GMT|x-frame-options: SAMEORIGIN|strict-transport-security: max-age=31536000|link: <https://fonts.gstatic.com>; rel=preconnect; crossorigin|cache-control: private, max-age=86400, stale-while-revalidate=604800|timing-allow-origin: *|cross-origin-opener-policy: <redacted>|cross-origin-resource-policy: <redacted>|access-control-allow-origin: *|x-xss-protection: 0|server: ESF]
+2;s-1678;76 ms;127 ms;396 ms;401 ms;325 ms;92 ms;6 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;h2;f;1;[];[access-control-expose-headers: *|content-encoding: br|cf-cache-status: <redacted>|etag: <redacted>|age: 333577|report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=HthQ2TZny7VSIfmMNRUThVaxE5XGJnnFdRFKk%2BnIwEI0fMuCdToFwuKa5OXOLtYmkc0hC4UZRt0q6W9dnhHVZyKUow%2BTsb3Wwlo46EYXTmha%2FdQk2y2bdTC7pbkFTLuGZPTHF5BW7yg1xl7AaCI%3D"}]}|x-content-type-options: nosniff|x-jsd-version-type: <redacted>|alt-svc: h3=":443"; ma=86400|x-cache: <redacted>|date: Mon, 26 Oct 2026 21:23:06 GMT|content-type: text/css; charset=utf-8|x-served-by: <redacted>|vary: Accept-Encoding|strict-transport-security: max-age=31536000; includeSubDomains; preload|cache-control: public, max-age=31536000, s-maxage=31536000, immutable|timing-allow-origin: *|nel: {"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}|cross-origin-resource-policy: <redacted>|cf-ray: <redacted>|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: cloudflare|x-jsd-version: <redacted>]
+3;s-1684;77 ms;135 ms;154 ms;223 ms;146 ms;9 ms;69 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.1;f;1;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:43:58 GMT|Content-Type: text/css|Vary: Origin]
+4;s-1683;77 ms;134 ms;140 ms;204 ms;127 ms;4 ms;63 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.1;f;1;[];[Cache-Control: no-cache|Etag: <redacted>|Connection: keep-alive|Keep-Alive: <redacted>|Content-Length: <redacted>|Date: Mon, 26 Oct 2026 15:43:58 GMT|Content-Type: text/css|Vary: Origin]
+
+## Estimated savings: FCP 2325 ms, LCP 2325 ms
+
+## External resources:
+- https://developer.chrome.com/docs/performance/insights/render-blocking
+- https://web.dev/articles/lcp
+- https://web.dev/articles/optimize-lcp
+```
+
+### Investigating insight CLSCulprits
+
+**Code executed:**
+```
+getInsightDetails('NAVIGATION_0', 'CLSCulprits')
+```
+
+**Data returned:**
+```
+## Insight Title: Layout shift culprits
+
+## Insight Summary:
+Cumulative Layout Shifts (CLS) is a measure of the largest burst of layout shifts for every unexpected layout shift that occurs during the lifecycle of a page. This is a Core Web Vital and the thresholds for categorizing a score are:
+- Good: 0.1 or less
+- Needs improvement: more than 0.1 and less than or equal to 0.25
+- Bad: over 0.25
+
+## Detailed analysis:
+The worst layout shift cluster was the cluster that started at 10,055 ms and ended at 13,830 ms, with a duration of 3,775 ms.
+The score for this cluster is 0.2198.
+
+Layout shifts in this cluster:
+### Layout shift 1:
+- Impacted elements:
+  - DIV class='school-header'
+  - H1 class='school-name'
+  - DIV id='messageContainer' class='scroll-message-wrapper'
+  - DIV class='hero-buttons'
+  - SPAN class='hero-badge'
+
+- Start time: 10,055 ms
+- Score: 0.0214
+- Potential root causes:
+  - A non-composited animation:
+- non-composited animation: `shimmer`
+    Animation name: shimmer
+    Unsupported CSS properties:
+    - background-position-x, background-position-y
+    Failure reasons:
+      - TARGET_HAS_INVALID_COMPOSITING_STATE, UNSUPPORTED_CSS_PROPERTY
+- A non-composited animation:
+- non-composited animation: `shimmer`
+    Animation name: shimmer
+    Unsupported CSS properties:
+    - background-position-x, background-position-y
+    Failure reasons:
+      - TARGET_HAS_INVALID_COMPOSITING_STATE, UNSUPPORTED_CSS_PROPERTY
+- A non-composited animation:
+- non-composited animation: `shimmer`
+    Animation name: shimmer
+    Unsupported CSS properties:
+    - background-position-x, background-position-y
+    Failure reasons:
+      - TARGET_HAS_INVALID_COMPOSITING_STATE, UNSUPPORTED_CSS_PROPERTY
+### Layout shift 2:
+- Impacted elements:
+  - #text
+
+- Start time: 10,959 ms
+- Score: 0.0028
+- No potential root causes identified
+### Layout shift 3:
+- Impacted elements:
+  - #text
+
+- Start time: 11,007 ms
+- Score: 0.0015
+- No potential root causes identified
+### Layout shift 4:
+- Impacted elements:
+  - #text
+
+- Start time: 11,059 ms
+- Score: 0.0010
+- No potential root causes identified
+### Layout shift 5:
+- Impacted elements:
+  - #text
+
+- Start time: 11,109 ms
+- Score: 0.0018
+- No potential root causes identified
+### Layout shift 6:
+- Impacted elements:
+  - #text
+
+- Start time: 11,164 ms
+- Score: 0.0017
+- No potential root causes identified
+### Layout shift 7:
+- Impacted elements:
+  - #text
+
+- Start time: 11,214 ms
+- Score: 0.0009
+- No potential root causes identified
+### Layout shift 8:
+- Impacted elements:
+  - #text
+
+- Start time: 11,268 ms
+- Score: 0.0009
+- No potential root causes identified
+### Layout shift 9:
+- Impacted elements:
+  - #text
+
+- Start time: 11,378 ms
+- Score: 0.0015
+- No potential root causes identified
+### Layout shift 10:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 11,473 ms
+- Score: 0.0002
+- No potential root causes identified
+### Layout shift 11:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 11,571 ms
+- Score: 0.0002
+- No potential root causes identified
+### Layout shift 12:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 11,621 ms
+- Score: 0.0003
+- No potential root causes identified
+### Layout shift 13:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 11,678 ms
+- Score: 0.0002
+- No potential root causes identified
+### Layout shift 14:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 11,762 ms
+- Score: 0.0003
+- No potential root causes identified
+### Layout shift 15:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 11,815 ms
+- Score: 0.0002
+- No potential root causes identified
+### Layout shift 16:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 11,878 ms
+- Score: 0.0001
+- No potential root causes identified
+### Layout shift 17:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 11,930 ms
+- Score: 0.0002
+- No potential root causes identified
+### Layout shift 18:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 11,998 ms
+- Score: 0.0001
+- No potential root causes identified
+### Layout shift 19:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,061 ms
+- Score: 0.0001
+- No potential root causes identified
+### Layout shift 20:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,114 ms
+- Score: 0.0001
+- No potential root causes identified
+### Layout shift 21:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,177 ms
+- Score: 0.0001
+- No potential root causes identified
+### Layout shift 22:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,237 ms
+- Score: 0.0001
+- No potential root causes identified
+### Layout shift 23:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,299 ms
+- Score: 0.0002
+- No potential root causes identified
+### Layout shift 24:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,346 ms
+- Score: 0.0002
+- No potential root causes identified
+### Layout shift 25:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,402 ms
+- Score: 0.0001
+- No potential root causes identified
+### Layout shift 26:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,470 ms
+- Score: 0.0001
+- No potential root causes identified
+### Layout shift 27:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,526 ms
+- Score: 0.0001
+- No potential root causes identified
+### Layout shift 28:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,587 ms
+- Score: 0.0002
+- No potential root causes identified
+### Layout shift 29:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,644 ms
+- Score: 0.0001
+- No potential root causes identified
+### Layout shift 30:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,696 ms
+- Score: 0.0001
+- No potential root causes identified
+### Layout shift 31:
+- Impacted elements:
+  - DIV class='school-header'
+  - H1 class='school-name'
+  - DIV id='messageContainer' class='scroll-message-wrapper'
+  - DIV class='hero-buttons'
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,754 ms
+- Score: 0.1828
+- No potential root causes identified
+### Layout shift 32:
+- Impacted elements:
+  - SPAN class='hero-typing-caret'
+
+- Start time: 12,830 ms
+- Score: 0.0002
+- No potential root causes identified
+
+## Estimated savings: none
+
+## External resources:
+- https://developer.chrome.com/docs/performance/insights/cls-culprit
+- https://web.dev/articles/cls
+- https://web.dev/articles/optimize-cls
+```
+
+### Answer
+
+The page exhibits significant performance issues, primarily centered around a high **Largest Contentful Paint (LCP)** and poor **Cumulative Layout Shift (CLS)**. The LCP is extremely delayed, and the page suffers from a cluster of layout shifts that degrade the user experience.
+
+### Root Causes
+
+*   **Severe Render-Blocking Latency**: The LCP is **6,544 ms**, with **99% (6,487 ms)** of that time spent in **render delay**. This is largely caused by a critical font request (`fonts.googleapis.com/css2?...`) which takes **5,274 ms** to complete, blocking the initial render of the text-based LCP element (`H1.school-name`).
+*   **Unoptimized Animations & Dynamic Content**: The **CLS score of 0.22** (borderline "Poor") is driven by a shimmer animation using non-composited properties (`background-position-x/y`). Additionally, a "typing" effect (`hero-typing-caret`) causes a long series of small layout shifts, eventually leading to a large shift (score 0.18) when the header elements are repositioned.
+*   **Main Thread Congestion**: The main thread is heavily occupied by **Paint (2,673 ms self time)** and **Layout (1,338 ms self time)** tasks. Long tasks exceeding 500ms further delay interactivity.
+
+### Suggestions
+
+*   **Eliminate Render-Blocking Fonts**:
+    *   Self-host your fonts to avoid the multi-domain connection overhead to Google Fonts.
+    *   Use `font-display: swap` or `optional` in your CSS to ensure text is visible immediately using a system fallback.
+    *   Preload critical font files (`.woff2`) using `<link rel="preload" as="font">`.
+*   **Optimize Animations**: Replace the `shimmer` animation's use of `background-position` with `transform: translateX()` to allow the animation to be handled by the compositor thread, which prevents layout recalculations.
+*   **Stabilize Layout**:
+    *   Provide explicit dimensions (width/height) for the hero message container to prevent it from collapsing and shifting when text content (like the typing effect) changes.
+    *   Avoid using JavaScript-driven typing effects that alter the layout of surrounding elements.
+*   **Reduce Main Thread Load**: Investigate the heavy Paint and Layout costs. This often indicates overly complex CSS selectors, large DOM depth, or frequent style recalculations triggered by JavaScript.

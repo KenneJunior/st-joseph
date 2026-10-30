@@ -22,184 +22,340 @@ html[data-performance-mode="lite"] *::after {
 }
 
 /* ==========================================================================
-   2. HEADER & NAVIGATION SURFACES
+   2. HEADER & NAVIGATION SURFACES (PREMIUM SOLID PALETTE)
    ========================================================================== */
 
-/* Main Sticky Header */
-html[data-performance-mode="lite"] #mainHeader,
-html[data-performance-mode="lite"] #mainHeader.scrolled {
-  background:#ede2e25c !important;
-  border-bottom: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
-  box-shadow: 0 2px 8px -1px rgba(7, 24, 46, 0.08) !important;
+/* Eliminate blur gradient pseudo-element in Lite Mode to avoid muddy un-blurred masks */
+html[data-performance-mode="lite"] #mainHeader::before,
+html.lite-mode #mainHeader::before,
+html.perf-mode-lite #mainHeader::before {
+  display: none !important;
 }
 
+/* Main Sticky Header - Light Mode: Stately St. Joseph's Deep Academic Navy with Royal Gold Accent */
+html[data-performance-mode="lite"] #mainHeader,
+html[data-performance-mode="lite"] #mainHeader.scrolled,
+html.lite-mode #mainHeader,
+html.lite-mode #mainHeader.scrolled,
+html.perf-mode-lite #mainHeader,
+html.perf-mode-lite #mainHeader.scrolled {
+  background: #07182e !important;
+  border-bottom: 2px solid #c9a229 !important;
+  box-shadow: 0 4px 16px rgba(7, 24, 46, 0.18) !important;
+}
+
+/* Main Sticky Header - Dark Mode: Deep Midnight Navy with Luminous Warm Gold Accent */
 html[data-performance-mode="lite"].dark-mode #mainHeader,
 html[data-performance-mode="lite"].dark-mode #mainHeader.scrolled,
 html[data-performance-mode="lite"][data-theme="dark"] #mainHeader,
-html[data-performance-mode="lite"][data-theme="dark"] #mainHeader.scrolled {
-  background: #0e182853 !important;
-  border-bottom: 1px solid var(--section-boundary, rgba(255, 255, 255, 0.08)) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+html[data-performance-mode="lite"][data-theme="dark"] #mainHeader.scrolled,
+html.lite-mode.dark-mode #mainHeader,
+html.lite-mode.dark-mode #mainHeader.scrolled,
+html.lite-mode[data-theme="dark"] #mainHeader,
+html.lite-mode[data-theme="dark"] #mainHeader.scrolled,
+html.perf-mode-lite.dark-mode #mainHeader,
+html.perf-mode-lite.dark-mode #mainHeader.scrolled,
+html.perf-mode-lite[data-theme="dark"] #mainHeader,
+html.perf-mode-lite[data-theme="dark"] #mainHeader.scrolled {
+  background: #060e1a !important;
+  border-bottom: 2px solid #d4a85a !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
 }
 
-/* Mobile Bottom Dock Navigation */
+/* Mobile Bottom Dock Navigation - Light Mode: Warm Crisp Ivory with Royal Gold Border */
 html[data-performance-mode="lite"] #mobileBottomBar,
-html[data-performance-mode="lite"] .mobile-bottom-bar {
-  background: #FFFFFF !important;
-  border-top: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
-  box-shadow: 0 -2px 10px rgba(7, 24, 46, 0.06) !important;
+html[data-performance-mode="lite"] .mobile-bottom-bar,
+html.lite-mode #mobileBottomBar,
+html.lite-mode .mobile-bottom-bar,
+html.perf-mode-lite #mobileBottomBar,
+html.perf-mode-lite .mobile-bottom-bar {
+  background: #FAF7F0 !important;
+  border-top: 2px solid #c9a229 !important;
+  box-shadow: 0 -3px 12px rgba(7, 24, 46, 0.08) !important;
 }
 
+/* Mobile Bottom Dock Navigation - Dark Mode: Solid Midnight Navy with Warm Gold Border */
 html[data-performance-mode="lite"].dark-mode #mobileBottomBar,
 html[data-performance-mode="lite"].dark-mode .mobile-bottom-bar,
 html[data-performance-mode="lite"][data-theme="dark"] #mobileBottomBar,
-html[data-performance-mode="lite"][data-theme="dark"] .mobile-bottom-bar {
-  background: #0a1424 !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.45) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .mobile-bottom-bar,
+html.lite-mode.dark-mode #mobileBottomBar,
+html.lite-mode.dark-mode .mobile-bottom-bar,
+html.lite-mode[data-theme="dark"] #mobileBottomBar,
+html.lite-mode[data-theme="dark"] .mobile-bottom-bar,
+html.perf-mode-lite.dark-mode #mobileBottomBar,
+html.perf-mode-lite.dark-mode .mobile-bottom-bar,
+html.perf-mode-lite[data-theme="dark"] #mobileBottomBar,
+html.perf-mode-lite[data-theme="dark"] .mobile-bottom-bar {
+  background: #081322 !important;
+  border-top: 2px solid #d4a85a !important;
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.55) !important;
 }
 
 html[data-performance-mode="lite"] #mobileBottom-item,
-html[data-performance-mode="lite"] .mobile-bottom-item {
-  color: var(--color-text-primary) !important;
+html[data-performance-mode="lite"] .mobile-bottom-item,
+html.lite-mode #mobileBottom-item,
+html.lite-mode .mobile-bottom-item,
+html.perf-mode-lite #mobileBottom-item,
+html.perf-mode-lite .mobile-bottom-item {
+  color: #07182e !important;
 }
 
 html[data-performance-mode="lite"].dark-mode #mobileBottom-item,
 html[data-performance-mode="lite"].dark-mode .mobile-bottom-item,
 html[data-performance-mode="lite"][data-theme="dark"] #mobileBottom-item,
-html[data-performance-mode="lite"][data-theme="dark"] .mobile-bottom-item {
+html[data-performance-mode="lite"][data-theme="dark"] .mobile-bottom-item,
+html.lite-mode.dark-mode #mobileBottom-item,
+html.lite-mode.dark-mode .mobile-bottom-item,
+html.lite-mode[data-theme="dark"] #mobileBottom-item,
+html.lite-mode[data-theme="dark"] .mobile-bottom-item,
+html.perf-mode-lite.dark-mode #mobileBottom-item,
+html.perf-mode-lite.dark-mode .mobile-bottom-item,
+html.perf-mode-lite[data-theme="dark"] #mobileBottom-item,
+html.perf-mode-lite[data-theme="dark"] .mobile-bottom-item {
   color: #f5f7fb !important;
 }
 
-/* Mobile Nav Menu Drawer */
+/* Mobile Nav Menu Drawer - Stately Deep Academic Navy with Gold Border */
 html[data-performance-mode="lite"] #navMenu,
-html[data-performance-mode="lite"] .nav-menu {
-  background: #FFFFFF !important;
+html[data-performance-mode="lite"] .nav-menu,
+html.lite-mode #navMenu,
+html.lite-mode .nav-menu,
+html.perf-mode-lite #navMenu,
+html.perf-mode-lite .nav-menu {
+  background: #07182e !important;
+  border-left: 2px solid #c9a229 !important;
+  box-shadow: -8px 0 28px rgba(0, 0, 0, 0.35) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode #navMenu,
 html[data-performance-mode="lite"].dark-mode .nav-menu,
 html[data-performance-mode="lite"][data-theme="dark"] #navMenu,
-html[data-performance-mode="lite"][data-theme="dark"] .nav-menu {
-  background: #07182e !important;
+html[data-performance-mode="lite"][data-theme="dark"] .nav-menu,
+html.lite-mode.dark-mode #navMenu,
+html.lite-mode.dark-mode .nav-menu,
+html.lite-mode[data-theme="dark"] #navMenu,
+html.lite-mode[data-theme="dark"] .nav-menu,
+html.perf-mode-lite.dark-mode #navMenu,
+html.perf-mode-lite.dark-mode .nav-menu,
+html.perf-mode-lite[data-theme="dark"] #navMenu,
+html.perf-mode-lite[data-theme="dark"] .nav-menu {
+  background: #060e1a !important;
+  border-left: 2px solid #d4a85a !important;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* High-Contrast Nav Drawer Links */
+html[data-performance-mode="lite"] #navMenu a,
+html.lite-mode #navMenu a,
+html.perf-mode-lite #navMenu a {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(201, 162, 41, 0.3) !important;
+  color: #ffffff !important;
+}
+
+html[data-performance-mode="lite"].dark-mode #navMenu a,
+html[data-performance-mode="lite"][data-theme="dark"] #navMenu a,
+html.lite-mode.dark-mode #navMenu a,
+html.lite-mode[data-theme="dark"] #navMenu a,
+html.perf-mode-lite.dark-mode #navMenu a,
+html.perf-mode-lite[data-theme="dark"] #navMenu a {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(212, 168, 90, 0.35) !important;
+  color: #ffffff !important;
 }
 
 /* ==========================================================================
    3. ANNOUNCEMENT BAR
    ========================================================================== */
 html[data-performance-mode="lite"] #announcementBar,
-html[data-performance-mode="lite"] .announcement-bar {
-  background: var(--bg-section-feature, #EDE5D8) !important;
-  border-bottom: 1px solid var(--color-border-brand, rgba(201, 162, 41, 0.35)) !important;
+html[data-performance-mode="lite"] .announcement-bar,
+html.lite-mode #announcementBar,
+html.lite-mode .announcement-bar,
+html.perf-mode-lite #announcementBar,
+html.perf-mode-lite .announcement-bar {
+  background: #EDE5D8 !important;
+  color: #07182e !important;
+  border-bottom: 2px solid #c9a229 !important;
 }
 
 html[data-performance-mode="lite"].dark-mode #announcementBar,
 html[data-performance-mode="lite"].dark-mode .announcement-bar,
 html[data-performance-mode="lite"][data-theme="dark"] #announcementBar,
-html[data-performance-mode="lite"][data-theme="dark"] .announcement-bar {
-  background: #0f1e33 !important;
-  border-bottom: 1px solid rgba(212, 168, 90, 0.35) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .announcement-bar,
+html.lite-mode.dark-mode #announcementBar,
+html.lite-mode.dark-mode .announcement-bar,
+html.lite-mode[data-theme="dark"] #announcementBar,
+html.lite-mode[data-theme="dark"] .announcement-bar,
+html.perf-mode-lite.dark-mode #announcementBar,
+html.perf-mode-lite.dark-mode .announcement-bar,
+html.perf-mode-lite[data-theme="dark"] #announcementBar,
+html.perf-mode-lite[data-theme="dark"] .announcement-bar {
+  background: #0e1c30 !important;
+  color: #f0d28b !important;
+  border-bottom: 2px solid #d4a85a !important;
 }
 
 /* ==========================================================================
    4. HERO CONTROLS & HUD
    ========================================================================== */
-html[data-performance-mode="lite"] .hero-pause-btn {
-  background: rgba(255, 255, 255, 0.95) !important;
-  color: var(--color-text-primary, #07182e) !important;
-  border: 1px solid rgba(7, 24, 46, 0.2) !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+html[data-performance-mode="lite"] .hero-pause-btn,
+html.lite-mode .hero-pause-btn,
+html.perf-mode-lite .hero-pause-btn {
+  background: #FFFFFF !important;
+  color: #07182e !important;
+  border: 1.5px solid #c9a229 !important;
+  box-shadow: 0 2px 8px rgba(7, 24, 46, 0.12) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .hero-pause-btn,
-html[data-performance-mode="lite"][data-theme="dark"] .hero-pause-btn {
-  background: #111d33 !important;
-  color: #FFFFFF !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .hero-pause-btn,
+html.lite-mode.dark-mode .hero-pause-btn,
+html.lite-mode[data-theme="dark"] .hero-pause-btn,
+html.perf-mode-lite.dark-mode .hero-pause-btn,
+html.perf-mode-lite[data-theme="dark"] .hero-pause-btn {
+  background: #0e1b2e !important;
+  color: #fbe3a1 !important;
+  border: 1.5px solid #d4a85a !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45) !important;
 }
 
 html[data-performance-mode="lite"] .scroll-progress-hud,
-html[data-performance-mode="lite"] #scrollProgress {
-  background: rgba(2, 12, 26, 0.92) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+html[data-performance-mode="lite"] #scrollProgress,
+html.lite-mode .scroll-progress-hud,
+html.lite-mode #scrollProgress,
+html.perf-mode-lite .scroll-progress-hud,
+html.perf-mode-lite #scrollProgress {
+  background: #07182e !important;
+  border: 1.5px solid #c9a229 !important;
 }
 
 /* ==========================================================================
-   5. CARDS & CONTENT SURFACES
+   5. CARDS & CONTENT SURFACES (PREMIUM WARM/GOLD HARMONY)
    ========================================================================== */
 
 /* Event Cards */
-html[data-performance-mode="lite"] .event-card {
+html[data-performance-mode="lite"] .event-card,
+html.lite-mode .event-card,
+html.perf-mode-lite .event-card {
   background: #FFFFFF !important;
-  border: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
-  box-shadow: 0 4px 16px rgba(7, 24, 46, 0.06) !important;
+  border: 1px solid rgba(201, 162, 41, 0.28) !important;
+  box-shadow: 0 4px 16px rgba(7, 24, 46, 0.06), 0 1px 3px rgba(201, 162, 41, 0.08) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .event-card,
-html[data-performance-mode="lite"][data-theme="dark"] .event-card {
-  background: var(--surface-card, #1A2D44) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .event-card,
+html.lite-mode.dark-mode .event-card,
+html.lite-mode[data-theme="dark"] .event-card,
+html.perf-mode-lite.dark-mode .event-card,
+html.perf-mode-lite[data-theme="dark"] .event-card {
+  background: #12233a !important;
+  border: 1px solid rgba(212, 168, 90, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
 }
 
 /* Academic Pillars */
-html[data-performance-mode="lite"] .pillar {
-  background: var(--surface-card, #FAF7F0) !important;
-  border: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
+html[data-performance-mode="lite"] .pillar,
+html.lite-mode .pillar,
+html.perf-mode-lite .pillar {
+  background: #FAF7F0 !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.32) !important;
+  box-shadow: 0 4px 14px rgba(7, 24, 46, 0.05) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .pillar,
-html[data-performance-mode="lite"][data-theme="dark"] .pillar {
-  background: var(--surface-card, #1A2D44) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .pillar,
+html.lite-mode.dark-mode .pillar,
+html.lite-mode[data-theme="dark"] .pillar,
+html.perf-mode-lite.dark-mode .pillar,
+html.perf-mode-lite[data-theme="dark"] .pillar {
+  background: #12233a !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.32) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
 }
 
 /* Stat Cards */
-html[data-performance-mode="lite"] .stat-card {
+html[data-performance-mode="lite"] .stat-card,
+html.lite-mode .stat-card,
+html.perf-mode-lite .stat-card {
   background: #FFFFFF !important;
-  border: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
+  border: 1px solid rgba(201, 162, 41, 0.28) !important;
+  box-shadow: 0 3px 12px rgba(7, 24, 46, 0.05) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .stat-card,
-html[data-performance-mode="lite"][data-theme="dark"] .stat-card {
-  background: var(--surface-card, #1A2D44) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .stat-card,
+html.lite-mode.dark-mode .stat-card,
+html.lite-mode[data-theme="dark"] .stat-card,
+html.perf-mode-lite.dark-mode .stat-card,
+html.perf-mode-lite[data-theme="dark"] .stat-card {
+  background: #12233a !important;
+  border: 1px solid rgba(212, 168, 90, 0.3) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45) !important;
 }
 
 /* Testimonial Cards & Quote Bubbles */
 html[data-performance-mode="lite"] .testimonial-card,
-html[data-performance-mode="lite"] .testimonial-quote-bubble {
-  background: var(--surface-card, #FAF7F0) !important;
-  border: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
+html[data-performance-mode="lite"] .testimonial-quote-bubble,
+html.lite-mode .testimonial-card,
+html.lite-mode .testimonial-quote-bubble,
+html.perf-mode-lite .testimonial-card,
+html.perf-mode-lite .testimonial-quote-bubble {
+  background: #FAF7F0 !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.32) !important;
+  box-shadow: 0 4px 16px rgba(7, 24, 46, 0.06) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .testimonial-card,
 html[data-performance-mode="lite"].dark-mode .testimonial-quote-bubble,
 html[data-performance-mode="lite"][data-theme="dark"] .testimonial-card,
-html[data-performance-mode="lite"][data-theme="dark"] .testimonial-quote-bubble {
-  background: var(--surface-card, #1A2D44) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .testimonial-quote-bubble,
+html.lite-mode.dark-mode .testimonial-card,
+html.lite-mode.dark-mode .testimonial-quote-bubble,
+html.lite-mode[data-theme="dark"] .testimonial-card,
+html.lite-mode[data-theme="dark"] .testimonial-quote-bubble,
+html.perf-mode-lite.dark-mode .testimonial-card,
+html.perf-mode-lite.dark-mode .testimonial-quote-bubble,
+html.perf-mode-lite[data-theme="dark"] .testimonial-card,
+html.perf-mode-lite[data-theme="dark"] .testimonial-quote-bubble {
+  background: #12233a !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.32) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
 }
 
 /* News Cards */
-html[data-performance-mode="lite"] .news-card {
+html[data-performance-mode="lite"] .news-card,
+html.lite-mode .news-card,
+html.perf-mode-lite .news-card {
   background: #FFFFFF !important;
-  border: 1px solid var(--color-border-subtle, rgba(7, 24, 46, 0.08)) !important;
+  border: 1px solid rgba(201, 162, 41, 0.28) !important;
+  box-shadow: 0 4px 16px rgba(7, 24, 46, 0.06) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .news-card,
-html[data-performance-mode="lite"][data-theme="dark"] .news-card {
-  background: var(--surface-card, #1A2D44) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .news-card,
+html.lite-mode.dark-mode .news-card,
+html.lite-mode[data-theme="dark"] .news-card,
+html.perf-mode-lite.dark-mode .news-card,
+html.perf-mode-lite[data-theme="dark"] .news-card {
+  background: #12233a !important;
+  border: 1px solid rgba(212, 168, 90, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
 }
 
 /* Campus Map Cards & HUD */
 html[data-performance-mode="lite"] .map-hud,
 html[data-performance-mode="lite"] .campus-map-card,
-html[data-performance-mode="lite"] .facility-card {
+html[data-performance-mode="lite"] .facility-card,
+html.lite-mode .map-hud,
+html.lite-mode .campus-map-card,
+html.lite-mode .facility-card,
+html.perf-mode-lite .map-hud,
+html.perf-mode-lite .campus-map-card,
+html.perf-mode-lite .facility-card {
   background: #FFFFFF !important;
-  border: 1px solid rgba(7, 24, 46, 0.1) !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.35) !important;
+  box-shadow: 0 4px 16px rgba(7, 24, 46, 0.08) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .map-hud,
@@ -207,9 +363,22 @@ html[data-performance-mode="lite"].dark-mode .campus-map-card,
 html[data-performance-mode="lite"].dark-mode .facility-card,
 html[data-performance-mode="lite"][data-theme="dark"] .map-hud,
 html[data-performance-mode="lite"][data-theme="dark"] .campus-map-card,
-html[data-performance-mode="lite"][data-theme="dark"] .facility-card {
+html[data-performance-mode="lite"][data-theme="dark"] .facility-card,
+html.lite-mode.dark-mode .map-hud,
+html.lite-mode.dark-mode .campus-map-card,
+html.lite-mode.dark-mode .facility-card,
+html.lite-mode[data-theme="dark"] .map-hud,
+html.lite-mode[data-theme="dark"] .campus-map-card,
+html.lite-mode[data-theme="dark"] .facility-card,
+html.perf-mode-lite.dark-mode .map-hud,
+html.perf-mode-lite.dark-mode .campus-map-card,
+html.perf-mode-lite.dark-mode .facility-card,
+html.perf-mode-lite[data-theme="dark"] .map-hud,
+html.perf-mode-lite[data-theme="dark"] .campus-map-card,
+html.perf-mode-lite[data-theme="dark"] .facility-card {
   background: #0d1a2d !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.35) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* ==========================================================================
@@ -218,87 +387,159 @@ html[data-performance-mode="lite"][data-theme="dark"] .facility-card {
 
 /* Enquiry Modal */
 html[data-performance-mode="lite"] .enquiry-modal,
-html[data-performance-mode="lite"] .enquiry-modal__card {
+html[data-performance-mode="lite"] .enquiry-modal__card,
+html.lite-mode .enquiry-modal,
+html.lite-mode .enquiry-modal__card,
+html.perf-mode-lite .enquiry-modal,
+html.perf-mode-lite .enquiry-modal__card {
   background: #FFFFFF !important;
-  box-shadow: var(--shadow-modal, 0 32px 72px -12px rgba(0, 0, 0, 0.35)) !important;
-  border: 1px solid rgba(7, 24, 46, 0.1) !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.45) !important;
+  box-shadow: 0 24px 60px rgba(7, 24, 46, 0.25) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .enquiry-modal,
 html[data-performance-mode="lite"].dark-mode .enquiry-modal__card,
 html[data-performance-mode="lite"][data-theme="dark"] .enquiry-modal,
-html[data-performance-mode="lite"][data-theme="dark"] .enquiry-modal__card {
-  background: #0b1525 !important;
-  box-shadow: 0 32px 72px -12px rgba(0, 0, 0, 0.65) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .enquiry-modal__card,
+html.lite-mode.dark-mode .enquiry-modal,
+html.lite-mode.dark-mode .enquiry-modal__card,
+html.lite-mode[data-theme="dark"] .enquiry-modal,
+html.lite-mode[data-theme="dark"] .enquiry-modal__card,
+html.perf-mode-lite.dark-mode .enquiry-modal,
+html.perf-mode-lite.dark-mode .enquiry-modal__card,
+html.perf-mode-lite[data-theme="dark"] .enquiry-modal,
+html.perf-mode-lite[data-theme="dark"] .enquiry-modal__card {
+  background: #091322 !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.45) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7) !important;
 }
 
 html[data-performance-mode="lite"] .enquiry-modal-backdrop,
 html[data-performance-mode="lite"] .modal-backdrop,
-html[data-performance-mode="lite"] .cd-overlay {
-  background: rgba(2, 12, 26, 0.75) !important;
+html[data-performance-mode="lite"] .cd-overlay,
+html.lite-mode .enquiry-modal-backdrop,
+html.lite-mode .modal-backdrop,
+html.lite-mode .cd-overlay,
+html.perf-mode-lite .enquiry-modal-backdrop,
+html.perf-mode-lite .modal-backdrop,
+html.perf-mode-lite .cd-overlay {
+  background: rgba(2, 12, 26, 0.78) !important;
 }
 
 /* Past Announcements Modal */
 html[data-performance-mode="lite"] .past-announcements-modal,
-html[data-performance-mode="lite"] .past-announcements-modal__card {
+html[data-performance-mode="lite"] .past-announcements-modal__card,
+html.lite-mode .past-announcements-modal,
+html.lite-mode .past-announcements-modal__card,
+html.perf-mode-lite .past-announcements-modal,
+html.perf-mode-lite .past-announcements-modal__card {
   background: #FFFFFF !important;
-  border: 1px solid rgba(7, 24, 46, 0.1) !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.4) !important;
+  box-shadow: 0 24px 60px rgba(7, 24, 46, 0.25) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .past-announcements-modal,
 html[data-performance-mode="lite"].dark-mode .past-announcements-modal__card,
 html[data-performance-mode="lite"][data-theme="dark"] .past-announcements-modal,
-html[data-performance-mode="lite"][data-theme="dark"] .past-announcements-modal__card {
-  background: #0b1525 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .past-announcements-modal__card,
+html.lite-mode.dark-mode .past-announcements-modal,
+html.lite-mode.dark-mode .past-announcements-modal__card,
+html.lite-mode[data-theme="dark"] .past-announcements-modal,
+html.lite-mode[data-theme="dark"] .past-announcements-modal__card,
+html.perf-mode-lite.dark-mode .past-announcements-modal,
+html.perf-mode-lite.dark-mode .past-announcements-modal__card,
+html.perf-mode-lite[data-theme="dark"] .past-announcements-modal,
+html.perf-mode-lite[data-theme="dark"] .past-announcements-modal__card {
+  background: #091322 !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.4) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7) !important;
 }
 
 /* Notification Guidance Modal */
 html[data-performance-mode="lite"] #notificationGuidanceModal,
-html[data-performance-mode="lite"] .guidance-modal-card {
+html[data-performance-mode="lite"] .guidance-modal-card,
+html.lite-mode #notificationGuidanceModal,
+html.lite-mode .guidance-modal-card,
+html.perf-mode-lite #notificationGuidanceModal,
+html.perf-mode-lite .guidance-modal-card {
   background: #FFFFFF !important;
-  border: 1px solid rgba(7, 24, 46, 0.1) !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.4) !important;
+  box-shadow: 0 24px 60px rgba(7, 24, 46, 0.25) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode #notificationGuidanceModal,
 html[data-performance-mode="lite"].dark-mode .guidance-modal-card,
 html[data-performance-mode="lite"][data-theme="dark"] #notificationGuidanceModal,
-html[data-performance-mode="lite"][data-theme="dark"] .guidance-modal-card {
-  background: #0b1525 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .guidance-modal-card,
+html.lite-mode.dark-mode #notificationGuidanceModal,
+html.lite-mode.dark-mode .guidance-modal-card,
+html.lite-mode[data-theme="dark"] #notificationGuidanceModal,
+html.lite-mode[data-theme="dark"] .guidance-modal-card,
+html.perf-mode-lite.dark-mode #notificationGuidanceModal,
+html.perf-mode-lite.dark-mode .guidance-modal-card,
+html.perf-mode-lite[data-theme="dark"] #notificationGuidanceModal,
+html.perf-mode-lite[data-theme="dark"] .guidance-modal-card {
+  background: #091322 !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.4) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7) !important;
 }
 
 /* Calendar Action Sheet */
 html[data-performance-mode="lite"] #calendarActionSheet,
-html[data-performance-mode="lite"] .calendar-action-sheet {
+html[data-performance-mode="lite"] .calendar-action-sheet,
+html.lite-mode #calendarActionSheet,
+html.lite-mode .calendar-action-sheet,
+html.perf-mode-lite #calendarActionSheet,
+html.perf-mode-lite .calendar-action-sheet {
   background: #FFFFFF !important;
-  border: 1px solid rgba(7, 24, 46, 0.12) !important;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2) !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.45) !important;
+  box-shadow: 0 16px 48px rgba(7, 24, 46, 0.22) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode #calendarActionSheet,
 html[data-performance-mode="lite"].dark-mode .calendar-action-sheet,
 html[data-performance-mode="lite"][data-theme="dark"] #calendarActionSheet,
-html[data-performance-mode="lite"][data-theme="dark"] .calendar-action-sheet {
-  background: #0b1525 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .calendar-action-sheet,
+html.lite-mode.dark-mode #calendarActionSheet,
+html.lite-mode.dark-mode .calendar-action-sheet,
+html.lite-mode[data-theme="dark"] #calendarActionSheet,
+html.lite-mode[data-theme="dark"] .calendar-action-sheet,
+html.perf-mode-lite.dark-mode #calendarActionSheet,
+html.perf-mode-lite.dark-mode .calendar-action-sheet,
+html.perf-mode-lite[data-theme="dark"] #calendarActionSheet,
+html.perf-mode-lite[data-theme="dark"] .calendar-action-sheet {
+  background: #091322 !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.45) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6) !important;
 }
 
 /* Confirm Dialog */
 html[data-performance-mode="lite"] .cd-card,
-html[data-performance-mode="lite"] .cd-content-wrapper {
+html[data-performance-mode="lite"] .cd-content-wrapper,
+html.lite-mode .cd-card,
+html.lite-mode .cd-content-wrapper,
+html.perf-mode-lite .cd-card,
+html.perf-mode-lite .cd-content-wrapper {
   background: #FFFFFF !important;
-  border: 1px solid rgba(7, 24, 46, 0.1) !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.4) !important;
+  box-shadow: 0 20px 50px rgba(7, 24, 46, 0.22) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .cd-card,
 html[data-performance-mode="lite"].dark-mode .cd-content-wrapper,
 html[data-performance-mode="lite"][data-theme="dark"] .cd-card,
-html[data-performance-mode="lite"][data-theme="dark"] .cd-content-wrapper {
-  background: #0b1525 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .cd-content-wrapper,
+html.lite-mode.dark-mode .cd-card,
+html.lite-mode.dark-mode .cd-content-wrapper,
+html.lite-mode[data-theme="dark"] .cd-card,
+html.lite-mode[data-theme="dark"] .cd-content-wrapper,
+html.perf-mode-lite.dark-mode .cd-card,
+html.perf-mode-lite.dark-mode .cd-content-wrapper,
+html.perf-mode-lite[data-theme="dark"] .cd-card,
+html.perf-mode-lite[data-theme="dark"] .cd-content-wrapper {
+  background: #091322 !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.4) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65) !important;
 }
 
 /* ==========================================================================
@@ -307,74 +548,116 @@ html[data-performance-mode="lite"][data-theme="dark"] .cd-content-wrapper {
 
 /* Offline Status Indicator Pill & Panel */
 html[data-performance-mode="lite"] .offline-indicator-pill,
-html[data-performance-mode="lite"] .offline-card-panel {
+html[data-performance-mode="lite"] .offline-card-panel,
+html.lite-mode .offline-indicator-pill,
+html.lite-mode .offline-card-panel,
+html.perf-mode-lite .offline-indicator-pill,
+html.perf-mode-lite .offline-card-panel {
   background: #FAF7F0 !important;
   color: #07182e !important;
-  border: 1px solid rgba(7, 24, 46, 0.15) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.45) !important;
+  box-shadow: 0 4px 16px rgba(7, 24, 46, 0.12) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .offline-indicator-pill,
 html[data-performance-mode="lite"].dark-mode .offline-card-panel,
 html[data-performance-mode="lite"][data-theme="dark"] .offline-indicator-pill,
-html[data-performance-mode="lite"][data-theme="dark"] .offline-card-panel {
+html[data-performance-mode="lite"][data-theme="dark"] .offline-card-panel,
+html.lite-mode.dark-mode .offline-indicator-pill,
+html.lite-mode.dark-mode .offline-card-panel,
+html.lite-mode[data-theme="dark"] .offline-indicator-pill,
+html.lite-mode[data-theme="dark"] .offline-card-panel,
+html.perf-mode-lite.dark-mode .offline-indicator-pill,
+html.perf-mode-lite.dark-mode .offline-card-panel,
+html.perf-mode-lite[data-theme="dark"] .offline-indicator-pill,
+html.perf-mode-lite[data-theme="dark"] .offline-card-panel {
   background: #0d1a2d !important;
-  color: #FFFFFF !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+  color: #fbe3a1 !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.45) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* PWA Install Card */
 html[data-performance-mode="lite"] #pwaInstallCard,
-html[data-performance-mode="lite"] .pwa-install-card {
+html[data-performance-mode="lite"] .pwa-install-card,
+html.lite-mode #pwaInstallCard,
+html.lite-mode .pwa-install-card,
+html.perf-mode-lite #pwaInstallCard,
+html.perf-mode-lite .pwa-install-card {
   background: #FFFFFF !important;
-  border: 1px solid rgba(7, 24, 46, 0.12) !important;
-  box-shadow: 0 8px 32px rgba(7, 24, 46, 0.14) !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.45) !important;
+  box-shadow: 0 8px 30px rgba(7, 24, 46, 0.15) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode #pwaInstallCard,
 html[data-performance-mode="lite"].dark-mode .pwa-install-card,
 html[data-performance-mode="lite"][data-theme="dark"] #pwaInstallCard,
-html[data-performance-mode="lite"][data-theme="dark"] .pwa-install-card {
+html[data-performance-mode="lite"][data-theme="dark"] .pwa-install-card,
+html.lite-mode.dark-mode #pwaInstallCard,
+html.lite-mode.dark-mode .pwa-install-card,
+html.lite-mode[data-theme="dark"] #pwaInstallCard,
+html.lite-mode[data-theme="dark"] .pwa-install-card,
+html.perf-mode-lite.dark-mode #pwaInstallCard,
+html.perf-mode-lite.dark-mode .pwa-install-card,
+html.perf-mode-lite[data-theme="dark"] #pwaInstallCard,
+html.perf-mode-lite[data-theme="dark"] .pwa-install-card {
   background: #0d1a2d !important;
-  border: 1px solid rgba(201, 162, 41, 0.35) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.45) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
 }
 
 /* Service Worker Update Banner */
-html[data-performance-mode="lite"] #sw-update-banner {
+html[data-performance-mode="lite"] #sw-update-banner,
+html.lite-mode #sw-update-banner,
+html.perf-mode-lite #sw-update-banner {
   background: #FFFFFF !important;
-  border: 1px solid rgba(7, 24, 46, 0.12) !important;
-  box-shadow: 0 8px 32px rgba(7, 24, 46, 0.14) !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.45) !important;
+  box-shadow: 0 8px 30px rgba(7, 24, 46, 0.15) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode #sw-update-banner,
-html[data-performance-mode="lite"][data-theme="dark"] #sw-update-banner {
+html[data-performance-mode="lite"][data-theme="dark"] #sw-update-banner,
+html.lite-mode.dark-mode #sw-update-banner,
+html.lite-mode[data-theme="dark"] #sw-update-banner,
+html.perf-mode-lite.dark-mode #sw-update-banner,
+html.perf-mode-lite[data-theme="dark"] #sw-update-banner {
   background: #0d1a2d !important;
-  border: 1px solid rgba(201, 162, 41, 0.35) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.45) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
 }
 
 /* Search History Dropdown */
-html[data-performance-mode="lite"] .search-history-dropdown {
+html[data-performance-mode="lite"] .search-history-dropdown,
+html.lite-mode .search-history-dropdown,
+html.perf-mode-lite .search-history-dropdown {
   background: #FFFFFF !important;
-  border: 1px solid rgba(7, 24, 46, 0.12) !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.35) !important;
   box-shadow: 0 8px 24px rgba(7, 24, 46, 0.12) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .search-history-dropdown,
-html[data-performance-mode="lite"][data-theme="dark"] .search-history-dropdown {
+html[data-performance-mode="lite"][data-theme="dark"] .search-history-dropdown,
+html.lite-mode.dark-mode .search-history-dropdown,
+html.lite-mode[data-theme="dark"] .search-history-dropdown,
+html.perf-mode-lite.dark-mode .search-history-dropdown,
+html.perf-mode-lite[data-theme="dark"] .search-history-dropdown {
   background: #0d1a2d !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.35) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55) !important;
 }
 
 /* AI Guidance Assistant Widget */
 html[data-performance-mode="lite"] .ai-chat-bubble,
 html[data-performance-mode="lite"] .ai-chat-window,
-html[data-performance-mode="lite"] .ai-chat-header {
+html[data-performance-mode="lite"] .ai-chat-header,
+html.lite-mode .ai-chat-bubble,
+html.lite-mode .ai-chat-window,
+html.lite-mode .ai-chat-header,
+html.perf-mode-lite .ai-chat-bubble,
+html.perf-mode-lite .ai-chat-window,
+html.perf-mode-lite .ai-chat-header {
   background: #FFFFFF !important;
-  border: 1px solid rgba(7, 24, 46, 0.1) !important;
+  border: 1.5px solid rgba(201, 162, 41, 0.35) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .ai-chat-bubble,
@@ -382,70 +665,381 @@ html[data-performance-mode="lite"].dark-mode .ai-chat-window,
 html[data-performance-mode="lite"].dark-mode .ai-chat-header,
 html[data-performance-mode="lite"][data-theme="dark"] .ai-chat-bubble,
 html[data-performance-mode="lite"][data-theme="dark"] .ai-chat-window,
-html[data-performance-mode="lite"][data-theme="dark"] .ai-chat-header {
+html[data-performance-mode="lite"][data-theme="dark"] .ai-chat-header,
+html.lite-mode.dark-mode .ai-chat-bubble,
+html.lite-mode.dark-mode .ai-chat-window,
+html.lite-mode.dark-mode .ai-chat-header,
+html.lite-mode[data-theme="dark"] .ai-chat-bubble,
+html.lite-mode[data-theme="dark"] .ai-chat-window,
+html.lite-mode[data-theme="dark"] .ai-chat-header,
+html.perf-mode-lite.dark-mode .ai-chat-bubble,
+html.perf-mode-lite.dark-mode .ai-chat-window,
+html.perf-mode-lite.dark-mode .ai-chat-header,
+html.perf-mode-lite[data-theme="dark"] .ai-chat-bubble,
+html.perf-mode-lite[data-theme="dark"] .ai-chat-window,
+html.perf-mode-lite[data-theme="dark"] .ai-chat-header {
   background: #0b1525 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1.5px solid rgba(212, 168, 90, 0.35) !important;
 }
 
-/* Glass Buttons */
+/* Solid St. Joseph's Navy & Gold Buttons */
 html[data-performance-mode="lite"] .btn-glass,
-html[data-performance-mode="lite"] .liquid-glass-btn {
-  background: var(--sj-navy-800, #0a1f3f) !important;
+html[data-performance-mode="lite"] .liquid-glass-btn,
+html.lite-mode .btn-glass,
+html.lite-mode .liquid-glass-btn,
+html.perf-mode-lite .btn-glass,
+html.perf-mode-lite .liquid-glass-btn {
+  background: #0a1f3f !important;
   color: #FFFFFF !important;
-  border: 1px solid var(--sj-navy-700, #0f2d5c) !important;
+  border: 1.5px solid #c9a229 !important;
+  box-shadow: 0 2px 8px rgba(7, 24, 46, 0.16) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode .btn-glass,
 html[data-performance-mode="lite"].dark-mode .liquid-glass-btn,
 html[data-performance-mode="lite"][data-theme="dark"] .btn-glass,
-html[data-performance-mode="lite"][data-theme="dark"] .liquid-glass-btn {
-  background: #182A41 !important;
-  color: #FFFFFF !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+html[data-performance-mode="lite"][data-theme="dark"] .liquid-glass-btn,
+html.lite-mode.dark-mode .btn-glass,
+html.lite-mode.dark-mode .liquid-glass-btn,
+html.lite-mode[data-theme="dark"] .btn-glass,
+html.lite-mode[data-theme="dark"] .liquid-glass-btn,
+html.perf-mode-lite.dark-mode .btn-glass,
+html.perf-mode-lite.dark-mode .liquid-glass-btn,
+html.perf-mode-lite[data-theme="dark"] .btn-glass,
+html.perf-mode-lite[data-theme="dark"] .liquid-glass-btn {
+  background: #132642 !important;
+  color: #fbe3a1 !important;
+  border: 1.5px solid #d4a85a !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* LiquidGlass Fallback Elements */
 html[data-performance-mode="lite"] [data-glass-fallback="true"],
-html[data-performance-mode="lite"] .glass-fallback {
+html[data-performance-mode="lite"] .glass-fallback,
+html.lite-mode [data-glass-fallback="true"],
+html.lite-mode .glass-fallback,
+html.perf-mode-lite [data-glass-fallback="true"],
+html.perf-mode-lite .glass-fallback {
   background: #FFFFFF !important;
+  border: 1px solid rgba(201, 162, 41, 0.28) !important;
 }
 
 html[data-performance-mode="lite"].dark-mode [data-glass-fallback="true"],
 html[data-performance-mode="lite"].dark-mode .glass-fallback,
 html[data-performance-mode="lite"][data-theme="dark"] [data-glass-fallback="true"],
-html[data-performance-mode="lite"][data-theme="dark"] .glass-fallback {
+html[data-performance-mode="lite"][data-theme="dark"] .glass-fallback,
+html.lite-mode.dark-mode [data-glass-fallback="true"],
+html.lite-mode.dark-mode .glass-fallback,
+html.lite-mode[data-theme="dark"] [data-glass-fallback="true"],
+html.lite-mode[data-theme="dark"] .glass-fallback,
+html.perf-mode-lite.dark-mode [data-glass-fallback="true"],
+html.perf-mode-lite.dark-mode .glass-fallback,
+html.perf-mode-lite[data-theme="dark"] [data-glass-fallback="true"],
+html.perf-mode-lite[data-theme="dark"] .glass-fallback {
   background: #0d1a2d !important;
+  border: 1px solid rgba(212, 168, 90, 0.3) !important;
 }
 
 /* ==========================================================================
-   8. DISABLING EXPENSIVE CONTINUOUS ANIMATIONS & FILTERS IN LITE MODE
+   8. COMPOSITOR LAYER DE-PROMOTION & WILL-CHANGE RELEASE IN LITE MODE
+   Systematically revokes dedicated compositor backing textures across all
+   DOM nodes to prevent GPU layer-tree thrashing, VRAM bloat, and main-thread
+   raster invalidations during Lite Mode navigation.
+   ========================================================================== */
+html[data-performance-mode="lite"] *,
+html[data-performance-mode="lite"] *::before,
+html[data-performance-mode="lite"] *::after,
+html.lite-mode *,
+html.lite-mode *::before,
+html.lite-mode *::after,
+html.perf-mode-lite *,
+html.perf-mode-lite *::before,
+html.perf-mode-lite *::after {
+  will-change: auto !important;
+}
+
+/* ==========================================================================
+   9. FORCING HARDWARE-ACCELERATED ANIMATIONS INTO STATIC RESTING STATES
+   Halts all continuous GPU/CPU keyframe animation loops and holds elements
+   in clean, crisp, static visual representations.
    ========================================================================== */
 
-/* Dust Canvas is completely suppressed in Lite Mode */
-html[data-performance-mode="lite"] #dustCanvas,
-html[data-performance-mode="lite"] .dust-particles-canvas {
-  display: none !important;
-  visibility: hidden !important;
+/* Mobile Bottom Navigation Dock & Active Icons */
+html[data-performance-mode="lite"] .mobile-bottom-item.active i,
+html[data-performance-mode="lite"] .mobile-bottom-item[aria-current="location"] i,
+html[data-performance-mode="lite"] .mobile-bottom-item--menu.active i,
+html[data-performance-mode="lite"] .mobile-bottom-item--reminders.active i,
+html[data-performance-mode="lite"] .mobile-bottom-item i,
+html.lite-mode .mobile-bottom-item.active i,
+html.lite-mode .mobile-bottom-item[aria-current="location"] i,
+html.lite-mode .mobile-bottom-item--menu.active i,
+html.lite-mode .mobile-bottom-item--reminders.active i,
+html.lite-mode .mobile-bottom-item i,
+html.perf-mode-lite .mobile-bottom-item.active i,
+html.perf-mode-lite .mobile-bottom-item[aria-current="location"] i,
+html.perf-mode-lite .mobile-bottom-item--menu.active i,
+html.perf-mode-lite .mobile-bottom-item--reminders.active i,
+html.perf-mode-lite .mobile-bottom-item i {
+  animation: none !important;
+  transform: none !important;
+  filter: none !important;
+  will-change: auto !important;
 }
 
-/* Floating Hero DOM particles */
-html[data-performance-mode="lite"] .hero-particles,
-html[data-performance-mode="lite"] .hero-particle {
-  display: none !important;
+/* Mobile Bottom Gliding Pill - Simplified instant/micro transition */
+html[data-performance-mode="lite"] .mobile-bottom-glider,
+html.lite-mode .mobile-bottom-glider,
+html.perf-mode-lite .mobile-bottom-glider {
+  will-change: auto !important;
+  transition: transform 0.06s ease, width 0.06s ease !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
 }
 
-/* Preloader particles */
-html[data-performance-mode="lite"] .preloader-particles {
-  display: none !important;
+/* Mobile Navigation Drawer - Simplified linear/ease sliding */
+html[data-performance-mode="lite"] #navMenu,
+html.lite-mode #navMenu,
+html.perf-mode-lite #navMenu {
+  transition: right 0.15s ease, visibility 0.15s ease !important;
+  will-change: auto !important;
 }
 
-/* Eliminate expensive CSS filter: blur() calls */
-html[data-performance-mode="lite"] .blur-filter,
-html[data-performance-mode="lite"] [style*="blur("] {
+/* Top Navigation Item Animations */
+html[data-performance-mode="lite"] .topnav-item.active i,
+html[data-performance-mode="lite"] .header-action-btn i,
+html.lite-mode .topnav-item.active i,
+html.lite-mode .header-action-btn i,
+html.perf-mode-lite .topnav-item.active i,
+html.perf-mode-lite .header-action-btn i {
+  animation: none !important;
+  transform: none !important;
+  filter: none !important;
+  will-change: auto !important;
+}
+
+/* Interactive Campus Map & Tour Pulse Rings */
+html[data-performance-mode="lite"] .map-pin-pulse,
+html[data-performance-mode="lite"] .map-radar-ring,
+html[data-performance-mode="lite"] .pulse-ring,
+html[data-performance-mode="lite"] .tour-pulse,
+html[data-performance-mode="lite"] .pin-pulse,
+html[data-performance-mode="lite"] .qr-pulse,
+html.lite-mode .map-pin-pulse,
+html.lite-mode .map-radar-ring,
+html.lite-mode .pulse-ring,
+html.lite-mode .tour-pulse,
+html.lite-mode .pin-pulse,
+html.lite-mode .qr-pulse,
+html.perf-mode-lite .map-pin-pulse,
+html.perf-mode-lite .map-radar-ring,
+html.perf-mode-lite .pulse-ring,
+html.perf-mode-lite .tour-pulse,
+html.perf-mode-lite .pin-pulse,
+html.perf-mode-lite .qr-pulse {
+  display: none !important;
+  animation: none !important;
+}
+
+/* Campus Map Hotspot Pins - Static 2D placement without 3D filter transforms */
+html[data-performance-mode="lite"] .map-hotspot-pin,
+html[data-performance-mode="lite"] .map-pin-core,
+html.lite-mode .map-hotspot-pin,
+html.lite-mode .map-pin-core,
+html.perf-mode-lite .map-hotspot-pin,
+html.perf-mode-lite .map-pin-core {
+  animation: none !important;
+  filter: none !important;
+  will-change: auto !important;
+  transition: none !important;
+}
+
+html[data-performance-mode="lite"] .map-hotspot-pin:hover,
+html[data-performance-mode="lite"] .map-hotspot-pin:focus-visible,
+html[data-performance-mode="lite"] .map-hotspot-pin.active,
+html.lite-mode .map-hotspot-pin:hover,
+html.lite-mode .map-hotspot-pin:focus-visible,
+html.lite-mode .map-hotspot-pin.active,
+html.perf-mode-lite .map-hotspot-pin:hover,
+html.perf-mode-lite .map-hotspot-pin:focus-visible,
+html.perf-mode-lite .map-hotspot-pin.active {
+  transform: translate(-50%, -50%) !important;
   filter: none !important;
 }
 
-/* Simplify transition durations */
-html[data-performance-mode="lite"] .reveal {
-  transition-duration: 200ms !important;
+/* Continuous Background Zooms, Floating & Canvas Particles */
+html[data-performance-mode="lite"] #dustCanvas,
+html[data-performance-mode="lite"] .dust-particles-canvas,
+html[data-performance-mode="lite"] .hero-particles,
+html[data-performance-mode="lite"] .hero-particle,
+html[data-performance-mode="lite"] .preloader-particles,
+html[data-performance-mode="lite"] .preloader-particle,
+html.lite-mode #dustCanvas,
+html.lite-mode .dust-particles-canvas,
+html.lite-mode .hero-particles,
+html.lite-mode .hero-particle,
+html.lite-mode .preloader-particles,
+html.lite-mode .preloader-particle,
+html.perf-mode-lite #dustCanvas,
+html.perf-mode-lite .dust-particles-canvas,
+html.perf-mode-lite .hero-particles,
+html.perf-mode-lite .hero-particle,
+html.perf-mode-lite .preloader-particles,
+html.perf-mode-lite .preloader-particle {
+  display: none !important;
+  animation: none !important;
+  visibility: hidden !important;
 }
+
+html[data-performance-mode="lite"] .hero-bg-img,
+html[data-performance-mode="lite"] .gold-shimmer,
+html[data-performance-mode="lite"] .hero-typing-caret,
+html.lite-mode .hero-bg-img,
+html.lite-mode .gold-shimmer,
+html.lite-mode .hero-typing-caret,
+html.perf-mode-lite .hero-bg-img,
+html.perf-mode-lite .gold-shimmer,
+html.perf-mode-lite .hero-typing-caret {
+  animation: none !important;
+}
+
+html[data-performance-mode="lite"] .hero-typing-caret,
+html.lite-mode .hero-typing-caret,
+html.perf-mode-lite .hero-typing-caret {
+  display: none !important;
+}
+
+/* Perspective & 3D Stacking Context Elimination */
+html[data-performance-mode="lite"] .scroll-message-wrapper,
+html[data-performance-mode="lite"] [data-3d-wrapper],
+html[data-performance-mode="lite"] .perspective-container,
+html.lite-mode .scroll-message-wrapper,
+html.lite-mode [data-3d-wrapper],
+html.lite-mode .perspective-container,
+html.perf-mode-lite .scroll-message-wrapper,
+html.perf-mode-lite [data-3d-wrapper],
+html.perf-mode-lite .perspective-container {
+  perspective: none !important;
+  -webkit-perspective: none !important;
+  transform: none !important;
+  will-change: auto !important;
+}
+
+/* Timeline & Milestone Reminders - Static Bell & Badge Indicators */
+html[data-performance-mode="lite"] .timeline-remind-bell-icon,
+html[data-performance-mode="lite"] .timeline-remind-me-label,
+html[data-performance-mode="lite"] .countdown-pill,
+html[data-performance-mode="lite"] .notification-ring,
+html[data-performance-mode="lite"] .pulse-node-glow,
+html[data-performance-mode="lite"] .badge-bump,
+html.lite-mode .timeline-remind-bell-icon,
+html.lite-mode .timeline-remind-me-label,
+html.lite-mode .countdown-pill,
+html.lite-mode .notification-ring,
+html.lite-mode .pulse-node-glow,
+html.lite-mode .badge-bump,
+html.perf-mode-lite .timeline-remind-bell-icon,
+html.perf-mode-lite .timeline-remind-me-label,
+html.perf-mode-lite .countdown-pill,
+html.perf-mode-lite .notification-ring,
+html.perf-mode-lite .pulse-node-glow,
+html.perf-mode-lite .badge-bump {
+  animation: none !important;
+  transform: none !important;
+  will-change: auto !important;
+}
+
+/* Dialog & Card Decorative Animations */
+html[data-performance-mode="lite"] .cd-breathe,
+html[data-performance-mode="lite"] .cd-angle-spin,
+html[data-performance-mode="lite"] .cd-float,
+html[data-performance-mode="lite"] .cd-gradient-pan,
+html[data-performance-mode="lite"] .offline-dot-pulse,
+html[data-performance-mode="lite"] .unread-pulse-dot,
+html.lite-mode .cd-breathe,
+html.lite-mode .cd-angle-spin,
+html.lite-mode .cd-float,
+html.lite-mode .cd-gradient-pan,
+html.lite-mode .offline-dot-pulse,
+html.lite-mode .unread-pulse-dot,
+html.perf-mode-lite .cd-breathe,
+html.perf-mode-lite .cd-angle-spin,
+html.perf-mode-lite .cd-float,
+html.perf-mode-lite .cd-gradient-pan,
+html.perf-mode-lite .offline-dot-pulse,
+html.perf-mode-lite .unread-pulse-dot {
+  animation: none !important;
+}
+
+/* ==========================================================================
+   10. SIMPLIFIED TRANSITIONS & HOVER REFLOW SUPPRESSION IN LITE MODE
+   ========================================================================== */
+
+/* Eliminate hover/focus layout-shifting transforms across cards and buttons */
+html[data-performance-mode="lite"] .btn:hover,
+html[data-performance-mode="lite"] .btn i,
+html[data-performance-mode="lite"] .stat-card:hover,
+html[data-performance-mode="lite"] .pillar:hover,
+html[data-performance-mode="lite"] .pillar:hover .pillar__icon,
+html[data-performance-mode="lite"] .enquiry-fab:hover,
+html[data-performance-mode="lite"] .enquiry-fab:hover i,
+html[data-performance-mode="lite"] .event-card:hover,
+html[data-performance-mode="lite"] .event-card__link:hover,
+html[data-performance-mode="lite"] .news-card:hover,
+html[data-performance-mode="lite"] .facility-card:hover,
+html[data-performance-mode="lite"] #navMenu a:hover,
+html.lite-mode .btn:hover,
+html.lite-mode .btn i,
+html.lite-mode .stat-card:hover,
+html.lite-mode .pillar:hover,
+html.lite-mode .pillar:hover .pillar__icon,
+html.lite-mode .enquiry-fab:hover,
+html.lite-mode .enquiry-fab:hover i,
+html.lite-mode .event-card:hover,
+html.lite-mode .event-card__link:hover,
+html.lite-mode .news-card:hover,
+html.lite-mode .facility-card:hover,
+html.lite-mode #navMenu a:hover,
+html.perf-mode-lite .btn:hover,
+html.perf-mode-lite .btn i,
+html.perf-mode-lite .stat-card:hover,
+html.perf-mode-lite .pillar:hover,
+html.perf-mode-lite .pillar:hover .pillar__icon,
+html.perf-mode-lite .enquiry-fab:hover,
+html.perf-mode-lite .enquiry-fab:hover i,
+html.perf-mode-lite .event-card:hover,
+html.perf-mode-lite .event-card__link:hover,
+html.perf-mode-lite .news-card:hover,
+html.perf-mode-lite .facility-card:hover,
+html.perf-mode-lite #navMenu a:hover {
+  transform: none !important;
+}
+
+/* Simplified transitions for reveal and carousels */
+html[data-performance-mode="lite"] .reveal,
+html.lite-mode .reveal,
+html.perf-mode-lite .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html[data-performance-mode="lite"] .carousel-slide,
+html[data-performance-mode="lite"] .testimonial-card,
+html.lite-mode .carousel-slide,
+html.lite-mode .testimonial-card,
+html.perf-mode-lite .carousel-slide,
+html.perf-mode-lite .testimonial-card {
+  transform: none !important;
+  will-change: auto !important;
+  transition: opacity 0.1s ease !important;
+}
+
+/* Eliminate expensive software blur filters */
+html[data-performance-mode="lite"] .blur-filter,
+html[data-performance-mode="lite"] [style*="blur("],
+html.lite-mode .blur-filter,
+html.lite-mode [style*="blur("],
+html.perf-mode-lite .blur-filter,
+html.perf-mode-lite [style*="blur("] {
+  filter: none !important;
+}
+

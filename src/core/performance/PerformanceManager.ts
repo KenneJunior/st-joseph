@@ -9,12 +9,13 @@
  * 3. URL override handling (?performance=lite) with strict non-mutation of preferences.
  * 4. Synchronization of root DOM attributes (data-performance-mode="full|balanced|lite").
  * 5. Reactive pub/sub notification for animation, canvas, and layout subsystems.
- * 6. Runtime performance adaptation with hysteresis to protect against sustained frame drops.
+ * 6. Session-persistent mode stability ensuring the resolved mode remains consistent throughout the user session.
  * ============================================================================
  */
 
 import { STORAGE_KEYS } from '../storage/storageKeys.ts';
 import { DeviceCapabilityDetector } from './DeviceCapabilityDetector.ts';
+import { motionSuspension } from '../physics/MotionSuspension.ts';
 import type {
     CapabilitySnapshot,
     PerformanceCapabilities,
@@ -37,16 +38,6 @@ export class PerformanceManager {
 
     // In-memory fallback if localStorage throws or is blocked
     private memoryStorage: Record<string, string> = {};
-
-    // Runtime frame monitoring state
-    private isMonitoring = false;
-    private frameMonitorRafId: number | null = null;
-    private lastFrameTime = 0;
-    private degradedFrameCount = 0;
-    private monitorWindowStart = 0;
-    private static readonly FRAME_BUDGET_MS = 50; // Threshold for dropped/delayed frames (20fps floor)
-    private static readonly DEGRADED_THRESHOLD = 8; // Sustained frame drops required for hysteresis
-    private static readonly MONITOR_WINDOW_MS = 3000; // 3-second evaluation window
 
     constructor(detector?: DeviceCapabilityDetector) {
         this.detector = detector ?? new DeviceCapabilityDetector();
@@ -77,7 +68,6 @@ export class PerformanceManager {
     private init(): void {
         this.preference = this.loadPreference();
         this.resolveAndApplyProfile();
-        this.setupVisibilityListener();
         this.setupReducedMotionListener();
     }
 
@@ -237,7 +227,7 @@ export class PerformanceManager {
                     allowParticles: false,
                     particleCount: 0,
                     dustDensity: 0,
-                    animationDurationScale: 0.6,
+                    animationDurationScale: 0.001,
                     enableLiquidGlass: false,
                     enableTilt: false,
                     scrollThrottleMs: 32,
@@ -276,11 +266,11 @@ export class PerformanceManager {
         // Synchronize root DOM representation
         this.syncDomAttributes();
 
-        // Manage runtime degradation monitoring: only monitor in full or balanced mode
+        // Manage motion suspension
         if (newProfile !== 'lite') {
-            this.startRuntimeMonitoring();
+            motionSuspension.resumeAll('lite-mode');
         } else {
-            this.stopRuntimeMonitoring();
+            motionSuspension.suspendAll('lite-mode');
         }
 
         // Notify active subscribers
@@ -374,104 +364,8 @@ export class PerformanceManager {
     }
 
     // ========================================================================
-    // RUNTIME DEGRADATION SAFEGUARD WITH HYSTERESIS
+    // ACCESSIBILITY HOOKS
     // ========================================================================
-
-    private startRuntimeMonitoring(): void {
-        if (this.isMonitoring || typeof window === 'undefined' || typeof requestAnimationFrame === 'undefined') {
-            return;
-        }
-
-        // Do not monitor if user has forced an explicit preference or URL override is active
-        if (this.resolutionSource === 'url-override' || this.preference !== 'auto') {
-            return;
-        }
-
-        this.isMonitoring = true;
-        this.lastFrameTime = performance.now();
-        this.monitorWindowStart = this.lastFrameTime;
-        this.degradedFrameCount = 0;
-
-        const monitorLoop = (timestamp: number) => {
-            if (!this.isMonitoring) return;
-
-            const delta = timestamp - this.lastFrameTime;
-            this.lastFrameTime = timestamp;
-
-            // Only evaluate frame times if document is visible (avoid throttling in background tabs)
-            if (typeof document !== 'undefined' && !document.hidden) {
-                if (delta > PerformanceManager.FRAME_BUDGET_MS) {
-                    this.degradedFrameCount++;
-                }
-
-                // Check window expiration
-                if (timestamp - this.monitorWindowStart >= PerformanceManager.MONITOR_WINDOW_MS) {
-                    if (this.degradedFrameCount >= PerformanceManager.DEGRADED_THRESHOLD) {
-                        // Sustained degradation detected: gradually step down profile
-                        this.handleRuntimeDegradation();
-                        return; // Stop current monitoring cycle
-                    }
-                    // Reset sliding window
-                    this.monitorWindowStart = timestamp;
-                    this.degradedFrameCount = 0;
-                }
-            } else {
-                // Reset frame time on tab resume
-                this.monitorWindowStart = timestamp;
-                this.degradedFrameCount = 0;
-            }
-
-            this.frameMonitorRafId = requestAnimationFrame(monitorLoop);
-        };
-
-        this.frameMonitorRafId = requestAnimationFrame(monitorLoop);
-    }
-
-    private stopRuntimeMonitoring(): void {
-        this.isMonitoring = false;
-        if (this.frameMonitorRafId !== null && typeof cancelAnimationFrame === 'function') {
-            cancelAnimationFrame(this.frameMonitorRafId);
-            this.frameMonitorRafId = null;
-        }
-    }
-
-    private handleRuntimeDegradation(): void {
-        this.stopRuntimeMonitoring();
-
-        let downgradedProfile: PerformanceProfile;
-        if (this.profile === 'full') {
-            downgradedProfile = 'balanced';
-        } else if (this.profile === 'balanced') {
-            downgradedProfile = 'lite';
-        } else {
-            return;
-        }
-
-        this.resolutionSource = 'runtime-degradation';
-        if (this.snapshot) {
-            this.snapshot.reasons.push(
-                `Runtime degradation detected: ${this.degradedFrameCount} frames exceeded ${PerformanceManager.FRAME_BUDGET_MS}ms within ${PerformanceManager.MONITOR_WINDOW_MS}ms window`
-            );
-        }
-
-        this.applyProfile(downgradedProfile);
-    }
-
-    // ========================================================================
-    // ACCESSIBILITY & VISIBILITY HOOKS
-    // ========================================================================
-
-    private setupVisibilityListener(): void {
-        if (typeof document === 'undefined' || typeof document.addEventListener !== 'function') return;
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                this.stopRuntimeMonitoring();
-            } else if (this.profile !== 'lite') {
-                this.startRuntimeMonitoring();
-            }
-        });
-    }
 
     private setupReducedMotionListener(): void {
         if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
@@ -497,10 +391,9 @@ export class PerformanceManager {
     }
 
     /**
-     * Teardown listeners and monitoring for clean disposal.
+     * Teardown listeners for clean disposal.
      */
     public destroy(): void {
-        this.stopRuntimeMonitoring();
         this.listeners.clear();
     }
 }

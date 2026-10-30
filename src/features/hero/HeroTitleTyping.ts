@@ -24,8 +24,13 @@ export class HeroTitleTyping {
             this.heading.setAttribute('aria-label', "St. Joseph's Catholic Comprehensive College Mbengwi");
         }
 
-        // Accessibility: bypass typing effect if user prefers reduced motion
-        if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // Accessibility & Lite Mode: bypass typing effect if user prefers reduced motion or lite mode
+        const isLiteMode = typeof document !== 'undefined' && Boolean(
+            document.documentElement.getAttribute('data-performance-mode') === 'lite' ||
+            document.documentElement.classList.contains('lite-mode') ||
+            document.documentElement.classList.contains('perf-mode-lite')
+        );
+        if (isLiteMode || (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
             return;
         }
 
@@ -62,7 +67,10 @@ export class HeroTitleTyping {
         const part2 = "Catholic";
         const part3 = "Comprehensive College Mbengwi";
 
-        // Clear existing text for typewriter sequence
+        // To eliminate layout shifts (CLS = 0) and prevent heading collapse,
+        // pre-populate the heading structure with all characters present in layout
+        // set to opacity: 0, then progressively reveal them to opacity: 1.
+        this.heading.style.position = 'relative';
         this.heading.innerHTML = '';
 
         const textSpan1 = document.createElement('span');
@@ -70,9 +78,28 @@ export class HeroTitleTyping {
         shimmerSpan.className = 'gold-shimmer';
         const br = document.createElement('br');
         const textSpan2 = document.createElement('span');
+
         const caret = document.createElement('span');
         caret.className = 'hero-typing-caret';
         caret.setAttribute('aria-hidden', 'true');
+
+        const charSpans: HTMLElement[] = [];
+
+        const appendChars = (container: HTMLElement, text: string) => {
+            for (let i = 0; i < text.length; i++) {
+                const charSpan = document.createElement('span');
+                charSpan.className = 'hero-type-char';
+                charSpan.style.opacity = '0';
+                charSpan.style.transition = 'opacity 0.08s ease';
+                charSpan.textContent = text[i];
+                container.appendChild(charSpan);
+                charSpans.push(charSpan);
+            }
+        };
+
+        appendChars(textSpan1, part1);
+        appendChars(shimmerSpan, part2);
+        appendChars(textSpan2, part3);
 
         this.heading.appendChild(textSpan1);
         this.heading.appendChild(shimmerSpan);
@@ -80,29 +107,32 @@ export class HeroTitleTyping {
         this.heading.appendChild(textSpan2);
         this.heading.appendChild(caret);
 
-        let p1Idx = 0;
-        let p2Idx = 0;
-        let p3Idx = 0;
+        let currentCharIdx = 0;
 
-        // Subtle, rhythmic typing cadence (~36ms per character with micro-jitter)
+        const updateCaretPosition = (span: HTMLElement) => {
+            if (!this.heading) return;
+            const headingRect = this.heading.getBoundingClientRect();
+            const charRect = span.getBoundingClientRect();
+            if (charRect.width > 0 && charRect.height > 0) {
+                const left = charRect.right - headingRect.left;
+                const top = charRect.top - headingRect.top;
+                caret.style.transform = `translate3d(${left}px, ${top}px, 0)`;
+            }
+        };
+
         const typeNext = () => {
-            if (p1Idx < part1.length) {
-                textSpan1.textContent += part1[p1Idx];
-                p1Idx++;
-                const jitter = (p1Idx === part1.length) ? 80 : 34 + Math.random() * 12;
-                setTimeout(typeNext, jitter);
-            } else if (p2Idx < part2.length) {
-                shimmerSpan.textContent += part2[p2Idx];
-                p2Idx++;
-                const jitter = (p2Idx === part2.length) ? 90 : 36 + Math.random() * 14;
-                setTimeout(typeNext, jitter);
-            } else if (p3Idx < part3.length) {
-                textSpan2.textContent += part3[p3Idx];
-                p3Idx++;
-                const jitter = 32 + Math.random() * 10;
+            if (currentCharIdx < charSpans.length) {
+                const span = charSpans[currentCharIdx];
+                span.style.opacity = '1';
+                updateCaretPosition(span);
+                currentCharIdx++;
+
+                const jitter = (currentCharIdx === part1.length || currentCharIdx === part1.length + part2.length)
+                    ? 80
+                    : 30 + Math.random() * 12;
                 setTimeout(typeNext, jitter);
             } else {
-                // Typing complete: let golden caret pulse 3 times before fading out
+                // Typing complete: let golden caret pulse before fading out
                 setTimeout(() => {
                     caret.classList.add('fade-out');
                     setTimeout(() => {

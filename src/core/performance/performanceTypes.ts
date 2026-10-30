@@ -15,7 +15,7 @@ export type PerformancePreference = 'auto' | 'full' | 'balanced' | 'lite';
 export type PerformanceProfile = 'full' | 'balanced' | 'lite';
 
 /** Source of the active performance profile decision */
-export type ProfileResolutionSource = 'url-override' | 'user-preference' | 'capability-assessment' | 'runtime-degradation';
+export type ProfileResolutionSource = 'url-override' | 'user-preference' | 'capability-assessment';
 
 /** Normalized hardware, graphics, and environment capability snapshot */
 export interface CapabilitySnapshot {

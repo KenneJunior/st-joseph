@@ -727,5 +727,20 @@ describe('SJCCC Intelligent Adaptive Performance System', () => {
             expect(reloadedManager.getPreference()).toBe('balanced');
             expect(storageMock[STORAGE_KEYS.PERFORMANCE_PREFERENCE]).toBe('balanced');
         });
+
+        it('ensures chosen mode persists through the session without mid-session frame-rate degradation loops', () => {
+            const rafSpy = window.requestAnimationFrame;
+            const manager = new PerformanceManager();
+            manager.setPreference('full');
+            expect(manager.getProfile()).toBe('full');
+
+            // Window rAF should NOT have been invoked to start a frame degradation monitor loop
+            expect(rafSpy).not.toHaveBeenCalled();
+
+            // The profile strictly remains 'full' throughout the session without mid-session flapping
+            expect(manager.getProfile()).toBe('full');
+            expect(manager.getResolutionSource()).toBe('user-preference');
+        });
     });
 });
+

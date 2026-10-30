@@ -34,7 +34,10 @@ a:focus-visible {
 }
 
 /* ============================================
-   GLOBAL REDUCED MOTION ACCESSIBILITY
+   GLOBAL REDUCED MOTION ACCESSIBILITY & LITE MODE MOTION ELIMINATION
+   Enforces instant transitions, eliminates continuous animations,
+   and suppresses heavy transforms when prefers-reduced-motion is active
+   OR when Lite Performance Mode is enabled.
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -82,4 +85,103 @@ a:focus-visible {
     transform: none !important;
     transition: opacity 0.1s ease !important;
   }
+}
+
+/* Enforce complete Reduced Motion behavior in Lite Performance Mode */
+html[data-performance-mode="lite"] *,
+html[data-performance-mode="lite"] *::before,
+html[data-performance-mode="lite"] *::after,
+html.lite-mode *,
+html.lite-mode *::before,
+html.lite-mode *::after,
+html.perf-mode-lite *,
+html.perf-mode-lite *::before,
+html.perf-mode-lite *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+html[data-performance-mode="lite"] .hero-bg-img,
+html[data-performance-mode="lite"] .hero-particles,
+html[data-performance-mode="lite"] .gold-shimmer,
+html[data-performance-mode="lite"] .preloader-particle,
+html[data-performance-mode="lite"] .hero-typing-caret,
+html.lite-mode .hero-bg-img,
+html.lite-mode .hero-particles,
+html.lite-mode .gold-shimmer,
+html.lite-mode .preloader-particle,
+html.lite-mode .hero-typing-caret,
+html.perf-mode-lite .hero-bg-img,
+html.perf-mode-lite .hero-particles,
+html.perf-mode-lite .gold-shimmer,
+html.perf-mode-lite .preloader-particle,
+html.perf-mode-lite .hero-typing-caret {
+  animation: none !important;
+}
+
+html[data-performance-mode="lite"] .hero-typing-caret,
+html.lite-mode .hero-typing-caret,
+html.perf-mode-lite .hero-typing-caret {
+  display: none !important;
+}
+
+html[data-performance-mode="lite"] .modal-content,
+html[data-performance-mode="lite"] .scroll-message-wrapper,
+html.lite-mode .modal-content,
+html.lite-mode .scroll-message-wrapper,
+html.perf-mode-lite .modal-content,
+html.perf-mode-lite .scroll-message-wrapper {
+  transform: none !important;
+  will-change: auto !important;
+  transition: opacity 0.1s ease !important;
+}
+
+html[data-performance-mode="lite"] .reveal,
+html.lite-mode .reveal,
+html.perf-mode-lite .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html[data-performance-mode="lite"] .btn:hover,
+html[data-performance-mode="lite"] .btn i,
+html[data-performance-mode="lite"] .stat-card:hover,
+html[data-performance-mode="lite"] .pillar:hover,
+html[data-performance-mode="lite"] .pillar:hover .pillar__icon,
+html[data-performance-mode="lite"] .enquiry-fab:hover,
+html[data-performance-mode="lite"] .enquiry-fab:hover i,
+html[data-performance-mode="lite"] .event-card:hover,
+html[data-performance-mode="lite"] .event-card__link:hover,
+html[data-performance-mode="lite"] #navMenu a:hover,
+html.lite-mode .btn:hover,
+html.lite-mode .btn i,
+html.lite-mode .stat-card:hover,
+html.lite-mode .pillar:hover,
+html.lite-mode .pillar:hover .pillar__icon,
+html.lite-mode .enquiry-fab:hover,
+html.lite-mode .enquiry-fab:hover i,
+html.lite-mode .event-card:hover,
+html.lite-mode .event-card__link:hover,
+html.lite-mode #navMenu a:hover,
+html.perf-mode-lite .btn:hover,
+html.perf-mode-lite .btn i,
+html.perf-mode-lite .stat-card:hover,
+html.perf-mode-lite .pillar:hover,
+html.perf-mode-lite .pillar:hover .pillar__icon,
+html.perf-mode-lite .enquiry-fab:hover,
+html.perf-mode-lite .enquiry-fab:hover i,
+html.perf-mode-lite .event-card:hover,
+html.perf-mode-lite .event-card__link:hover,
+html.perf-mode-lite #navMenu a:hover {
+  transform: none !important;
+}
+
+html[data-performance-mode="lite"] .carousel-slide,
+html.lite-mode .carousel-slide,
+html.perf-mode-lite .carousel-slide {
+  transform: none !important;
+  transition: opacity 0.1s ease !important;
 }

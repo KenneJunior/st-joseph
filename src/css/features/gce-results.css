@@ -8,19 +8,20 @@
    - Auto-fit minmax(300px, 1fr) grid layout
    ============================================================ */
 :root {
-  --gce-card-footer-bg: #fff0f0;
-  --gce-card-footer-border: rgba(220, 38, 38, 0.15);
-  --gce-card-footer-color: #2d1818;
-  --gce-card-footer-strong: #1a0808;
+  --gce-card-footer-bg: rgba(7, 24, 46, 0.04);
+  --gce-card-footer-border: rgba(7, 24, 46, 0.10);
+  --gce-card-footer-color: #2b3342;
+  --gce-card-footer-strong: #07182e;
   --gce-card-footer-radius: 13px;
 }
 
 html.dark-mode,
 body.dark-mode,
+.dark-mode,
 [data-theme='dark'] {
-  --gce-card-footer-bg: rgba(255, 240, 240, 0.08);
-  --gce-card-footer-border: rgba(255, 240, 240, 0.16);
-  --gce-card-footer-color: rgba(255, 240, 240, 0.90);
+  --gce-card-footer-bg: rgba(255, 255, 255, 0.06);
+  --gce-card-footer-border: rgba(255, 255, 255, 0.12);
+  --gce-card-footer-color: rgba(230, 238, 248, 0.92);
   --gce-card-footer-strong: #ffffff;
 }
 
@@ -1040,55 +1041,211 @@ main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nt
 main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) {
   margin-top: auto;
   padding: clamp(8px, 0.8vw + 4px, 12px) clamp(10px, 1vw + 4px, 16px);
-  background-color: var(--gce-card-footer-bg, #fff0f0);
-  border: 1px solid var(--gce-card-footer-border, rgba(220, 38, 38, 0.15));
+  background-color: var(--gce-card-footer-bg, rgba(7, 24, 46, 0.04));
+  border: 1px solid var(--gce-card-footer-border, rgba(7, 24, 46, 0.10));
   border-radius: var(--gce-card-footer-radius, 13px);
   font-size: clamp(0.62rem, 0.56rem + 0.18vw, 0.82rem);
-  color: var(--gce-card-footer-color, #2d1818);
+  color: var(--gce-card-footer-color, #2b3342);
   display: flex;
   align-items: center;
   gap: clamp(6px, 0.4vw + 3px, 10px);
   line-height: clamp(1.25, 0.05vw + 1.25, 1.4);
   transition: background-color var(--duration-fast, 200ms) var(--ease-standard),
               border-color var(--duration-fast, 200ms) var(--ease-standard),
-              color var(--duration-fast, 200ms) var(--ease-standard);
+              color var(--duration-fast, 200ms) var(--ease-standard),
+              box-shadow var(--duration-fast, 200ms) var(--ease-standard);
 }
 
 .gce-card-footer-note strong {
-  color: var(--gce-card-footer-strong, #1a0808);
-}
-
-html.dark-mode .gce-card-footer-note,
-body.dark-mode .gce-card-footer-note,
-.dark-mode .gce-card-footer-note,
-[data-theme='dark'] .gce-card-footer-note,
-html.dark-mode main#main-content section#results article > footer,
-body.dark-mode main#main-content section#results article > footer,
-[data-theme='dark'] main#main-content section#results article > footer,
-html.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article > footer,
-body.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article > footer,
-[data-theme='dark'] main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article > footer {
-  background-color: var(--gce-card-footer-bg, rgba(255, 240, 240, 0.08));
-  border-color: var(--gce-card-footer-border, rgba(255, 240, 240, 0.16));
-  color: var(--gce-card-footer-color, rgba(255, 240, 240, 0.90));
-}
-
-html.dark-mode .gce-card-footer-note strong,
-body.dark-mode .gce-card-footer-note strong,
-.dark-mode .gce-card-footer-note strong {
-  color: var(--gce-card-footer-strong, #ffffff);
+  color: var(--gce-card-footer-strong, #07182e);
+  font-weight: 700;
 }
 
 .gce-card-footer-note i {
   color: var(--accent);
   font-size: clamp(0.85rem, 0.75rem + 0.25vw, 1.05rem);
   flex-shrink: 0;
+  transition: color var(--duration-fast, 200ms) var(--ease-standard);
+}
+
+/* Base Dark Mode for GCE Card Footer Notes */
+html.dark-mode .gce-card-footer-note,
+body.dark-mode .gce-card-footer-note,
+.dark-mode .gce-card-footer-note,
+[data-theme='dark'] .gce-card-footer-note,
+html.dark-mode main#main-content section#results article > footer,
+body.dark-mode main#main-content section#results article > footer,
+.dark-mode main#main-content section#results article > footer,
+[data-theme='dark'] main#main-content section#results article > footer,
+html.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article > footer,
+body.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article > footer,
+.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article > footer,
+[data-theme='dark'] main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article > footer {
+  background-color: var(--gce-card-footer-bg, rgba(255, 255, 255, 0.06));
+  border-color: var(--gce-card-footer-border, rgba(255, 255, 255, 0.12));
+  color: var(--gce-card-footer-color, rgba(230, 238, 248, 0.92));
+}
+
+html.dark-mode .gce-card-footer-note strong,
+body.dark-mode .gce-card-footer-note strong,
+.dark-mode .gce-card-footer-note strong,
+[data-theme='dark'] .gce-card-footer-note strong {
+  color: var(--gce-card-footer-strong, #ffffff);
 }
 
 html.dark-mode .gce-card-footer-note i,
 body.dark-mode .gce-card-footer-note i,
-.dark-mode .gce-card-footer-note i {
+.dark-mode .gce-card-footer-note i,
+[data-theme='dark'] .gce-card-footer-note i {
   color: var(--accent-glow);
+}
+
+/* ============================================================
+   SPECIFIC THEME-RESPONSIVE STYLING FOR DUAL RESULT CARDS
+   Card 1: O-Level (Gold Accent)
+   Card 2: A-Level (Royal Blue Accent)
+   ============================================================ */
+
+/* --- Card 1: Ordinary Level Footer Callout (Light Theme) --- */
+.gce-result-card--olevel .gce-card-footer-note,
+.gce-result-card--olevel footer,
+main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1) {
+  background-color: rgba(201, 162, 41, 0.09);
+  border: 1px solid rgba(201, 162, 41, 0.28);
+  color: #423108;
+  box-shadow: 0 1px 4px rgba(201, 162, 41, 0.08);
+}
+
+.gce-result-card--olevel .gce-card-footer-note strong,
+.gce-result-card--olevel footer strong,
+main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1) strong {
+  color: #7c5806;
+}
+
+.gce-result-card--olevel .gce-card-footer-note i,
+.gce-result-card--olevel footer i,
+main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1) i {
+  color: var(--accent, #c9a229);
+}
+
+/* --- Card 1: Ordinary Level Footer Callout (Dark Theme) --- */
+html.dark-mode .gce-result-card--olevel .gce-card-footer-note,
+body.dark-mode .gce-result-card--olevel .gce-card-footer-note,
+.dark-mode .gce-result-card--olevel .gce-card-footer-note,
+[data-theme='dark'] .gce-result-card--olevel .gce-card-footer-note,
+html.dark-mode .gce-result-card--olevel footer,
+body.dark-mode .gce-result-card--olevel footer,
+.dark-mode .gce-result-card--olevel footer,
+[data-theme='dark'] .gce-result-card--olevel footer,
+html.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1),
+body.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1),
+.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1),
+[data-theme='dark'] main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1) {
+  background-color: rgba(201, 162, 41, 0.14);
+  border-color: rgba(243, 215, 121, 0.35);
+  color: rgba(245, 238, 222, 0.94);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+html.dark-mode .gce-result-card--olevel .gce-card-footer-note strong,
+body.dark-mode .gce-result-card--olevel .gce-card-footer-note strong,
+.dark-mode .gce-result-card--olevel .gce-card-footer-note strong,
+[data-theme='dark'] .gce-result-card--olevel .gce-card-footer-note strong,
+html.dark-mode .gce-result-card--olevel footer strong,
+body.dark-mode .gce-result-card--olevel footer strong,
+.dark-mode .gce-result-card--olevel footer strong,
+[data-theme='dark'] .gce-result-card--olevel footer strong,
+html.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1) strong,
+body.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1) strong,
+.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1) strong,
+[data-theme='dark'] main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1) strong {
+  color: var(--accent-glow, #f3d779);
+}
+
+html.dark-mode .gce-result-card--olevel .gce-card-footer-note i,
+body.dark-mode .gce-result-card--olevel .gce-card-footer-note i,
+.dark-mode .gce-result-card--olevel .gce-card-footer-note i,
+[data-theme='dark'] .gce-result-card--olevel .gce-card-footer-note i,
+html.dark-mode .gce-result-card--olevel footer i,
+body.dark-mode .gce-result-card--olevel footer i,
+.dark-mode .gce-result-card--olevel footer i,
+[data-theme='dark'] .gce-result-card--olevel footer i,
+html.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1) i,
+body.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1) i,
+.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1) i,
+[data-theme='dark'] main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(1) > footer:nth-of-type(1) i {
+  color: var(--accent-glow, #f3d779);
+}
+
+/* --- Card 2: Advanced Level Footer Callout (Light Theme) --- */
+.gce-result-card--alevel .gce-card-footer-note,
+.gce-result-card--alevel footer,
+main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) {
+  background-color: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.26);
+  color: #122b49;
+  box-shadow: 0 1px 4px rgba(59, 130, 246, 0.08);
+}
+
+.gce-result-card--alevel .gce-card-footer-note strong,
+.gce-result-card--alevel footer strong,
+main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) strong {
+  color: #1d4ed8;
+}
+
+.gce-result-card--alevel .gce-card-footer-note i,
+.gce-result-card--alevel footer i,
+main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) i {
+  color: #2563eb !important;
+}
+
+/* --- Card 2: Advanced Level Footer Callout (Dark Theme) --- */
+html.dark-mode .gce-result-card--alevel .gce-card-footer-note,
+body.dark-mode .gce-result-card--alevel .gce-card-footer-note,
+.dark-mode .gce-result-card--alevel .gce-card-footer-note,
+[data-theme='dark'] .gce-result-card--alevel .gce-card-footer-note,
+html.dark-mode .gce-result-card--alevel footer,
+body.dark-mode .gce-result-card--alevel footer,
+.dark-mode .gce-result-card--alevel footer,
+[data-theme='dark'] .gce-result-card--alevel footer,
+html.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1),
+body.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1),
+.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1),
+[data-theme='dark'] main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) {
+  background-color: rgba(59, 130, 246, 0.16);
+  border-color: rgba(147, 197, 253, 0.35);
+  color: rgba(235, 244, 255, 0.95);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+html.dark-mode .gce-result-card--alevel .gce-card-footer-note strong,
+body.dark-mode .gce-result-card--alevel .gce-card-footer-note strong,
+.dark-mode .gce-result-card--alevel .gce-card-footer-note strong,
+[data-theme='dark'] .gce-result-card--alevel .gce-card-footer-note strong,
+html.dark-mode .gce-result-card--alevel footer strong,
+body.dark-mode .gce-result-card--alevel footer strong,
+.dark-mode .gce-result-card--alevel footer strong,
+[data-theme='dark'] .gce-result-card--alevel footer strong,
+html.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) strong,
+body.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) strong,
+.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) strong,
+[data-theme='dark'] main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) strong {
+  color: #93c5fd;
+}
+
+html.dark-mode .gce-result-card--alevel .gce-card-footer-note i,
+body.dark-mode .gce-result-card--alevel .gce-card-footer-note i,
+.dark-mode .gce-result-card--alevel .gce-card-footer-note i,
+[data-theme='dark'] .gce-result-card--alevel .gce-card-footer-note i,
+html.dark-mode .gce-result-card--alevel footer i,
+body.dark-mode .gce-result-card--alevel footer i,
+.dark-mode .gce-result-card--alevel footer i,
+[data-theme='dark'] .gce-result-card--alevel footer i,
+html.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) i,
+body.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) i,
+.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) i,
+[data-theme='dark'] main#main-content > section#results:nth-of-type(6) > div:nth-of-type(1) > div:nth-of-type(1) > article:nth-of-type(2) > footer:nth-of-type(1) i {
+  color: #93c5fd !important;
 }
 
 /* ============================================================
