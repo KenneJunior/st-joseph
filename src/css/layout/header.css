@@ -28,26 +28,26 @@ html.dark-mode #mainHeader.scrolled {
 @media (max-width: 768px) {
   :root {
     --header-height: 56px;
-    --blur-extension: 60px;
+    --blur-extension: 65px;
   }
   #mainHeader {
-    --blur-intensity: 6px;
+    --blur-intensity: 10px;
   }
   #mainHeader.scrolled {
-    --blur-intensity: 12px;
+    --blur-intensity: 16px;
   }
 }
 
 @media (max-width: 360px) {
   :root {
     --header-height: 50px;
-    --blur-extension: 40px;
+    --blur-extension: 55px;
   }
   #mainHeader {
-    --blur-intensity: 5px;
+    --blur-intensity: 10px;
   }
   #mainHeader.scrolled {
-    --blur-intensity: 10px;
+    --blur-intensity: 14px;
   }
 }
 

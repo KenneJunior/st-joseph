@@ -1316,8 +1316,8 @@ body.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-t
   .gce-status-badge,
   html.dark-mode .gce-summary-card,
   body.dark-mode .gce-summary-card {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .gce-results-header {

@@ -51,8 +51,8 @@
 
 @media (max-width: 768px) {
   .enquiry-fab {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 }
 

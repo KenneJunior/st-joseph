@@ -1293,9 +1293,9 @@ body.dark-mode .map-detail-actions {
   .map-zoom-controls,
   .map-active-zone-bar,
   .map-detail-category-badge {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    background: rgba(7, 24, 46, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(7, 24, 46, 0.82);
   }
 
   .campus-map-header {

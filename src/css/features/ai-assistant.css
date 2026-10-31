@@ -77,7 +77,7 @@
   --ai-send-btn-disabled-bg: #EFECE6;
   --ai-send-btn-disabled-color: #9CA3AF;
 
-  --ai-dock-bg: #FFFFFF;
+  --ai-dock-bg: rgba(255, 255, 255, 0.78);
   --ai-dock-border: rgba(201, 162, 41, 0.38);
   --ai-dock-shadow: 0 8px 26px -4px rgba(10, 31, 63, 0.12), 0 0 16px rgba(201, 162, 41, 0.12);
   --ai-dock-text-ai: #8C6A21;
@@ -1551,8 +1551,8 @@ html.dark-mode .sjccc-ai-footer__hint {
     bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
     right: 14px !important;
     padding: 3px 5px;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
   }
 
   .unified-dock-btn {
@@ -1566,8 +1566,8 @@ html.dark-mode .sjccc-ai-footer__hint {
     right: 14px !important;
     padding: 7px 11px 7px 9px;
     font-size: 0.78rem;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
   }
 
   .sjccc-ai-fab__label {

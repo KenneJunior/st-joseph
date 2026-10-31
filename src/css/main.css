@@ -91,3 +91,86 @@ body.dark-mode .news-card.is-expanded {
   border-color: rgba(201, 162, 41, 0.75);
   box-shadow: 0 22px 52px -8px rgba(0, 0, 0, 0.75), 0 0 30px rgba(201, 162, 41, 0.28), inset 0 3px 0 var(--gold, #C9A229);
 }
+
+/* ==========================================================================
+   LITE MODE HARDWARE & PAINT STREAMLINING (LIGHT & DARK THEMES)
+   Enhances performance while maintaining the premium gold/dark aesthetic:
+   - Replaces paint-heavy multi-layer box shadows and glow blurs with crisp
+     single-step shadows and high-contrast gold hairline borders.
+   - Streamlines transitions to micro durations for opacity, background-color,
+     and border-color without scale or translation matrix calculations.
+   - Suppresses expensive drop-shadow filters on icons and SVG graphics.
+   - Harmonizes St. Joseph's Deep Academic Navy (#07182e / #060e1a) and Royal
+     Gold (#c9a229 / #d4a85a) surfaces across Light and Dark themes.
+   ========================================================================== */
+
+/* News Card Expansion in Lite Mode - Eliminate scale transform & multi-stop blur glow */
+html[data-performance-mode="lite"] .news-card,
+html.lite-mode .news-card,
+html.perf-mode-lite .news-card {
+  transform: none !important;
+  transition: opacity 0.12s ease, border-color 0.12s ease !important;
+}
+
+html[data-performance-mode="lite"] .news-card.is-expanded,
+html.lite-mode .news-card.is-expanded,
+html.perf-mode-lite .news-card.is-expanded {
+  transform: none !important;
+  border-color: #c9a229 !important;
+  border-top: 3px solid #c9a229 !important;
+  box-shadow: 0 4px 16px rgba(7, 24, 46, 0.12) !important;
+  transition: opacity 0.12s ease, border-color 0.12s ease !important;
+}
+
+html[data-performance-mode="lite"].dark-mode .news-card.is-expanded,
+html[data-performance-mode="lite"][data-theme="dark"] .news-card.is-expanded,
+html.lite-mode.dark-mode .news-card.is-expanded,
+html.lite-mode[data-theme="dark"] .news-card.is-expanded,
+html.perf-mode-lite.dark-mode .news-card.is-expanded,
+html.perf-mode-lite[data-theme="dark"] .news-card.is-expanded,
+body.dark-mode html[data-performance-mode="lite"] .news-card.is-expanded {
+  border-color: #d4a85a !important;
+  border-top: 3px solid #d4a85a !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65) !important;
+}
+
+/* Eliminate expensive software drop-shadow filters across icons & symbols */
+html[data-performance-mode="lite"] i,
+html[data-performance-mode="lite"] svg,
+html.lite-mode i,
+html.lite-mode svg,
+html.perf-mode-lite i,
+html.perf-mode-lite svg {
+  filter: none !important;
+}
+
+/* Streamline interactive transitions to lightweight micro-easings */
+html[data-performance-mode="lite"] a,
+html[data-performance-mode="lite"] button,
+html.lite-mode a,
+html.lite-mode button,
+html.perf-mode-lite a,
+html.perf-mode-lite button {
+  transition-property: color, background-color, border-color, opacity !important;
+  transition-duration: 0.12s !important;
+  transition-timing-function: ease !important;
+}
+
+/* Premium Gold & Navy Accents for Interactive Focus & Active States */
+html[data-performance-mode="lite"] :focus-visible,
+html.lite-mode :focus-visible,
+html.perf-mode-lite :focus-visible {
+  outline: 2px solid #c9a229 !important;
+  outline-offset: 2px !important;
+}
+
+html[data-performance-mode="lite"].dark-mode :focus-visible,
+html[data-performance-mode="lite"][data-theme="dark"] :focus-visible,
+html.lite-mode.dark-mode :focus-visible,
+html.lite-mode[data-theme="dark"] :focus-visible,
+html.perf-mode-lite.dark-mode :focus-visible,
+html.perf-mode-lite[data-theme="dark"] :focus-visible {
+  outline: 2px solid #d4a85a !important;
+  outline-offset: 2px !important;
+}
+

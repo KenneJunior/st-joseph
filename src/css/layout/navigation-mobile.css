@@ -577,10 +577,10 @@ body.drawer-open {
                             inset 0 -1px 0 rgba(7, 24, 46, 0.06);
     --dock-shadow: 0 14px 38px -4px rgba(2, 12, 26, 0.42),
                    0 4px 16px -2px rgba(7, 24, 46, 0.22);
-    --dock-blur: 5px;
+    --dock-blur: 16px;
     --dock-radius: var(--radius-pill, 9999px);
     --dock-bottom-offset: calc(10px + env(safe-area-inset-bottom, 0px));
-    --dock-item-color: #dbdde0;
+    --dock-item-color: #07182e;
     --dock-item-hover-bg: rgba(7, 24, 46, 0.08);
     --dock-item-press-bg: rgba(7, 24, 46, 0.14);
     --dock-active-bg: rgba(201, 162, 41, 0.24);
@@ -603,7 +603,6 @@ body.drawer-open {
     border-radius: var(--dock-radius);
     z-index: var(--z-drawer, 3000);
     background: var(--dock-bg);
-    background-color: #ffffff;
     border: 1px solid var(--dock-border);
     box-shadow: var(--dock-shadow), var(--dock-inner-highlight);
     box-sizing: border-box;
@@ -618,7 +617,7 @@ body.drawer-open {
   /* Dark theme surface */
   html.dark-mode .mobile-bottom-bar,
   body.dark-mode .mobile-bottom-bar {
-    --dock-bg: rgba(7, 24, 46, 0.95);
+    --dock-bg: rgba(7, 24, 46, 0.80);
     --dock-border: rgba(201, 162, 41, 0.35);
     --dock-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.12),
                             inset 0 -1px 0 rgba(201, 162, 41, 0.10);
@@ -631,28 +630,28 @@ body.drawer-open {
     --dock-active-border: rgba(243, 215, 121, 0.48);
     --dock-active-color: var(--accent-glow, #f3d779);
     --dock-active-dot: var(--accent-glow, #f3d779);
-    background-color: rgba(7, 24, 46, 0.95);
+    background-color: rgba(7, 24, 46, 0.80);
   }
 
-  /* Progressive Enhancement: Frosted Glass in dark mode, crisp opaque in light mode */
+  /* Progressive Enhancement: Frosted Glass in dark and light modes */
   @supports((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .mobile-bottom-bar {
-      --dock-bg: #ffffff;
-      --dock-border: rgba(7, 24, 46, 0.18);
-      backdrop-filter: blur(var(--dock-blur)) saturate(180%);
-      -webkit-backdrop-filter: blur(var(--dock-blur)) saturate(180%);
-       background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.28) 0%, transparent 80%),
-              linear-gradient(135deg, rgba(7, 24, 46, 0.5) 10%, rgba(10, 31, 63, 0.74) 100%);
-;
+      --dock-bg: rgba(255, 255, 255, 0.78);
+      --dock-border: rgba(201, 162, 41, 0.38);
+      backdrop-filter: blur(var(--dock-blur, 16px)) saturate(180%);
+      -webkit-backdrop-filter: blur(var(--dock-blur, 16px)) saturate(180%);
+      background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.14) 0%, transparent 70%),
+                  linear-gradient(135deg, rgba(255, 255, 255, 0.88) 10%, rgba(245, 240, 230, 0.76) 100%);
     }
 
     html.dark-mode .mobile-bottom-bar,
     body.dark-mode .mobile-bottom-bar {
-      --dock-bg: rgba(7, 24, 46, 0.88);
-      --dock-border: rgba(201, 162, 41, 0.35);
-      background-color: rgba(7, 24, 46, 0.5);
-      -webkit-backdrop-filter: blur(var(--dock-blur)) saturate(180%);
-      backdrop-filter: blur(var(--dock-blur)) saturate(180%);
+      --dock-bg: rgba(7, 24, 46, 0.75);
+      --dock-border: rgba(201, 162, 41, 0.45);
+      background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.25) 0%, transparent 75%),
+                  linear-gradient(135deg, rgba(7, 24, 46, 0.80) 10%, rgba(10, 31, 63, 0.72) 100%);
+      -webkit-backdrop-filter: blur(var(--dock-blur, 16px)) saturate(180%);
+      backdrop-filter: blur(var(--dock-blur, 16px)) saturate(180%);
     }
   }
 
