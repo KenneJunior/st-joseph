@@ -267,11 +267,19 @@ export class HomeApp {
             dockSelector: '#unifiedAssistanceDock',
         });
 
-        // 24. Dynamic reading progress indicator for long sections ('About' & 'Academics')
+        // 24. Dynamic reading progress indicator across major editorial sections
         new ReadingProgressIndicator({
             sections: [
                 { id: 'about', label: 'About SJCCC' },
                 { id: 'academics', label: 'Academic Pathways' },
+                { id: 'schoolDatesSection', label: 'Dates & Milestones' },
+                { id: 'news-events', label: 'News & Announcements' },
+                { id: 'results', label: 'GCE Academic Results' },
+                { id: 'campus', label: 'Campus Life & Facilities' },
+                { id: 'campusMapSection', label: 'Virtual Campus Map' },
+                { id: 'testimonials', label: 'Voices of SJCCC' },
+                { id: 'faq', label: 'Frequently Asked Questions' },
+                { id: 'location', label: 'Campus Location & Contact' },
             ],
         });
     }

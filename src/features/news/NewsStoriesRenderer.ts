@@ -225,9 +225,13 @@ function animateGridFLIP(container: HTMLElement, updateDom: () => void): void {
         const dx = first.left - last.left;
         const dy = first.top - last.top;
 
+        // For the newly expanded card spanning full-width across columns, do not apply
+        // column-jump horizontal translate that would project it off the viewport edge
+        const effectiveDx = (c.classList.contains('is-expanded') && Math.abs(dx) > 100) ? 0 : dx;
+
         // Animate smoothly if there was a physical layout shift
-        if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
-            c.style.transform = `translate(${dx}px, ${dy}px)`;
+        if (Math.abs(effectiveDx) > 1 || Math.abs(dy) > 1) {
+            c.style.transform = `translate(${effectiveDx}px, ${dy}px)`;
             c.style.transition = 'transform 0s';
 
             // Schedule frame to remove transform and animate smoothly
@@ -286,6 +290,18 @@ export function initNewsCardInteractions(container: HTMLElement): void {
 
             const isCurrentlyExpanded = card.classList.contains('is-expanded');
 
+            // CRITICAL FIX: If card is currently expanded, ONLY allow collapsing via:
+            // 1. The expand/collapse button (.news-card__expand-btn)
+            // 2. Keyboard Enter/Space on the button or card
+            // DO NOT collapse if user clicks inside the expanded body text, quotes, or metadata!
+            if (isCurrentlyExpanded && e && e.type === 'click' && e.target) {
+                const target = e.target as HTMLElement;
+                const clickedExpandBtn = Boolean(target.closest('.news-card__expand-btn'));
+                if (!clickedExpandBtn) {
+                    return; // Ignore general clicks inside the expanded card reading area
+                }
+            }
+
             animateGridFLIP(container, () => {
                 if (isCurrentlyExpanded) {
                     // Collapse the selected article and restore original grid layout
@@ -305,7 +321,7 @@ export function initNewsCardInteractions(container: HTMLElement): void {
                 }
             });
 
-            // When expanding, gently bring card into comfortable viewport alignment if off-screen
+            // When expanding, smoothly bring the top of the expanded card into clear reading view
             if (!isCurrentlyExpanded && typeof window !== 'undefined') {
                 const prefersReducedMotion = typeof window.matchMedia === 'function' &&
                     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -314,15 +330,13 @@ export function initNewsCardInteractions(container: HTMLElement): void {
                     window.setTimeout(() => {
                         if (typeof window === 'undefined' || !window) return;
                         const rect = card.getBoundingClientRect();
-                        // If card top is obscured under top nav (< 85px) or pushed too low (> 60% viewport)
-                        if (rect.top < 85 || rect.top > (window.innerHeight || 800) * 0.6) {
-                            const targetY = (window.scrollY || 0) + rect.top - 100;
-                            window.scrollTo({
-                                top: Math.max(0, targetY),
-                                behavior: 'smooth',
-                            });
-                        }
-                    }, 150);
+                        const navBarOffset = 85;
+                        const targetY = (window.scrollY || window.pageYOffset || 0) + rect.top - navBarOffset;
+                        window.scrollTo({
+                            top: Math.max(0, targetY),
+                            behavior: 'smooth',
+                        });
+                    }, 120);
                 }
             }
         };

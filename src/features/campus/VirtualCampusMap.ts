@@ -210,6 +210,15 @@ export class VirtualCampusMap {
             const zone = CAMPUS_ZONES.find((z) => z.id === zoneId);
             if (!zone) return;
 
+            // Synchronize pin position coordinates with canonical zone configuration
+            marker.style.left = `${zone.xPercent}%`;
+            marker.style.top = `${zone.yPercent}%`;
+            if (zone.yPercent <= 25) {
+                marker.classList.add('map-hotspot-pin--top');
+            } else {
+                marker.classList.remove('map-hotspot-pin--top');
+            }
+
             let tooltip = marker.querySelector<HTMLElement>('.map-pin-tooltip');
             if (!tooltip) {
                 tooltip = document.createElement('div');

@@ -141,6 +141,16 @@ function renderCardHtml(item: TestimonialItem, index: number): string {
             aria-hidden="${index === 0 ? 'false' : 'true'}"
             aria-label="Testimonial by ${item.name}, ${item.role}">
             
+            <!-- Author Picture Card Backdrop with Multi-Stop Vignette Scrim -->
+            <div class="testimonial-card-backdrop" aria-hidden="true">
+                <img class="testimonial-card-backdrop-img"
+                    src="${item.avatarUrl}"
+                    alt=""
+                    loading="lazy"
+                    onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg';">
+                <div class="testimonial-card-backdrop-scrim"></div>
+            </div>
+
             <!-- Interactive Cursor Dynamic Spotlight -->
             <div class="testimonial-spotlight" aria-hidden="true"></div>
 
