@@ -1,0 +1,376 @@
+/**
+ * ============================================================================
+ * SJCCC – Glassmorphism-Lite Fallback & Diagnostic Overlay
+ * (src/css/core/glassmorphism-lite.css)
+ *
+ * Provides:
+ * 1. Semi-transparent fallback rules (rgba(x,x,x,0.65)) for the CSS Header,
+ *    Stat Cards, and Floating Buttons / Docks when backdrop-filter is throttled
+ *    or unsupported on mobile devices.
+ * 2. Diagnostic visual overlay badges on Header, Stat Cards, and Floating Buttons
+ *    to verify whether native blur or glassmorphism-lite is actively rendering.
+ * 3. Mobile diagnostic HUD for testing throttle transitions in real time.
+ * ============================================================================
+ */
+
+/* ==========================================================================
+   1. GLASSMORPHISM-LITE FALLBACK RULES (rgba(x,x,x,0.65))
+   Triggered automatically when:
+   - Browser lacks backdrop-filter support (@supports not)
+   - Root is marked data-backdrop-blur="throttled", .blur-throttled, or .glassmorphism-lite
+   ========================================================================== */
+
+/* 1A. CSS Header Fallback (Semi-transparent Deep Academic Navy rgba(7, 24, 46, 0.65)) */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  #mainHeader,
+  #mainHeader.scrolled {
+    background: rgba(7, 24, 46, 0.65) !important;
+    border-bottom: 1.5px solid rgba(201, 162, 41, 0.45) !important;
+    box-shadow: 0 4px 18px rgba(7, 24, 46, 0.16) !important;
+  }
+
+  body.dark-mode #mainHeader,
+  html.dark-mode #mainHeader,
+  body.dark-mode #mainHeader.scrolled,
+  html.dark-mode #mainHeader.scrolled {
+    background: rgba(6, 14, 26, 0.65) !important;
+    border-bottom: 1.5px solid rgba(212, 168, 90, 0.45) !important;
+    box-shadow: 0 4px 22px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  #mainHeader::before {
+    display: none !important;
+  }
+}
+
+html[data-backdrop-blur="throttled"] #mainHeader,
+html[data-backdrop-blur="throttled"] #mainHeader.scrolled,
+html.blur-throttled #mainHeader,
+html.blur-throttled #mainHeader.scrolled,
+html.glassmorphism-lite #mainHeader,
+html.glassmorphism-lite #mainHeader.scrolled,
+#mainHeader.glassmorphism-lite,
+#mainHeader[data-backdrop-blur="throttled"] {
+  background: rgba(7, 24, 46, 0.65) !important;
+  border-bottom: 1.5px solid rgba(201, 162, 41, 0.45) !important;
+  box-shadow: 0 4px 18px rgba(7, 24, 46, 0.16) !important;
+}
+
+html[data-backdrop-blur="throttled"].dark-mode #mainHeader,
+html[data-backdrop-blur="throttled"].dark-mode #mainHeader.scrolled,
+html[data-backdrop-blur="throttled"][data-theme="dark"] #mainHeader,
+html[data-backdrop-blur="throttled"][data-theme="dark"] #mainHeader.scrolled,
+html.blur-throttled.dark-mode #mainHeader,
+html.blur-throttled.dark-mode #mainHeader.scrolled,
+html.glassmorphism-lite.dark-mode #mainHeader,
+html.glassmorphism-lite.dark-mode #mainHeader.scrolled,
+body.dark-mode #mainHeader.glassmorphism-lite,
+body.dark-mode #mainHeader[data-backdrop-blur="throttled"] {
+  background: rgba(6, 14, 26, 0.65) !important;
+  border-bottom: 1.5px solid rgba(212, 168, 90, 0.45) !important;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.45) !important;
+}
+
+html[data-backdrop-blur="throttled"] #mainHeader::before,
+html.blur-throttled #mainHeader::before,
+html.glassmorphism-lite #mainHeader::before,
+#mainHeader.glassmorphism-lite::before,
+#mainHeader[data-backdrop-blur="throttled"]::before {
+  display: none !important;
+}
+
+
+/* 1B. Stat Cards Fallback (Light: rgba(255, 255, 255, 0.65), Dark: rgba(7, 24, 46, 0.65)) */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .stat-card {
+    background: rgba(255, 255, 255, 0.65) !important;
+    border: 1px solid rgba(201, 162, 41, 0.35) !important;
+    box-shadow: 0 8px 24px -4px rgba(7, 24, 46, 0.10) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  body.dark-mode .stat-card,
+  html.dark-mode .stat-card {
+    background: rgba(7, 24, 46, 0.65) !important;
+    border: 1px solid rgba(201, 162, 41, 0.38) !important;
+    box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.50) !important;
+  }
+}
+
+html[data-backdrop-blur="throttled"] .stat-card,
+html.blur-throttled .stat-card,
+html.glassmorphism-lite .stat-card,
+.stat-card.glassmorphism-lite,
+.stat-card[data-backdrop-blur="throttled"] {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(201, 162, 41, 0.35) !important;
+  box-shadow: 0 8px 24px -4px rgba(7, 24, 46, 0.10) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-backdrop-blur="throttled"].dark-mode .stat-card,
+html[data-backdrop-blur="throttled"][data-theme="dark"] .stat-card,
+html.blur-throttled.dark-mode .stat-card,
+html.glassmorphism-lite.dark-mode .stat-card,
+body.dark-mode .stat-card.glassmorphism-lite,
+body.dark-mode .stat-card[data-backdrop-blur="throttled"] {
+  background: rgba(7, 24, 46, 0.65) !important;
+  border: 1px solid rgba(201, 162, 41, 0.38) !important;
+  box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.50) !important;
+}
+
+
+/* 1C. Floating Buttons & Dock Pill Fallback (Light: rgba(255, 255, 255, 0.65), Dark: rgba(7, 24, 46, 0.65)) */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .unified-action-dock,
+  .sjccc-ai-fab,
+  .enquiry-fab,
+  #mobileBottomBar,
+  .mobile-bottom-bar {
+    background: rgba(255, 255, 255, 0.65) !important;
+    border: 1px solid rgba(201, 162, 41, 0.40) !important;
+    box-shadow: 0 10px 32px -4px rgba(7, 24, 46, 0.18), 0 0 14px rgba(201, 162, 41, 0.12) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  body.dark-mode .unified-action-dock,
+  html.dark-mode .unified-action-dock,
+  body.dark-mode .sjccc-ai-fab,
+  html.dark-mode .sjccc-ai-fab,
+  body.dark-mode .enquiry-fab,
+  html.dark-mode .enquiry-fab,
+  body.dark-mode #mobileBottomBar,
+  html.dark-mode #mobileBottomBar,
+  body.dark-mode .mobile-bottom-bar,
+  html.dark-mode .mobile-bottom-bar {
+    background: rgba(7, 24, 46, 0.65) !important;
+    border: 1px solid rgba(212, 168, 90, 0.45) !important;
+    box-shadow: 0 12px 36px -4px rgba(0, 0, 0, 0.55), 0 0 16px rgba(201, 162, 41, 0.22) !important;
+  }
+}
+
+html[data-backdrop-blur="throttled"] .unified-action-dock,
+html[data-backdrop-blur="throttled"] .sjccc-ai-fab,
+html[data-backdrop-blur="throttled"] .enquiry-fab,
+html[data-backdrop-blur="throttled"] #mobileBottomBar,
+html[data-backdrop-blur="throttled"] .mobile-bottom-bar,
+html.blur-throttled .unified-action-dock,
+html.blur-throttled .sjccc-ai-fab,
+html.blur-throttled .enquiry-fab,
+html.blur-throttled #mobileBottomBar,
+html.blur-throttled .mobile-bottom-bar,
+html.glassmorphism-lite .unified-action-dock,
+html.glassmorphism-lite .sjccc-ai-fab,
+html.glassmorphism-lite .enquiry-fab,
+html.glassmorphism-lite #mobileBottomBar,
+html.glassmorphism-lite .mobile-bottom-bar,
+.unified-action-dock.glassmorphism-lite,
+.enquiry-fab.glassmorphism-lite,
+#mobileBottomBar.glassmorphism-lite,
+.mobile-bottom-bar.glassmorphism-lite {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(201, 162, 41, 0.40) !important;
+  box-shadow: 0 10px 32px -4px rgba(7, 24, 46, 0.18), 0 0 14px rgba(201, 162, 41, 0.12) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-backdrop-blur="throttled"].dark-mode .unified-action-dock,
+html[data-backdrop-blur="throttled"][data-theme="dark"] .unified-action-dock,
+html[data-backdrop-blur="throttled"].dark-mode .sjccc-ai-fab,
+html[data-backdrop-blur="throttled"][data-theme="dark"] .sjccc-ai-fab,
+html[data-backdrop-blur="throttled"].dark-mode .enquiry-fab,
+html[data-backdrop-blur="throttled"][data-theme="dark"] .enquiry-fab,
+html[data-backdrop-blur="throttled"].dark-mode #mobileBottomBar,
+html[data-backdrop-blur="throttled"][data-theme="dark"] #mobileBottomBar,
+html[data-backdrop-blur="throttled"].dark-mode .mobile-bottom-bar,
+html[data-backdrop-blur="throttled"][data-theme="dark"] .mobile-bottom-bar,
+html.blur-throttled.dark-mode .unified-action-dock,
+html.blur-throttled.dark-mode #mobileBottomBar,
+html.glassmorphism-lite.dark-mode .unified-action-dock,
+html.glassmorphism-lite.dark-mode #mobileBottomBar,
+body.dark-mode .unified-action-dock.glassmorphism-lite,
+body.dark-mode #mobileBottomBar.glassmorphism-lite {
+  background: rgba(7, 24, 46, 0.65) !important;
+  border: 1px solid rgba(212, 168, 90, 0.45) !important;
+  box-shadow: 0 12px 36px -4px rgba(0, 0, 0, 0.55), 0 0 16px rgba(201, 162, 41, 0.22) !important;
+}
+
+
+/* ==========================================================================
+   2. DIAGNOSTIC OVERLAY STYLES
+   Visual inspection chips rendered on Header, Stat Cards, and Floating Buttons
+   ========================================================================== */
+
+.blur-diagnostic-badge {
+  display: none;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 9999;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  pointer-events: none;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  animation: blurDiagFadeIn 0.25s ease-out forwards;
+}
+
+@keyframes blurDiagFadeIn {
+  from { opacity: 0; transform: translateY(-4px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Header badge placement */
+#mainHeader .blur-diagnostic-badge {
+  top: auto;
+  bottom: -11px;
+  right: 18px;
+}
+
+/* Floating dock badge placement */
+.unified-action-dock .blur-diagnostic-badge,
+.mobile-bottom-bar .blur-diagnostic-badge {
+  top: -12px;
+  right: 50%;
+  transform: translateX(50%);
+  white-space: nowrap;
+}
+
+/* Active State Badge (GPU Blur Rendering Confirmed) */
+.blur-diagnostic-badge.is-active {
+  background: rgba(6, 78, 59, 0.92);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.6);
+}
+
+.blur-diagnostic-badge.is-active .blur-diag-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+  display: inline-block;
+  animation: blurDiagPulse 1.8s infinite ease-in-out;
+}
+
+/* Throttled State Badge (Fallback rgba 0.65 Active) */
+.blur-diagnostic-badge.is-throttled {
+  background: rgba(120, 53, 15, 0.92);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.65);
+}
+
+.blur-diagnostic-badge.is-throttled .blur-diag-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fbbf24;
+  box-shadow: 0 0 8px #fbbf24;
+  display: inline-block;
+}
+
+@keyframes blurDiagPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.85); }
+}
+
+/* Display badges when diagnostic overlay is enabled */
+html.show-blur-diagnostics .blur-diagnostic-badge,
+html[data-blur-diagnostics="true"] .blur-diagnostic-badge {
+  display: inline-flex !important;
+}
+
+
+/* ==========================================================================
+   3. MOBILE DIAGNOSTIC HUD CONTROLLER
+   Interactive testing bar fixed to viewport for testing throttle state on mobile
+   ========================================================================== */
+
+.blur-diagnostic-hud {
+  position: fixed;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  left: 14px;
+  z-index: 99999;
+  background: rgba(7, 24, 46, 0.94);
+  border: 1px solid rgba(201, 162, 41, 0.55);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45), 0 0 16px rgba(201, 162, 41, 0.25);
+  border-radius: 50px;
+  padding: 5px 8px 5px 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #ffffff;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: blurHudSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes blurHudSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.blur-hud-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.blur-hud-status {
+  font-size: 0.72rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.blur-hud-status.status-active {
+  color: #34d399;
+}
+
+.blur-hud-status.status-throttled {
+  color: #fbbf24;
+}
+
+.blur-hud-toggle-btn {
+  background: linear-gradient(135deg, #c9a229 0%, #b8860b 100%);
+  color: #07182e;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.70rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.blur-hud-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+.blur-hud-close-btn {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  border: none;
+  font-size: 0.82rem;
+  padding: 2px 6px;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.blur-hud-close-btn:hover {
+  color: #ffffff;
+}

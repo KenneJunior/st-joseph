@@ -8,6 +8,7 @@ import { initProspectusPage } from './pages/prospectus/prospectus.ts';
 import { initServiceWorker } from './services/serviceWorker.ts';
 import { performanceManager } from './core/performance/PerformanceManager.ts';
 import { logger } from './core/logger/index.ts';
+import { backdropBlurDetector } from './core/diagnostics/index.ts';
 import './core/diagnostics/index.ts';
 
 const log = logger.child('Prospectus');
@@ -18,6 +19,7 @@ initServiceWorker();
 const boot = () => {
     // Synchronize performance profile on prospectus page
     performanceManager.recalculate();
+    backdropBlurDetector.init();
 
     initProspectusPage();
     log.info(`SJCCC Prospectus document initialized [Perf: ${performanceManager.getProfile().toUpperCase()}]`);

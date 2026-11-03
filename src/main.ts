@@ -15,6 +15,7 @@ import { motionSuspension } from './core/physics/MotionSuspension.ts';
 import { performanceManager } from './core/performance/PerformanceManager.ts';
 import { AiAssistantWidget } from './features/ai-assistant/AiAssistantWidget.ts';
 import { logger } from './core/logger/index.ts';
+import { backdropBlurDetector } from './core/diagnostics/index.ts';
 import './core/diagnostics/index.ts';
 
 const log = logger.child('Main');
@@ -143,6 +144,7 @@ initServiceWorker();
 const boot = () => {
     // 0. Intelligent Adaptive Performance assessment & profile synchronization
     performanceManager.recalculate();
+    backdropBlurDetector.init();
 
     initHomePage();
     initHeroViewportObserver();

@@ -61,6 +61,7 @@
 
 /* Intelligent Adaptive Performance System */
 @import './core/performance-mode.css';
+@import './core/glassmorphism-lite.css';
 
 /* Accessibility MUST remain last */
 @import './core/accessibility.css';

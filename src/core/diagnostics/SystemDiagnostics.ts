@@ -15,6 +15,7 @@
  */
 
 import { performanceManager } from '../performance/PerformanceManager.ts';
+import { backdropBlurDetector, type BlurDetectionResult } from './BackdropBlurDetector.ts';
 
 export interface DiagnosticReport {
     timestamp: string;
@@ -48,6 +49,7 @@ export interface DiagnosticReport {
         hasWebGL2: boolean;
         maxTextureSize?: number;
     };
+    backdropBlur?: BlurDetectionResult;
     connectivity: {
         online: boolean;
         connectionType?: string;
@@ -175,6 +177,7 @@ export class SystemDiagnostics {
                 hasWebGL2: performanceManager.getSnapshot()?.hasWebGL2 ?? false,
                 maxTextureSize: performanceManager.getSnapshot()?.maxTextureSize,
             },
+            backdropBlur: backdropBlurDetector.evaluate(),
             connectivity: {
                 online: nav.onLine,
                 connectionType: nav.connection?.effectiveType,
@@ -185,8 +188,8 @@ export class SystemDiagnostics {
                 indexedDbAvailable: 'indexedDB' in win,
                 keysTracked: {
                     theme: storedTheme,
-                    pwaDismissed: localStorage.getItem('sjccc_pwa_dismissed'),
-                    announcementDismissed: localStorage.getItem('sjccc_announcement_dismissed'),
+                    pwaDismissed: storageOk && win.localStorage ? win.localStorage.getItem('sjccc_pwa_dismissed') : null,
+                    announcementDismissed: storageOk && win.localStorage ? win.localStorage.getItem('sjccc_announcement_dismissed') : null,
                 },
             },
             serviceWorker: {
@@ -231,6 +234,12 @@ export class SystemDiagnostics {
                 hasWebGL: false,
                 hasWebGL2: false,
             },
+            backdropBlur: {
+                supported: false,
+                throttled: true,
+                aesthetic: 'glassmorphism-lite',
+                reason: 'Node runtime environment (SSR/CLI)',
+            },
             connectivity: { online: true },
             storage: {
                 localStorageAvailable: false,
@@ -256,6 +265,9 @@ export class SystemDiagnostics {
             if (data.performance) {
                 console.log(`%cPerformance: %cProfile: ${data.performance.profile.toUpperCase()} (Source: ${data.performance.source} | Pref: ${data.performance.preference} | Blur: ${data.performance.allowBackdropBlur})`, 'font-weight: bold;', data.performance.profile === 'lite' ? 'color: #EF4444;' : data.performance.profile === 'balanced' ? 'color: #F59E0B;' : 'color: #10B981;');
             }
+            if (data.backdropBlur) {
+                console.log(`%cBackdropBlur:%c ${data.backdropBlur.aesthetic.toUpperCase()} (Supported: ${data.backdropBlur.supported} | Throttled: ${data.backdropBlur.throttled}) - ${data.backdropBlur.reason}`, 'font-weight: bold;', data.backdropBlur.throttled ? 'color: #F59E0B;' : 'color: #10B981;');
+            }
             console.log(`%cNetwork:     %cOnline: ${data.connectivity.online}${data.connectivity.connectionType ? ` (${data.connectivity.connectionType})` : ''}`, 'font-weight: bold;', data.connectivity.online ? 'color: #10B981;' : 'color: #EF4444;');
             console.log(`%cServiceWorker: %cSupported: ${data.serviceWorker.supported} | Controller: ${data.serviceWorker.controllerActive} | State: ${data.serviceWorker.state || 'none'}`, 'font-weight: bold;', 'color: #38BDF8;');
             if (data.serviceWorker.cacheNames && data.serviceWorker.cacheNames.length > 0) {
@@ -273,16 +285,24 @@ export class SystemDiagnostics {
 
         return data;
     }
+
+    /**
+     * Registers diagnostic helpers on window object.
+     */
+    public registerWindowHelpers(targetWin?: any): void {
+        const win = targetWin || (typeof window !== 'undefined' ? (window as any) : null);
+        if (!win) return;
+
+        win.__SJCCC_DIAGNOSTICS__ = Object.assign(this, {
+            toggleBlurOverlay: (show?: boolean) => backdropBlurDetector.toggleOverlay(show),
+            setBlurThrottled: (throttled: boolean | null) => backdropBlurDetector.setThrottled(throttled),
+            getBlurStatus: () => backdropBlurDetector.evaluate(),
+        });
+        win.sjcccDiagnostics = () => this.printReport();
+    }
 }
 
 export const systemDiagnostics = new SystemDiagnostics();
 
 // Register global developer helper
-if (typeof window !== 'undefined') {
-    const win = window as unknown as {
-        __SJCCC_DIAGNOSTICS__?: SystemDiagnostics;
-        sjcccDiagnostics?: () => Promise<DiagnosticReport>;
-    };
-    win.__SJCCC_DIAGNOSTICS__ = systemDiagnostics;
-    win.sjcccDiagnostics = () => systemDiagnostics.printReport();
-}
+systemDiagnostics.registerWindowHelpers();
