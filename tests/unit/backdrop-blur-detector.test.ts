@@ -124,6 +124,48 @@ describe('BackdropBlurDetector & Glassmorphism-Lite System', () => {
         performanceManager.setPreference('balanced');
     });
 
+    it('ensures blur is unthrottled and active when performance profile is full', () => {
+        performanceManager.setPreference('full');
+        backdropBlurDetector.setThrottled(null);
+        const result = backdropBlurDetector.evaluate();
+
+        expect(result.throttled).toBe(false);
+        expect(result.aesthetic).toBe('native-blur');
+        expect(result.reason).toContain('Native GPU blur active and operational');
+
+        backdropBlurDetector.apply();
+        const root = dom.window.document.documentElement;
+        expect(root.getAttribute('data-backdrop-blur')).toBe('active');
+        expect(root.getAttribute('data-glass-aesthetic')).toBe('native-blur');
+        expect(root.classList.contains('blur-active')).toBe(true);
+        expect(root.classList.contains('blur-throttled')).toBe(false);
+
+        const bottomBar = dom.window.document.getElementById('mobileBottomBar');
+        expect(bottomBar?.getAttribute('data-backdrop-blur')).toBe('active');
+        expect(bottomBar?.classList.contains('blur-active')).toBe(true);
+
+        const dock = dom.window.document.getElementById('testDock');
+        expect(dock?.getAttribute('data-backdrop-blur')).toBe('active');
+        expect(dock?.classList.contains('blur-active')).toBe(true);
+
+        // Restore balanced
+        performanceManager.setPreference('balanced');
+    });
+
+    it('correctly detects mobile WebKit devices supporting -webkit-backdrop-filter', () => {
+        (globalThis as any).CSS = {
+            supports: (prop: string, _val: string) => prop === '-webkit-backdrop-filter'
+        };
+
+        const isSupported = backdropBlurDetector.checkNativeSupport();
+        expect(isSupported).toBe(true);
+
+        // Reset
+        (globalThis as any).CSS = {
+            supports: (_prop: string, _val: string) => true
+        };
+    });
+
     it('renders and manages diagnostic overlay badges on target components', () => {
         backdropBlurDetector.setThrottled(true);
         backdropBlurDetector.toggleOverlay(true);

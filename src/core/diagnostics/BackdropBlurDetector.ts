@@ -42,25 +42,28 @@ export class BackdropBlurDetector {
         if (typeof CSS !== 'undefined' && typeof CSS.supports === 'function') {
             const hasStandard = CSS.supports('backdrop-filter', 'blur(1px)');
             const hasWebkit = CSS.supports('-webkit-backdrop-filter', 'blur(1px)');
-            if (!hasStandard && !hasWebkit) {
-                return false;
+            if (hasStandard || hasWebkit) {
+                return true;
             }
-        } else {
             return false;
         }
 
-        // 2. DOM computed style probe
+        // 2. Fallback DOM computed style probe if CSS.supports is unavailable
         try {
             const testEl = document.createElement('div');
-            testEl.style.cssText = 'backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); position: absolute; top: -9999px; visibility: hidden;';
+            testEl.style.cssText = 'backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); position: absolute; top: -9999px;';
             document.documentElement.appendChild(testEl);
             const style = window.getComputedStyle(testEl);
-            const bf = style.backdropFilter || (style as any).webkitBackdropFilter;
+            const bf = style.backdropFilter ||
+                (style as any).WebkitBackdropFilter ||
+                (style as any).webkitBackdropFilter ||
+                style.getPropertyValue('backdrop-filter') ||
+                style.getPropertyValue('-webkit-backdrop-filter');
             const isSupported = Boolean(bf && bf !== 'none' && bf !== '');
             testEl.remove();
             return isSupported;
         } catch {
-            return true; // Fall back to CSS.supports result if DOM probe encounters issues
+            return true; // Fall back to optimistic true if DOM probe encounters environment issues
         }
     }
 
@@ -88,8 +91,11 @@ export class BackdropBlurDetector {
             return true;
         }
 
-        // 2. Performance manager profile
+        // 2. Performance manager profile: 'full' mode guarantees unthrottled blurs
         const profile = performanceManager.getProfile();
+        if (profile === 'full') {
+            return false;
+        }
         if (profile === 'lite') {
             return true;
         }
