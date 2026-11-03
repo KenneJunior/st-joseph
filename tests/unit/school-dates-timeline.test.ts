@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 import { SchoolDatesTimeline } from '../../src/features/calendar/SchoolDatesTimeline';
-import { renderTimelineMilestones } from '../../src/features/calendar/TimelineRenderer';
+import { renderTimelineMilestones, getMilestoneBackgroundImage } from '../../src/features/calendar/TimelineRenderer';
 import { ACADEMIC_MILESTONES_2026_2027 } from '../../src/data/academicCalendar';
 
 const TIMELINE_HTML_FIXTURE = `
@@ -443,5 +443,108 @@ describe('SchoolDatesTimeline - Multi-Select Category Checkboxes & Search Synerg
             const icon = el.querySelector('.timeline-node-marker i');
             expect(icon?.className).toContain('bi-sun');
         });
+    });
+
+    it('renders thematic background images and gradient scrims on all milestone cards based on event category', () => {
+        new SchoolDatesTimeline('schoolDatesSection');
+
+        const cards = document.querySelectorAll<HTMLElement>('.timeline-card');
+        expect(cards.length).toBe(14);
+
+        cards.forEach((card) => {
+            const backdrop = card.querySelector('.timeline-card-backdrop');
+            expect(backdrop).not.toBeNull();
+            expect(backdrop?.getAttribute('aria-hidden')).toBe('true');
+
+            const img = backdrop?.querySelector<HTMLImageElement>('.timeline-card-backdrop-img');
+            expect(img).not.toBeNull();
+            expect(img?.getAttribute('src')).toBeTruthy();
+            expect(img?.getAttribute('alt')).toBeTruthy();
+
+            const scrim = backdrop?.querySelector('.timeline-card-backdrop-scrim');
+            expect(scrim).not.toBeNull();
+        });
+
+        // 1. Convocation / Graduation event has graduation photo
+        const graduationCard = document.querySelector<HTMLElement>('.timeline-card[data-milestone-id="valedictory-graduation-2027"]');
+        expect(graduationCard).not.toBeNull();
+        const gradImg = graduationCard?.querySelector<HTMLImageElement>('.timeline-card-backdrop-img');
+        expect(gradImg?.getAttribute('src')).toBe('/assets/sjccc-graduants-0.jpg');
+
+        // 2. Exam category cards have classroom/mock exam images
+        const examCards = document.querySelectorAll<HTMLElement>('.timeline-card[data-category="exam"]');
+        expect(examCards.length).toBeGreaterThanOrEqual(4);
+        examCards.forEach((ec) => {
+            const examImg = ec.querySelector<HTMLImageElement>('.timeline-card-backdrop-img');
+            const src = examImg?.getAttribute('src') || '';
+            const isExamImage = src.includes('mock') || src.includes('Classroom') || src.includes('Students-in-class');
+            expect(isExamImage).toBe(true);
+        });
+
+        // 3. Spiritual / Religious event (Feast of St. Joseph) has chapel or procession image
+        const feastCard = document.querySelector<HTMLElement>('.timeline-card[data-milestone-id="feast-st-joseph-2027"]');
+        expect(feastCard).not.toBeNull();
+        const feastImg = feastCard?.querySelector<HTMLImageElement>('.timeline-card-backdrop-img');
+        expect(feastImg?.getAttribute('src')).toContain('chapel');
+
+        // 4. Resumption milestones have entrance/campus images
+        const resumptionCards = document.querySelectorAll<HTMLElement>('.timeline-card[data-category="resumption"]');
+        resumptionCards.forEach((rc) => {
+            const resImg = rc.querySelector<HTMLImageElement>('.timeline-card-backdrop-img');
+            const src = resImg?.getAttribute('src') || '';
+            const isResumptionImage = src.includes('entrance') || src.includes('campus');
+            expect(isResumptionImage).toBe(true);
+        });
+
+        // 5. Break milestones have view/campus/outside images
+        const breakCards = document.querySelectorAll<HTMLElement>('.timeline-card[data-category="break"]');
+        breakCards.forEach((bc) => {
+            const brkImg = bc.querySelector<HTMLImageElement>('.timeline-card-backdrop-img');
+            const src = brkImg?.getAttribute('src') || '';
+            const isBreakImage = src.includes('view') || src.includes('Campus') || src.includes('classes-outside');
+            expect(isBreakImage).toBe(true);
+        });
+    });
+
+    it('getMilestoneBackgroundImage resolves appropriate images when milestone bgImage is missing', () => {
+        const dummyGraduation = {
+            id: 'custom-graduation-event',
+            term: 'term-3',
+            termLabel: 'Third Term',
+            title: 'Valedictory Service and Graduation',
+            category: 'spiritual' as const,
+            categoryLabel: 'Spiritual',
+            dateText: '25 Jun 2027',
+            description: 'Test convocation event',
+            location: 'SJCCC Hall',
+            temporalType: 'all-day' as const,
+            localStartDate: '2027-06-25',
+            localEndDate: '2027-06-25',
+            startDate: new Date('2027-06-25T00:00:00Z'),
+            endDate: new Date('2027-06-25T23:59:59Z'),
+            startDateISO: '20270625',
+            endDateISO: '20270625',
+        };
+        expect(getMilestoneBackgroundImage(dummyGraduation)).toBe('/assets/sjccc-graduants-0.jpg');
+
+        const dummyExam = {
+            id: 'mid-term-assessment',
+            term: 'term-1',
+            termLabel: 'First Term',
+            title: 'Continuous Assessment Tests',
+            category: 'exam' as const,
+            categoryLabel: 'Exams',
+            dateText: '10 Nov 2026',
+            description: 'Assessment',
+            location: 'Classrooms',
+            temporalType: 'all-day' as const,
+            localStartDate: '2026-11-10',
+            localEndDate: '2026-11-10',
+            startDate: new Date('2026-11-10T00:00:00Z'),
+            endDate: new Date('2026-11-10T23:59:59Z'),
+            startDateISO: '20261110',
+            endDateISO: '20261110',
+        };
+        expect(getMilestoneBackgroundImage(dummyExam)).toBe('/assets/sjccc-Classroom.jpg');
     });
 });

@@ -112,6 +112,9 @@ describe('SJCCC Testimonials — Premium Section DOM Architecture', () => {
 
         cards.each((_, el) => {
             const card = $(el);
+            expect(card.find('.testimonial-card-backdrop').length).toBe(1);
+            expect(card.find('.testimonial-card-backdrop-img').length).toBe(1);
+            expect(card.find('.testimonial-card-backdrop-scrim').length).toBe(1);
             expect(card.find('.testimonial-spotlight').length).toBe(1);
             expect(card.find('.testimonial-avatar').length).toBe(1);
             expect(card.find('.testimonial-verified-badge').length).toBe(1);
@@ -121,6 +124,16 @@ describe('SJCCC Testimonials — Premium Section DOM Architecture', () => {
             expect(card.find('.testimonial-expand-btn').length).toBe(1);
             expect(card.find('.testimonial-copy-btn').length).toBe(1);
             expect(card.find('.testimonial-expansion').length).toBe(1);
+        });
+    });
+
+    it('renders author picture backdrop inside each card matching canonical avatar', () => {
+        const cards = $('#testimonials .testimonial-card');
+        cards.each((i, el) => {
+            const card = $(el);
+            const backdropImg = card.find('.testimonial-card-backdrop-img');
+            expect(backdropImg.length).toBe(1);
+            expect(backdropImg.attr('src')).toBe(TESTIMONIALS_DATA[i].avatarUrl);
         });
     });
 
@@ -187,6 +200,9 @@ describe('SJCCC Testimonials — Premium Section DOM Architecture', () => {
         expect(testimonialsCss).toContain('.testimonials-pagination-dots');
         expect(testimonialsCss).toContain('.testimonial-dot');
         expect(testimonialsCss).toContain('.testimonial-pagination-glider');
+        expect(testimonialsCss).toContain('.testimonial-card-backdrop');
+        expect(testimonialsCss).toContain('.testimonial-card-backdrop-img');
+        expect(testimonialsCss).toContain('.testimonial-card-backdrop-scrim');
         expect(testimonialsCss).toContain('background: var(--accent, #c9a229);');
         expect(testimonialsCss).toContain('background: var(--accent-glow, #f3d779);');
         // Mobile media query geometry
@@ -439,4 +455,21 @@ describe('SJCCC Calendar — Next Milestone Auto-Add Reminders Button Visibility
         expect(timelineCss).toContain('color: var(--accent-glow, #f3d779) !important;');
     });
 });
+
+describe('SJCCC Card Backdrops — Automatic Contrast/Brightness Filter in Light Mode', () => {
+    const rootDir = process.cwd();
+    const timelineCss = fs.readFileSync(path.join(rootDir, 'src/css/features/calendar-timeline.css'), 'utf-8');
+    const testimonialsCss = fs.readFileSync(path.join(rootDir, 'src/css/components/testimonials.css'), 'utf-8');
+
+    it('enforces brightness and contrast filter on milestone cards when dark-mode is not present on root', () => {
+        expect(timelineCss).toMatch(/(:root|html):not\(\.dark-mode\)[^{]*\.timeline-card-backdrop-img/);
+        expect(timelineCss).toContain('filter: brightness(0.95) contrast(1.18) saturate(1.2);');
+    });
+
+    it('enforces brightness and contrast filter on testimony cards when dark-mode is not present on root', () => {
+        expect(testimonialsCss).toMatch(/(:root|html):not\(\.dark-mode\)[^{]*\.testimonial-card-backdrop-img/);
+        expect(testimonialsCss).toContain('filter: brightness(0.95) contrast(1.18) saturate(1.2);');
+    });
+});
+
 

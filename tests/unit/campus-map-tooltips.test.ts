@@ -129,4 +129,19 @@ describe('VirtualCampusMap Marker Tooltips', () => {
         const workshopsZone = CAMPUS_ZONES.find((z) => z.id === 'workshops-electrical')!;
         expect(detailTitle?.textContent).toBe(workshopsZone.title);
     });
+
+    it('synchronizes pin inline left and top styles with CAMPUS_ZONES coordinates', () => {
+        new VirtualCampusMap('campusMapContainer');
+
+        const chapelPin = dom.window.document.getElementById('pin-chapel') as HTMLButtonElement;
+        const workshopsPin = dom.window.document.getElementById('pin-workshops') as HTMLButtonElement;
+
+        const chapelZone = CAMPUS_ZONES.find((z) => z.id === 'chapel')!;
+        const workshopsZone = CAMPUS_ZONES.find((z) => z.id === 'workshops-electrical')!;
+
+        expect(chapelPin.style.left).toBe(`${chapelZone.xPercent}%`);
+        expect(chapelPin.style.top).toBe(`${chapelZone.yPercent}%`);
+        expect(workshopsPin.style.left).toBe(`${workshopsZone.xPercent}%`);
+        expect(workshopsPin.style.top).toBe(`${workshopsZone.yPercent}%`);
+    });
 });

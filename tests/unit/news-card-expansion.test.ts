@@ -206,6 +206,45 @@ describe('SJCCC News Cards – Dynamic Full-Width Article Expansion', () => {
         expect(card.classList.contains('is-expanded')).toBe(false);
     });
 
+    it('does not collapse an expanded card when clicking inside the reading body (paragraphs, takeaway, metadata)', () => {
+        renderNewsStories(container, NEWS_STORIES);
+
+        const card = container.querySelector<HTMLElement>('.news-card')!;
+        const expandBtn = card.querySelector<HTMLButtonElement>('.news-card__expand-btn')!;
+
+        // 1. Expand card
+        expandBtn.click();
+        expect(card.classList.contains('is-expanded')).toBe(true);
+
+        // 2. Click on a paragraph inside the full story
+        const paragraph = card.querySelector<HTMLParagraphElement>('.news-card__full-text p')!;
+        expect(paragraph).not.toBeNull();
+        paragraph.click();
+
+        // Card MUST remain expanded so user can read / highlight text uninterrupted
+        expect(card.classList.contains('is-expanded')).toBe(true);
+        expect(expandBtn.getAttribute('aria-expanded')).toBe('true');
+
+        // 3. Click on key takeaway quote
+        const takeaway = card.querySelector<HTMLElement>('.news-card__takeaway')!;
+        if (takeaway) {
+            takeaway.click();
+            expect(card.classList.contains('is-expanded')).toBe(true);
+        }
+
+        // 4. Click on a metadata box
+        const metaItem = card.querySelector<HTMLElement>('.news-card__metadata-item')!;
+        if (metaItem) {
+            metaItem.click();
+            expect(card.classList.contains('is-expanded')).toBe(true);
+        }
+
+        // 5. Only clicking the expand button (now Show Less) collapses it
+        expandBtn.click();
+        expect(card.classList.contains('is-expanded')).toBe(false);
+        expect(expandBtn.getAttribute('aria-expanded')).toBe('false');
+    });
+
     it('exports standalone collapseNewsCard and expandNewsCard functions', () => {
         renderNewsStories(container, NEWS_STORIES);
         const card = container.querySelector<HTMLElement>('.news-card')!;

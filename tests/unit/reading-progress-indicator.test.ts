@@ -220,4 +220,40 @@ describe('ReadingProgressIndicator Component', () => {
         indicator.destroy();
         expect(dom.window.document.getElementById('readingProgressIndicator')).toBeNull();
     });
+
+    it('supports custom multi-section configurations including dates, results, and testimonials', () => {
+        const customSections = [
+            { id: 'about', label: 'About SJCCC' },
+            { id: 'academics', label: 'Academic Pathways' },
+            { id: 'schoolDatesSection', label: 'Dates & Milestones' },
+            { id: 'news-events', label: 'News & Announcements' },
+            { id: 'results', label: 'GCE Academic Results' },
+            { id: 'campus', label: 'Campus Life & Facilities' },
+            { id: 'campusMapSection', label: 'Virtual Campus Map' },
+            { id: 'testimonials', label: 'Voices of SJCCC' },
+            { id: 'faq', label: 'Frequently Asked Questions' },
+            { id: 'location', label: 'Campus Location & Contact' },
+        ];
+
+        indicator = new ReadingProgressIndicator({ sections: customSections });
+        expect(indicator).toBeDefined();
+
+        // Simulate reading in about section
+        aboutEl.getBoundingClientRect = () => ({
+            top: 50,
+            bottom: 1250,
+            left: 0,
+            right: 1000,
+            width: 1000,
+            height: 1200,
+            x: 0,
+            y: 50,
+            toJSON: () => {}
+        });
+
+        indicator.update();
+        expect(indicator.isVisible()).toBe(true);
+        expect(indicator.getActiveSection()?.id).toBe('about');
+        expect(indicator.getActiveSection()?.label).toBe('About SJCCC');
+    });
 });
