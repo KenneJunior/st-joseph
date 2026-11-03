@@ -340,27 +340,79 @@ body.drawer-open {
     max-width: 100%;
   }
 
-  #navMenu a:hover {
-    background: rgba(200, 150, 62, 0.15);
-    border-color: rgba(200, 150, 62, 0.3);
-    color: #ffffff;
-    transform: translateX(8px) !important;
-    box-shadow: 0 4px 20px rgba(200, 150, 62, 0.1);
+  #navMenu a {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
-  /* Active link */
-  #navMenu a.nav-link.active {
-    background: rgba(200, 150, 62, 0.2);
-    border-color: rgba(200, 150, 62, 0.4);
-    border-left: 3px solid var(--accent);
-    color: var(--accent-glow);
-    font-weight: 600;
-    box-shadow: 0 4px 20px rgba(200, 150, 62, 0.15);
+  #navMenu a:hover {
+    background: rgba(200, 150, 62, 0.22);
+    border-color: rgba(200, 150, 62, 0.5);
+    color: #ffffff;
+    transform: translateX(8px) !important;
+    box-shadow: 0 4px 20px rgba(200, 150, 62, 0.2);
+  }
+
+  /* Active link & pressed states */
+  #navMenu a.nav-link.active,
+  #navMenu a.nav-link[aria-current="location"],
+  #navMenu a.nav-link[aria-current="page"] {
+    background: linear-gradient(90deg, rgba(200, 150, 62, 0.35) 0%, rgba(7, 24, 46, 0.65) 100%) !important;
+    border-color: rgba(200, 150, 62, 0.6) !important;
+    border-left: 4px solid var(--accent-glow, #f0d28b) !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    box-shadow: 0 4px 20px rgba(200, 150, 62, 0.25);
     transform: translateX(4px);
+    opacity: 1 !important;
+  }
+
+  #navMenu a:active,
+  #navMenu a.nav-link:active {
+    transform: translateX(4px) scale(0.98);
+    background: rgba(200, 150, 62, 0.38) !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
   }
 
   #navMenu a.nav-link.active::after {
     display: none;
+  }
+
+  /* Light mode mobile drawer adaptation */
+  html:not(.dark-mode) #navMenu,
+  body:not(.dark-mode) #navMenu {
+    background: rgba(255, 255, 255, 0.96);
+    border-left: 1px solid rgba(200, 150, 62, 0.35);
+  }
+
+  html:not(.dark-mode) #navMenu a,
+  body:not(.dark-mode) #navMenu a {
+    color: #07182e;
+    background: rgba(7, 24, 46, 0.04);
+  }
+
+  html:not(.dark-mode) #navMenu a:hover,
+  body:not(.dark-mode) #navMenu a:hover {
+    color: #020c1a;
+    background: rgba(201, 162, 41, 0.2);
+    border-color: rgba(201, 162, 41, 0.5);
+  }
+
+  html:not(.dark-mode) #navMenu a.nav-link.active,
+  body:not(.dark-mode) #navMenu a.nav-link.active,
+  html:not(.dark-mode) #navMenu a.nav-link[aria-current="location"],
+  body:not(.dark-mode) #navMenu a.nav-link[aria-current="location"],
+  html:not(.dark-mode) #navMenu a.nav-link[aria-current="page"],
+  body:not(.dark-mode) #navMenu a.nav-link[aria-current="page"] {
+    background: linear-gradient(90deg, rgba(201, 162, 41, 0.28) 0%, rgba(7, 24, 46, 0.08) 100%) !important;
+    border-left: 4px solid var(--sj-gold-600, #8c6a21) !important;
+    color: #07182e !important;
+    font-weight: 700;
+    opacity: 1 !important;
   }
 
   /* CTA button */

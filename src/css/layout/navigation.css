@@ -13,13 +13,18 @@
 }
 
 #navMenu a {
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.90);
   text-decoration: none;
   font-weight: 500;
   font-size: 0.84rem;
   padding: 6px 9px;
   border-radius: 9999px;
-  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   letter-spacing: 0.1px;
   position: relative;
   white-space: nowrap;
@@ -29,16 +34,29 @@
   min-height: 38px;
   min-width: 38px;
   box-sizing: border-box;
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(7, 24, 46, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   overflow: hidden;
 }
 
 #navMenu a:hover {
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(201, 162, 41, 0.35);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  background: rgba(201, 162, 41, 0.22);
+  border-color: rgba(201, 162, 41, 0.60);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.32), 0 0 12px rgba(201, 162, 41, 0.32);
+}
+
+#navMenu a:active,
+#navMenu a.nav-link:active {
+  transform: translateY(0) scale(0.96);
+  background: rgba(201, 162, 41, 0.38) !important;
+  border-color: rgba(243, 215, 121, 0.9) !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
 }
 
 .nav-link {
@@ -147,7 +165,8 @@
 }
 
 #navMenu a.nav-link.active .nav-icon,
-#navMenu a.nav-link[aria-current="location"] .nav-icon {
+#navMenu a.nav-link[aria-current="location"] .nav-icon,
+#navMenu a.nav-link[aria-current="page"] .nav-icon {
   animation: cinematic-topnav-icon-spring 640ms cubic-bezier(0.19, 1, 0.22, 1) both;
   color: #ffffff;
   transform-origin: center center;
@@ -155,31 +174,107 @@
 }
 
 #navMenu a.nav-link.active,
-#navMenu a.nav-link[aria-current="location"] {
+#navMenu a.nav-link[aria-current="location"],
+#navMenu a.nav-link[aria-current="page"] {
   animation: cinematic-topnav-pill-spring 560ms cubic-bezier(0.19, 1, 0.22, 1) both;
-  color: #ffffff;
-  background: linear-gradient(135deg, rgba(200, 150, 62, 0.24) 0%, rgba(200, 150, 62, 0.12) 100%);
-  border: 1px solid rgba(200, 150, 62, 0.45);
-  font-weight: 600;
-  box-shadow: 0 4px 18px rgba(200, 150, 62, 0.28);
-  padding: 6px 12px;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, rgba(201, 162, 41, 0.45) 0%, rgba(140, 106, 33, 0.55) 100%) !important;
+  border: 1px solid rgba(243, 215, 121, 0.85) !important;
+  font-weight: 700;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.40), 0 0 14px rgba(201, 162, 41, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  padding: 6px 13px;
+  opacity: 1 !important;
+}
+
+#navMenu a.nav-link.active:hover,
+#navMenu a.nav-link[aria-current="location"]:hover,
+#navMenu a.nav-link[aria-current="page"]:hover {
+  background: linear-gradient(135deg, rgba(201, 162, 41, 0.58) 0%, rgba(140, 106, 33, 0.68) 100%) !important;
+  border-color: #f3d779 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45), 0 0 18px rgba(201, 162, 41, 0.60), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
 }
 
 #navMenu a.nav-link:hover {
   padding: 6px 12px;
 }
 
-#navMenu a.nav-link.active::after {
+#navMenu a.nav-link.active::after,
+#navMenu a.nav-link[aria-current="location"]::after,
+#navMenu a.nav-link[aria-current="page"]::after {
   content: '';
   position: absolute;
   bottom: 2px;
   left: 50%;
   transform: translateX(-50%);
-  width: 18px;
-  height: 2px;
-  background: var(--accent);
+  width: 20px;
+  height: 2.5px;
+  background: var(--gold-light, #f0c975);
   border-radius: 2px;
-  box-shadow: 0 0 6px rgba(200, 150, 62, 0.6);
+  box-shadow: 0 0 8px rgba(240, 201, 117, 0.9);
+}
+
+/* ─── Light Mode Theme Adaptation: High Visibility & Never Transparent ─── */
+html:not(.dark-mode) #navMenu a,
+body:not(.dark-mode) #navMenu a {
+  color: #07182e;
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(7, 24, 46, 0.14);
+  box-shadow: 0 2px 8px rgba(7, 24, 46, 0.08);
+}
+
+html:not(.dark-mode) #navMenu .nav-icon,
+body:not(.dark-mode) #navMenu .nav-icon {
+  color: var(--sj-gold-600, #8c6a21);
+}
+
+html:not(.dark-mode) #navMenu a:hover,
+body:not(.dark-mode) #navMenu a:hover,
+html:not(.dark-mode) #navMenu a.nav-link:hover,
+body:not(.dark-mode) #navMenu a.nav-link:hover {
+  color: #020c1a;
+  background: rgba(201, 162, 41, 0.22);
+  border-color: var(--sj-gold-500, #c9a229);
+  box-shadow: 0 4px 16px rgba(7, 24, 46, 0.16), 0 0 10px rgba(201, 162, 41, 0.25);
+}
+
+html:not(.dark-mode) #navMenu a.nav-link:hover .nav-icon,
+body:not(.dark-mode) #navMenu a.nav-link:hover .nav-icon {
+  color: #07182e;
+  filter: drop-shadow(0 2px 4px rgba(201, 162, 41, 0.4));
+}
+
+html:not(.dark-mode) #navMenu a.nav-link.active,
+body:not(.dark-mode) #navMenu a.nav-link.active,
+html:not(.dark-mode) #navMenu a.nav-link[aria-current="location"],
+body:not(.dark-mode) #navMenu a.nav-link[aria-current="location"],
+html:not(.dark-mode) #navMenu a.nav-link[aria-current="page"],
+body:not(.dark-mode) #navMenu a.nav-link[aria-current="page"] {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #07182e 0%, #0d2b52 100%) !important;
+  border-color: var(--sj-gold-500, #c9a229) !important;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(7, 24, 46, 0.32), 0 0 12px rgba(201, 162, 41, 0.35) !important;
+  opacity: 1 !important;
+}
+
+html:not(.dark-mode) #navMenu a.nav-link.active .nav-icon,
+body:not(.dark-mode) #navMenu a.nav-link.active .nav-icon,
+html:not(.dark-mode) #navMenu a.nav-link[aria-current="location"] .nav-icon,
+body:not(.dark-mode) #navMenu a.nav-link[aria-current="location"] .nav-icon,
+html:not(.dark-mode) #navMenu a.nav-link[aria-current="page"] .nav-icon,
+body:not(.dark-mode) #navMenu a.nav-link[aria-current="page"] .nav-icon {
+  color: #f3d779 !important;
+}
+
+html:not(.dark-mode) #navMenu a:active,
+body:not(.dark-mode) #navMenu a:active,
+html:not(.dark-mode) #navMenu a.nav-link:active,
+body:not(.dark-mode) #navMenu a.nav-link:active {
+  background: #0a1f3f !important;
+  color: #ffffff !important;
+  border-color: #c9a229 !important;
+  opacity: 1 !important;
 }
 
 #navMenu a.nav-cta {

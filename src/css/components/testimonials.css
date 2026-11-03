@@ -21,8 +21,8 @@
   background-position: center 35%;
   background-size: cover;
   background-repeat: no-repeat;
-  opacity: 0.11;
-  filter: saturate(1.1) contrast(1.05);
+  opacity: 0.18;
+  filter: saturate(1.15) contrast(1.05);
   pointer-events: none;
   z-index: 0;
   transition: opacity 0.3s ease;
@@ -36,9 +36,9 @@
   background:
     linear-gradient(180deg,
       var(--surface-secondary, #faf7f0) 0%,
-      rgba(250, 247, 240, 0.90) 18%,
-      rgba(250, 247, 240, 0.82) 50%,
-      rgba(250, 247, 240, 0.92) 85%,
+      rgba(250, 247, 240, 0.86) 18%,
+      rgba(250, 247, 240, 0.74) 50%,
+      rgba(250, 247, 240, 0.88) 85%,
       var(--surface-secondary, #faf7f0) 100%),
     radial-gradient(ellipse at 50% 0%, rgba(201, 162, 41, 0.10) 0%, transparent 70%);
   pointer-events: none;
@@ -356,6 +356,167 @@ body.dark-mode .testimonial-card,
     0 12px 36px -6px rgba(0, 0, 0, 0.6),
     0 2px 12px -2px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Card Author Picture Backdrop with Dual Gradient Scrim */
+.testimonial-card-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+}
+
+.testimonial-card-backdrop-img {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 58%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  opacity: 0.50;
+  filter: brightness(0.95) contrast(1.18) saturate(1.2);
+  transform: scale(1);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, filter 0.4s ease;
+  will-change: transform, opacity;
+}
+
+.testimonial-card.is-active .testimonial-card-backdrop-img {
+  opacity: 0.62;
+  filter: brightness(0.96) contrast(1.20) saturate(1.22);
+}
+
+.testimonial-card:hover .testimonial-card-backdrop-img {
+  transform: scale(1.05);
+  opacity: 0.72;
+  filter: brightness(0.98) contrast(1.22) saturate(1.25);
+}
+
+/* Automatic brightness and contrast filter when 'dark-mode' class is NOT present on the root element */
+:root:not(.dark-mode) .testimonial-card-backdrop-img,
+html:not(.dark-mode) .testimonial-card-backdrop-img {
+  filter: brightness(0.95) contrast(1.18) saturate(1.2);
+}
+
+:root:not(.dark-mode) .testimonial-card.is-active .testimonial-card-backdrop-img,
+html:not(.dark-mode) .testimonial-card.is-active .testimonial-card-backdrop-img {
+  filter: brightness(0.96) contrast(1.20) saturate(1.22);
+}
+
+:root:not(.dark-mode) .testimonial-card:hover .testimonial-card-backdrop-img,
+html:not(.dark-mode) .testimonial-card:hover .testimonial-card-backdrop-img {
+  filter: brightness(0.98) contrast(1.22) saturate(1.25);
+}
+
+/* Layered Multistop Scrim preserving 100% WCAG AAA Text Legibility */
+.testimonial-card-backdrop-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg,
+      var(--surface-card, #ffffff) 0%,
+      rgba(255, 255, 255, 0.98) 28%,
+      rgba(255, 255, 255, 0.85) 46%,
+      rgba(255, 255, 255, 0.38) 72%,
+      rgba(255, 255, 255, 0.14) 100%),
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.45) 0%,
+      transparent 20%,
+      transparent 76%,
+      rgba(255, 255, 255, 0.72) 100%);
+}
+
+html.dark-mode .testimonial-card-backdrop-img,
+body.dark-mode .testimonial-card-backdrop-img,
+[data-theme="dark"] .testimonial-card-backdrop-img {
+  opacity: 0.32;
+  filter: saturate(1.15) brightness(0.94);
+}
+
+html.dark-mode .testimonial-card.is-active .testimonial-card-backdrop-img,
+body.dark-mode .testimonial-card.is-active .testimonial-card-backdrop-img,
+[data-theme="dark"] .testimonial-card.is-active .testimonial-card-backdrop-img {
+  opacity: 0.42;
+}
+
+html.dark-mode .testimonial-card:hover .testimonial-card-backdrop-img,
+body.dark-mode .testimonial-card:hover .testimonial-card-backdrop-img,
+[data-theme="dark"] .testimonial-card:hover .testimonial-card-backdrop-img {
+  opacity: 0.50;
+}
+
+html.dark-mode .testimonial-card-backdrop-scrim,
+body.dark-mode .testimonial-card-backdrop-scrim,
+[data-theme="dark"] .testimonial-card-backdrop-scrim {
+  background:
+    linear-gradient(90deg,
+      #0a1a30 0%,
+      rgba(10, 26, 48, 0.98) 30%,
+      rgba(10, 26, 48, 0.84) 48%,
+      rgba(10, 26, 48, 0.40) 74%,
+      rgba(10, 26, 48, 0.18) 100%),
+    linear-gradient(180deg,
+      rgba(10, 26, 48, 0.60) 0%,
+      transparent 22%,
+      rgba(10, 26, 48, 0.78) 80%,
+      #0a1a30 100%);
+}
+
+@media (max-width: 768px) {
+  .testimonial-card-backdrop-img {
+    right: 0;
+    width: 100%;
+    height: 100%;
+    object-position: center 20%;
+    opacity: 0.40;
+    filter: brightness(0.95) contrast(1.18) saturate(1.2);
+  }
+
+  :root:not(.dark-mode) .testimonial-card-backdrop-img,
+  html:not(.dark-mode) .testimonial-card-backdrop-img {
+    filter: brightness(0.95) contrast(1.18) saturate(1.2);
+  }
+
+  .testimonial-card.is-active .testimonial-card-backdrop-img {
+    opacity: 0.54;
+    filter: brightness(0.96) contrast(1.20) saturate(1.22);
+  }
+
+  .testimonial-card:hover .testimonial-card-backdrop-img {
+    opacity: 0.64;
+    filter: brightness(0.98) contrast(1.22) saturate(1.25);
+  }
+
+  .testimonial-card-backdrop-scrim {
+    background:
+      linear-gradient(180deg,
+        rgba(255, 255, 255, 0.90) 0%,
+        rgba(255, 255, 255, 0.76) 35%,
+        rgba(255, 255, 255, 0.44) 65%,
+        rgba(255, 255, 255, 0.78) 88%,
+        var(--surface-card, #ffffff) 100%);
+  }
+
+  html.dark-mode .testimonial-card-backdrop-img,
+  body.dark-mode .testimonial-card-backdrop-img,
+  [data-theme="dark"] .testimonial-card-backdrop-img {
+    opacity: 0.28;
+  }
+
+  html.dark-mode .testimonial-card-backdrop-scrim,
+  body.dark-mode .testimonial-card-backdrop-scrim,
+  [data-theme="dark"] .testimonial-card-backdrop-scrim {
+    background:
+      linear-gradient(180deg,
+        rgba(10, 26, 48, 0.92) 0%,
+        rgba(10, 26, 48, 0.78) 35%,
+        rgba(10, 26, 48, 0.45) 65%,
+        rgba(10, 26, 48, 0.82) 88%,
+        #0a1a30 100%);
+  }
 }
 
 /* Mobile-First Single-Card Carousel Geometry (< 768px) */

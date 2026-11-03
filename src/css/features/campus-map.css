@@ -532,14 +532,14 @@ body.dark-mode .campus-map-viewport {
 
 /* Top-boundary positioning for pins near the top map canvas edge */
 .map-hotspot-pin--top .map-pin-tooltip,
-.map-hotspot-pin[data-zone-id="dormitories"] .map-pin-tooltip {
+.map-hotspot-pin[data-zone-id="sports"] .map-pin-tooltip {
   bottom: auto;
   top: calc(100% + 22px);
   transform: translateX(-50%) translateY(-8px);
 }
 
 .map-hotspot-pin--top .map-pin-tooltip::after,
-.map-hotspot-pin[data-zone-id="dormitories"] .map-pin-tooltip::after {
+.map-hotspot-pin[data-zone-id="sports"] .map-pin-tooltip::after {
   top: auto;
   bottom: 100%;
   border-color: transparent transparent rgba(201, 162, 41, 0.65) transparent;
@@ -557,9 +557,9 @@ body.dark-mode .campus-map-viewport {
 .map-hotspot-pin--top:hover .map-pin-tooltip,
 .map-hotspot-pin--top:focus-visible .map-pin-tooltip,
 .map-hotspot-pin--top.has-tooltip-visible .map-pin-tooltip,
-.map-hotspot-pin[data-zone-id="dormitories"]:hover .map-pin-tooltip,
-.map-hotspot-pin[data-zone-id="dormitories"]:focus-visible .map-pin-tooltip,
-.map-hotspot-pin[data-zone-id="dormitories"].has-tooltip-visible .map-pin-tooltip {
+.map-hotspot-pin[data-zone-id="sports"]:hover .map-pin-tooltip,
+.map-hotspot-pin[data-zone-id="sports"]:focus-visible .map-pin-tooltip,
+.map-hotspot-pin[data-zone-id="sports"].has-tooltip-visible .map-pin-tooltip {
   transform: translateX(-50%) translateY(0);
 }
 
