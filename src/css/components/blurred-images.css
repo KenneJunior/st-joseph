@@ -108,11 +108,10 @@
 }
 
 .carousel-slide:not(.is-active):not(.active) .carousel-image.blurred-img-full.is-loaded {
-  filter: blur(5px) brightness(0.80) contrast(1.06);
-  -webkit-filter: blur(5px) brightness(0.80) contrast(1.06);
+  filter: brightness(0.80) contrast(1.06);
+  -webkit-filter: brightness(0.80) contrast(1.06);
 }
 
-.carousel-slide.is-active .carousel-image.blurred-img-full.is-loaded,
 .carousel-slide.is-active .carousel-image.blurred-img-full.is-loaded,
 .carousel-slide.active .carousel-image.blurred-img-full.is-loaded,
 .carousel-slide[data-distance="0"] .carousel-image.blurred-img-full.is-loaded {

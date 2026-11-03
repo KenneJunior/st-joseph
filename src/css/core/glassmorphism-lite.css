@@ -199,6 +199,30 @@ body.dark-mode #mobileBottomBar.glassmorphism-lite {
   box-shadow: 0 12px 36px -4px rgba(0, 0, 0, 0.55), 0 0 16px rgba(201, 162, 41, 0.22) !important;
 }
 
+/* 1D. Explicit Unthrottled Protection for Full and Balanced Performance Modes */
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) #mobileBottomBar,
+html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) #mobileBottomBar,
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .mobile-bottom-bar,
+html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .mobile-bottom-bar {
+  backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%) !important;
+}
+
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .unified-action-dock,
+html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .unified-action-dock,
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .sjccc-ai-fab,
+html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .sjccc-ai-fab,
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .enquiry-fab,
+html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .enquiry-fab {
+  backdrop-filter: blur(20px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(200%) !important;
+}
+
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .quick-actions-menu,
+html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .quick-actions-menu {
+  backdrop-filter: blur(24px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
+}
 
 /* ==========================================================================
    2. DIAGNOSTIC OVERLAY STYLES

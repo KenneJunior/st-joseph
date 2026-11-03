@@ -258,6 +258,8 @@
 
     z-index: 100;
     pointer-events: auto;
+    transform-style: flat;
+    isolation: auto;
 
     box-shadow:
         0 24px 54px rgba(0, 0, 0, 0.38),
@@ -365,7 +367,7 @@
 
 /* Subtly dim neighboring slides so the active center card dominates visually */
 .carousel-slide:not(.is-active):not(.active) .carousel-image {
-    filter: blur(5px) brightness(0.80) contrast(1.06);
+    filter: brightness(0.80) contrast(1.06);
     transition: filter 350ms ease;
 }
 
@@ -534,18 +536,18 @@
 
     background: linear-gradient(
         135deg,
-        rgba(6, 16, 34, 0.68) 0%,
-        rgba(4, 11, 24, 0.56) 100%
+        rgba(6, 16, 34, 0.58) 0%,
+        rgba(4, 11, 24, 0.50) 100%
     );
 
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
 
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.22);
 
     box-shadow:
         0 16px 36px rgba(0, 0, 0, 0.42),
-        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+        inset 0 1px 0 rgba(255, 255, 255, 0.20);
 
     transform-origin: left bottom;
 
@@ -1033,6 +1035,8 @@
     .carousel-slide,
     #campus .carousel-track .carousel-slide {
         border-radius: 18px;
+        transform-style: flat !important;
+        isolation: auto !important;
         --depth-rotation-deg: 6deg;
         --depth-z-px: 40px;
         --depth-scale-factor: 0.08;
@@ -1045,9 +1049,10 @@
         bottom: 52px;
         padding: 14px 18px;
         border-radius: 16px;
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
-        background: rgba(7, 24, 46, 0.7);
+        backdrop-filter: blur(16px) saturate(160%) !important;
+        -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+        background: rgba(6, 16, 34, 0.58) !important;
+        border: 1px solid rgba(255, 255, 255, 0.22) !important;
     }
 
     .carousel-btn {
@@ -1115,6 +1120,8 @@
     .carousel-slide,
     #campus .carousel-track .carousel-slide {
         border-radius: 15px;
+        transform-style: flat !important;
+        isolation: auto !important;
         --depth-rotation-deg: 0deg;
         --depth-z-px: 0px;
         --depth-scale-factor: 0.04;
@@ -1127,6 +1134,10 @@
         bottom: 48px;
         padding: 12px 14px;
         border-radius: 14px;
+        backdrop-filter: blur(16px) saturate(160%) !important;
+        -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+        background: rgba(6, 16, 34, 0.58) !important;
+        border: 1px solid rgba(255, 255, 255, 0.22) !important;
     }
 
     .carousel-kicker {
