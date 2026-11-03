@@ -365,7 +365,7 @@
 
 /* Subtly dim neighboring slides so the active center card dominates visually */
 .carousel-slide:not(.is-active):not(.active) .carousel-image {
-    filter: brightness(0.80) contrast(1.06);
+    filter: blur(5px) brightness(0.80) contrast(1.06);
     transition: filter 350ms ease;
 }
 
