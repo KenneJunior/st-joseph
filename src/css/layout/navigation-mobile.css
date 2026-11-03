@@ -577,7 +577,7 @@ body.drawer-open {
                             inset 0 -1px 0 rgba(7, 24, 46, 0.06);
     --dock-shadow: 0 14px 38px -4px rgba(2, 12, 26, 0.42),
                    0 4px 16px -2px rgba(7, 24, 46, 0.22);
-    --dock-blur: 16px;
+    --dock-blur: 22px;
     --dock-radius: var(--radius-pill, 9999px);
     --dock-bottom-offset: calc(10px + env(safe-area-inset-bottom, 0px));
     --dock-item-color: #07182e;
@@ -617,7 +617,7 @@ body.drawer-open {
   /* Dark theme surface */
   html.dark-mode .mobile-bottom-bar,
   body.dark-mode .mobile-bottom-bar {
-    --dock-bg: rgba(7, 24, 46, 0.80);
+    --dock-bg: rgba(7, 24, 46, 0.52);
     --dock-border: rgba(201, 162, 41, 0.35);
     --dock-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.12),
                             inset 0 -1px 0 rgba(201, 162, 41, 0.10);
@@ -630,28 +630,28 @@ body.drawer-open {
     --dock-active-border: rgba(243, 215, 121, 0.48);
     --dock-active-color: var(--accent-glow, #f3d779);
     --dock-active-dot: var(--accent-glow, #f3d779);
-    background-color: rgba(7, 24, 46, 0.80);
+    background-color: rgba(7, 24, 46, 0.52);
   }
 
   /* Progressive Enhancement: Frosted Glass in dark and light modes */
   @supports((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .mobile-bottom-bar {
-      --dock-bg: rgba(255, 255, 255, 0.78);
+      --dock-bg: rgba(255, 255, 255, 0.52);
       --dock-border: rgba(201, 162, 41, 0.38);
-      backdrop-filter: blur(var(--dock-blur, 16px)) saturate(180%);
-      -webkit-backdrop-filter: blur(var(--dock-blur, 16px)) saturate(180%);
-      background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.14) 0%, transparent 70%),
-                  linear-gradient(135deg, rgba(255, 255, 255, 0.88) 10%, rgba(245, 240, 230, 0.76) 100%);
+      backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%);
+      -webkit-backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%);
+      background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.12) 0%, transparent 70%),
+                  linear-gradient(135deg, rgba(255, 255, 255, 0.55) 10%, rgba(245, 240, 230, 0.45) 100%);
     }
 
     html.dark-mode .mobile-bottom-bar,
     body.dark-mode .mobile-bottom-bar {
-      --dock-bg: rgba(7, 24, 46, 0.75);
+      --dock-bg: rgba(7, 24, 46, 0.48);
       --dock-border: rgba(201, 162, 41, 0.45);
-      background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.25) 0%, transparent 75%),
-                  linear-gradient(135deg, rgba(7, 24, 46, 0.80) 10%, rgba(10, 31, 63, 0.72) 100%);
-      -webkit-backdrop-filter: blur(var(--dock-blur, 16px)) saturate(180%);
-      backdrop-filter: blur(var(--dock-blur, 16px)) saturate(180%);
+      background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.18) 0%, transparent 75%),
+                  linear-gradient(135deg, rgba(7, 24, 46, 0.50) 10%, rgba(10, 31, 63, 0.46) 100%);
+      -webkit-backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%);
+      backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%);
     }
   }
 

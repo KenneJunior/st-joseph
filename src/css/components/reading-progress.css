@@ -1,0 +1,191 @@
+/**
+ * ============================================================================
+ * SJCCC – Dynamic Reading Progress Indicator
+ * (src/css/components/reading-progress.css)
+ *
+ * Appears dynamically when the user scrolls through the long 'About' or
+ * 'Academics' sections. Provides continuous progress feedback and section
+ * awareness with zero layout shift and 60fps GPU-composited rendering.
+ * ============================================================================
+ */
+
+/* 1. Main Reading Progress Wrapper */
+.reading-progress-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  z-index: 1050; /* Positioned directly above sticky header */
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 280ms cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 280ms ease;
+}
+
+.reading-progress-indicator.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 2. Top Precision Progress Line */
+.reading-progress-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3.5px;
+  background: rgba(7, 24, 46, 0.08);
+  overflow: hidden;
+}
+
+body.dark-mode .reading-progress-track,
+html.dark-mode .reading-progress-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.reading-progress-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #b8860b 0%, #c9a229 40%, #f3d779 70%, #c9a229 100%);
+  transform-origin: left center;
+  transform: scaleX(0);
+  will-change: transform;
+  box-shadow: 0 0 10px rgba(201, 162, 41, 0.65),
+              0 0 3px rgba(243, 215, 121, 0.85);
+  transition: transform 120ms ease-out;
+}
+
+/* 3. Floating Section Reading Badge (Positioned just below header) */
+.reading-progress-badge {
+  position: absolute;
+  top: calc(var(--header-height, 72px) + 10px);
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.90);
+  border: 1px solid rgba(201, 162, 41, 0.40);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-family: var(--font-body, system-ui, -apple-system, sans-serif);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #07182e;
+  box-shadow: 0 6px 20px rgba(7, 24, 46, 0.12),
+              0 0 12px rgba(201, 162, 41, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  pointer-events: auto;
+  transform: translateY(-6px);
+  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
+              background 280ms ease,
+              border-color 280ms ease;
+}
+
+.reading-progress-indicator.is-active .reading-progress-badge {
+  transform: translateY(0);
+}
+
+body.dark-mode .reading-progress-badge,
+html.dark-mode .reading-progress-badge {
+  background: rgba(7, 24, 46, 0.90);
+  border-color: rgba(212, 168, 90, 0.45);
+  color: #f8fafc;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45),
+              0 0 14px rgba(201, 162, 41, 0.20);
+}
+
+/* Throttled Glassmorphism Fallback */
+html.blur-throttled .reading-progress-badge,
+html[data-backdrop-blur="throttled"] .reading-progress-badge,
+html.glassmorphism-lite .reading-progress-badge {
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html.blur-throttled.dark-mode .reading-progress-badge,
+html[data-backdrop-blur="throttled"].dark-mode .reading-progress-badge,
+html.glassmorphism-lite.dark-mode .reading-progress-badge {
+  background: rgba(7, 24, 46, 0.96) !important;
+}
+
+.reading-badge-icon {
+  color: var(--sj-gold-500, #c9a229);
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+}
+
+body.dark-mode .reading-badge-icon,
+html.dark-mode .reading-badge-icon {
+  color: var(--color-brand-accent-bright, #f3d779);
+}
+
+.reading-badge-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #334155;
+}
+
+body.dark-mode .reading-badge-label,
+html.dark-mode .reading-badge-label {
+  color: #cbd5e1;
+}
+
+.reading-badge-label strong {
+  color: #07182e;
+  font-weight: 700;
+}
+
+body.dark-mode .reading-badge-label strong,
+html.dark-mode .reading-badge-label strong {
+  color: #ffffff;
+}
+
+.reading-badge-divider {
+  color: #94a3b8;
+  opacity: 0.6;
+}
+
+.reading-badge-percent {
+  color: var(--sj-gold-600, #b8860b);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 28px;
+  text-align: right;
+}
+
+body.dark-mode .reading-badge-percent,
+html.dark-mode .reading-badge-percent {
+  color: var(--color-brand-accent-bright, #f3d779);
+}
+
+/* 4. Responsive Viewports */
+@media (max-width: 768px) {
+  .reading-progress-track {
+    height: 3px;
+  }
+
+  .reading-progress-badge {
+    top: calc(var(--header-height, 64px) + 6px);
+    right: 12px;
+    padding: 3px 9px;
+    font-size: 0.68rem;
+    gap: 5px;
+  }
+
+  .reading-badge-icon {
+    font-size: 0.74rem;
+  }
+
+  .reading-badge-label {
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

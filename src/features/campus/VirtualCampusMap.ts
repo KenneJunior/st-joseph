@@ -129,6 +129,7 @@ export class VirtualCampusMap {
 
     private init(): void {
         this.bindMarkerClicks();
+        this.initMarkerTooltips();
         this.bindListClicks();
         this.bindNavButtons();
         this.bindKeyboardNavigation();
@@ -193,6 +194,54 @@ export class VirtualCampusMap {
                 e.preventDefault();
                 const zoneId = marker.dataset.zoneId;
                 if (zoneId) this.selectZone(zoneId);
+            });
+        });
+    }
+
+    /**
+     * Initializes hover- and focus-triggered preview tooltips for each campus map pin.
+     * Displays the area title, category, and quick summary tagline before clicking.
+     */
+    private initMarkerTooltips(): void {
+        this.markers.forEach((marker) => {
+            const zoneId = marker.dataset.zoneId;
+            if (!zoneId) return;
+
+            const zone = CAMPUS_ZONES.find((z) => z.id === zoneId);
+            if (!zone) return;
+
+            let tooltip = marker.querySelector<HTMLElement>('.map-pin-tooltip');
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.className = 'map-pin-tooltip';
+                tooltip.id = `tooltip-${zone.id}`;
+                tooltip.setAttribute('role', 'tooltip');
+                tooltip.setAttribute('aria-hidden', 'true');
+                tooltip.innerHTML = `
+                    <span class="map-pin-tooltip__cat">${zone.category}</span>
+                    <strong class="map-pin-tooltip__title">${zone.title}</strong>
+                    <p class="map-pin-tooltip__desc">${zone.tagline}</p>
+                    <span class="map-pin-tooltip__hint"><i class="bi bi-cursor-fill"></i> Click to inspect area</span>
+                `;
+                marker.appendChild(tooltip);
+            }
+
+            marker.setAttribute('aria-describedby', tooltip.id || `tooltip-${zone.id}`);
+
+            // Mouse hover events
+            marker.addEventListener('mouseenter', () => {
+                marker.classList.add('has-tooltip-visible');
+            });
+            marker.addEventListener('mouseleave', () => {
+                marker.classList.remove('has-tooltip-visible');
+            });
+
+            // Keyboard focus events
+            marker.addEventListener('focus', () => {
+                marker.classList.add('has-tooltip-visible');
+            });
+            marker.addEventListener('blur', () => {
+                marker.classList.remove('has-tooltip-visible');
             });
         });
     }

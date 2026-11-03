@@ -82,6 +82,16 @@ export class ProspectusApp {
         // 3. Native PDF / Print Export Handler
         new PdfExporter(PROSPECTUS_SELECTORS.downloadPdfBtn);
 
+        // Auto-trigger print/export dialog if opened via Quick Actions "Download Prospectus"
+        if (typeof window !== 'undefined' && window.location.search.includes('action=download')) {
+            window.addEventListener('load', () => {
+                setTimeout(() => window.print(), 350);
+            });
+            if (document.readyState === 'complete') {
+                setTimeout(() => window.print(), 350);
+            }
+        }
+
         // 4. Offline connectivity status indicator with Service Worker cache validation
         new OfflineIndicator();
 

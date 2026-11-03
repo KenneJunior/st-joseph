@@ -1,0 +1,387 @@
+/**
+ * ============================================================================
+ * SJCCC – Quick Actions Floating Menu Styling
+ * (src/css/features/quick-actions.css)
+ *
+ * Glassmorphic floating menu anchored to the Unified Assistance Dock.
+ * Provides instant access to:
+ * - Download Prospectus (PDF)
+ * - Call School (+237 682 760 271)
+ * - WhatsApp Admin
+ *
+ * Fully responsive, keyboard accessible, with Light & Dark mode support.
+ * ============================================================================
+ */
+
+/* 1. Quick Actions Button in Unified Dock */
+.unified-dock-btn--quick {
+  color: var(--sj-gold-500, #c9a229);
+  position: relative;
+}
+
+.unified-dock-btn--quick i {
+  font-size: 0.94rem;
+  color: var(--sj-gold-500, #c9a229);
+  transition: transform var(--duration-fast, 200ms) ease;
+}
+
+.unified-dock-btn--quick:hover i,
+.unified-dock-btn--quick[aria-expanded="true"] i {
+  transform: scale(1.15) rotate(10deg);
+}
+
+.unified-dock-btn--quick[aria-expanded="true"] {
+  background: rgba(201, 162, 41, 0.16);
+  color: var(--sj-gold-400, #dfba47);
+}
+
+body.dark-mode .unified-dock-btn--quick,
+html.dark-mode .unified-dock-btn--quick {
+  color: var(--color-brand-accent-bright, #f3d779);
+}
+
+body.dark-mode .unified-dock-btn--quick i,
+html.dark-mode .unified-dock-btn--quick i {
+  color: var(--color-brand-accent-bright, #f3d779);
+}
+
+/* 2. Quick Actions Floating Menu Container */
+.quick-actions-menu {
+  position: fixed;
+  bottom: calc(24px + 54px); /* Pinned directly above the dock */
+  right: 24px;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  z-index: var(--z-hud, 2000);
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(201, 162, 41, 0.40);
+  border-radius: 20px;
+  padding: 14px;
+  box-shadow: 0 16px 40px -6px rgba(7, 24, 46, 0.22),
+              0 0 24px rgba(201, 162, 41, 0.16),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  user-select: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(14px) scale(0.96);
+  transform-origin: bottom right;
+  transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 240ms;
+}
+
+/* Open State */
+.quick-actions-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* Dark Mode Container */
+body.dark-mode .quick-actions-menu,
+html.dark-mode .quick-actions-menu {
+  background: rgba(7, 24, 46, 0.52);
+  border-color: rgba(212, 168, 90, 0.45);
+  box-shadow: 0 20px 48px -6px rgba(0, 0, 0, 0.70),
+              0 0 32px rgba(201, 162, 41, 0.20),
+              inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+}
+
+/* Throttled Glassmorphism Fallback */
+html.blur-throttled .quick-actions-menu,
+html[data-backdrop-blur="throttled"] .quick-actions-menu,
+html.glassmorphism-lite .quick-actions-menu {
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html.blur-throttled.dark-mode .quick-actions-menu,
+html[data-backdrop-blur="throttled"].dark-mode .quick-actions-menu,
+html.glassmorphism-lite.dark-mode .quick-actions-menu {
+  background: rgba(7, 24, 46, 0.96) !important;
+}
+
+/* 3. Menu Header */
+.quick-actions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(201, 162, 41, 0.22);
+}
+
+.quick-actions-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quick-actions-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c9a229 0%, #b8860b 100%);
+  color: #07182e;
+  font-size: 0.82rem;
+  box-shadow: 0 2px 8px rgba(201, 162, 41, 0.35);
+}
+
+.quick-actions-title {
+  font-family: var(--font-heading, "Cinzel", Georgia, serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-primary-navy, #07182e);
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+
+body.dark-mode .quick-actions-title,
+html.dark-mode .quick-actions-title {
+  color: #ffffff;
+}
+
+.quick-actions-close-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  transition: all var(--duration-fast, 180ms) ease;
+}
+
+.quick-actions-close-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #07182e;
+}
+
+body.dark-mode .quick-actions-close-btn {
+  color: #94a3b8;
+}
+
+body.dark-mode .quick-actions-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/* 4. Menu Items List */
+.quick-actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quick-action-item {
+  width: 100%;
+}
+
+.quick-action-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(201, 162, 41, 0.16);
+  transition: all var(--duration-fast, 200ms) cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  color: inherit;
+  outline: none;
+}
+
+.quick-action-link:hover,
+.quick-action-link:focus-visible {
+  background: rgba(201, 162, 41, 0.12);
+  border-color: rgba(201, 162, 41, 0.45);
+  transform: translateX(3px);
+  box-shadow: 0 4px 14px rgba(7, 24, 46, 0.08);
+}
+
+body.dark-mode .quick-action-link,
+html.dark-mode .quick-action-link {
+  background: rgba(10, 31, 63, 0.65);
+  border-color: rgba(212, 168, 90, 0.22);
+}
+
+body.dark-mode .quick-action-link:hover,
+body.dark-mode .quick-action-link:focus-visible,
+html.dark-mode .quick-action-link:hover,
+html.dark-mode .quick-action-link:focus-visible {
+  background: rgba(201, 162, 41, 0.20);
+  border-color: rgba(212, 168, 90, 0.6);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+}
+
+/* Action Icons */
+.quick-action-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  font-size: 1.05rem;
+  transition: transform var(--duration-fast, 200ms) ease;
+}
+
+.quick-action-link:hover .quick-action-icon-wrap {
+  transform: scale(1.08);
+}
+
+.quick-action-icon-wrap--enquiry {
+  background: rgba(13, 110, 253, 0.16);
+  color: #2563eb;
+  border: 1px solid rgba(37, 99, 235, 0.35);
+}
+
+body.dark-mode .quick-action-icon-wrap--enquiry,
+html.dark-mode .quick-action-icon-wrap--enquiry {
+  background: rgba(59, 130, 246, 0.25);
+  color: #60a5fa;
+  border-color: rgba(96, 165, 250, 0.45);
+}
+
+.quick-action-icon-wrap--pdf {
+  background: rgba(201, 162, 41, 0.15);
+  color: #b8860b;
+  border: 1px solid rgba(201, 162, 41, 0.35);
+}
+
+body.dark-mode .quick-action-icon-wrap--pdf,
+html.dark-mode .quick-action-icon-wrap--pdf {
+  background: rgba(201, 162, 41, 0.25);
+  color: #f3d779;
+}
+
+.quick-action-icon-wrap--call {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+body.dark-mode .quick-action-icon-wrap--call,
+html.dark-mode .quick-action-icon-wrap--call {
+  background: rgba(16, 185, 129, 0.25);
+  color: #34d399;
+}
+
+.quick-action-icon-wrap--whatsapp {
+  background: rgba(37, 211, 102, 0.15);
+  color: #128c7e;
+  border: 1px solid rgba(37, 211, 102, 0.35);
+}
+
+body.dark-mode .quick-action-icon-wrap--whatsapp,
+html.dark-mode .quick-action-icon-wrap--whatsapp {
+  background: rgba(37, 211, 102, 0.25);
+  color: #25d366;
+}
+
+.quick-action-icon-wrap--location {
+  background: rgba(56, 189, 248, 0.15);
+  color: #0284c7;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+body.dark-mode .quick-action-icon-wrap--location,
+html.dark-mode .quick-action-icon-wrap--location {
+  background: rgba(56, 189, 248, 0.25);
+  color: #38bdf8;
+}
+
+/* Action Text */
+.quick-action-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.quick-action-label {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #07182e;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+body.dark-mode .quick-action-label,
+html.dark-mode .quick-action-label {
+  color: #ffffff;
+}
+
+.quick-action-desc {
+  font-size: 0.72rem;
+  color: #64748b;
+  margin-top: 1px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body.dark-mode .quick-action-desc,
+html.dark-mode .quick-action-desc {
+  color: #94a3b8;
+}
+
+.quick-action-arrow {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  transition: transform var(--duration-fast, 180ms) ease, color var(--duration-fast, 180ms) ease;
+}
+
+.quick-action-link:hover .quick-action-arrow {
+  transform: translateX(3px);
+  color: var(--sj-gold-500, #c9a229);
+}
+
+/* 5. Mobile Geometry (max-width: 768px) */
+@media (max-width: 768px) {
+  .quick-actions-menu {
+    bottom: calc(72px + 52px + env(safe-area-inset-bottom, 0px));
+    right: 14px;
+    width: 295px;
+    padding: 12px;
+  }
+
+  .quick-action-link {
+    padding: 8px 10px;
+    gap: 10px;
+  }
+
+  .quick-action-icon-wrap {
+    width: 32px;
+    height: 32px;
+    font-size: 0.95rem;
+  }
+
+  .quick-action-label {
+    font-size: 0.82rem;
+  }
+
+  .quick-action-desc {
+    font-size: 0.68rem;
+  }
+}

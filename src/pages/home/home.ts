@@ -43,6 +43,8 @@ import { LiquidGlassAdapter } from '../../ui/effects/LiquidGlassAdapter.ts';
 import { CardSplitter } from '../../ui/utils/CardSplitter.ts';
 import { initAllBlurredImages } from '../../ui/utils/BlurredImageLoader.ts';
 import { TestimonialsSection } from '../../features/testimonials/TestimonialsSection.ts';
+import { QuickActionsMenu } from '../../features/quick-actions/QuickActionsMenu.ts';
+import { ReadingProgressIndicator } from '../../ui/navigation/ReadingProgressIndicator.ts';
 
 export class HomeApp {
     constructor() {
@@ -258,6 +260,20 @@ export class HomeApp {
 
         // 22. Progressive blurred-image placeholders initialization
         initAllBlurredImages();
+
+        // 23. Quick Actions floating menu within unified assistance dock
+        new QuickActionsMenu({
+            triggerSelector: `#${HOME_SELECTORS.quickActionsFab}`,
+            dockSelector: '#unifiedAssistanceDock',
+        });
+
+        // 24. Dynamic reading progress indicator for long sections ('About' & 'Academics')
+        new ReadingProgressIndicator({
+            sections: [
+                { id: 'about', label: 'About SJCCC' },
+                { id: 'academics', label: 'Academic Pathways' },
+            ],
+        });
     }
 
     /**

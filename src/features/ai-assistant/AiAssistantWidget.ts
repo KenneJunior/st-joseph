@@ -107,6 +107,16 @@ export class AiAssistantWidget {
             enquiryFab.parentElement.insertBefore(dock, enquiryFab);
             dock.appendChild(aiFab);
             dock.appendChild(divider);
+
+            const quickFab = document.getElementById('quickActionsFab');
+            if (quickFab) {
+                const divider2 = document.createElement('span');
+                divider2.className = 'unified-dock-divider';
+                divider2.setAttribute('aria-hidden', 'true');
+                dock.appendChild(quickFab);
+                dock.appendChild(divider2);
+            }
+
             dock.appendChild(enquiryFab);
 
             this.fabEl = aiFab;

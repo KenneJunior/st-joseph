@@ -489,6 +489,130 @@ body.dark-mode .campus-map-viewport {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45), 0 0 10px rgba(201, 162, 41, 0.3);
 }
 
+/* ─── Map Pin Hover/Focus Preview Tooltips ─── */
+.map-pin-tooltip {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  width: 240px;
+  max-width: min(280px, 80vw);
+  background: rgba(7, 24, 46, 0.90);
+  border: 1px solid rgba(201, 162, 41, 0.45);
+  border-radius: 12px;
+  padding: 10px 14px;
+  text-align: left;
+  box-shadow: 0 14px 34px -4px rgba(0, 0, 0, 0.65), 0 0 20px rgba(201, 162, 41, 0.22);
+  backdrop-filter: blur(16px) saturate(190%);
+  -webkit-backdrop-filter: blur(16px) saturate(190%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 60;
+  transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.24s;
+  white-space: normal;
+  line-height: 1.35;
+  box-sizing: border-box;
+}
+
+/* Arrow indicator pointing toward marker core */
+.map-pin-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: rgba(201, 162, 41, 0.65) transparent transparent transparent;
+  pointer-events: none;
+}
+
+/* Top-boundary positioning for pins near the top map canvas edge */
+.map-hotspot-pin--top .map-pin-tooltip,
+.map-hotspot-pin[data-zone-id="dormitories"] .map-pin-tooltip {
+  bottom: auto;
+  top: calc(100% + 22px);
+  transform: translateX(-50%) translateY(-8px);
+}
+
+.map-hotspot-pin--top .map-pin-tooltip::after,
+.map-hotspot-pin[data-zone-id="dormitories"] .map-pin-tooltip::after {
+  top: auto;
+  bottom: 100%;
+  border-color: transparent transparent rgba(201, 162, 41, 0.65) transparent;
+}
+
+/* Tooltip Trigger State on Hover & Focus */
+.map-hotspot-pin:hover .map-pin-tooltip,
+.map-hotspot-pin:focus-visible .map-pin-tooltip,
+.map-hotspot-pin.has-tooltip-visible .map-pin-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.map-hotspot-pin--top:hover .map-pin-tooltip,
+.map-hotspot-pin--top:focus-visible .map-pin-tooltip,
+.map-hotspot-pin--top.has-tooltip-visible .map-pin-tooltip,
+.map-hotspot-pin[data-zone-id="dormitories"]:hover .map-pin-tooltip,
+.map-hotspot-pin[data-zone-id="dormitories"]:focus-visible .map-pin-tooltip,
+.map-hotspot-pin[data-zone-id="dormitories"].has-tooltip-visible .map-pin-tooltip {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Internal tooltip elements */
+.map-pin-tooltip__cat {
+  display: block;
+  font-size: 0.63rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent-glow, #f3d779);
+  margin-bottom: 2px;
+}
+
+.map-pin-tooltip__title {
+  display: block;
+  font-family: var(--font-body, system-ui);
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+
+.map-pin-tooltip__desc {
+  margin: 0 0 6px 0;
+  font-size: 0.72rem;
+  color: rgba(240, 244, 250, 0.90);
+  line-height: 1.35;
+  font-weight: 400;
+}
+
+.map-pin-tooltip__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.67rem;
+  font-weight: 600;
+  color: var(--accent-glow, #f0d28b);
+  opacity: 0.92;
+}
+
+.map-pin-tooltip__hint i {
+  font-size: 0.65rem;
+}
+
+/* Throttled Glassmorphism fallback for low-power profile */
+html.blur-throttled .map-pin-tooltip,
+html[data-backdrop-blur="throttled"] .map-pin-tooltip {
+  background: rgba(7, 24, 46, 0.97) !important;
+  backdrop-filter: none !important;
+}
+
 /* ─── Guided Tour Auto-Cycle Control ─── */
 .campus-map-tour-control {
   position: absolute;

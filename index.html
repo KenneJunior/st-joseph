@@ -2034,63 +2034,99 @@
 
                   <!-- Hotspot Marker 1: Chapel & Shrine -->
                   <button class="map-hotspot-pin active" data-zone-id="chapel" style="left: 24%; top: 36%;"
-                    aria-label="Select College Chapel and St. Joseph Shrine marker" role="button" aria-selected="true">
+                    aria-label="Select College Chapel and St. Joseph Shrine marker" role="button" aria-selected="true" aria-describedby="tooltip-chapel">
                     <span class="map-pin-pulse" aria-hidden="true"></span>
                     <span class="map-pin-core">
                       <i class="bi bi-bank" aria-hidden="true"></i>
                     </span>
                     <span class="map-pin-label">Chapel &amp; Shrine</span>
+                    <div class="map-pin-tooltip" role="tooltip" id="tooltip-chapel" aria-hidden="true">
+                      <span class="map-pin-tooltip__cat">Spiritual Life</span>
+                      <strong class="map-pin-tooltip__title">College Chapel &amp; St. Joseph's Shrine</strong>
+                      <p class="map-pin-tooltip__desc">Spiritual foundation and sanctuary for reflection</p>
+                      <span class="map-pin-tooltip__hint"><i class="bi bi-cursor-fill" aria-hidden="true"></i> Click to inspect area</span>
+                    </div>
                   </button>
 
                   <!-- Hotspot Marker 2: Electrical Workshops -->
                   <button class="map-hotspot-pin" data-zone-id="workshops-electrical" style="left: 72%; top: 30%;"
-                    aria-label="Select Technical Electrical Workshops marker" role="button" aria-selected="false">
+                    aria-label="Select Technical Electrical Workshops marker" role="button" aria-selected="false" aria-describedby="tooltip-workshops-electrical">
                     <span class="map-pin-pulse" aria-hidden="true"></span>
                     <span class="map-pin-core">
                       <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
                     </span>
                     <span class="map-pin-label">Workshops</span>
+                    <div class="map-pin-tooltip" role="tooltip" id="tooltip-workshops-electrical" aria-hidden="true">
+                      <span class="map-pin-tooltip__cat">Technical Education</span>
+                      <strong class="map-pin-tooltip__title">Technical Electrical Workshops</strong>
+                      <p class="map-pin-tooltip__desc">Hands-on electrical installation &amp; electronics hub</p>
+                      <span class="map-pin-tooltip__hint"><i class="bi bi-cursor-fill" aria-hidden="true"></i> Click to inspect area</span>
+                    </div>
                   </button>
 
                   <!-- Hotspot Marker 3: Boarding Dormitories -->
-                  <button class="map-hotspot-pin" data-zone-id="dormitories" style="left: 48%; top: 22%;"
-                    aria-label="Select Boarding Dormitories marker" role="button" aria-selected="false">
+                  <button class="map-hotspot-pin map-hotspot-pin--top" data-zone-id="dormitories" style="left: 48%; top: 22%;"
+                    aria-label="Select Boarding Dormitories marker" role="button" aria-selected="false" aria-describedby="tooltip-dormitories">
                     <span class="map-pin-pulse" aria-hidden="true"></span>
                     <span class="map-pin-core">
                       <i class="bi bi-building-fill" aria-hidden="true"></i>
                     </span>
                     <span class="map-pin-label">Dormitories</span>
+                    <div class="map-pin-tooltip" role="tooltip" id="tooltip-dormitories" aria-hidden="true">
+                      <span class="map-pin-tooltip__cat">Boarding Life</span>
+                      <strong class="map-pin-tooltip__title">Boarding Dormitories (St. Peter &amp; St. Therese)</strong>
+                      <p class="map-pin-tooltip__desc">Secure, nurturing residential home away from home</p>
+                      <span class="map-pin-tooltip__hint"><i class="bi bi-cursor-fill" aria-hidden="true"></i> Click to inspect area</span>
+                    </div>
                   </button>
 
                   <!-- Hotspot Marker 4: Classrooms & Science Labs -->
                   <button class="map-hotspot-pin" data-zone-id="classrooms" style="left: 44%; top: 54%;"
-                    aria-label="Select Academic Classroom Blocks and Labs marker" role="button" aria-selected="false">
+                    aria-label="Select Academic Classroom Blocks and Labs marker" role="button" aria-selected="false" aria-describedby="tooltip-classrooms">
                     <span class="map-pin-pulse" aria-hidden="true"></span>
                     <span class="map-pin-core">
                       <i class="bi bi-book-half" aria-hidden="true"></i>
                     </span>
                     <span class="map-pin-label">Classrooms</span>
+                    <div class="map-pin-tooltip" role="tooltip" id="tooltip-classrooms" aria-hidden="true">
+                      <span class="map-pin-tooltip__cat">Academic Core</span>
+                      <strong class="map-pin-tooltip__title">Academic Classroom Blocks &amp; Labs</strong>
+                      <p class="map-pin-tooltip__desc">Vibrant teaching halls for General &amp; Science curriculum</p>
+                      <span class="map-pin-tooltip__hint"><i class="bi bi-cursor-fill" aria-hidden="true"></i> Click to inspect area</span>
+                    </div>
                   </button>
 
                   <!-- Hotspot Marker 5: Building & Construction Yard -->
                   <button class="map-hotspot-pin" data-zone-id="construction" style="left: 82%; top: 62%;"
-                    aria-label="Select Building and Construction Yard marker" role="button" aria-selected="false">
+                    aria-label="Select Building and Construction Yard marker" role="button" aria-selected="false" aria-describedby="tooltip-construction">
                     <span class="map-pin-pulse" aria-hidden="true"></span>
                     <span class="map-pin-core">
                       <i class="bi bi-tools" aria-hidden="true"></i>
                     </span>
                     <span class="map-pin-label">Construction</span>
+                    <div class="map-pin-tooltip" role="tooltip" id="tooltip-construction" aria-hidden="true">
+                      <span class="map-pin-tooltip__cat">Technical Education</span>
+                      <strong class="map-pin-tooltip__title">Building &amp; Civil Construction Yard</strong>
+                      <p class="map-pin-tooltip__desc">Structural masonry, architectural drafting &amp; woodwork</p>
+                      <span class="map-pin-tooltip__hint"><i class="bi bi-cursor-fill" aria-hidden="true"></i> Click to inspect area</span>
+                    </div>
                   </button>
 
                   <!-- Hotspot Marker 6: Quadrangle & Sports Grounds -->
                   <button class="map-hotspot-pin" data-zone-id="sports" style="left: 28%; top: 74%;"
                     aria-label="Select Central Quadrangle and Sports Grounds marker" role="button"
-                    aria-selected="false">
+                    aria-selected="false" aria-describedby="tooltip-sports">
                     <span class="map-pin-pulse" aria-hidden="true"></span>
                     <span class="map-pin-core">
                       <i class="bi bi-dribbble" aria-hidden="true"></i>
                     </span>
                     <span class="map-pin-label">Sports Ground</span>
+                    <div class="map-pin-tooltip" role="tooltip" id="tooltip-sports" aria-hidden="true">
+                      <span class="map-pin-tooltip__cat">Athletics &amp; Community</span>
+                      <strong class="map-pin-tooltip__title">Central Quadrangle &amp; Assembly Grounds</strong>
+                      <p class="map-pin-tooltip__desc">College assemblies, athletics &amp; recreation under open skies</p>
+                      <span class="map-pin-tooltip__hint"><i class="bi bi-cursor-fill" aria-hidden="true"></i> Click to inspect area</span>
+                    </div>
                   </button>
                 </div>
 
@@ -3062,8 +3098,8 @@
     <p class="copyright">© 2026 St. Joseph's Catholic Comprehensive College, Mbengwi. All Rights Reserved.</p>
   </footer>
 
-  <!-- Unified Assistance & Enquiry Dock (Combined to prevent screen clutter) -->
-  <div class="unified-action-dock" id="unifiedAssistanceDock" role="region" aria-label="Assistance and Enquiry Actions">
+  <!-- Unified Assistance & Quick Actions Floating Dock -->
+  <div class="unified-action-dock" id="unifiedAssistanceDock" role="region" aria-label="Assistance and Quick Actions">
     <button type="button" class="unified-dock-btn unified-dock-btn--ai" id="sjcccAiFab"
       aria-label="Open SJCCC AI Guidance Assistant" title="Ask AI Assistant (Gemini 2.5 Flash)"
       toolDescription="Open the SJCCC AI Guidance Assistant to ask questions about admissions, fees, and programs.">
@@ -3071,9 +3107,15 @@
       <span class="dock-btn-label">Ask AI</span>
     </button>
     <span class="unified-dock-divider" aria-hidden="true"></span>
-    <button type="button" class="unified-dock-btn unified-dock-btn--enquiry" id="enquiryFab"
-      aria-label="Open enquiry form" title="Send us an enquiry message"
-      toolDescription="Open the enquiry form so visitors can send an official message or ask about admissions.">
+    <button type="button" class="unified-dock-btn unified-dock-btn--quick" id="quickActionsFab"
+      aria-label="Open Quick Actions menu" title="Quick Actions (Enquire, Prospectus, Call, WhatsApp)"
+      aria-haspopup="true" aria-expanded="false" aria-controls="quickActionsMenu"
+      toolDescription="Open quick actions to send an enquiry, download prospectus, call school, or chat with WhatsApp administration.">
+      <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+      <span class="dock-btn-label">Quick Actions</span>
+    </button>
+    <!-- Hidden backwards-compatible anchor for enquiry modal hooks -->
+    <button type="button" class="unified-dock-btn unified-dock-btn--enquiry" id="enquiryFab" style="display: none;" aria-hidden="true" tabindex="-1">
       <i class="bi bi-chat-dots-fill fab-icon" aria-hidden="true"></i>
       <span class="dock-btn-label">Enquire</span>
     </button>

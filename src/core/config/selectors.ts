@@ -55,6 +55,7 @@ export const HOME_SELECTORS = {
     // Enquiry Modal & Form
     enquiryFabSelectors: [
         '#enquiryFab',
+        '#qaEnquireAction',
         '#enquire-btn',
         '#pMan',
         '#getInTouchBtn',
@@ -69,6 +70,10 @@ export const HOME_SELECTORS = {
     submitBtn: 'submitBtn',
     whatsappRoutingToggle: 'whatsappRoutingToggle',
     formInputs: '.form-group input, .form-group textarea',
+    // Quick Actions & Reading Progress
+    quickActionsFab: 'quickActionsFab',
+    quickActionsMenu: 'quickActionsMenu',
+    readingProgressIndicator: 'readingProgressIndicator',
 } as const;
 
 export const PROSPECTUS_SELECTORS = {

@@ -31,6 +31,7 @@
 @import './components/search-history.css';
 @import './components/blurred-images.css';
 @import './components/pwa-install-card.css';
+@import './components/reading-progress.css';
 
 /* Features */
 @import './features/preloader.css';
@@ -50,6 +51,7 @@
 @import './features/pwa-wco.css';
 @import './features/ai-assistant.css';
 @import './features/sw-update.css';
+@import './features/quick-actions.css';
 
 /* Motion */
 @import './motion/keyframes.css';
