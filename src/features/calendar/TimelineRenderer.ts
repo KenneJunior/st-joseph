@@ -10,6 +10,50 @@ import { type AcademicMilestone, ACADEMIC_MILESTONES_2026_2027 } from '../../dat
 
 const MONTH_NAMES = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'] as const;
 
+/**
+ * Resolves the thematic background image for an academic milestone card based on
+ * explicit milestone configuration, specific landmark IDs/keywords, and event category.
+ */
+export function getMilestoneBackgroundImage(milestone: AcademicMilestone): string {
+    if (milestone.bgImage) {
+        return milestone.bgImage;
+    }
+
+    const lowerId = milestone.id.toLowerCase();
+    const lowerTitle = milestone.title.toLowerCase();
+
+    // Specific landmark milestone identifiers and keywords
+    if (lowerId.includes('graduation') || lowerId.includes('valedictory') || lowerTitle.includes('graduation') || lowerTitle.includes('valedictory')) {
+        return '/assets/sjccc-graduants-0.jpg';
+    }
+    if (lowerId.includes('st-joseph') || lowerTitle.includes('saint joseph') || lowerTitle.includes('feast of st')) {
+        return '/assets/sjccc-student-in-chapel-1.png';
+    }
+    if (lowerId.includes('youth-day') || lowerTitle.includes('youth day')) {
+        return '/assets/sjccc-trophies.jpg';
+    }
+    if (lowerId.includes('mock') || lowerId.includes('gce') || lowerTitle.includes('mock') || lowerTitle.includes('gce')) {
+        return '/assets/sjccc-mock.jpg';
+    }
+    if (lowerId.includes('christmas') || lowerTitle.includes('christmas')) {
+        return '/assets/sjccc-classes-outside.jpeg';
+    }
+
+    // Category fallbacks
+    switch (milestone.category) {
+        case 'exam':
+            return '/assets/sjccc-Classroom.jpg';
+        case 'resumption':
+            return '/assets/sjccc-entrance.jpeg';
+        case 'spiritual':
+            return '/assets/sjccc-student-in-chapel-1.png';
+        case 'break':
+            return '/assets/sjccc-view.jpg';
+        default:
+            return '/assets/sjccc-campus.jpg';
+    }
+}
+
 export function renderTimelineMilestones(
     containerEl: HTMLElement | null,
     milestones: readonly AcademicMilestone[] = ACADEMIC_MILESTONES_2026_2027
@@ -168,6 +212,9 @@ export function renderTimelineMilestones(
               </div>
             </div>`;
 
+        const bgImage = getMilestoneBackgroundImage(m);
+        const bgImageAlt = m.bgImageAlt || `${m.title} background`;
+
         return `
             <article class="timeline-milestone reveal" data-milestone-id="${m.id}" data-term="${m.term}" data-category="${m.category}" id="${m.id}">
               <div class="timeline-date-column">
@@ -180,7 +227,16 @@ export function renderTimelineMilestones(
                   <i class="bi ${markerIcon}"></i>
                 </div>
               </div>
-              <div class="timeline-card">
+              <div class="timeline-card" data-category="${m.category}" data-milestone-id="${m.id}">
+                <!-- Thematic Event Category Background Image & Scrim -->
+                <div class="timeline-card-backdrop" aria-hidden="true">
+                  <img class="timeline-card-backdrop-img"
+                    src="${bgImage}"
+                    alt="${bgImageAlt}"
+                    loading="lazy"
+                    onerror="this.onerror=null; this.src='/assets/Error-Image.jpeg';">
+                  <div class="timeline-card-backdrop-scrim"></div>
+                </div>
                 <div class="timeline-card-header">
                   <div class="timeline-meta-breadcrumbs">
                     <span class="timeline-term-tag">${m.termLabel}</span>

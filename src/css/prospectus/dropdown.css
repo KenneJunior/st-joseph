@@ -189,20 +189,32 @@ body.drawer-open {
         transform: translateX(3px);
     }
 
-    /* Gold-Accented Active State */
-    #navMenu .nav-link.active {
-        background: rgba(201, 162, 41, 0.18);
-        border-color: rgba(201, 162, 41, 0.40);
-        border-left: 3px solid var(--gold-light, #f3d779);
-        color: var(--gold-light, #f3d779);
-        font-weight: 600;
+    /* Gold-Accented Active State — Never Transparent */
+    #navMenu .nav-link.active,
+    #navMenu .nav-link[aria-current="location"],
+    #navMenu .nav-link[aria-current="page"] {
+        background: rgba(201, 162, 41, 0.28) !important;
+        border-color: rgba(201, 162, 41, 0.55);
+        border-left: 4px solid var(--gold-light, #f3d779) !important;
+        color: var(--gold-light, #f3d779) !important;
+        font-weight: 700;
         padding-left: 1.15rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+        opacity: 1 !important;
     }
 
-    #navMenu .nav-link.active::after {
+    #navMenu .nav-link.active::after,
+    #navMenu .nav-link[aria-current="location"]::after,
+    #navMenu .nav-link[aria-current="page"]::after {
         color: var(--gold-light, #f3d779);
         font-weight: 700;
+    }
+
+    #navMenu .nav-link:active {
+        background: rgba(201, 162, 41, 0.35) !important;
+        color: #ffffff !important;
+        opacity: 1 !important;
+        transform: translateX(1px) scale(0.98);
     }
 
     /* Accessible Focus Visible State */
@@ -236,10 +248,21 @@ body.drawer-open {
     }
 
     html:not(.dark-mode) #navMenu .nav-link.active,
-    [data-theme="light"] #navMenu .nav-link.active {
-        background: rgba(201, 162, 41, 0.18);
-        color: var(--sj-navy-950, #020c1a);
-        border-left: 3px solid var(--gold, #c9a229);
+    [data-theme="light"] #navMenu .nav-link.active,
+    html:not(.dark-mode) #navMenu .nav-link[aria-current],
+    [data-theme="light"] #navMenu .nav-link[aria-current] {
+        background: rgba(201, 162, 41, 0.25) !important;
+        color: var(--sj-navy-950, #020c1a) !important;
+        border-left: 4px solid var(--gold, #c9a229) !important;
+        font-weight: 700;
+        opacity: 1 !important;
+    }
+
+    html:not(.dark-mode) #navMenu .nav-link:active,
+    [data-theme="light"] #navMenu .nav-link:active {
+        background: rgba(201, 162, 41, 0.32) !important;
+        color: var(--sj-navy-950, #020c1a) !important;
+        opacity: 1 !important;
     }
 }
 

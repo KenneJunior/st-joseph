@@ -58,6 +58,8 @@ export interface BaseMilestone {
     cardNotice?: string;
     markerIcon?: string;
     markerTitle?: string;
+    bgImage?: string;
+    bgImageAlt?: string;
 }
 
 /**
@@ -169,6 +171,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Boarding house check-in required',
         markerIcon: 'bi-door-open-fill',
         markerTitle: 'Resumption Milestone',
+        bgImage: '/assets/sjccc-entrance.jpeg',
+        bgImageAlt: 'St. Joseph Catholic Comprehensive College entrance gate and campus welcome',
     },
     {
         id: 'resumption-old-2026',
@@ -196,6 +200,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Tuition clearance mandatory',
         markerIcon: 'bi-backpack-fill',
         markerTitle: 'Resumption Milestone',
+        bgImage: '/assets/sjccc-campus.jpg',
+        bgImageAlt: 'Returning students gathering on SJCCC Mbengwi campus yard',
     },
     {
         id: 'midterm-break-t1-2026',
@@ -221,6 +227,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Return on campus: Sunday 01 Nov',
         markerIcon: 'bi-pause-circle-fill',
         markerTitle: 'Mid-Term Break',
+        bgImage: '/assets/sjccc-view.jpg',
+        bgImageAlt: 'Scenic panoramic hillside view of Mbengwi and campus grounds during mid-term break',
     },
     {
         id: 'exams-t1-2026',
@@ -248,6 +256,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Writing materials and exam slips mandatory',
         markerIcon: 'bi-pencil-square',
         markerTitle: 'Examinations',
+        bgImage: '/assets/Students-in-class.jpeg',
+        bgImageAlt: 'SJCCC students writing examinations in classroom',
     },
     {
         id: 'christmas-vacation-2026',
@@ -273,6 +283,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Reports must be signed by parents',
         markerIcon: 'bi-tree-fill',
         markerTitle: 'Christmas Vacation',
+        bgImage: '/assets/sjccc-classes-outside.jpeg',
+        bgImageAlt: 'Students and staff gathered on campus prior to Christmas vacation',
     },
 
     // ─────────────── TERM 2 (SECOND TERM) 2027 ───────────────
@@ -302,6 +314,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Boarders return Jan 3 by 5:00 PM',
         markerIcon: 'bi-sun-fill',
         markerTitle: 'Second Term Resumption',
+        bgImage: '/assets/sjccc-campus.jpeg',
+        bgImageAlt: 'Second term resumption across college academic blocks',
     },
     {
         id: 'youth-day-2027',
@@ -329,6 +343,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Ceremonial college uniforms required',
         markerIcon: 'bi-flag-fill',
         markerTitle: 'Youth Day',
+        bgImage: '/assets/sjccc-trophies.jpg',
+        bgImageAlt: 'College athletics trophies and National Youth Day honours',
     },
     {
         id: 'midterm-break-t2-2027',
@@ -354,6 +370,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Candidate forms remain for intensive clinics',
         markerIcon: 'bi-cup-hot-fill',
         markerTitle: 'Mid-Term Break',
+        bgImage: '/assets/Campus.jpeg',
+        bgImageAlt: 'Peaceful college campus quadrangle during mid-term break',
     },
     {
         id: 'exams-t2-2027',
@@ -381,6 +399,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Easter break follows immediately on 26 March',
         markerIcon: 'bi-file-earmark-text-fill',
         markerTitle: 'Examinations',
+        bgImage: '/assets/sjccc-mock.jpg',
+        bgImageAlt: 'Archdiocesan GCE Mock examination hall in progress',
     },
     {
         id: 'feast-st-joseph-2027',
@@ -408,6 +428,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Parents, alumni, and friends cordially invited',
         markerIcon: 'bi-bookmark-star-fill',
         markerTitle: 'Feast of St. Joseph',
+        bgImage: '/assets/sjccc-student-in-chapel-1.png',
+        bgImageAlt: 'Feast of Saint Joseph solemn High Mass celebration in college chapel',
     },
 
     // ─────────────── TERM 3 (THIRD TERM) 2027 ───────────────
@@ -437,6 +459,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Final term clearance required',
         markerIcon: 'bi-compass-fill',
         markerTitle: 'Third Term Resumption',
+        bgImage: '/assets/sjccc-entrance.jpeg',
+        bgImageAlt: 'Third term arrival through St. Joseph college entrance',
     },
     {
         id: 'gce-national-exams-2027',
@@ -464,6 +488,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Official GCE ID cards mandatory',
         markerIcon: 'bi-award-fill',
         markerTitle: 'GCE Board Exams',
+        bgImage: '/assets/sjccc-mock.jpg',
+        bgImageAlt: 'Cameroon GCE Board national written examination sessions in college main halls',
     },
     {
         id: 'promotional-exams-2027',
@@ -491,6 +517,8 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Pass mark criteria apply for promotion',
         markerIcon: 'bi-graph-up-arrow',
         markerTitle: 'Promotional Exams',
+        bgImage: '/assets/sjccc-Classroom.jpg',
+        bgImageAlt: 'Annual promotional examinations across academic classrooms',
     },
     {
         id: 'valedictory-graduation-2027',
@@ -518,5 +546,7 @@ export const ACADEMIC_MILESTONES_2026_2027: AcademicMilestone[] = [
         cardNotice: 'Official Summer Vacation begins Friday 02 July 2027',
         markerIcon: 'bi-mortarboard-fill',
         markerTitle: 'Valedictory Service',
+        bgImage: '/assets/sjccc-graduants-0.jpg',
+        bgImageAlt: 'Class of 2027 Valedictory Service and Graduation Convocation ceremony in academic regalia',
     },
 ];
