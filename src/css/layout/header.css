@@ -503,3 +503,42 @@ html.dark-mode .header-theme-toggle {
   }
 }
 
+/* ==========================================================================
+   MOBILE & COMPACT SCREEN GLASSMORPHISM (<= 1024px)
+   Direct hardware-accelerated backdrop blur on #mainHeader.
+   Bypasses pseudo-element CSS mask-image compositing limitation on mobile
+   GPUs (WebKit iOS & mobile Blink) ensuring crystal-clear frosted blur.
+   ========================================================================== */
+@media (max-width: 1024px) {
+  #mainHeader {
+    background: rgba(6, 20, 43, 0.70);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border-bottom: 1px solid rgba(200, 150, 62, 0.25);
+  }
+
+  #mainHeader.scrolled {
+    background: rgba(6, 20, 43, 0.85);
+    backdrop-filter: blur(18px) saturate(170%);
+    -webkit-backdrop-filter: blur(18px) saturate(170%);
+    box-shadow: 0 4px 20px -2px rgba(2, 12, 26, 0.40);
+  }
+
+  body.dark-mode #mainHeader,
+  html.dark-mode #mainHeader {
+    background: rgba(2, 12, 26, 0.78);
+    border-bottom: 1px solid rgba(201, 162, 41, 0.35);
+  }
+
+  body.dark-mode #mainHeader.scrolled,
+  html.dark-mode #mainHeader.scrolled {
+    background: rgba(2, 12, 26, 0.90);
+    box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.65);
+  }
+
+  /* Disable masked pseudo-element on mobile to prevent GPU compositing conflict */
+  #mainHeader::before {
+    display: none;
+  }
+}
+

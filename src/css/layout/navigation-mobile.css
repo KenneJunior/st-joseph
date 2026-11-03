@@ -623,8 +623,8 @@ body.drawer-open {
 
   /* ─── Mobile Bottom Floating Glass Pill Dock ─── */
   .mobile-bottom-bar {
-    --dock-bg: #ffffff;
-    --dock-border: rgba(7, 24, 46, 0.18);
+    --dock-bg: rgba(255, 255, 255, 0.55);
+    --dock-border: rgba(201, 162, 41, 0.38);
     --dock-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 1),
                             inset 0 -1px 0 rgba(7, 24, 46, 0.06);
     --dock-shadow: 0 14px 38px -4px rgba(2, 12, 26, 0.42),
@@ -654,7 +654,10 @@ body.drawer-open {
     padding: 3px 4px;
     border-radius: var(--dock-radius);
     z-index: var(--z-drawer, 3000);
-    background: var(--dock-bg);
+    background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.12) 0%, transparent 70%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.55) 10%, rgba(245, 240, 230, 0.45) 100%);
+    backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%);
+    -webkit-backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%);
     border: 1px solid var(--dock-border);
     box-shadow: var(--dock-shadow), var(--dock-inner-highlight);
     box-sizing: border-box;
