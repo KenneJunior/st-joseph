@@ -33,3 +33,4 @@ com.chrome.devtools.json
 com.chromium.devtools.json
 /dist/
 /.aistudio/
+/reports/
