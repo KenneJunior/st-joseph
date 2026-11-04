@@ -31,6 +31,8 @@ export class HeaderScroll {
     public static readonly SCROLLED_ENTER_THRESHOLD_PX: number = 70;
     public static readonly SCROLLED_EXIT_THRESHOLD_PX: number = 50;
     public static readonly BLUR_RAMP_DISTANCE_PX: number = 150;
+    public static readonly MIN_BLUR_PX: number = 3;
+    public static readonly MAX_BLUR_PX: number = 8;
 
     // Direction and pivot tracking for hysteresis
     private scrollPivotY: number = 0;
@@ -40,8 +42,9 @@ export class HeaderScroll {
     private isUserGesture: boolean = false;
     private userGestureTimer: number | null = null;
 
-    // Cached layout geometry to eliminate forced reflows during scrolling
+    // Cached layout geometry and blur progress to eliminate forced reflows during scrolling
     private cachedHeaderHeight: number = 0;
+    private cachedBlurProgress: number = 0;
     private resizeObserver: ResizeObserver | null = null;
 
     constructor(
@@ -137,6 +140,18 @@ export class HeaderScroll {
         this.isBottomBarHidden = false;
         this.currentDirection = 'none';
         this.bottomBar?.classList.remove('bottom-bar--hidden');
+        document.body.classList.remove('bottom-bar-hidden');
+        document.documentElement.classList.remove('bottom-bar-hidden');
+        const assistanceDock = document.getElementById('unifiedAssistanceDock');
+        if (assistanceDock) {
+            assistanceDock.classList.remove('dock-retracted');
+            assistanceDock.classList.add('dock-pushed');
+        }
+        const quickMenu = document.getElementById('quickActionsMenu');
+        if (quickMenu) {
+            quickMenu.classList.remove('dock-retracted');
+            quickMenu.classList.add('dock-pushed');
+        }
 
         if (this.programmaticScrollTimer !== null) {
             window.clearTimeout(this.programmaticScrollTimer);
@@ -160,14 +175,16 @@ export class HeaderScroll {
             const isDrawerOpen = document.body.classList.contains('drawer-open') ||
                 document.getElementById('navMenu')?.classList.contains('active');
             const isFocusInBar = document.activeElement ? this.bottomBar.contains(document.activeElement) : false;
+            const isQuickActionsOpen = Boolean(document.getElementById('quickActionsMenu')?.classList.contains('is-open'));
+            const isAiWindowOpen = Boolean(document.querySelector('.sjccc-ai-window.is-open, .sjccc-ai-overlay.is-open'));
 
             if (currentScrollY <= HeaderScroll.TOP_PAGE_THRESHOLD_PX) {
                 // Near top of page: always visible and reset hysteresis pivot
                 this.isBottomBarHidden = false;
                 this.currentDirection = 'none';
                 this.scrollPivotY = currentScrollY;
-            } else if (isDrawerOpen || isFocusInBar || this.isProgrammaticScroll) {
-                // Focus, drawer, or programmatic scroll active: keep visible and update pivot
+            } else if (isDrawerOpen || isFocusInBar || isQuickActionsOpen || isAiWindowOpen || this.isProgrammaticScroll) {
+                // Focus, drawer, quick actions menu, AI modal, or programmatic scroll active: keep visible and update pivot
                 this.isBottomBarHidden = false;
                 this.scrollPivotY = currentScrollY;
             } else if (currentScrollY >= maxScroll - 10) {
@@ -225,12 +242,46 @@ export class HeaderScroll {
                     this.header.classList.toggle('scrolled', shouldBeScrolled);
                 }
 
-                // Blur state management is consolidated into CSS classes (.scrolled),
-                // eliminating continuous inline style mutations and forced reflows on every frame.
+                // Continuous Progressive Blur:
+                // Tracks continuous blur progression over BLUR_RAMP_DISTANCE_PX (150px) using quantized steps (0.05)
+                // to eliminate layout reflows and micro-jitter while providing fluid scroll-depth blur.
+                if (this.lastScrollY <= 0) {
+                    if (this.cachedBlurProgress !== 0) {
+                        this.cachedBlurProgress = 0;
+                        this.header.style.removeProperty('--header-blur-progress');
+                        this.header.style.removeProperty('--blur-intensity');
+                    }
+                } else {
+                    const rawProgress = Math.min(1, Math.max(0, this.lastScrollY / HeaderScroll.BLUR_RAMP_DISTANCE_PX));
+                    const quantizedProgress = Math.round(rawProgress * 20) / 20;
+                    if (this.cachedBlurProgress !== quantizedProgress) {
+                        this.cachedBlurProgress = quantizedProgress;
+                        this.header.style.setProperty('--header-blur-progress', quantizedProgress.toFixed(2));
+                        // Continuous dynamic blur ramp: faint at beginning (3px) and gently increases to at most 8px
+                        const dynamicBlur = Math.round(
+                            HeaderScroll.MIN_BLUR_PX +
+                            (HeaderScroll.MAX_BLUR_PX - HeaderScroll.MIN_BLUR_PX) * quantizedProgress
+                        );
+                        this.header.style.setProperty('--blur-intensity', `${dynamicBlur}px`);
+                    }
+                }
 
-                // Mobile bottom bar visibility class
+                // Mobile bottom bar visibility class & twin floating dock push coordination
                 if (this.bottomBar) {
                     this.bottomBar.classList.toggle('bottom-bar--hidden', this.isBottomBarHidden);
+                    document.body.classList.toggle('bottom-bar-hidden', this.isBottomBarHidden);
+                    document.documentElement.classList.toggle('bottom-bar-hidden', this.isBottomBarHidden);
+
+                    const assistanceDock = document.getElementById('unifiedAssistanceDock');
+                    if (assistanceDock) {
+                        assistanceDock.classList.toggle('dock-retracted', this.isBottomBarHidden);
+                        assistanceDock.classList.toggle('dock-pushed', !this.isBottomBarHidden);
+                    }
+                    const quickMenu = document.getElementById('quickActionsMenu');
+                    if (quickMenu) {
+                        quickMenu.classList.toggle('dock-retracted', this.isBottomBarHidden);
+                        quickMenu.classList.toggle('dock-pushed', !this.isBottomBarHidden);
+                    }
                 }
 
                 this.ticking = false;
@@ -269,5 +320,7 @@ export class HeaderScroll {
             window.clearTimeout(this.programmaticScrollTimer);
             this.programmaticScrollTimer = null;
         }
+        this.header?.style?.removeProperty?.('--header-blur-progress');
+        this.header?.style?.removeProperty?.('--blur-intensity');
     }
 }

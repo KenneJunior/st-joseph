@@ -11,12 +11,13 @@
   display: flex;
   align-items: center;
   background: transparent;
+  isolation: isolate;
   transition: all 0.3s ease;
-  --blur-intensity: 10px;
+  --blur-intensity: 3px;
 }
 
 #mainHeader.scrolled {
-  --blur-intensity: 16px;
+  --blur-intensity: 8px;
   box-shadow: 0 4px 20px -2px rgba(2, 12, 26, 0.25);
 }
 
@@ -31,10 +32,10 @@ html.dark-mode #mainHeader.scrolled {
     --blur-extension: 65px;
   }
   #mainHeader {
-    --blur-intensity: 10px;
+    --blur-intensity: 3px;
   }
   #mainHeader.scrolled {
-    --blur-intensity: 16px;
+    --blur-intensity: 8px;
   }
 }
 
@@ -44,10 +45,10 @@ html.dark-mode #mainHeader.scrolled {
     --blur-extension: 55px;
   }
   #mainHeader {
-    --blur-intensity: 10px;
+    --blur-intensity: 3px;
   }
   #mainHeader.scrolled {
-    --blur-intensity: 14px;
+    --blur-intensity: 7px;
   }
 }
 
@@ -62,14 +63,14 @@ html.dark-mode #mainHeader.scrolled {
   height: calc(var(--header-height) + var(--blur-extension));
   z-index: -1;
   pointer-events: none;
-  backdrop-filter: blur(var(--blur-intensity, 10px)) saturate(150%);
-  -webkit-backdrop-filter: blur(var(--blur-intensity, 10px)) saturate(150%);
+  backdrop-filter: blur(var(--blur-intensity, 3px)) saturate(110%);
+  -webkit-backdrop-filter: blur(var(--blur-intensity, 3px)) saturate(110%);
   background: linear-gradient(
           to bottom,
-          rgba(6, 20, 43, 0.50) 0px,
-          rgba(6, 20, 43, 0.44) var(--header-height),
-          rgba(6, 20, 43, 0.26) calc(var(--header-height) + calc(var(--blur-extension) * 0.35)),
-          rgba(6, 20, 43, 0.10) calc(var(--header-height) + calc(var(--blur-extension) * 0.70)),
+          rgba(6, 20, 43, 0.24) 0px,
+          rgba(6, 20, 43, 0.18) var(--header-height),
+          rgba(6, 20, 43, 0.10) calc(var(--header-height) + calc(var(--blur-extension) * 0.35)),
+          rgba(6, 20, 43, 0.03) calc(var(--header-height) + calc(var(--blur-extension) * 0.70)),
           rgba(6, 20, 43, 0) 100%
   );
   mask-image: linear-gradient(
@@ -92,6 +93,16 @@ html.dark-mode #mainHeader.scrolled {
           rgba(0, 0, 0, 0.16) calc(var(--header-height) + calc(var(--blur-extension) * 0.85)),
           transparent 100%
   );
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   transition: backdrop-filter 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               -webkit-backdrop-filter 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               background 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -102,23 +113,23 @@ body.dark-mode #mainHeader::before,
 html.dark-mode #mainHeader::before {
   background: linear-gradient(
           to bottom,
-          rgba(2, 12, 26, 0.62) 0px,
-          rgba(2, 12, 26, 0.54) var(--header-height),
-          rgba(2, 12, 26, 0.32) calc(var(--header-height) + calc(var(--blur-extension) * 0.35)),
-          rgba(2, 12, 26, 0.12) calc(var(--header-height) + calc(var(--blur-extension) * 0.70)),
+          rgba(2, 12, 26, 0.32) 0px,
+          rgba(2, 12, 26, 0.25) var(--header-height),
+          rgba(2, 12, 26, 0.14) calc(var(--header-height) + calc(var(--blur-extension) * 0.35)),
+          rgba(2, 12, 26, 0.04) calc(var(--header-height) + calc(var(--blur-extension) * 0.70)),
           rgba(2, 12, 26, 0) 100%
   );
 }
 
 #mainHeader.scrolled::before {
-  backdrop-filter: blur(var(--blur-intensity, 16px)) saturate(160%);
-  -webkit-backdrop-filter: blur(var(--blur-intensity, 16px)) saturate(160%);
+  backdrop-filter: blur(var(--blur-intensity, 8px)) saturate(115%);
+  -webkit-backdrop-filter: blur(var(--blur-intensity, 8px)) saturate(115%);
   background: linear-gradient(
           to bottom,
-          rgba(6, 20, 43, 0.76) 0px,
-          rgba(6, 20, 43, 0.70) var(--header-height),
-          rgba(6, 20, 43, 0.42) calc(var(--header-height) + calc(var(--blur-extension) * 0.35)),
-          rgba(6, 20, 43, 0.16) calc(var(--header-height) + calc(var(--blur-extension) * 0.70)),
+          rgba(6, 20, 43, 0.48) 0px,
+          rgba(6, 20, 43, 0.40) var(--header-height),
+          rgba(6, 20, 43, 0.22) calc(var(--header-height) + calc(var(--blur-extension) * 0.35)),
+          rgba(6, 20, 43, 0.08) calc(var(--header-height) + calc(var(--blur-extension) * 0.70)),
           rgba(6, 20, 43, 0) 100%
   );
 }
@@ -127,10 +138,10 @@ body.dark-mode #mainHeader.scrolled::before,
 html.dark-mode #mainHeader.scrolled::before {
   background: linear-gradient(
           to bottom,
-          rgba(2, 12, 26, 0.86) 0px,
-          rgba(2, 12, 26, 0.80) var(--header-height),
-          rgba(2, 12, 26, 0.50) calc(var(--header-height) + calc(var(--blur-extension) * 0.35)),
-          rgba(2, 12, 26, 0.20) calc(var(--header-height) + calc(var(--blur-extension) * 0.70)),
+          rgba(2, 12, 26, 0.58) 0px,
+          rgba(2, 12, 26, 0.48) var(--header-height),
+          rgba(2, 12, 26, 0.26) calc(var(--header-height) + calc(var(--blur-extension) * 0.35)),
+          rgba(2, 12, 26, 0.09) calc(var(--header-height) + calc(var(--blur-extension) * 0.70)),
           rgba(2, 12, 26, 0) 100%
   );
 }
@@ -504,41 +515,58 @@ html.dark-mode .header-theme-toggle {
 }
 
 /* ==========================================================================
-   MOBILE & COMPACT SCREEN GLASSMORPHISM (<= 1024px)
-   Direct hardware-accelerated backdrop blur on #mainHeader.
-   Bypasses pseudo-element CSS mask-image compositing limitation on mobile
-   GPUs (WebKit iOS & mobile Blink) ensuring crystal-clear frosted blur.
+   MOBILE & COMPACT SCREEN PROGRESSIVE BLUR (<= 1024px)
+   Guarantees continuous feathered progressive backdrop blur extending below
+   the header by var(--blur-extension) on mobile devices (<= 1024px & <= 768px).
+   Optimized for mobile GPUs with hardware layer promotion (translate3d) and
+   efficient blur ramp without battery-draining saturate overdraw.
    ========================================================================== */
 @media (max-width: 1024px) {
   #mainHeader {
-    background: rgba(6, 20, 43, 0.70);
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    border-bottom: 1px solid rgba(200, 150, 62, 0.25);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    isolation: isolate;
   }
 
   #mainHeader.scrolled {
-    background: rgba(6, 20, 43, 0.85);
-    backdrop-filter: blur(18px) saturate(170%);
-    -webkit-backdrop-filter: blur(18px) saturate(170%);
-    box-shadow: 0 4px 20px -2px rgba(2, 12, 26, 0.40);
-  }
-
-  body.dark-mode #mainHeader,
-  html.dark-mode #mainHeader {
-    background: rgba(2, 12, 26, 0.78);
-    border-bottom: 1px solid rgba(201, 162, 41, 0.35);
+    box-shadow: 0 4px 18px -2px rgba(2, 12, 26, 0.35);
   }
 
   body.dark-mode #mainHeader.scrolled,
   html.dark-mode #mainHeader.scrolled {
-    background: rgba(2, 12, 26, 0.90);
-    box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.65);
+    box-shadow: 0 4px 22px -2px rgba(0, 0, 0, 0.60);
   }
 
-  /* Disable masked pseudo-element on mobile to prevent GPU compositing conflict */
+  /* Mobile Continuous Progressive Blur Layer: Always active and extending below header */
   #mainHeader::before {
-    display: none;
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(var(--header-height) + var(--blur-extension));
+    z-index: -1;
+    pointer-events: none;
+    backdrop-filter: blur(var(--blur-intensity, 3px));
+    -webkit-backdrop-filter: blur(var(--blur-intensity, 3px));
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+    transition: backdrop-filter 0.25s ease, -webkit-backdrop-filter 0.25s ease, background 0.25s ease;
+  }
+
+  #mainHeader.scrolled::before {
+    backdrop-filter: blur(var(--blur-intensity, 8px));
+    -webkit-backdrop-filter: blur(var(--blur-intensity, 8px));
   }
 }
 

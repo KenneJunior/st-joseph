@@ -31,7 +31,7 @@ describe('SJCCC Header Progressive Blur System', () => {
         it('eliminates the discontinuous +5px cliff in #mainHeader.scrolled::before', () => {
             // Verifies the previous abrupt cliff was eliminated
             expect(headerCss).not.toContain('calc(var(--blur-intensity) + 5px)');
-            expect(headerCss).toMatch(/#mainHeader\.scrolled::before\s*\{[^}]*backdrop-filter:\s*blur\(var\(--blur-intensity,\s*16px\)\)\s*saturate\(160%\);/);
+            expect(headerCss).toMatch(/#mainHeader\.scrolled::before\s*\{[^}]*backdrop-filter:\s*blur\(var\(--blur-intensity,\s*8px\)\)\s*saturate\(115%\);/);
         });
 
         it('places the specular hairline edge divider at bottom: 0 with pointer-events: none', () => {
@@ -51,6 +51,25 @@ describe('SJCCC Header Progressive Blur System', () => {
             expect(headerCss).toMatch(/body\.dark-mode #mainHeader::before/);
             expect(headerCss).toMatch(/body\.dark-mode #mainHeader\.scrolled::before/);
             expect(headerCss).toMatch(/body\.dark-mode #mainHeader::after/);
+        });
+
+        it('configures hardware-accelerated continuous backdrop blur on mobile viewports (<= 1024px)', () => {
+            expect(headerCss).toContain('@media (max-width: 1024px)');
+            expect(headerCss).toContain('isolation: isolate');
+            // Must NOT hide ::before on mobile viewports; continuous progressive blur must remain active!
+            expect(headerCss).not.toMatch(/@media \(max-width:\s*1024px\)\s*\{[^}]*#mainHeader::before\s*\{[^}]*display:\s*none;/);
+            expect(headerCss).toMatch(/#mainHeader::before\s*\{[^}]*display:\s*block;/);
+            expect(headerCss).toMatch(/#mainHeader::before\s*\{[^}]*transform:\s*translate3d\(0,\s*0,\s*0\);/);
+            expect(headerCss).toMatch(/#mainHeader::before\s*\{[^}]*backdrop-filter:\s*blur\(var\(--blur-intensity,\s*3px\)\);/);
+        });
+
+        it('verifies balanced mode optimizations in performance-mode.css cap blur and add containment', () => {
+            const perfCss = fs.readFileSync(path.join(rootDir, 'src/css/core/performance-mode.css'), 'utf-8');
+            expect(perfCss).toContain('html[data-performance-mode="balanced"]');
+            expect(perfCss).toContain('.unified-action-dock');
+            expect(perfCss).toContain('.quick-actions-menu');
+            expect(perfCss).toContain('.mobile-bottom-bar');
+            expect(perfCss).toContain('contain: layout paint');
         });
     });
 
@@ -155,6 +174,34 @@ describe('SJCCC Header Progressive Blur System', () => {
             setScrollY(60);
             dom.window.dispatchEvent(new dom.window.Event('scroll'));
             expect(headerEl.classList.contains('scrolled')).toBe(false);
+        });
+
+        it('smoothly interpolates continuous blur progress during scrolling and cleans up at top of page', () => {
+            setInnerWidth(1200);
+            setScrollY(0);
+            headerScroll = new HeaderScroll(headerEl, bottomBarEl);
+
+            // Initially at scroll 0, no inline blur properties
+            expect(headerEl.style.getPropertyValue('--header-blur-progress')).toBe('');
+            expect(headerEl.style.getPropertyValue('--blur-intensity')).toBe('');
+
+            // Scroll to 75px (halfway along 150px ramp): progress ~ 0.50, dynamic blur ~ 6px (faint 3px to gentle 8px)
+            setScrollY(75);
+            dom.window.dispatchEvent(new dom.window.Event('scroll'));
+            expect(headerEl.style.getPropertyValue('--header-blur-progress')).toBe('0.50');
+            expect(headerEl.style.getPropertyValue('--blur-intensity')).toBe('6px');
+
+            // Scroll to full 150px: progress 1.00, blur 8px
+            setScrollY(150);
+            dom.window.dispatchEvent(new dom.window.Event('scroll'));
+            expect(headerEl.style.getPropertyValue('--header-blur-progress')).toBe('1.00');
+            expect(headerEl.style.getPropertyValue('--blur-intensity')).toBe('8px');
+
+            // Scroll back to top (0px): cleanly removes inline styles to prevent DOM pollution
+            setScrollY(0);
+            dom.window.dispatchEvent(new dom.window.Event('scroll'));
+            expect(headerEl.style.getPropertyValue('--header-blur-progress')).toBe('');
+            expect(headerEl.style.getPropertyValue('--blur-intensity')).toBe('');
         });
 
         it('cleans up event listeners and timers upon destroy()', () => {
