@@ -146,7 +146,7 @@
   /* Progressive Blur Variables */
   --header-height: 80px;
   --blur-extension: 120px;
-  --blur-intensity: 10px;
+  --blur-intensity: 3px;
   --bar-height: 0px;
 
   /* Responsive UI Density Tokens */

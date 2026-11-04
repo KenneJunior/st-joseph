@@ -84,25 +84,25 @@ export class BackdropBlurDetector {
             return false;
         }
 
-        // 1. Reduced transparency preference throttles blur to opaque/semi-opaque
-        const prefersReducedTransparency = typeof window.matchMedia === 'function' &&
-            window.matchMedia('(prefers-reduced-transparency: reduce)').matches;
-        if (prefersReducedTransparency) {
-            return true;
-        }
-
-        // 2. Performance manager profile: 'full' mode guarantees unthrottled blurs
+        // 1. Performance manager profile: 'full' and 'balanced' modes guarantee active, hardware-accelerated blurs
         const profile = performanceManager.getProfile();
-        if (profile === 'full') {
+        if (profile === 'full' || profile === 'balanced') {
             return false;
         }
         if (profile === 'lite') {
             return true;
         }
 
-        // 3. Central capability flag
+        // 2. Central capability flag
         const caps = performanceManager.getCapabilities();
         if (caps.allowBackdropBlur === false) {
+            return true;
+        }
+
+        // 3. Accessibility preference for auto mode
+        const prefersReducedTransparency = typeof window.matchMedia === 'function' &&
+            window.matchMedia('(prefers-reduced-transparency: reduce)').matches;
+        if (prefersReducedTransparency) {
             return true;
         }
 
