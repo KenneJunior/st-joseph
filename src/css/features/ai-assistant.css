@@ -197,12 +197,33 @@ body.dark-mode {
               inset 0 1px 0 rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(20px) saturate(200%);
   -webkit-backdrop-filter: blur(20px) saturate(200%);
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  contain: layout paint;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: transform var(--duration-fast, 200ms) var(--ease-standard, ease),
+  animation: appleDockSpringEntrance 0.62s cubic-bezier(0.34, 1.35, 0.64, 1) backwards;
+  animation-delay: 0.35s;
+  transition: bottom 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
+              transform 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
               box-shadow var(--duration-fast, 200ms) var(--ease-standard, ease),
               border-color var(--duration-fast, 200ms) ease,
               background var(--duration-normal, 350ms) ease;
+}
+
+@keyframes appleDockSpringEntrance {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0) scale(0.85);
+  }
+  65% {
+    opacity: 1;
+    transform: translate3d(0, -3px, 0) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
 }
 
 .unified-action-dock:hover {
@@ -234,8 +255,18 @@ html.dark-mode .unified-action-dock:hover {
   font-family: var(--font-body, system-ui, -apple-system, sans-serif);
   font-weight: 700;
   font-size: 0.82rem;
-  transition: all var(--duration-fast, 200ms) ease;
+  transition: transform 180ms cubic-bezier(0.34, 1.4, 0.64, 1),
+              background var(--duration-fast, 200ms) ease,
+              color var(--duration-fast, 200ms) ease;
   white-space: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Apple-style tactile button compression */
+.unified-dock-btn:active {
+  transform: scale(0.92);
+  transition-duration: 80ms;
 }
 
 /* Ask AI button styling inside dock */
@@ -247,6 +278,11 @@ html.dark-mode .unified-action-dock:hover {
   font-size: 0.94rem;
   color: var(--ai-dock-text-ai);
   animation: sjcccSparkleShimmer 3s ease-in-out infinite;
+  transition: transform 250ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.unified-dock-btn--ai:hover i {
+  transform: scale(1.15) rotate(10deg);
 }
 
 .unified-dock-btn--ai:hover {
@@ -1551,8 +1587,14 @@ html.dark-mode .sjccc-ai-footer__hint {
     bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
     right: 14px !important;
     padding: 3px 5px;
-    backdrop-filter: blur(14px) saturate(180%);
-    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    backdrop-filter: blur(10px) saturate(130%);
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    contain: layout paint;
+    box-shadow: 0 4px 16px rgba(7, 24, 46, 0.16),
+                0 0 12px rgba(201, 162, 41, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
   .unified-dock-btn {
@@ -1566,8 +1608,10 @@ html.dark-mode .sjccc-ai-footer__hint {
     right: 14px !important;
     padding: 7px 11px 7px 9px;
     font-size: 0.78rem;
-    backdrop-filter: blur(14px) saturate(180%);
-    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    backdrop-filter: blur(10px) saturate(130%);
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
 
   .sjccc-ai-fab__label {

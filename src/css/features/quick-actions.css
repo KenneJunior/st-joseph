@@ -13,26 +13,49 @@
  * ============================================================================
  */
 
-/* 1. Quick Actions Button in Unified Dock */
+/* 1. Quick Actions Button in Unified Dock (Apple Haptic Micro-Interactions) */
 .unified-dock-btn--quick {
   color: var(--sj-gold-500, #c9a229);
   position: relative;
+  transition: transform 180ms cubic-bezier(0.34, 1.4, 0.64, 1),
+              background 220ms ease,
+              color 220ms ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Apple-style physical press compression */
+.unified-dock-btn--quick:active {
+  transform: scale(0.91);
+  transition-duration: 80ms;
 }
 
 .unified-dock-btn--quick i {
   font-size: 0.94rem;
   color: var(--sj-gold-500, #c9a229);
-  transition: transform var(--duration-fast, 200ms) ease;
+  display: inline-block;
+  transform-origin: center;
+  transition: transform 320ms cubic-bezier(0.34, 1.4, 0.64, 1),
+              color 200ms ease,
+              filter 220ms ease;
 }
 
-.unified-dock-btn--quick:hover i,
-.unified-dock-btn--quick[aria-expanded="true"] i {
+.unified-dock-btn--quick:hover:not(:active) i {
   transform: scale(1.15) rotate(10deg);
 }
 
-.unified-dock-btn--quick[aria-expanded="true"] {
-  background: rgba(201, 162, 41, 0.16);
+.unified-dock-btn--quick[aria-expanded="true"],
+.unified-dock-btn--quick.is-active {
+  background: rgba(201, 162, 41, 0.20);
   color: var(--sj-gold-400, #dfba47);
+  transform: scale(1.02);
+}
+
+.unified-dock-btn--quick[aria-expanded="true"] i,
+.unified-dock-btn--quick.is-active i {
+  transform: scale(1.22) rotate(16deg);
+  color: var(--sj-gold-300, #f3d779);
+  filter: drop-shadow(0 0 6px rgba(201, 162, 41, 0.65));
 }
 
 body.dark-mode .unified-dock-btn--quick,
@@ -45,40 +68,53 @@ html.dark-mode .unified-dock-btn--quick i {
   color: var(--color-brand-accent-bright, #f3d779);
 }
 
-/* 2. Quick Actions Floating Menu Container */
+/* 2. Quick Actions Floating Menu Container (Apple Spring Physics Popover) */
 .quick-actions-menu {
   position: fixed;
-  bottom: calc(24px + 54px); /* Pinned directly above the dock */
+  bottom: calc(24px + 54px); /* Pinned directly above the twin dock */
   right: 24px;
   width: 320px;
   max-width: calc(100vw - 32px);
   z-index: var(--z-hud, 2000);
-  background: rgba(255, 255, 255, 0.58);
+  background: rgba(255, 255, 255, 0.65);
   border: 1px solid rgba(201, 162, 41, 0.40);
-  border-radius: 20px;
+  border-radius: 22px;
   padding: 14px;
-  box-shadow: 0 16px 40px -6px rgba(7, 24, 46, 0.22),
+  box-shadow: 0 20px 48px -8px rgba(7, 24, 46, 0.25),
               0 0 24px rgba(201, 162, 41, 0.16),
-              inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
+              inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  contain: layout paint;
   user-select: none;
+
+  /* Apple Exit / Dismiss State: crisp, swift ease-out with subtle scale-down and blur */
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateY(14px) scale(0.96);
+  transform: translate3d(0, 16px, 0) scale(0.88);
+  filter: blur(6px);
+  -webkit-filter: blur(6px);
   transform-origin: bottom right;
-  transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
-              transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 240ms;
+  transition: opacity 190ms cubic-bezier(0.32, 0.72, 0, 1),
+              transform 190ms cubic-bezier(0.32, 0.72, 0, 1),
+              filter 190ms cubic-bezier(0.32, 0.72, 0, 1),
+              visibility 190ms;
+  will-change: transform, opacity, filter;
 }
 
-/* Open State */
+/* Apple Entrance State: bouncy, fluid spring popover */
 .quick-actions-menu.is-open {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translateY(0) scale(1);
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0px);
+  -webkit-filter: blur(0px);
+  transition: opacity 350ms cubic-bezier(0.34, 1.35, 0.64, 1),
+              transform 350ms cubic-bezier(0.34, 1.35, 0.64, 1),
+              filter 350ms cubic-bezier(0.34, 1.35, 0.64, 1),
+              visibility 0ms;
 }
 
 /* Dark Mode Container */
@@ -162,12 +198,18 @@ html.dark-mode .quick-actions-title {
   height: 28px;
   border-radius: 50%;
   font-size: 0.85rem;
-  transition: all var(--duration-fast, 180ms) ease;
+  transition: all var(--duration-fast, 180ms) cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
 .quick-actions-close-btn:hover {
   background: rgba(0, 0, 0, 0.06);
   color: #07182e;
+  transform: rotate(90deg) scale(1.05);
+}
+
+.quick-actions-close-btn:active {
+  transform: rotate(90deg) scale(0.88);
+  transition-duration: 80ms;
 }
 
 body.dark-mode .quick-actions-close-btn {
@@ -179,7 +221,7 @@ body.dark-mode .quick-actions-close-btn:hover {
   color: #ffffff;
 }
 
-/* 4. Menu Items List */
+/* 4. Menu Items List with Apple Context-Menu Cascading Entrance */
 .quick-actions-list {
   display: flex;
   flex-direction: column;
@@ -191,7 +233,25 @@ body.dark-mode .quick-actions-close-btn:hover {
 
 .quick-action-item {
   width: 100%;
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition: opacity 160ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 160ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Cascading stagger entrance when menu opens */
+.quick-actions-menu.is-open .quick-action-item {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 280ms cubic-bezier(0.2, 0.85, 0.3, 1),
+              transform 280ms cubic-bezier(0.2, 0.85, 0.3, 1);
+}
+
+.quick-actions-menu.is-open .quick-action-item:nth-child(1) { transition-delay: 35ms; }
+.quick-actions-menu.is-open .quick-action-item:nth-child(2) { transition-delay: 70ms; }
+.quick-actions-menu.is-open .quick-action-item:nth-child(3) { transition-delay: 105ms; }
+.quick-actions-menu.is-open .quick-action-item:nth-child(4) { transition-delay: 140ms; }
+.quick-actions-menu.is-open .quick-action-item:nth-child(5) { transition-delay: 175ms; }
 
 .quick-action-link {
   display: flex;
@@ -202,10 +262,15 @@ body.dark-mode .quick-actions-close-btn:hover {
   text-decoration: none;
   background: rgba(255, 255, 255, 0.55);
   border: 1px solid rgba(201, 162, 41, 0.16);
-  transition: all var(--duration-fast, 200ms) cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.25, 1),
+              background 180ms ease,
+              border-color 180ms ease,
+              box-shadow 180ms ease;
   cursor: pointer;
   color: inherit;
   outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .quick-action-link:hover,
@@ -214,6 +279,13 @@ body.dark-mode .quick-actions-close-btn:hover {
   border-color: rgba(201, 162, 41, 0.45);
   transform: translateX(3px);
   box-shadow: 0 4px 14px rgba(7, 24, 46, 0.08);
+}
+
+/* Apple-style touch press compression */
+.quick-action-link:active {
+  transform: scale(0.97) translateX(1px);
+  background: rgba(201, 162, 41, 0.22);
+  transition-duration: 80ms;
 }
 
 body.dark-mode .quick-action-link,
@@ -229,6 +301,12 @@ html.dark-mode .quick-action-link:focus-visible {
   background: rgba(201, 162, 41, 0.20);
   border-color: rgba(212, 168, 90, 0.6);
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .quick-action-link:active,
+html.dark-mode .quick-action-link:active {
+  background: rgba(201, 162, 41, 0.30);
+  border-color: rgba(212, 168, 90, 0.8);
 }
 
 /* Action Icons */
@@ -358,12 +436,42 @@ html.dark-mode .quick-action-desc {
 }
 
 /* 5. Mobile Geometry (max-width: 768px) */
+/* 5. Mobile Geometry (max-width: 768px) & Bottom Dock Push Adaptation */
 @media (max-width: 768px) {
   .quick-actions-menu {
-    bottom: calc(72px + 52px + env(safe-area-inset-bottom, 0px));
+    --qa-dock-bottom: calc(72px + 52px + env(safe-area-inset-bottom, 0px));
+    bottom: var(--qa-dock-bottom);
     right: 14px;
-    width: 295px;
+    width: min(305px, calc(100vw - 28px));
     padding: 12px;
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    contain: layout paint;
+    box-shadow: 0 12px 34px -4px rgba(7, 24, 46, 0.26),
+                0 0 16px rgba(201, 162, 41, 0.14),
+                inset 0 1px 0 rgba(255, 255, 255, 0.75);
+    transition: bottom 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
+                opacity 190ms cubic-bezier(0.32, 0.72, 0, 1),
+                transform 190ms cubic-bezier(0.32, 0.72, 0, 1),
+                filter 190ms cubic-bezier(0.32, 0.72, 0, 1),
+                visibility 190ms;
+  }
+
+  .quick-actions-menu.is-open {
+    transition: bottom 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
+                opacity 350ms cubic-bezier(0.34, 1.35, 0.64, 1),
+                transform 350ms cubic-bezier(0.34, 1.35, 0.64, 1),
+                filter 350ms cubic-bezier(0.34, 1.35, 0.64, 1),
+                visibility 0ms;
+  }
+
+  /* When bottom dock retreats on scroll down: menu glides down with twin dock */
+  body.bottom-bar-hidden .quick-actions-menu,
+  html.bottom-bar-hidden .quick-actions-menu,
+  body:has(#mobileBottomBar.bottom-bar--hidden) .quick-actions-menu,
+  .quick-actions-menu.dock-retracted {
+    --qa-dock-bottom: calc(14px + 52px + env(safe-area-inset-bottom, 0px));
+    bottom: var(--qa-dock-bottom) !important;
   }
 
   .quick-action-link {
@@ -383,5 +491,19 @@ html.dark-mode .quick-action-desc {
 
   .quick-action-desc {
     font-size: 0.68rem;
+  }
+}
+
+/* 6. Reduced Motion Preference */
+@media (prefers-reduced-motion: reduce) {
+  .quick-actions-menu,
+  .quick-action-item,
+  .quick-action-link,
+  .unified-dock-btn--quick,
+  .unified-dock-btn--quick i,
+  .quick-actions-close-btn {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
   }
 }

@@ -318,9 +318,15 @@ export class QuickActionsMenu {
         if (this._isOpen || !this.menuEl || !this.triggerBtn) return;
 
         this._isOpen = true;
+        this.menuEl.classList.remove('is-closing');
         this.menuEl.classList.add('is-open');
         this.triggerBtn.setAttribute('aria-expanded', 'true');
         this.triggerBtn.classList.add('is-active');
+
+        // Optional Apple/Android tactile micro-feedback
+        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+            try { navigator.vibrate(8); } catch { }
+        }
 
         // Focus first menu item for keyboard accessibility
         requestAnimationFrame(() => {
@@ -334,8 +340,20 @@ export class QuickActionsMenu {
 
         this._isOpen = false;
         this.menuEl.classList.remove('is-open');
+        this.menuEl.classList.add('is-closing');
         this.triggerBtn.setAttribute('aria-expanded', 'false');
         this.triggerBtn.classList.remove('is-active');
+
+        // Optional subtle tactile micro-feedback
+        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+            try { navigator.vibrate(4); } catch { }
+        }
+
+        setTimeout(() => {
+            if (!this._isOpen && this.menuEl) {
+                this.menuEl.classList.remove('is-closing');
+            }
+        }, 220);
     }
 
     public toggle(): void {
