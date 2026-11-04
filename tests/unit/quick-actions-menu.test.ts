@@ -170,4 +170,25 @@ describe('QuickActionsMenu Controller', () => {
         expect(newTrigger).not.toBeNull();
         expect(newTrigger?.classList.contains('unified-dock-btn--quick')).toBe(true);
     });
+
+    it('sets is-closing class during dismiss transition and restores upon reopen', () => {
+        vi.useFakeTimers();
+        menuInstance = new QuickActionsMenu();
+        const menuEl = dom.window.document.getElementById('quickActionsMenu') as HTMLElement;
+        const trigger = dom.window.document.getElementById('quickActionsFab') as HTMLButtonElement;
+
+        menuInstance.open();
+        expect(menuEl.classList.contains('is-open')).toBe(true);
+        expect(menuEl.classList.contains('is-closing')).toBe(false);
+        expect(trigger.classList.contains('is-active')).toBe(true);
+
+        menuInstance.close();
+        expect(menuEl.classList.contains('is-open')).toBe(false);
+        expect(menuEl.classList.contains('is-closing')).toBe(true);
+        expect(trigger.classList.contains('is-active')).toBe(false);
+
+        vi.advanceTimersByTime(250);
+        expect(menuEl.classList.contains('is-closing')).toBe(false);
+        vi.useRealTimers();
+    });
 });

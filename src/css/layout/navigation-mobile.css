@@ -629,7 +629,7 @@ body.drawer-open {
                             inset 0 -1px 0 rgba(7, 24, 46, 0.06);
     --dock-shadow: 0 14px 38px -4px rgba(2, 12, 26, 0.42),
                    0 4px 16px -2px rgba(7, 24, 46, 0.22);
-    --dock-blur: 22px;
+    --dock-blur: 14px;
     --dock-radius: var(--radius-pill, 9999px);
     --dock-bottom-offset: calc(10px + env(safe-area-inset-bottom, 0px));
     --dock-item-color: #07182e;
@@ -656,13 +656,14 @@ body.drawer-open {
     z-index: var(--z-drawer, 3000);
     background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.12) 0%, transparent 70%),
                 linear-gradient(135deg, rgba(255, 255, 255, 0.55) 10%, rgba(245, 240, 230, 0.45) 100%);
-    backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%);
-    -webkit-backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%);
+    backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%);
+    -webkit-backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%);
     border: 1px solid var(--dock-border);
     box-shadow: var(--dock-shadow), var(--dock-inner-highlight);
     box-sizing: border-box;
+    contain: layout paint;
     transform: translate3d(-50%, 0, 0);
-    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.25, 1),
+    transition: transform 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
                 background-color var(--duration-fast, 200ms) var(--ease-standard),
                 border-color var(--duration-fast, 200ms) var(--ease-standard),
                 box-shadow var(--duration-fast, 200ms) var(--ease-standard);
@@ -693,8 +694,8 @@ body.drawer-open {
     .mobile-bottom-bar {
       --dock-bg: rgba(255, 255, 255, 0.52);
       --dock-border: rgba(201, 162, 41, 0.38);
-      backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%);
-      -webkit-backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%);
+      backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%);
+      -webkit-backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%);
       background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.12) 0%, transparent 70%),
                   linear-gradient(135deg, rgba(255, 255, 255, 0.55) 10%, rgba(245, 240, 230, 0.45) 100%);
     }
@@ -705,8 +706,8 @@ body.drawer-open {
       --dock-border: rgba(201, 162, 41, 0.45);
       background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.18) 0%, transparent 75%),
                   linear-gradient(135deg, rgba(7, 24, 46, 0.50) 10%, rgba(10, 31, 63, 0.46) 100%);
-      -webkit-backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%);
-      backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%);
+      -webkit-backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%);
+      backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%);
     }
   }
 
@@ -1118,16 +1119,42 @@ body.drawer-open {
     padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* Floating Controls: Coordinated clearance above the floating glass pill dock */
+  /* Floating Controls: Coordinated Apple Spring Push & Clearance above the Mobile Bottom Dock
+     When the bottom dock appears, it pushes the twin dock (Ask AI + Quick Actions) up.
+     When the bottom dock hides on scroll, the twin dock drops smoothly down. */
   .enquiry-fab,
   .unified-action-dock {
-    bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    --dock-offset-current: calc(72px + env(safe-area-inset-bottom, 0px));
+    bottom: var(--dock-offset-current) !important;
     right: 14px !important;
+    transition: bottom 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
+                transform 0.38s cubic-bezier(0.34, 1.25, 0.64, 1),
+                box-shadow var(--duration-fast, 200ms) var(--ease-standard, ease),
+                border-color var(--duration-fast, 200ms) ease,
+                background var(--duration-normal, 350ms) ease !important;
+    will-change: bottom, transform;
+  }
+
+  /* When bottom dock retreats on scroll-down: twin floating button drops smoothly */
+  body.bottom-bar-hidden .enquiry-fab,
+  body.bottom-bar-hidden .unified-action-dock,
+  html.bottom-bar-hidden .unified-action-dock,
+  body:has(#mobileBottomBar.bottom-bar--hidden) .unified-action-dock,
+  .unified-action-dock.dock-retracted {
+    --dock-offset-current: calc(14px + env(safe-area-inset-bottom, 0px));
+    bottom: var(--dock-offset-current) !important;
   }
 
   .offline-status-indicator {
     bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
     left: 12px !important;
+    transition: bottom 0.38s cubic-bezier(0.34, 1.25, 0.64, 1);
+  }
+
+  body.bottom-bar-hidden .offline-status-indicator,
+  html.bottom-bar-hidden .offline-status-indicator,
+  body:has(#mobileBottomBar.bottom-bar--hidden) .offline-status-indicator {
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   /* Slide-out Drawer: Full touch-friendly button sizes & full vertical scrolling */
