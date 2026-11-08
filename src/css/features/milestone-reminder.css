@@ -2121,6 +2121,10 @@ body.dark-mode .my-reminders-overlay .list-toolbar-hint {
   color: #ffffff !important;
 }
 
+#timelineAutoAddRemindersBtn > span {
+  color: #02030c;
+}
+
 .btn-calendar-auto-add:hover {
   transform: translateY(-1px);
 }

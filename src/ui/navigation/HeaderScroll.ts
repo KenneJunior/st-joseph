@@ -12,6 +12,8 @@
  * ============================================================================
  */
 
+import { DockGlider } from './DockGlider.ts';
+
 export class HeaderScroll {
     private ticking: boolean = false;
     private lastScrollY: number = 0;
@@ -89,6 +91,13 @@ export class HeaderScroll {
                 this.notifyProgrammaticScroll();
             });
         });
+
+        // If bottom bar is tapped while in collapsed single-icon state, expand and keep visible
+        this.bottomBar?.addEventListener('click', () => {
+            if (this.bottomBar?.classList.contains('bottom-bar--hidden')) {
+                this.notifyProgrammaticScroll(1500);
+            }
+        });
     }
 
     private markUserGestureActive = (lingerMs: number = 800): void => {
@@ -141,6 +150,7 @@ export class HeaderScroll {
         this.currentDirection = 'none';
         this.bottomBar?.classList.remove('bottom-bar--hidden');
         document.body.classList.remove('bottom-bar-hidden');
+        document.body.classList.remove('bottom-bar-collapsed');
         document.documentElement.classList.remove('bottom-bar-hidden');
         const assistanceDock = document.getElementById('unifiedAssistanceDock');
         if (assistanceDock) {
@@ -268,9 +278,22 @@ export class HeaderScroll {
 
                 // Mobile bottom bar visibility class & twin floating dock push coordination
                 if (this.bottomBar) {
+                    const wasHidden = this.bottomBar.classList.contains('bottom-bar--hidden');
                     this.bottomBar.classList.toggle('bottom-bar--hidden', this.isBottomBarHidden);
                     document.body.classList.toggle('bottom-bar-hidden', this.isBottomBarHidden);
+                    document.body.classList.toggle('bottom-bar-collapsed', this.isBottomBarHidden);
                     document.documentElement.classList.toggle('bottom-bar-hidden', this.isBottomBarHidden);
+
+                    if (this.isBottomBarHidden) {
+                        this.bottomBar.setAttribute('aria-label', 'Mobile Navigation (Collapsed, tap or scroll up to expand)');
+                    } else {
+                        this.bottomBar.setAttribute('aria-label', 'Mobile Navigation');
+                        if (wasHidden) {
+                            window.requestAnimationFrame(() => {
+                                DockGlider.instance?.scheduleUpdate(true);
+                            });
+                        }
+                    }
 
                     const assistanceDock = document.getElementById('unifiedAssistanceDock');
                     if (assistanceDock) {
@@ -308,6 +331,9 @@ export class HeaderScroll {
         window.removeEventListener('touchend', this.onTouchEnd);
         window.removeEventListener('wheel', this.onWheel);
         window.removeEventListener('keydown', this.onKeyDown);
+        document.body.classList.remove('bottom-bar-hidden');
+        document.body.classList.remove('bottom-bar-collapsed');
+        document.documentElement.classList.remove('bottom-bar-hidden');
         if (this.resizeObserver) {
             this.resizeObserver.disconnect();
             this.resizeObserver = null;

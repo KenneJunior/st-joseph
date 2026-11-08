@@ -80,6 +80,11 @@ export class MobileNavigation {
         // 2. Mobile bottom bar 'Menu' toggle click
         this.bottomMenuToggle?.addEventListener('click', (e: MouseEvent) => {
             e.stopPropagation();
+            if (this.bottomBar?.classList.contains('bottom-bar--hidden')) {
+                this.bottomBar.classList.remove('bottom-bar--hidden');
+                document.body.classList.remove('bottom-bar-collapsed');
+                document.body.classList.remove('bottom-bar-hidden');
+            }
             this.toggleMenu();
         });
 
@@ -111,9 +116,9 @@ export class MobileNavigation {
      * Minimum 4 sections (Home, Academics, Map, Location), scaling to 5, 6, or 7.
      */
     public updatePillScale(): void {
-        if (!this.bottomBar) return;
+        if (!this.bottomBar || this.bottomBar.classList.contains('bottom-bar--hidden')) return;
         const width = this.bottomBar.getBoundingClientRect().width || this.bottomBar.offsetWidth;
-        if (width <= 0) return;
+        if (width <= 60) return;
 
         let tier: '4' | '5' | '6' | '7' = '4';
         if (width >= 580) {

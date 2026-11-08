@@ -1595,6 +1595,19 @@ html.dark-mode .sjccc-ai-footer__hint {
     box-shadow: 0 4px 16px rgba(7, 24, 46, 0.16),
                 0 0 12px rgba(201, 162, 41, 0.12),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: bottom 440ms cubic-bezier(0.18, 1.25, 0.35, 1),
+                transform 440ms cubic-bezier(0.18, 1.25, 0.35, 1),
+                box-shadow var(--duration-fast, 200ms) var(--ease-standard, ease);
+  }
+
+  body.bottom-bar-hidden .unified-action-dock,
+  body.bottom-bar-collapsed .unified-action-dock,
+  html.bottom-bar-hidden .unified-action-dock,
+  body:has(#mobileBottomBar.bottom-bar--hidden) .unified-action-dock,
+  #mobileBottomBar.bottom-bar--hidden ~ .unified-action-dock,
+  .unified-action-dock.dock-retracted {
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 14px !important;
   }
 
   .unified-dock-btn {
@@ -1612,6 +1625,17 @@ html.dark-mode .sjccc-ai-footer__hint {
     -webkit-backdrop-filter: blur(10px) saturate(130%);
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
+    transition: bottom 440ms cubic-bezier(0.18, 1.25, 0.35, 1);
+  }
+
+  body.bottom-bar-hidden .sjccc-ai-fab,
+  body.bottom-bar-collapsed .sjccc-ai-fab,
+  html.bottom-bar-hidden .sjccc-ai-fab,
+  body:has(#mobileBottomBar.bottom-bar--hidden) .sjccc-ai-fab,
+  #mobileBottomBar.bottom-bar--hidden ~ .sjccc-ai-fab,
+  .sjccc-ai-fab.dock-retracted {
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 14px !important;
   }
 
   .sjccc-ai-fab__label {

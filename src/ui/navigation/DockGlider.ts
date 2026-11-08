@@ -92,7 +92,9 @@ export class DockGlider {
             this.rafId = null;
             if (!this.bottomBar) return;
 
-            const isVisible = this.bottomBar.offsetWidth > 0 && this.bottomBar.offsetHeight > 0;
+            const isVisible = this.bottomBar.offsetWidth > 0 &&
+                this.bottomBar.offsetHeight > 0 &&
+                !this.bottomBar.classList.contains('bottom-bar--hidden');
             if (!isVisible) {
                 if (this.glider) this.glider.style.opacity = '0';
                 return;
@@ -115,7 +117,9 @@ export class DockGlider {
         this.ensureGlider();
         if (!this.glider) return;
 
-        const isVisible = this.bottomBar.offsetWidth > 0 && this.bottomBar.offsetHeight > 0;
+        const isVisible = this.bottomBar.offsetWidth > 0 &&
+            this.bottomBar.offsetHeight > 0 &&
+            !this.bottomBar.classList.contains('bottom-bar--hidden');
         if (!isVisible) {
             this.glider.style.opacity = '0';
             return;
