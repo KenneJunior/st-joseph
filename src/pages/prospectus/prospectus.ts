@@ -12,6 +12,7 @@ import { MobileNavigation } from '../../ui/navigation/MobileNavigation.ts';
 import { OfflineIndicator } from '../../features/offline/OfflineIndicator.ts';
 import { LiquidGlassAdapter } from '../../ui/effects/LiquidGlassAdapter.ts';
 import { CardSplitter } from '../../ui/utils/CardSplitter.ts';
+import { downloadProspectusPdf } from '../../features/prospectus/prospectusPdfExport.ts';
 import { COLLEGE_PROFILE } from '../../data/collegeProfile.ts';
 import { TUITION_FEES } from '../../data/tuitionFees.ts';
 import { TECHNICAL_DEPARTMENTS } from '../../data/academicPrograms.ts';
@@ -28,8 +29,8 @@ export {
 };
 
 /**
- * Handles PDF Export / Print triggering via standard browser print API.
- * The print stylesheet (@media print) automatically hides web chrome without DOM mutation.
+ * Handles PDF Export / Print triggering.
+ * Downloads a canonical multi-page PDF directly and falls back to native browser print.
  */
 export class PdfExporter {
     constructor(buttonId: string) {
@@ -37,7 +38,14 @@ export class PdfExporter {
         if (!button) return;
 
         button.addEventListener('click', () => {
-            window.print();
+            const downloaded = downloadProspectusPdf();
+            if (!downloaded) {
+                try {
+                    window.print();
+                } catch {
+                    // Print blocked in restricted context
+                }
+            }
         });
     }
 }
@@ -82,13 +90,17 @@ export class ProspectusApp {
         // 3. Native PDF / Print Export Handler
         new PdfExporter(PROSPECTUS_SELECTORS.downloadPdfBtn);
 
-        // Auto-trigger print/export dialog if opened via Quick Actions "Download Prospectus"
+        // Auto-trigger PDF download if opened directly via ?action=download
         if (typeof window !== 'undefined' && window.location.search.includes('action=download')) {
-            window.addEventListener('load', () => {
-                setTimeout(() => window.print(), 350);
-            });
+            const triggerAutoDownload = () => {
+                downloadProspectusPdf();
+            };
             if (document.readyState === 'complete') {
-                setTimeout(() => window.print(), 350);
+                setTimeout(triggerAutoDownload, 200);
+            } else {
+                window.addEventListener('load', () => {
+                    setTimeout(triggerAutoDownload, 200);
+                }, { once: true });
             }
         }
 
