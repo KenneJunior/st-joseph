@@ -249,10 +249,254 @@ body.dark-mode .message-field-wrapper .char-count.near-limit {
 }
 
 /* ============================================
+   MATERIAL DESIGN OUTLINED FLOATING LABELS
+   Coordinated with .field-wrapper, .message-field-wrapper,
+   .typing-indicator, and .char-count for zero overlap
+   ============================================ */
+.form-group.form-group--floating {
+  position: relative;
+  margin-top: 6px;
+  margin-bottom: 18px;
+}
+
+.form-group.form-group--floating .field-wrapper input,
+.form-group.form-group--floating .message-field-wrapper textarea {
+  border: 1.5px solid rgba(7, 24, 46, 0.22);
+  border-radius: 10px;
+  background: var(--bg-white, #F4F1EA);
+  color: var(--text-dark);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  transition: border-color 200ms cubic-bezier(0.2, 0, 0, 1),
+              box-shadow 200ms cubic-bezier(0.2, 0, 0, 1),
+              background-color 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.form-group.form-group--floating .field-wrapper input {
+  min-height: 50px;
+  padding: 14px 40px 12px 14px;
+}
+
+.form-group.form-group--floating .message-field-wrapper textarea {
+  min-height: 98px;
+  padding: 15px 40px 28px 14px;
+}
+
+body.dark-mode .form-group.form-group--floating .field-wrapper input,
+body.dark-mode .form-group.form-group--floating .message-field-wrapper textarea {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: var(--bg-white, #0E1828);
+  color: var(--text-dark);
+}
+
+@media (hover: hover) {
+  .form-group.form-group--floating .field-wrapper input:hover:not(:focus),
+  .form-group.form-group--floating .message-field-wrapper textarea:hover:not(:focus) {
+    border-color: rgba(7, 24, 46, 0.42);
+  }
+
+  body.dark-mode .form-group.form-group--floating .field-wrapper input:hover:not(:focus),
+  body.dark-mode .form-group.form-group--floating .message-field-wrapper textarea:hover:not(:focus) {
+    border-color: rgba(243, 215, 121, 0.42);
+  }
+}
+
+.form-group.form-group--floating .field-wrapper input:focus,
+.form-group.form-group--floating .message-field-wrapper textarea:focus {
+  outline: none;
+  border-color: var(--color-brand-accent, #c9a229);
+  box-shadow: 0 0 0 1px var(--color-brand-accent, #c9a229),
+              0 0 0 4px rgba(201, 162, 41, 0.15);
+}
+
+/* Hide resting placeholder while label sits inside the field; reveal smoothly on focus */
+.form-group.form-group--floating input::placeholder,
+.form-group.form-group--floating textarea::placeholder {
+  color: transparent;
+  opacity: 0;
+  transition: opacity 140ms ease, color 140ms ease;
+}
+
+.form-group.form-group--floating input:focus::placeholder,
+.form-group.form-group--floating textarea:focus::placeholder {
+  color: var(--text-muted, #64748b);
+  opacity: 0.65;
+  transition: opacity 160ms ease 65ms, color 160ms ease 65ms;
+}
+
+body.dark-mode .form-group.form-group--floating input:focus::placeholder,
+body.dark-mode .form-group.form-group--floating textarea:focus::placeholder {
+  color: rgba(226, 232, 240, 0.55);
+}
+
+/* Resting Material Floating Label (single-line centered, textarea top-aligned) */
+.form-group.form-group--floating label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  margin: 0;
+  padding: 0 4px;
+  pointer-events: none;
+  font-family: var(--font-body);
+  font-size: 0.94rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--text-muted, #64748b);
+  background: transparent;
+  border-radius: 4px;
+  z-index: 2;
+  white-space: nowrap;
+  max-width: calc(100% - 56px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform: translateY(-50%) scale(1);
+  transform-origin: left center;
+  will-change: transform, top;
+  transition: top 200ms cubic-bezier(0.2, 0, 0, 1),
+              left 200ms cubic-bezier(0.2, 0, 0, 1),
+              transform 200ms cubic-bezier(0.2, 0, 0, 1),
+              padding 200ms cubic-bezier(0.2, 0, 0, 1),
+              color 200ms cubic-bezier(0.2, 0, 0, 1),
+              font-weight 200ms cubic-bezier(0.2, 0, 0, 1),
+              letter-spacing 200ms cubic-bezier(0.2, 0, 0, 1),
+              background 160ms ease;
+}
+
+.form-group.form-group--floating.form-group--textarea label {
+  top: 15px;
+  transform: translateY(0) scale(1);
+}
+
+body.dark-mode .form-group.form-group--floating label {
+  color: rgba(226, 232, 240, 0.68);
+}
+
+/* Floated Label State: Focused, Filled, Autofilled, or Programmatically Active */
+.form-group.form-group--floating input:focus ~ label,
+.form-group.form-group--floating textarea:focus ~ label,
+.form-group.form-group--floating input:not(:placeholder-shown) ~ label,
+.form-group.form-group--floating textarea:not(:placeholder-shown) ~ label,
+.form-group.form-group--floating input:-webkit-autofill ~ label,
+.form-group.form-group--floating.is-focused label,
+.form-group.form-group--floating.has-value label {
+  top: 0;
+  left: 10px;
+  padding: 0 6px;
+  transform: translateY(-50%) scale(0.8);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text-body, #334155);
+  background: linear-gradient(
+    180deg,
+    var(--surface-card, #FAF7F0) 48%,
+    var(--bg-white, #F4F1EA) 54%
+  );
+}
+
+body.dark-mode .form-group.form-group--floating input:not(:placeholder-shown) ~ label,
+body.dark-mode .form-group.form-group--floating textarea:not(:placeholder-shown) ~ label,
+body.dark-mode .form-group.form-group--floating input:-webkit-autofill ~ label,
+body.dark-mode .form-group.form-group--floating.has-value label {
+  color: rgba(226, 232, 240, 0.88);
+  background: linear-gradient(
+    180deg,
+    var(--surface-card, #1A2D44) 48%,
+    var(--bg-white, #0E1828) 54%
+  );
+}
+
+/* Active Focused Label Accent */
+.form-group.form-group--floating input:focus ~ label,
+.form-group.form-group--floating textarea:focus ~ label,
+.form-group.form-group--floating.is-focused label {
+  color: var(--sj-gold-600, #8c6a21);
+}
+
+body.dark-mode .form-group.form-group--floating input:focus ~ label,
+body.dark-mode .form-group.form-group--floating textarea:focus ~ label,
+body.dark-mode .form-group.form-group--floating.is-focused label {
+  color: var(--sj-gold-300, #f3d779);
+}
+
+@media (max-width: 768px) {
+  .form-group.form-group--floating {
+    margin-top: 5px;
+    margin-bottom: 14px;
+  }
+
+  .form-group.form-group--floating .field-wrapper input {
+    min-height: 44px;
+    padding: 12px 34px 10px 12px;
+    font-size: 0.86rem;
+    border-radius: 8px;
+  }
+
+  .form-group.form-group--floating .message-field-wrapper textarea {
+    min-height: 82px;
+    padding: 13px 34px 24px 12px;
+    font-size: 0.86rem;
+    border-radius: 8px;
+  }
+
+  .form-group.form-group--floating label {
+    left: 10px;
+    font-size: 0.84rem;
+  }
+
+  .form-group.form-group--floating.form-group--textarea label {
+    top: 13px;
+  }
+
+  .form-group.form-group--floating input:focus ~ label,
+  .form-group.form-group--floating textarea:focus ~ label,
+  .form-group.form-group--floating input:not(:placeholder-shown) ~ label,
+  .form-group.form-group--floating textarea:not(:placeholder-shown) ~ label,
+  .form-group.form-group--floating input:-webkit-autofill ~ label,
+  .form-group.form-group--floating.is-focused label,
+  .form-group.form-group--floating.has-value label {
+    top: 0;
+    left: 9px;
+    transform: translateY(-50%) scale(0.82);
+  }
+}
+
+@media (max-width: 360px) {
+  .form-group.form-group--floating .field-wrapper input {
+    min-height: 42px;
+    padding: 11px 30px 9px 10px;
+    font-size: 0.82rem;
+  }
+
+  .form-group.form-group--floating .message-field-wrapper textarea {
+    min-height: 76px;
+    padding: 12px 30px 22px 10px;
+    font-size: 0.82rem;
+  }
+
+  .form-group.form-group--floating label {
+    left: 9px;
+    font-size: 0.8rem;
+  }
+
+  .form-group.form-group--floating.form-group--textarea label {
+    top: 12px;
+  }
+}
+
+/* ============================================
    ACCESSIBILITY: PREFERS-REDUCED-MOTION
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
   .typing-dot {
     animation: none !important;
+  }
+
+  .form-group.form-group--floating .field-wrapper input,
+  .form-group.form-group--floating .message-field-wrapper textarea,
+  .form-group.form-group--floating label,
+  .form-group.form-group--floating input::placeholder,
+  .form-group.form-group--floating textarea::placeholder {
+    transition: none !important;
   }
 }

@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import * as fs from 'fs';
+import * as path from 'path';
 import { EnquiryModal } from '../../src/features/enquiry/EnquiryModal.ts';
 import { SmoothTypingEffect } from '../../src/features/enquiry/SmoothTypingEffect.ts';
 import { motionSuspension } from '../../src/core/physics/MotionSuspension.ts';
@@ -343,5 +345,70 @@ describe('EnquiryModal & SmoothTypingEffect Forensic Integrity Tests', () => {
         expect(typingIndicator.classList.contains('active')).toBe(false);
 
         typingEffect.destroy();
+    });
+
+    it('tracks is-focused and has-value floating label state classes in SmoothTypingEffect', () => {
+        const formGroup = new MockElement('div');
+        formGroup.className = 'form-group form-group--floating';
+        (globalThis as any).mockDomElements.push(formGroup);
+
+        const wrapper = new MockElement('div');
+        wrapper.className = 'field-wrapper';
+        wrapper.parentElement = formGroup;
+        formGroup.children.push(wrapper);
+        (globalThis as any).mockDomElements.push(wrapper);
+
+        const nameInput = new MockElement('input');
+        nameInput.id = 'enqName';
+        nameInput.parentElement = wrapper;
+        wrapper.children.push(nameInput);
+        (globalThis as any).mockDomElements.push(nameInput);
+
+        const typingEffect = new SmoothTypingEffect('#enqName');
+
+        expect(formGroup.classList.contains('is-focused')).toBe(false);
+        expect(formGroup.classList.contains('has-value')).toBe(false);
+
+        // Focus adds is-focused
+        nameInput.dispatchEvent({ type: 'focus' });
+        expect(formGroup.classList.contains('is-focused')).toBe(true);
+
+        // Typing adds has-value and preserves it after blur
+        nameInput.value = 'Jane Doe';
+        nameInput.dispatchEvent({ type: 'input' });
+        expect(formGroup.classList.contains('has-value')).toBe(true);
+
+        nameInput.dispatchEvent({ type: 'blur' });
+        expect(formGroup.classList.contains('is-focused')).toBe(false);
+        expect(formGroup.classList.contains('has-value')).toBe(true);
+
+        // Clearing value removes has-value
+        nameInput.value = '';
+        nameInput.dispatchEvent({ type: 'input' });
+        expect(formGroup.classList.contains('has-value')).toBe(false);
+
+        typingEffect.destroy();
+    });
+
+    it('enforces Material Design floating label structure and CSS contracts for the enquiry form', () => {
+        const rootDir = process.cwd();
+        const indexHtml = fs.readFileSync(path.join(rootDir, 'index.html'), 'utf-8');
+        const enquiryTypingCss = fs.readFileSync(path.join(rootDir, 'src/css/features/enquiry-typing.css'), 'utf-8');
+
+        // Verify HTML markup places labels directly after controls inside wrappers for CSS sibling selectors
+        expect(indexHtml).toMatch(/<div class="form-group form-group--floating">\s*<div class="field-wrapper">\s*<input[^>]*id="enqName"[^>]*>\s*<label for="enqName">Your Name<\/label>/);
+        expect(indexHtml).toMatch(/<div class="form-group form-group--floating">\s*<div class="field-wrapper">\s*<input[^>]*id="enqEmail"[^>]*>\s*<label for="enqEmail">Email Address<\/label>/);
+        expect(indexHtml).toMatch(/<div class="form-group form-group--floating form-group--textarea">\s*<div class="message-field-wrapper">\s*<textarea[^>]*id="enqMessage"[^>]*><\/textarea>\s*<label for="enqMessage">Your Message<\/label>/);
+
+        // Verify CSS rules for resting, focused, filled, autofilled, dark mode, and reduced motion
+        expect(enquiryTypingCss).toContain('.form-group.form-group--floating input:focus ~ label');
+        expect(enquiryTypingCss).toContain('.form-group.form-group--floating textarea:focus ~ label');
+        expect(enquiryTypingCss).toContain('.form-group.form-group--floating input:not(:placeholder-shown) ~ label');
+        expect(enquiryTypingCss).toContain('.form-group.form-group--floating textarea:not(:placeholder-shown) ~ label');
+        expect(enquiryTypingCss).toContain('.form-group.form-group--floating input:-webkit-autofill ~ label');
+        expect(enquiryTypingCss).toContain('.form-group.form-group--floating.is-focused label');
+        expect(enquiryTypingCss).toContain('.form-group.form-group--floating.has-value label');
+        expect(enquiryTypingCss).toContain('.form-group.form-group--floating input:focus::placeholder');
+        expect(enquiryTypingCss).toContain('body.dark-mode .form-group.form-group--floating label');
     });
 });

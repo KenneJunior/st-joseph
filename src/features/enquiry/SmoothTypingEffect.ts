@@ -17,25 +17,45 @@ export class SmoothTypingEffect {
 
     private init(): void {
         const { signal } = this.abortController;
+        const observedForms = new Set<HTMLFormElement>();
 
         this.inputs.forEach((input) => {
+            if ((input as HTMLInputElement).type === 'checkbox') return;
+
             input.classList.add('typewriter-input');
 
             input.addEventListener('input', () => this.handleInput(input), { signal });
             input.addEventListener('focus', () => this.handleFocus(input), { signal });
             input.addEventListener('blur', () => this.handleBlur(input), { signal });
 
+            this.syncFloatingState(input);
             this.updateCharCount(input);
+
+            const parentForm = typeof input.closest === 'function' ? input.closest('form') as HTMLFormElement | null : null;
+            if (parentForm && !observedForms.has(parentForm)) {
+                observedForms.add(parentForm);
+                parentForm.addEventListener('reset', () => {
+                    queueMicrotask(() => {
+                        this.inputs.forEach((field) => {
+                            if ((field as HTMLInputElement).type === 'checkbox') return;
+                            this.syncFloatingState(field);
+                            this.updateCharCount(field);
+                        });
+                    });
+                }, { signal });
+            }
         });
     }
 
     private handleInput(input: HTMLInputElement | HTMLTextAreaElement): void {
+        this.syncFloatingState(input);
         this.updateCharCount(input);
     }
 
     private handleFocus(input: HTMLInputElement | HTMLTextAreaElement): void {
         const formGroup = input.closest('.form-group');
         if (formGroup) {
+            formGroup.classList.add('is-focused');
             const indicator = formGroup.querySelector('.typing-indicator') as HTMLElement | null;
             if (indicator) {
                 indicator.classList.add('active');
@@ -46,11 +66,20 @@ export class SmoothTypingEffect {
     private handleBlur(input: HTMLInputElement | HTMLTextAreaElement): void {
         const formGroup = input.closest('.form-group');
         if (formGroup) {
+            formGroup.classList.remove('is-focused');
+            this.syncFloatingState(input);
             const indicator = formGroup.querySelector('.typing-indicator') as HTMLElement | null;
             if (indicator) {
                 indicator.classList.remove('active');
             }
         }
+    }
+
+    private syncFloatingState(input: HTMLInputElement | HTMLTextAreaElement): void {
+        const formGroup = input.closest('.form-group');
+        if (!formGroup) return;
+        const hasContent = (input.value ?? '').length > 0;
+        formGroup.classList.toggle('has-value', hasContent);
     }
 
     private updateCharCount(input: HTMLInputElement | HTMLTextAreaElement): void {

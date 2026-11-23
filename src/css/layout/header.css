@@ -269,6 +269,23 @@ html.dark-mode #mainHeader::after {
   white-space: nowrap;
 }
 
+header#mainHeader:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > div:nth-of-type(1) {
+  font-size: 19.08px;
+  width: 65px;
+  height: 50px;
+  font-style: normal;
+}
+
+header#mainHeader:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1) {
+  font-size: 28.3551px;
+  font-style: italic;
+  font-weight: bold;
+}
+
+header#mainHeader:nth-of-type(1) > div:nth-of-type(1) > a:nth-of-type(1) > span:nth-of-type(1) > small:nth-of-type(1) {
+  font-size: 12.7293px;
+}
+
 .logo-motto {
   display: none;
 }

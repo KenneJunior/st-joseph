@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import * as fs from 'fs';
+import * as path from 'path';
 import { JSDOM } from 'jsdom';
 import { HeaderScroll } from '../../src/ui/navigation/HeaderScroll.ts';
 
@@ -135,6 +137,32 @@ describe('Mobile Bottom Bar Collapse Behavior', () => {
 
         expect(bottomBar.classList.contains('bottom-bar--hidden')).toBe(false);
         expect(bottomBar.classList.contains('bottom-bar--expanding')).toBe(true);
+    });
+
+    it('centers the expanded bottom dockbar across iPad/mobile viewports while keeping collapsed orb left-anchored', () => {
+        const navMobileCss = fs.readFileSync(
+            path.join(process.cwd(), 'src/css/layout/navigation-mobile.css'),
+            'utf-8'
+        );
+
+        const expandedMatch = navMobileCss.match(/@media \(max-width: 768px\)[\s\S]*?\.mobile-bottom-bar\s*\{([\s\S]*?)\}/);
+        expect(expandedMatch).not.toBeNull();
+        const expandedBlock = expandedMatch![1];
+
+        expect(expandedBlock).toContain(
+            'left: calc(50% + (env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2 - (var(--dock-expanded-width) / 2));'
+        );
+        expect(expandedBlock).toContain('right: auto;');
+        expect(expandedBlock).toContain('width 320ms cubic-bezier(0.22, 1, 0.36, 1)');
+        expect(expandedBlock).toContain('left 320ms cubic-bezier(0.22, 1, 0.36, 1)');
+
+        const collapsedMatch = navMobileCss.match(/\.mobile-bottom-bar\.bottom-bar--hidden\s*\{([\s\S]*?)\}/);
+        expect(collapsedMatch).not.toBeNull();
+        const collapsedBlock = collapsedMatch![1];
+        expect(collapsedBlock).toContain('left: calc(12px + env(safe-area-inset-left, 0px));');
+        expect(collapsedBlock).toContain('transform-origin: left center;');
+
+        expect(navMobileCss).toContain('@media (min-width: 481px) and (max-width: 768px)');
     });
 });
 

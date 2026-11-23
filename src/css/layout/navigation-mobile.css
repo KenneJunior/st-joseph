@@ -650,7 +650,7 @@ body.drawer-open {
     justify-content: space-between;
     gap: 1px;
     position: fixed;
-    left: calc(12px + env(safe-area-inset-left, 0px));
+    left: calc(50% + (env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2 - (var(--dock-expanded-width) / 2));
     right: auto;
     bottom: var(--dock-bottom-offset);
     width: var(--dock-expanded-width);
@@ -670,11 +670,12 @@ body.drawer-open {
     overflow: hidden;
     contain: layout paint;
     transform: translateZ(0);
-    transform-origin: left center;
+    transform-origin: center center;
     will-change: transform;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     transition: width 320ms cubic-bezier(0.22, 1, 0.36, 1),
+                left 320ms cubic-bezier(0.22, 1, 0.36, 1),
                 transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
                 background-color var(--duration-fast, 200ms) var(--ease-standard),
                 border-color var(--duration-fast, 200ms) var(--ease-standard),
@@ -1615,8 +1616,8 @@ body.drawer-open {
   }
 }
 
-/* 481px - 767px: Large Mobile & Phablets */
-@media (min-width: 481px) and (max-width: 767px) {
+/* 481px - 768px: Large Mobile, Phablets & iPad Portrait */
+@media (min-width: 481px) and (max-width: 768px) {
   .mobile-bottom-bar {
     --dock-expanded-width: min(600px, calc(100vw - 16px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
     --dock-item-max-w: 62px;
