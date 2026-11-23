@@ -234,3 +234,172 @@ html:not(.dark-mode) .btn-outline:not(.hero-buttons .btn-outline):not(.cta-banne
   }
 }
 
+/* ============================================================
+   BUTTON LOADING STATE & INLINE SPINNER
+   ============================================================ */
+.btn-spinner {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(7, 24, 46, 0.24);
+  border-top-color: #07182e;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.btn-secondary .btn-spinner,
+.btn-outline .btn-spinner {
+  border-color: rgba(255, 255, 255, 0.25);
+  border-top-color: currentColor;
+}
+
+.btn.is-loading:disabled,
+.btn.is-loading[disabled] {
+  opacity: 0.9;
+  cursor: wait;
+}
+
+.btn.is-loading .btn-spinner {
+  display: inline-block;
+  animation: btnSpinnerSpin 0.7s linear infinite;
+}
+
+@keyframes btnSpinnerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn.is-loading .btn-spinner {
+    animation-duration: 1.4s;
+  }
+}
+
+/* ============================================================
+   BUTTON SUCCESS STATE & CHECKMARK MORPH ANIMATION
+   ============================================================ */
+.btn .btn-label {
+  transition: opacity 0.2s ease 0.08s,
+              transform 0.2s ease 0.08s,
+              max-width 0.3s ease;
+}
+
+.btn-success-check {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: #ffffff;
+}
+
+.btn-success-check svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.btn-success-check path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+}
+
+.btn.is-success,
+html.dark-mode .btn.is-success,
+body.dark-mode .btn.is-success,
+[data-theme="dark"] .btn.is-success {
+  background: linear-gradient(135deg, #1f7a44 0%, #279454 55%, #1f7a44 100%);
+  border-color: rgba(74, 222, 128, 0.55);
+  color: #ffffff;
+  box-shadow: 0 6px 22px rgba(31, 122, 68, 0.36),
+              0 0 0 3px rgba(31, 122, 68, 0.14);
+  gap: 0;
+}
+
+html.dark-mode .btn.is-success,
+body.dark-mode .btn.is-success,
+[data-theme="dark"] .btn.is-success {
+  background: linear-gradient(135deg, #1f7a44 0%, #2aa85e 55%, #1f7a44 100%);
+  border-color: rgba(74, 222, 128, 0.6);
+  box-shadow: 0 6px 24px rgba(34, 197, 94, 0.34),
+              0 0 0 3px rgba(74, 222, 128, 0.16);
+}
+
+.btn.is-success:disabled,
+.btn.is-success[disabled] {
+  opacity: 1;
+  cursor: default;
+  box-shadow: 0 6px 22px rgba(31, 122, 68, 0.36),
+              0 0 0 3px rgba(31, 122, 68, 0.14) !important;
+}
+
+.btn.is-success .btn-spinner {
+  display: none;
+}
+
+.btn.is-success .btn-label {
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transform: scale(0.82);
+  transition: opacity 0.15s ease,
+              transform 0.18s ease,
+              max-width 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn.is-success .btn-success-check {
+  display: inline-flex;
+  animation: btnSuccessCheckPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.btn.is-success .btn-success-check path {
+  animation: btnSuccessCheckDraw 0.34s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+}
+
+@keyframes btnSuccessCheckPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.45) rotate(-10deg);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.16) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes btnSuccessCheckDraw {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn .btn-label,
+  .btn.is-success .btn-label {
+    transition: none;
+  }
+
+  .btn.is-success .btn-success-check {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .btn.is-success .btn-success-check path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
