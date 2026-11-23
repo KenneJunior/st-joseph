@@ -25,6 +25,12 @@ export class SmoothTypingEffect {
             input.classList.add('typewriter-input');
 
             input.addEventListener('input', () => this.handleInput(input), { signal });
+            input.addEventListener('change', () => this.handleInput(input), { signal });
+            input.addEventListener('animationstart', (e: Event) => {
+                if ((e as AnimationEvent).animationName === 'sjcccAutofillStart') {
+                    this.handleInput(input);
+                }
+            }, { signal });
             input.addEventListener('focus', () => this.handleFocus(input), { signal });
             input.addEventListener('blur', () => this.handleBlur(input), { signal });
 

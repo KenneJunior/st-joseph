@@ -3192,41 +3192,97 @@
         </button>
       </div>
       <form action="https://formspree.io/f/xnjkgpgg" data-whatsapp-phone="237672829014" id="enquiryForm" method="POST"
-        novalidate="">
+        autocomplete="on" novalidate="">
         <div class="form-group form-group--floating">
           <div class="field-wrapper">
-            <input type="text" id="enqName" name="enqName" placeholder="Enter your full name" required="">
+            <input type="text" id="enqName" name="enqName" placeholder="Enter your full name" autocomplete="name" aria-describedby="enqNameHint" aria-required="true" required="">
             <label for="enqName">Your Name</label>
             <div class="typing-indicator" aria-hidden="true">
               <span class="typing-dot"></span>
               <span class="typing-dot"></span>
               <span class="typing-dot"></span>
             </div>
+            <span class="field-validation-icon" aria-hidden="true">
+              <svg class="validation-icon-valid" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="1.75"></circle>
+                <path d="M6.4 10.2L8.9 12.7L13.7 7.6" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+              <svg class="validation-icon-invalid" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="1.75"></circle>
+                <path d="M10 6.1V10.6" stroke="currentColor" stroke-width="1.85" stroke-linecap="round"></path>
+                <circle cx="10" cy="13.5" r="1.05" fill="currentColor"></circle>
+              </svg>
+            </span>
+            <div class="field-popover-tooltip" id="enqNameHint" role="tooltip" aria-hidden="true" data-state="info">
+              <span class="field-popover-dot" aria-hidden="true"></span>
+              <span class="field-popover-text">Enter your full name (at least 2 letters)</span>
+            </div>
           </div>
         </div>
         <div class="form-group form-group--floating">
           <div class="field-wrapper">
-            <input type="email" id="enqEmail" name="enqEmail" placeholder="your@email.com" required="">
+            <input type="email" id="enqEmail" name="enqEmail" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-describedby="enqEmailHint" aria-required="true" required="">
             <label for="enqEmail">Email Address</label>
             <div class="typing-indicator" aria-hidden="true">
               <span class="typing-dot"></span>
               <span class="typing-dot"></span>
               <span class="typing-dot"></span>
             </div>
+            <span class="field-validation-icon" aria-hidden="true">
+              <svg class="validation-icon-valid" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="1.75"></circle>
+                <path d="M6.4 10.2L8.9 12.7L13.7 7.6" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+              <svg class="validation-icon-invalid" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="1.75"></circle>
+                <path d="M10 6.1V10.6" stroke="currentColor" stroke-width="1.85" stroke-linecap="round"></path>
+                <circle cx="10" cy="13.5" r="1.05" fill="currentColor"></circle>
+              </svg>
+            </span>
+            <div class="field-popover-tooltip" id="enqEmailHint" role="tooltip" aria-hidden="true" data-state="info">
+              <span class="field-popover-dot" aria-hidden="true"></span>
+              <span class="field-popover-text">Valid email format required (e.g., name@example.com)</span>
+            </div>
           </div>
         </div>
         <div class="form-group form-group--floating form-group--textarea">
           <div class="message-field-wrapper">
             <textarea id="enqMessage" name="enqMessage" rows="4" placeholder="Type your message here..." maxlength="500"
-              required=""></textarea>
+              aria-describedby="enqMessageHint enqMessageCharCount" aria-required="true" required=""></textarea>
             <label for="enqMessage">Your Message</label>
-            <span class="char-count" aria-live="polite">0/500</span>
+            <span class="char-count" id="enqMessageCharCount" aria-live="polite">0/500</span>
             <div class="typing-indicator" aria-hidden="true">
               <span class="typing-dot"></span>
               <span class="typing-dot"></span>
               <span class="typing-dot"></span>
             </div>
+            <span class="field-validation-icon" aria-hidden="true">
+              <svg class="validation-icon-valid" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="1.75"></circle>
+                <path d="M6.4 10.2L8.9 12.7L13.7 7.6" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+              <svg class="validation-icon-invalid" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="1.75"></circle>
+                <path d="M10 6.1V10.6" stroke="currentColor" stroke-width="1.85" stroke-linecap="round"></path>
+                <circle cx="10" cy="13.5" r="1.05" fill="currentColor"></circle>
+              </svg>
+            </span>
+            <div class="field-popover-tooltip" id="enqMessageHint" role="tooltip" aria-hidden="true" data-state="info">
+              <span class="field-popover-dot" aria-hidden="true"></span>
+              <span class="field-popover-text">Write your enquiry (10–500 characters)</span>
+            </div>
           </div>
+        </div>
+        <div class="form-group form-remember">
+          <label class="remember-label" for="rememberDetailsToggle">
+            <input id="rememberDetailsToggle" name="rememberDetails" type="checkbox">
+            <span class="remember-checkbox-box" aria-hidden="true">
+              <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.8 7.3L5.6 10.1L11.2 4.1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </span>
+            <span class="remember-text">Remember my details <span class="remember-hint">(name &amp; email)</span></span>
+          </label>
         </div>
         <div class="form-group form-toggle">
           <label class="switch-label" for="whatsappRoutingToggle">
@@ -3235,8 +3291,18 @@
           </label>
         </div>
         <button class="btn btn-primary" id="submitBtn" type="submit"
-          toolDescription="Send the enquiry message to the school for a response.">Send Message</button>
-        <p class="form-note" id="formStatus" aria-live="polite"></p>
+          aria-describedby="submitBtnStatus"
+          toolDescription="Send the enquiry message to the school for a response.">
+          <span class="btn-spinner" aria-hidden="true"></span>
+          <span class="btn-success-check" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.5 10.4L8.3 14.2L15.6 6.4" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+          <span class="btn-label">Send Message</span>
+        </button>
+        <span class="sr-only" id="submitBtnStatus" role="status" aria-live="polite" aria-atomic="true"></span>
+        <p class="form-note" id="formStatus" role="status" aria-live="polite" aria-atomic="true"></p>
       </form>
     </div>
   </div>
