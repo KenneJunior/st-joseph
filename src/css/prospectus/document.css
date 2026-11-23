@@ -91,7 +91,7 @@ body.dark-mode .motto-bar {
 
 .floating-action-btn {
     pointer-events: auto;
-    background: linear-gradient(135deg, rgba(7, 24, 46, 0.7) 0%, 0%, rgba(10, 28, 56, 0.7) 100% 8%);
+    background: linear-gradient(135deg, rgba(7, 24, 46, 0.82) 0%, rgba(10, 28, 56, 0.90) 100%);
     color: var(--gold-light);
     border: none;
     padding: 1.1rem 2.2rem;
