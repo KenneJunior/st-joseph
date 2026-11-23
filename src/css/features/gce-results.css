@@ -1268,8 +1268,8 @@ body.dark-mode main#main-content > section#results:nth-of-type(6) > div:nth-of-t
   }
 }
 
-/* Mobile & Tablet Transition (<= 900px / 768px) */
-@media (max-width: 900px) {
+/* Mobile & Tablet Transition (<= 991px / 768px) */
+@media (max-width: 991px) {
   .gce-summary-card-inner {
     grid-template-columns: 1.3fr 1fr;
     padding: 16px 14px;

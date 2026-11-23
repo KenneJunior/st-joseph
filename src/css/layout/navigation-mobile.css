@@ -9,8 +9,8 @@ body.drawer-open {
   display: none;
 }
 
-/* ---------- MAX 1024px (Tablets & Compact Screens: Switch to Mobile Drawer Navigation) ---------- */
-@media (max-width: 1024px) {
+/* ---------- MAX 1200px (Tablets & Compact Screens: Switch to Mobile Drawer Navigation) ---------- */
+@media (max-width: 1200px) {
 
   /* Mobile Header Brand Row: single coherent flex row */
   .header-inner {
@@ -326,8 +326,6 @@ body.drawer-open {
     visibility: hidden;
     pointer-events: none;
     background: rgba(7, 24, 46, 0.68);
-    backdrop-filter: blur(14px) saturate(150%);
-    -webkit-backdrop-filter: blur(14px) saturate(150%);
     padding: 72px 20px 24px 20px;
     box-shadow: -8px 0 30px rgba(0, 0, 0, 0.22);
     transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1),

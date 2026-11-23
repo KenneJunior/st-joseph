@@ -252,11 +252,6 @@ html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode):not(
   transform: none !important;
 }
 
-html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode):not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) #navMenu {
-  backdrop-filter: blur(14px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
-}
-
 html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode):not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) .stat-card {
   backdrop-filter: blur(12px) saturate(135%) !important;
   -webkit-backdrop-filter: blur(12px) saturate(135%) !important;
