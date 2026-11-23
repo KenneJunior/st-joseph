@@ -42,6 +42,8 @@ describe('QuickActionsMenu Controller', () => {
         menuInstance?.destroy();
         menuInstance = null;
         dom.window.document.getElementById('quickActionsMenu')?.remove();
+        dom.window.document.getElementById('qaDownloadToast')?.remove();
+        vi.restoreAllMocks();
     });
 
     it('initializes and renders the floating menu element with canonical actions', () => {
@@ -95,6 +97,44 @@ describe('QuickActionsMenu Controller', () => {
 
         expect(menuInstance.isOpen()).toBe(false);
         expect(enquiryModal.hasAttribute('hidden')).toBe(false);
+    });
+
+    it('downloads prospectus PDF, closes menu, and displays confirmation toast when Download Prospectus is clicked', () => {
+        const createObjectUrlSpy = vi.fn().mockReturnValue('blob:sjccc-test-prospectus');
+        const revokeObjectUrlSpy = vi.fn();
+        (globalThis as any).URL = {
+            ...(globalThis.URL || {}),
+            createObjectURL: createObjectUrlSpy,
+            revokeObjectURL: revokeObjectUrlSpy,
+        };
+
+        const anchorClickSpy = vi.spyOn(dom.window.HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+        const onActionTriggered = vi.fn();
+
+        menuInstance = new QuickActionsMenu({ onActionTriggered });
+        menuInstance.open();
+        expect(menuInstance.isOpen()).toBe(true);
+
+        const prospectusLink = dom.window.document.getElementById('qaDownloadProspectus') as HTMLAnchorElement;
+        expect(prospectusLink).not.toBeNull();
+
+        const clickEvent = new dom.window.MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            button: 0,
+        });
+        prospectusLink.dispatchEvent(clickEvent);
+
+        expect(clickEvent.defaultPrevented).toBe(true);
+        expect(onActionTriggered).toHaveBeenCalledWith('qaDownloadProspectus');
+        expect(createObjectUrlSpy).toHaveBeenCalledTimes(1);
+        expect(anchorClickSpy).toHaveBeenCalled();
+        expect(menuInstance.isOpen()).toBe(false);
+
+        const toast = dom.window.document.getElementById('qaDownloadToast');
+        expect(toast).not.toBeNull();
+        expect(toast?.textContent).toContain('Official Prospectus PDF Downloaded');
+        expect(toast?.querySelector<HTMLAnchorElement>('.qa-download-toast__link')?.getAttribute('href')).toBe('/prospectus.html');
     });
 
     it('opens and closes via toggle() and manages aria-expanded', () => {
