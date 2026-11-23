@@ -3,7 +3,9 @@ import { JSDOM } from 'jsdom';
 import {
     LiquidGlassAdapter,
     POPUP_SELECTORS,
+    DOCK_SELECTORS,
     DEFAULT_POPUP_GLASS_CONFIG,
+    DEFAULT_DOCK_GLASS_CONFIG,
 } from '../../src/ui/effects/LiquidGlassAdapter.ts';
 import { PwaInstallPrompt } from '../../src/features/pwa/PwaInstallPrompt.ts';
 import { showUpdateNotification } from '../../src/services/serviceWorker.ts';
@@ -48,45 +50,63 @@ describe('LiquidGlassAdapter — Dynamic Popups & Notifications Integration', ()
         document.body.innerHTML = '<button id="installApp">Install</button>';
     });
 
-    it('declares canonical popup selectors covering install card, update banner, and offline indicators', () => {
+    it('declares canonical popup selectors without PWA install card and declares floating dock selectors', () => {
         expect(POPUP_SELECTORS).toEqual([
-            '#pwaInstallCard',
-            '.pwa-install-card',
             '#sw-update-banner',
             '#offlineStatusIndicator',
             '.offline-status-indicator',
         ]);
+        expect(POPUP_SELECTORS).not.toContain('#pwaInstallCard');
+        expect(POPUP_SELECTORS).not.toContain('.pwa-install-card');
         expect(POPUP_SELECTORS).not.toContain('.cd-card');
         expect(POPUP_SELECTORS).not.toContain('.dialog-box');
+
+        expect(DOCK_SELECTORS).toEqual([
+            '#mobileBottomBar',
+            '#unifiedAssistanceDock',
+        ]);
     });
 
-    it('provides specialized popup glass optics with rich thickness and gold ripple', () => {
+    it('provides specialized popup and dock glass optics with rich thickness and gold ripple', () => {
         expect(DEFAULT_POPUP_GLASS_CONFIG.refractiveIndex).toBeGreaterThanOrEqual(1.5);
         expect(DEFAULT_POPUP_GLASS_CONFIG.glassThickness).toBe(75);
         expect(DEFAULT_POPUP_GLASS_CONFIG.bezelWidth).toBe(18);
         expect(DEFAULT_POPUP_GLASS_CONFIG.specularAlpha).toBe(0.55);
         expect(DEFAULT_POPUP_GLASS_CONFIG.rippleColor).toContain('201, 162, 41');
+
+        expect(DEFAULT_DOCK_GLASS_CONFIG.refractiveIndex).toBeGreaterThanOrEqual(1.5);
+        expect(DEFAULT_DOCK_GLASS_CONFIG.glassThickness).toBe(65);
+        expect(DEFAULT_DOCK_GLASS_CONFIG.bezelWidth).toBe(16);
+        expect(DEFAULT_DOCK_GLASS_CONFIG.maxTilt).toBe(0);
+        expect(DEFAULT_DOCK_GLASS_CONFIG.backdropBlur).toBe(0);
+        expect(DEFAULT_DOCK_GLASS_CONFIG.rippleColor).toContain('201, 162, 41');
     });
 
-    it('safely enhances dynamic popups using enhancePopup without throwing in non-browser or fallback environments', () => {
-        const testPopup = document.createElement('div');
-        testPopup.id = 'pwaInstallCard';
-        testPopup.className = 'pwa-install-card';
-        document.body.appendChild(testPopup);
+    it('safely enhances floating docks (#mobileBottomBar, #unifiedAssistanceDock) in initHomepageSurfaces without throwing', () => {
+        const bottomBar = document.createElement('nav');
+        bottomBar.id = 'mobileBottomBar';
+        bottomBar.className = 'mobile-bottom-bar';
+        document.body.appendChild(bottomBar);
+
+        const assistanceDock = document.createElement('div');
+        assistanceDock.id = 'unifiedAssistanceDock';
+        assistanceDock.className = 'unified-action-dock';
+        document.body.appendChild(assistanceDock);
 
         const adapter = new LiquidGlassAdapter();
-        expect(() => {
-            adapter.enhancePopup('#pwaInstallCard');
-        }).not.toThrow();
+        const spyEnhanceDock = vi.spyOn(adapter, 'enhanceDock');
 
         expect(() => {
-            adapter.enhancePopup(testPopup);
+            adapter.initHomepageSurfaces();
         }).not.toThrow();
+
+        expect(spyEnhanceDock).toHaveBeenCalledWith('#mobileBottomBar');
+        expect(spyEnhanceDock).toHaveBeenCalledWith('#unifiedAssistanceDock');
 
         adapter.destroy();
     });
 
-    it('enhances PWA install card with LiquidGlass when card is triggered', async () => {
+    it('does NOT enhance PWA install card with LiquidGlass when card is triggered', async () => {
         const spyEnhance = vi.spyOn(LiquidGlassAdapter, 'enhancePopup');
 
         const prompt = new PwaInstallPrompt({
@@ -98,7 +118,9 @@ describe('LiquidGlassAdapter — Dynamic Popups & Notifications Integration', ()
 
         const card = document.getElementById('pwaInstallCard');
         expect(card).not.toBeNull();
-        expect(spyEnhance).toHaveBeenCalledWith(card);
+        expect(spyEnhance).not.toHaveBeenCalled();
+
+        prompt.destroy();
     });
 
     it('enhances Service Worker update banner with LiquidGlass when update notification is displayed', () => {
@@ -117,7 +139,7 @@ describe('LiquidGlassAdapter — Dynamic Popups & Notifications Integration', ()
 
     it('runs MutationObserver in initPopupObserver and detects dynamically appended popups', () => {
         const adapter = new LiquidGlassAdapter();
-        const spyEnhance = vi.spyOn(adapter, 'enhancePopup');
+        vi.spyOn(adapter, 'enhancePopup');
 
         adapter.initPopupObserver();
 
@@ -137,16 +159,25 @@ describe('LiquidGlassAdapter — Dynamic Popups & Notifications Integration', ()
         const { readFileSync } = await import('fs');
         const { resolve } = await import('path');
 
-        // 1. PWA install card stylesheet
-        const pwaCss = readFileSync(resolve(process.cwd(), 'src/css/components/pwa-install-card.css'), 'utf-8');
-        const pwaLightMatch = pwaCss.match(/--pwa-card-bg:\s*rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/);
-        const pwaDarkMatch = pwaCss.match(/--pwa-card-bg:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
-        expect(pwaLightMatch).not.toBeNull();
-        expect(pwaDarkMatch).not.toBeNull();
-        expect(parseFloat(pwaLightMatch![1])).toBeLessThanOrEqual(0.60);
-        expect(parseFloat(pwaDarkMatch![1])).toBeLessThanOrEqual(0.50);
+        // 1. Mobile bottom bar stylesheet
+        const navCss = readFileSync(resolve(process.cwd(), 'src/css/layout/navigation-mobile.css'), 'utf-8');
+        const dockLightMatch = navCss.match(/\.mobile-bottom-bar\s*\{[\s\S]*?--dock-bg:\s*rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/);
+        const dockDarkMatch = navCss.match(/html\.dark-mode \.mobile-bottom-bar[\s\S]*?--dock-bg:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
+        expect(dockLightMatch).not.toBeNull();
+        expect(dockDarkMatch).not.toBeNull();
+        expect(parseFloat(dockLightMatch![1])).toBeLessThanOrEqual(0.60);
+        expect(parseFloat(dockDarkMatch![1])).toBeLessThanOrEqual(0.55);
 
-        // 2. Service Worker update banner stylesheet
+        // 2. Unified assistance dock stylesheet
+        const aiCss = readFileSync(resolve(process.cwd(), 'src/css/features/ai-assistant.css'), 'utf-8');
+        const aiDockLightMatch = aiCss.match(/--ai-dock-bg:\s*rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/);
+        const aiDockDarkMatch = aiCss.match(/html\.dark-mode[\s\S]*?--ai-dock-bg:[^;]*?rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
+        expect(aiDockLightMatch).not.toBeNull();
+        expect(aiDockDarkMatch).not.toBeNull();
+        expect(parseFloat(aiDockLightMatch![1])).toBeLessThanOrEqual(0.60);
+        expect(parseFloat(aiDockDarkMatch![1])).toBeLessThanOrEqual(0.50);
+
+        // 3. Service Worker update banner stylesheet
         const swCss = readFileSync(resolve(process.cwd(), 'src/css/features/sw-update.css'), 'utf-8');
         const swLightMatch = swCss.match(/--sw-pill-bg:\s*rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/);
         const swDarkMatch = swCss.match(/--sw-pill-bg:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
@@ -155,7 +186,7 @@ describe('LiquidGlassAdapter — Dynamic Popups & Notifications Integration', ()
         expect(parseFloat(swLightMatch![1])).toBeLessThanOrEqual(0.60);
         expect(parseFloat(swDarkMatch![1])).toBeLessThanOrEqual(0.50);
 
-        // 3. Offline indicator pill and card panel
+        // 4. Offline indicator pill and card panel
         const offlineCss = readFileSync(resolve(process.cwd(), 'src/css/components/offline-indicator.css'), 'utf-8');
         const offlinePillMatch = offlineCss.match(/\.offline-indicator-pill\s*\{[^}]*background:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
         const offlinePanelMatch = offlineCss.match(/\.offline-card-panel\s*\{[^}]*background:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
@@ -164,7 +195,7 @@ describe('LiquidGlassAdapter — Dynamic Popups & Notifications Integration', ()
         expect(parseFloat(offlinePillMatch![1])).toBeLessThanOrEqual(0.15);
         expect(parseFloat(offlinePanelMatch![1])).toBeLessThanOrEqual(0.40);
 
-        // 4. ConfirmDialog surface glass and content wrapper
+        // 5. ConfirmDialog surface glass and content wrapper
         const dialogCss = readFileSync(resolve(process.cwd(), 'src/css/components/dialog.css'), 'utf-8');
         const dialogSurfaceMatch = dialogCss.match(/--cd-surface-glass:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
         const dialogWrapperMatch = dialogCss.match(/\.cd-content-wrapper\s*\{[^}]*background:\s*rgba\(7,\s*24,\s*46,\s*([\d.]+)\)/);
@@ -174,18 +205,49 @@ describe('LiquidGlassAdapter — Dynamic Popups & Notifications Integration', ()
         expect(parseFloat(dialogWrapperMatch![1])).toBeLessThanOrEqual(0.30);
     });
 
+    it('removes CSS backdrop-filter properties on #mobileBottomBar and #unifiedAssistanceDock so light bending is visible', async () => {
+        const { readFileSync } = await import('fs');
+        const { resolve } = await import('path');
+
+        const navCss = readFileSync(resolve(process.cwd(), 'src/css/layout/navigation-mobile.css'), 'utf-8');
+        const aiCss = readFileSync(resolve(process.cwd(), 'src/css/features/ai-assistant.css'), 'utf-8');
+        const perfCss = readFileSync(resolve(process.cwd(), 'src/css/core/performance-mode.css'), 'utf-8');
+        const glassLiteCss = readFileSync(resolve(process.cwd(), 'src/css/core/glassmorphism-lite.css'), 'utf-8');
+
+        // .mobile-bottom-bar and .unified-action-dock rules must not set backdrop-filter / -webkit-backdrop-filter
+        const mobileBarBlock = navCss.match(/\.mobile-bottom-bar\s*\{[^}]*\}/)?.[0] ?? '';
+        expect(mobileBarBlock).not.toMatch(/backdrop-filter/);
+        expect(navCss).not.toMatch(/#mobileBottomBar[^{]*\{[^}]*backdrop-filter/);
+
+        const unifiedDockBlock = aiCss.match(/\.unified-action-dock\s*\{[^}]*\}/)?.[0] ?? '';
+        expect(unifiedDockBlock).not.toMatch(/backdrop-filter/);
+        expect(aiCss).not.toMatch(/#unifiedAssistanceDock[^{]*\{[^}]*backdrop-filter/);
+
+        // Performance mode and glassmorphism-lite must not override docks with backdrop-filter !important
+        expect(perfCss).not.toMatch(/\.unified-action-dock\s*\{[^}]*backdrop-filter/);
+        expect(perfCss).not.toMatch(/(?:#mobileBottomBar|\.mobile-bottom-bar)[^{]*\{[^}]*backdrop-filter/);
+        expect(glassLiteCss).not.toMatch(/(?:#mobileBottomBar|\.mobile-bottom-bar|\.unified-action-dock)[^{]*\{[^}]*backdrop-filter/);
+    });
+
     it('enforces solid color fallbacks when liquid glass / backdrop-filter is unsupported or reduced transparency is active', async () => {
         const { readFileSync } = await import('fs');
         const { resolve } = await import('path');
 
-        const stylesheets = [
-            'src/css/components/pwa-install-card.css',
+        // Dock stylesheets enforce solid fallbacks via reduced-transparency & fallback selectors without backdrop-filter
+        for (const file of ['src/css/layout/navigation-mobile.css', 'src/css/features/ai-assistant.css']) {
+            const css = readFileSync(resolve(process.cwd(), file), 'utf-8');
+            expect(css).toContain('prefers-reduced-transparency: reduce');
+            expect(css).toMatch(/(?:no-liquid-glass|glass-fallback|data-glass-fallback)/);
+        }
+
+        // Native-blur popup stylesheets enforce @supports not + backdrop-filter: none !important
+        const popupStylesheets = [
             'src/css/features/sw-update.css',
             'src/css/components/offline-indicator.css',
             'src/css/components/dialog.css',
         ];
 
-        for (const file of stylesheets) {
+        for (const file of popupStylesheets) {
             const css = readFileSync(resolve(process.cwd(), file), 'utf-8');
 
             // Must include @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)))

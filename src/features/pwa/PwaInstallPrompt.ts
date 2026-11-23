@@ -9,7 +9,6 @@
 
 import '../../css/components/pwa-install-card.css';
 import { STORAGE_KEYS } from '../../core/storage/storageKeys.ts';
-import { LiquidGlassAdapter } from '../../ui/effects/LiquidGlassAdapter.ts';
 
 export interface PwaPromptOptions {
     /** Card title */
@@ -360,9 +359,6 @@ export class PwaInstallPrompt {
         document.body.appendChild(card);
         this.#cardEl = card;
         this.#cardVisible = true;
-
-        // Apply physical LiquidGlass optical refraction and tactile ripple to the install card
-        LiquidGlassAdapter.enhancePopup(card);
 
         const installBtn = card.querySelector<HTMLButtonElement>('#pwaCardInstallBtn');
         const dismissBtn = card.querySelector<HTMLButtonElement>('#pwaCardDismissBtn');

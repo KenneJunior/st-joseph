@@ -43,14 +43,19 @@ export interface LiquidGlassAdapterConfig {
     aberration?: number;
     /** Ripple color for click/tap interaction */
     rippleColor?: string;
+    /** Optional SVG backdrop Gaussian blur stdDeviation (0 = sharp refraction) */
+    backdropBlur?: number;
 }
 
 export const POPUP_SELECTORS = [
-    '#pwaInstallCard',
-    '.pwa-install-card',
     '#sw-update-banner',
     '#offlineStatusIndicator',
     '.offline-status-indicator',
+];
+
+export const DOCK_SELECTORS = [
+    '#mobileBottomBar',
+    '#unifiedAssistanceDock',
 ];
 
 export const DEFAULT_POPUP_GLASS_CONFIG: LiquidGlassAdapterConfig = {
@@ -61,6 +66,19 @@ export const DEFAULT_POPUP_GLASS_CONFIG: LiquidGlassAdapterConfig = {
     specularAlpha: 0.55,
     maxTilt: 2,
     aberration: 0.02,
+    rippleColor: 'rgba(201, 162, 41, 0.35)', // Catholic Gold brand accent
+};
+
+export const DEFAULT_DOCK_GLASS_CONFIG: LiquidGlassAdapterConfig = {
+    refractiveIndex: 1.54,
+    glassThickness: 65,
+    bezelWidth: 16,
+    refractionScale: 1.05,
+    specularAlpha: 0.55,
+    maxTilt: 0, // Keep fixed floating docks anchored without 3D edge skew
+    aberration: 0.02,
+    enableOrb: false,
+    backdropBlur: 0, // Sharp optical refraction without blur so light bending is clearly visible
     rippleColor: 'rgba(201, 162, 41, 0.35)', // Catholic Gold brand accent
 };
 
@@ -171,7 +189,7 @@ export class LiquidGlassAdapter {
             enableMobileSupport: false, // Explicitly avoid continuous orientation listeners to save battery
             reducedMotion: reducedMotion,
             backdrop: {
-                blur: 0.6,
+                blur: customConfig.backdropBlur ?? 0.6,
                 saturation: 1.25,
                 brightness: 1.0,
                 reducedMotion: reducedMotion,
@@ -281,6 +299,22 @@ export class LiquidGlassAdapter {
     }
 
     /**
+     * Enhances a floating dock container (#mobileBottomBar, #unifiedAssistanceDock)
+     * with physical liquid glass refraction, specular rim highlights, and gold ripple.
+     */
+    public enhanceDock(target: string | HTMLElement, config: LiquidGlassAdapterConfig = {}): void {
+        const mergedConfig = { ...DEFAULT_DOCK_GLASS_CONFIG, ...config };
+        this.enhanceSurface(target, mergedConfig);
+    }
+
+    /**
+     * Static convenience method for enhancing floating docks via the shared adapter.
+     */
+    public static enhanceDock(target: string | HTMLElement, config: LiquidGlassAdapterConfig = {}): void {
+        LiquidGlassAdapter.shared.enhanceDock(target, config);
+    }
+
+    /**
      * Initializes a MutationObserver that automatically detects when any popup,
      * install prompt, update notification, or modal dialog is added to the DOM
      * and enhances it with LiquidGlass immediately.
@@ -335,12 +369,17 @@ export class LiquidGlassAdapter {
     }
 
     /**
-     * Initializes targeted popup observer on the SJCCC Homepage.
+     * Initializes targeted floating docks and popup observer on the SJCCC Homepage.
      */
     public initHomepageSurfaces(): void {
         if (typeof window === 'undefined' || this.isDestroyed) return;
 
-        // Auto-enhance popups (install app, update available, offline status indicator)
+        // Enhance floating HUD docks (#mobileBottomBar, #unifiedAssistanceDock)
+        for (const selector of DOCK_SELECTORS) {
+            this.enhanceDock(selector);
+        }
+
+        // Auto-enhance popups (update available, offline status indicator)
         this.initPopupObserver();
     }
 
