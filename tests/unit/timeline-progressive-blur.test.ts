@@ -13,9 +13,9 @@ describe('Timeline Track Container Progressive Blur System', () => {
     });
 
     it('configures progressive blur with multi-stop mask-image and backdrop-filter on ::before', () => {
-        // Must contain backdrop-filter with blur and saturation
-        expect(cssContent).toMatch(/backdrop-filter:\s*blur\(14px\)\s*saturate\(135%\)/);
-        expect(cssContent).toMatch(/-webkit-backdrop-filter:\s*blur\(14px\)\s*saturate\(135%\)/);
+        // Must contain backdrop-filter with blur and saturation on progressive blur overlays
+        expect(cssContent).toMatch(/backdrop-filter:\s*blur\(var\(--timeline-glass-blur,\s*26px\)\)\s*saturate\(var\(--timeline-glass-saturation,\s*165%\)\)/);
+        expect(cssContent).toMatch(/-webkit-backdrop-filter:\s*blur\(var\(--timeline-glass-blur,\s*26px\)\)\s*saturate\(var\(--timeline-glass-saturation,\s*165%\)\)/);
 
         // ::before must have mask-image with smooth multi-stop gradient to bottom
         expect(cssContent).toMatch(/\.timeline-track-container::before\s*\{[^}]*mask-image:\s*linear-gradient\(\s*to bottom/);
