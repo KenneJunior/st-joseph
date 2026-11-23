@@ -16,6 +16,7 @@
  */
 
 import { COLLEGE_PROFILE } from '../../data/collegeProfile.ts';
+import { downloadProspectusPdf } from '../prospectus/prospectusPdfExport.ts';
 
 export interface QuickActionsOptions {
     triggerSelector?: string;
@@ -30,6 +31,7 @@ export class QuickActionsMenu {
     private _isOpen: boolean = false;
     private keydownHandler: ((e: KeyboardEvent) => void) | null = null;
     private documentClickHandler: ((e: MouseEvent) => void) | null = null;
+    private toastTimer: number | null = null;
     private onActionTriggered?: (actionKey: string) => void;
 
     constructor(options: QuickActionsOptions = {}) {
@@ -150,7 +152,7 @@ export class QuickActionsMenu {
                                     Download Prospectus
                                     <i class="bi bi-arrow-right-short quick-action-arrow" aria-hidden="true"></i>
                                 </span>
-                                <span class="quick-action-desc">Official 2025/2026 Academic handbook</span>
+                                <span class="quick-action-desc">Official 2026/2027 Academic handbook</span>
                             </div>
                         </a>
                     </li>
@@ -253,6 +255,20 @@ export class QuickActionsMenu {
                     return;
                 }
 
+                // Dedicated handler for Download Prospectus action (direct PDF download + view fallback)
+                if (actionId === 'qaDownloadProspectus' || (href && href.startsWith('/prospectus.html'))) {
+                    const isModifiedClick = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
+                    if (!isModifiedClick) {
+                        e.preventDefault();
+                        const downloaded = downloadProspectusPdf();
+                        this.close();
+                        this.showProspectusToast(downloaded, href || '/prospectus.html');
+                        return;
+                    }
+                    this.close();
+                    return;
+                }
+
                 // For in-page anchor links (e.g. #location), smooth scroll and close
                 if (href && href.startsWith('#')) {
                     e.preventDefault();
@@ -261,9 +277,6 @@ export class QuickActionsMenu {
                     if (targetEl) {
                         targetEl.scrollIntoView({ behavior: 'smooth' });
                     }
-                } else if (href && href.startsWith('/prospectus.html')) {
-                    // Allow navigation, close menu immediately
-                    this.close();
                 } else {
                     // External / tel link, close menu after trigger
                     setTimeout(() => this.close(), 100);
@@ -368,8 +381,71 @@ export class QuickActionsMenu {
         return this._isOpen;
     }
 
+    private showProspectusToast(downloaded: boolean, prospectusHref: string): void {
+        if (typeof document === 'undefined') return;
+
+        document.getElementById('qaDownloadToast')?.remove();
+        if (this.toastTimer !== null) {
+            window.clearTimeout(this.toastTimer);
+            this.toastTimer = null;
+        }
+
+        const toast = document.createElement('div');
+        toast.id = 'qaDownloadToast';
+        toast.className = 'qa-download-toast';
+        toast.setAttribute('role', 'status');
+        toast.setAttribute('aria-live', 'polite');
+
+        const title = downloaded
+            ? 'Official Prospectus PDF Downloaded'
+            : 'Open Official Prospectus';
+        const subtitle = downloaded
+            ? 'SJCCC 2026/2027 Handbook saved to your device.'
+            : 'View or print the complete 2026/2027 handbook.';
+
+        toast.innerHTML = `
+            <span class="qa-download-toast__icon" aria-hidden="true">
+                <i class="bi bi-file-earmark-pdf-fill"></i>
+            </span>
+            <div class="qa-download-toast__body">
+                <strong class="qa-download-toast__title">${title}</strong>
+                <span class="qa-download-toast__desc">${subtitle}</span>
+                <div class="qa-download-toast__actions">
+                    <a href="${prospectusHref.split('?')[0]}" class="qa-download-toast__link">View Prospectus</a>
+                    <button type="button" class="qa-download-toast__retry">Download Again</button>
+                </div>
+            </div>
+            <button type="button" class="qa-download-toast__close" aria-label="Dismiss prospectus notification">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+            </button>
+        `;
+
+        toast.querySelector('.qa-download-toast__retry')?.addEventListener('click', () => {
+            downloadProspectusPdf();
+        });
+
+        toast.querySelector('.qa-download-toast__close')?.addEventListener('click', () => {
+            toast.remove();
+        });
+
+        document.body.appendChild(toast);
+        requestAnimationFrame(() => {
+            toast.classList.add('is-visible');
+        });
+
+        this.toastTimer = window.setTimeout(() => {
+            toast.classList.remove('is-visible');
+            window.setTimeout(() => toast.remove(), 220);
+        }, 7000);
+    }
+
     public destroy(): void {
         this.close();
+        if (this.toastTimer !== null) {
+            window.clearTimeout(this.toastTimer);
+            this.toastTimer = null;
+        }
+        document.getElementById('qaDownloadToast')?.remove();
         if (this.documentClickHandler) {
             document.removeEventListener('click', this.documentClickHandler);
         }

@@ -17,10 +17,10 @@
  * ============================================================================
  */
 
-import {LiquidGlass} from '@kennejunior/liquidglass';
+import {LiquidGlass,type LiquidGlassOptions} from '@kennejunior/liquidglass';
 import { performanceManager } from '../../core/performance/PerformanceManager.ts';
 
-export interface LiquidGlassAdapterConfig {
+export interface LiquidGlassAdapterConfig extends Partial<LiquidGlassOptions> {
     /** Refractive index for optical bending (defaults to 1.45 - 1.6) */
     refractiveIndex?: number;
     /** Virtual glass thickness in pixels (defaults to 60 - 80) */
@@ -76,6 +76,8 @@ export const DEFAULT_DOCK_GLASS_CONFIG: LiquidGlassAdapterConfig = {
     refractionScale: 1.05,
     specularAlpha: 0.55,
     maxTilt: 0, // Keep fixed floating docks anchored without 3D edge skew
+    magneticPull: 1, // Disable magnetic pull on floating docks to avoid motion drift
+    backdrop:{blur: 5, saturation: 1.25, brightness: 1.0},
     aberration: 0.02,
     enableOrb: false,
     backdropBlur: 0, // Sharp optical refraction without blur so light bending is clearly visible
@@ -180,8 +182,8 @@ export class LiquidGlassAdapter {
             refractionScale: customConfig.refractionScale ?? (isMobile ? 0.9 : 1.15),
             specularAlpha: customConfig.specularAlpha ?? 0.5,
             // Disable or clamp tilt under reduced-motion or mobile conditions
-            maxTilt: allowTilt ? (customConfig.maxTilt ?? 6) : 0,
-            magneticPull: allowTilt ? 8 : 0,
+            maxTilt: allowTilt ? (customConfig.maxTilt ?? 1) : 0,
+            magneticPull: allowTilt ? (customConfig.magneticPull ?? 1) : 0,
             aberration: reducedMotion ? 0 : (customConfig.aberration ?? 0.03),
             // Disable ambient orb and mobile gyroscope listeners on mobile/reduced-motion to conserve battery and CPU
             enableOrb: !reducedMotion && !isMobile && caps.allowContinuousCanvas && (customConfig.enableOrb ?? true),
@@ -189,7 +191,7 @@ export class LiquidGlassAdapter {
             enableMobileSupport: false, // Explicitly avoid continuous orientation listeners to save battery
             reducedMotion: reducedMotion,
             backdrop: {
-                blur: customConfig.backdropBlur ?? 0.6,
+                blur: customConfig.backdropBlur ?? 5,
                 saturation: 1.25,
                 brightness: 1.0,
                 reducedMotion: reducedMotion,
