@@ -625,12 +625,12 @@ body.drawer-open {
   /* ─── Mobile Bottom Floating Glass Pill Dock ─── */
   .mobile-bottom-bar {
     --dock-bg: rgba(255, 255, 255, 0.55);
+    --dock-bg-solid: #ffffff;
     --dock-border: rgba(201, 162, 41, 0.38);
     --dock-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 1),
                             inset 0 -1px 0 rgba(7, 24, 46, 0.06);
     --dock-shadow: 0 14px 38px -4px rgba(2, 12, 26, 0.42),
                    0 4px 16px -2px rgba(7, 24, 46, 0.22);
-    --dock-blur: 14px;
     --dock-radius: 26px;
     --dock-expanded-width: min(600px, calc(100vw - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
     --dock-item-max-w: 60px;
@@ -660,8 +660,6 @@ body.drawer-open {
     z-index: var(--z-drawer, 3000);
     background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.12) 0%, transparent 70%),
                 linear-gradient(135deg, rgba(255, 255, 255, 0.55) 10%, rgba(245, 240, 230, 0.45) 100%);
-    backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%);
-    -webkit-backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%);
     border: 1px solid var(--dock-border);
     box-shadow: var(--dock-shadow), var(--dock-inner-highlight);
     box-sizing: border-box;
@@ -683,8 +681,9 @@ body.drawer-open {
   /* Dark theme surface */
   html.dark-mode .mobile-bottom-bar,
   body.dark-mode .mobile-bottom-bar {
-    --dock-bg: rgba(7, 24, 46, 0.52);
-    --dock-border: rgba(201, 162, 41, 0.35);
+    --dock-bg: rgba(7, 24, 46, 0.50);
+    --dock-bg-solid: #07182e;
+    --dock-border: rgba(201, 162, 41, 0.45);
     --dock-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.12),
                             inset 0 -1px 0 rgba(201, 162, 41, 0.10);
     --dock-shadow: 0 14px 34px -6px rgba(2, 8, 18, 0.65),
@@ -696,29 +695,27 @@ body.drawer-open {
     --dock-active-border: rgba(243, 215, 121, 0.48);
     --dock-active-color: var(--accent-glow, #f3d779);
     --dock-active-dot: var(--accent-glow, #f3d779);
-    background-color: rgba(7, 24, 46, 0.52);
+    background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.18) 0%, transparent 75%),
+                linear-gradient(135deg, rgba(7, 24, 46, 0.50) 10%, rgba(10, 31, 63, 0.46) 100%);
   }
 
-  /* Progressive Enhancement: Frosted Glass in dark and light modes */
-  @supports((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  /* Solid Color Fallback: browsers without optical support, reduced transparency, or LiquidGlass fallback */
+  @media (prefers-reduced-transparency: reduce) {
+    #mobileBottomBar,
     .mobile-bottom-bar {
-      --dock-bg: rgba(255, 255, 255, 0.52);
-      --dock-border: rgba(201, 162, 41, 0.38);
-      backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%);
-      -webkit-backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%);
-      background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.12) 0%, transparent 70%),
-                  linear-gradient(135deg, rgba(255, 255, 255, 0.55) 10%, rgba(245, 240, 230, 0.45) 100%);
+      background: var(--dock-bg-solid, #ffffff) !important;
     }
+  }
 
-    html.dark-mode .mobile-bottom-bar,
-    body.dark-mode .mobile-bottom-bar {
-      --dock-bg: rgba(7, 24, 46, 0.48);
-      --dock-border: rgba(201, 162, 41, 0.45);
-      background: radial-gradient(circle at top left, rgba(201, 162, 41, 0.18) 0%, transparent 75%),
-                  linear-gradient(135deg, rgba(7, 24, 46, 0.50) 10%, rgba(10, 31, 63, 0.46) 100%);
-      -webkit-backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%);
-      backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%);
-    }
+  .no-liquid-glass #mobileBottomBar,
+  .no-liquid-glass .mobile-bottom-bar,
+  .no-backdrop-filter #mobileBottomBar,
+  .no-backdrop-filter .mobile-bottom-bar,
+  #mobileBottomBar.glass-fallback,
+  #mobileBottomBar[data-glass-fallback="true"],
+  .mobile-bottom-bar.glass-fallback,
+  .mobile-bottom-bar[data-glass-fallback="true"] {
+    background: var(--dock-bg-solid, #ffffff) !important;
   }
 
   /* Scroll-direction collapse state: rubber-band release motion from right to left, anchoring the single Menu icon on the left */
