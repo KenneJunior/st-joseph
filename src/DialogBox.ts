@@ -158,8 +158,9 @@ const DIALOG_CSS =`/* ==========================================================
     font-family: var(--cd-font);
     color: var(--cd-text-main);
     backdrop-filter: blur(15px) saturate(180%);
-    /* 3D Entrance Setup */
-    transform-style: preserve-3d;
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    /* Entrance Setup */
+    transform-style: flat;
     transform: rotateX(25deg) rotateY(-10deg) translateY(60px) scale(0.85);
     opacity: 0;
     transition:
@@ -168,7 +169,7 @@ const DIALOG_CSS =`/* ==========================================================
 }
 
 .cd-card.cd-visible {
-    transform: rotateX(0deg) rotateY(0deg) translateY(0) scale(1);
+    transform: none;
     opacity: 1;
 }
 

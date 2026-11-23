@@ -23,9 +23,10 @@ describe('SJCCC Header Progressive Blur System', () => {
             expect(headerCss).toContain('transparent 100%');
         });
 
-        it('configures smooth cubic-bezier transitions for backdrop-filter and background on ::before', () => {
+        it('configures smooth cubic-bezier transitions for backdrop-filter and background on ::before without mobile Backdrop Root traps', () => {
             expect(headerCss).toMatch(/#mainHeader::before\s*\{[^}]*transition:\s*backdrop-filter 0\.35s/);
-            expect(headerCss).toMatch(/#mainHeader::before\s*\{[^}]*will-change:\s*backdrop-filter;/);
+            expect(headerCss).toMatch(/#mainHeader::before\s*\{[^}]*-webkit-backdrop-filter:/);
+            expect(headerCss).not.toMatch(/#mainHeader::before\s*\{[^}]*will-change:\s*backdrop-filter;/);
         });
 
         it('eliminates the discontinuous +5px cliff in #mainHeader.scrolled::before', () => {
@@ -53,13 +54,14 @@ describe('SJCCC Header Progressive Blur System', () => {
             expect(headerCss).toMatch(/body\.dark-mode #mainHeader::after/);
         });
 
-        it('configures hardware-accelerated continuous backdrop blur on mobile viewports (<= 1024px)', () => {
+        it('configures continuous webkit-prefixed backdrop blur on mobile viewports (<= 1024px) without Backdrop Root locks', () => {
             expect(headerCss).toContain('@media (max-width: 1024px)');
-            expect(headerCss).toContain('isolation: isolate');
+            expect(headerCss).not.toContain('isolation: isolate');
+            expect(headerCss).not.toMatch(/#mainHeader\s*\{[^}]*will-change:\s*transform/);
             // Must NOT hide ::before on mobile viewports; continuous progressive blur must remain active!
             expect(headerCss).not.toMatch(/@media \(max-width:\s*1024px\)\s*\{[^}]*#mainHeader::before\s*\{[^}]*display:\s*none;/);
             expect(headerCss).toMatch(/#mainHeader::before\s*\{[^}]*display:\s*block;/);
-            expect(headerCss).toMatch(/#mainHeader::before\s*\{[^}]*transform:\s*translate3d\(0,\s*0,\s*0\);/);
+            expect(headerCss).toMatch(/#mainHeader::before\s*\{[^}]*-webkit-backdrop-filter:\s*blur\(var\(--blur-intensity,\s*3px\)\);/);
             expect(headerCss).toMatch(/#mainHeader::before\s*\{[^}]*backdrop-filter:\s*blur\(var\(--blur-intensity,\s*3px\)\);/);
         });
 

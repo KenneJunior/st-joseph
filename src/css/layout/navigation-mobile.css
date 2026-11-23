@@ -199,10 +199,11 @@ body.drawer-open {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  body.dark-mode #navMenu {
-    background: rgba(2, 12, 26, 0.5);
-    backdrop-filter: blur(10px) saturate(160%);
-    -webkit-backdrop-filter: blur(10px) saturate(160%);
+  body.dark-mode #navMenu,
+  html.dark-mode #navMenu {
+    background: rgba(7, 24, 46, 0.68);
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
   }
 
   /* Glass morphism overlay effect */
@@ -324,9 +325,9 @@ body.drawer-open {
     -webkit-overflow-scrolling: touch;
     visibility: hidden;
     pointer-events: none;
-    background: rgba(7, 24, 46, 0.88);
-    backdrop-filter: blur(10px) saturate(140%);
-    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    background: rgba(7, 24, 46, 0.68);
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
     padding: 72px 20px 24px 20px;
     box-shadow: -8px 0 30px rgba(0, 0, 0, 0.22);
     transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -334,9 +335,6 @@ body.drawer-open {
     gap: 6px;
     z-index: var(--z-drawer, 3000);
     border-left: 1px solid rgba(200, 150, 62, 0.15);
-    will-change: transform;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
   }
   
   .nav-text{
@@ -388,7 +386,9 @@ body.drawer-open {
   /* Light mode mobile drawer adaptation */
   html:not(.dark-mode) #navMenu,
   body:not(.dark-mode) #navMenu {
-    background: rgba(255, 255, 255, 0.96);
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
     border-left: 1px solid rgba(200, 150, 62, 0.35);
   }
 

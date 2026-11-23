@@ -15,7 +15,8 @@
 .reveal.revealed,
 .stagger-item.revealed {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
+  backface-visibility: visible;
 }
 
 /* Stagger Card: subtle elevation scale for cards (Pillars & Event cards) */
@@ -30,7 +31,8 @@
 
 .stagger-card.revealed {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: none;
+  backface-visibility: visible;
 }
 
 /* Card hover physics after reveal has completed */

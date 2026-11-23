@@ -645,13 +645,11 @@ body.dark-mode .timeline-track-container::-webkit-scrollbar-track {
   opacity: 0;
   visibility: hidden;
 
-  backdrop-filter: blur(14px) saturate(135%);
   backdrop-filter:
     blur(var(--timeline-glass-blur, 26px))
     saturate(var(--timeline-glass-saturation, 165%))
     contrast(var(--timeline-glass-contrast, 108%));
 
-  -webkit-backdrop-filter: blur(14px) saturate(135%);
   -webkit-backdrop-filter:
     blur(var(--timeline-glass-blur, 26px))
     saturate(var(--timeline-glass-saturation, 165%))

@@ -236,6 +236,54 @@ html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .qui
   -webkit-backdrop-filter: blur(10px) saturate(120%) !important;
 }
 
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode):not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) #mainHeader::before {
+  display: block !important;
+  backdrop-filter: blur(var(--blur-intensity, 8px)) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(var(--blur-intensity, 8px)) saturate(125%) !important;
+  will-change: auto !important;
+  transform: none !important;
+}
+
+html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode):not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) #mainHeader::before {
+  display: block !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  will-change: auto !important;
+  transform: none !important;
+}
+
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode):not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) #navMenu {
+  backdrop-filter: blur(14px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
+}
+
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode):not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) .stat-card {
+  backdrop-filter: blur(12px) saturate(135%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(135%) !important;
+}
+
+html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode):not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) .stat-card {
+  backdrop-filter: blur(8px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
+}
+
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode):not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) .carousel-caption {
+  backdrop-filter: blur(16px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+}
+
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode):not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) .hero-badge,
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode):not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) .btn-outline,
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode):not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) #getInTouchBtn {
+  backdrop-filter: blur(8px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
+}
+
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode):not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) .announcement-bar {
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+}
+
 /* ==========================================================================
    2. DIAGNOSTIC OVERLAY STYLES
    Visual inspection chips rendered on Header, Stat Cards, and Floating Buttons

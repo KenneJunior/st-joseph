@@ -1026,9 +1026,18 @@
 
         border-radius: 20px;
 
+        isolation: auto !important;
+        perspective: none !important;
+
         box-shadow:
             0 14px 32px rgba(3, 10, 25, 0.16),
             inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .carousel-track,
+    #campus .carousel-track {
+        perspective: none !important;
+        transform-style: flat !important;
     }
 
     /* Progressively reduced 3D depth system for mobile screens */
@@ -1058,7 +1067,7 @@
     .carousel-btn {
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
-        background: rgba(7, 24, 46, 0.75);
+        background: rgba(7, 24, 46, 0.48);
     }
 
     .carousel-title,
@@ -1272,7 +1281,7 @@ html.dark .carousel-container,
 
 html.dark .carousel-btn,
 [data-theme="dark"] .carousel-btn {
-    background: rgba(5, 12, 27, 0.94);
+    background: rgba(5, 12, 27, 0.56);
 
     border-color: rgba(255, 255, 255, 0.13);
 }

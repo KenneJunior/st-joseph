@@ -102,6 +102,92 @@ html.perf-mode-balanced .past-announcements-modal__card {
    Prevents GPU saturation overdraw and ensures smooth compositing
    ========================================================================== */
 @media (max-width: 768px) {
+  html[data-performance-mode="full"] #mainHeader,
+  html.perf-mode-full #mainHeader,
+  html[data-performance-mode="balanced"] #mainHeader,
+  html.perf-mode-balanced #mainHeader {
+    isolation: auto !important;
+    will-change: auto !important;
+    transform: none !important;
+  }
+
+  html[data-performance-mode="full"]:not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) #mainHeader::before,
+  html.perf-mode-full:not(.blur-throttled):not(.glassmorphism-lite):not([data-backdrop-blur="throttled"]) #mainHeader::before {
+    display: block !important;
+    backdrop-filter: blur(var(--blur-intensity, 8px)) saturate(125%) !important;
+    -webkit-backdrop-filter: blur(var(--blur-intensity, 8px)) saturate(125%) !important;
+    will-change: auto !important;
+    transform: none !important;
+  }
+
+  html[data-performance-mode="full"] #navMenu,
+  html.perf-mode-full #navMenu {
+    backdrop-filter: blur(14px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
+  }
+
+  html[data-performance-mode="full"] .header-action-btn,
+  html.perf-mode-full .header-action-btn,
+  html[data-performance-mode="full"] .header-theme-toggle,
+  html.perf-mode-full .header-theme-toggle,
+  html[data-performance-mode="full"] .menu-toggle,
+  html.perf-mode-full .menu-toggle {
+    backdrop-filter: blur(12px) saturate(135%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(135%) !important;
+  }
+
+  html[data-performance-mode="full"] .stat-card,
+  html.perf-mode-full .stat-card {
+    backdrop-filter: blur(12px) saturate(135%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(135%) !important;
+  }
+
+  html[data-performance-mode="full"] .carousel-caption,
+  html.perf-mode-full .carousel-caption {
+    backdrop-filter: blur(16px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+  }
+
+  html[data-performance-mode="full"] .carousel-btn,
+  html.perf-mode-full .carousel-btn {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+
+  html[data-performance-mode="full"] .hero-badge,
+  html.perf-mode-full .hero-badge {
+    backdrop-filter: blur(8px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
+  }
+
+  html[data-performance-mode="full"] .btn-outline,
+  html.perf-mode-full .btn-outline,
+  html[data-performance-mode="full"] #getInTouchBtn,
+  html.perf-mode-full #getInTouchBtn,
+  html[data-performance-mode="full"] .hero-pause-btn,
+  html.perf-mode-full .hero-pause-btn {
+    backdrop-filter: blur(8px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
+  }
+
+  html[data-performance-mode="full"] .announcement-bar,
+  html.perf-mode-full .announcement-bar {
+    backdrop-filter: blur(14px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(160%) !important;
+  }
+
+  html[data-performance-mode="full"] .news-card__category-badge,
+  html.perf-mode-full .news-card__category-badge {
+    backdrop-filter: blur(8px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(130%) !important;
+  }
+
+  html[data-performance-mode="full"] .cd-card,
+  html.perf-mode-full .cd-card {
+    backdrop-filter: blur(15px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+  }
+
   html[data-performance-mode="full"] .unified-action-dock,
   html.perf-mode-full .unified-action-dock {
     backdrop-filter: blur(12px) saturate(140%) !important;
