@@ -38,6 +38,8 @@ export const STORAGE_KEYS = {
     PERFORMANCE_PREFERENCE: 'sjccc-performance-preference',
     /** LocalStorage key for resolved runtime performance profile hint ('full' | 'balanced' | 'lite') */
     PERFORMANCE_PROFILE: 'sjccc-performance-profile',
+    /** LocalStorage key for remembered enquiry form name & email */
+    ENQUIRY_SAVED_DETAILS: 'sjccc-enquiry-saved-details',
 } as const;
 
 export type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];
