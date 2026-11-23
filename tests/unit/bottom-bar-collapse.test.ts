@@ -31,14 +31,17 @@ describe('Mobile Bottom Bar Collapse Behavior', () => {
             pretendToBeVisual: true
         });
 
-        (globalThis as any).window = dom.window;
-        (globalThis as any).document = dom.window.document;
-        (globalThis as any).HTMLElement = dom.window.HTMLElement;
-        (globalThis as any).MouseEvent = dom.window.MouseEvent;
-        (globalThis as any).requestAnimationFrame = (cb: FrameRequestCallback) => {
+        const syncRaf = (cb: FrameRequestCallback) => {
             cb(0);
             return 1;
         };
+        (dom.window as any).requestAnimationFrame = syncRaf;
+        (globalThis as any).window = dom.window;
+        (globalThis as any).document = dom.window.document;
+        (globalThis as any).HTMLElement = dom.window.HTMLElement;
+        (globalThis as any).Event = dom.window.Event;
+        (globalThis as any).MouseEvent = dom.window.MouseEvent;
+        (globalThis as any).requestAnimationFrame = syncRaf;
 
         headerEl = dom.window.document.getElementById('mainHeader')!;
         bottomBar = dom.window.document.getElementById('mobileBottomBar')!;
@@ -77,4 +80,61 @@ describe('Mobile Bottom Bar Collapse Behavior', () => {
         expect(dom.window.document.body.classList.contains('bottom-bar-collapsed')).toBe(false);
         expect(bottomBar.classList.contains('bottom-bar--hidden')).toBe(false);
     });
+
+    it('marks bottom-bar--collapsing on scroll down and bottom-bar--expanding on swipe up until width transitionend', () => {
+        Object.defineProperty(dom.window, 'scrollY', { value: 0, configurable: true, writable: true });
+        Object.defineProperty(dom.window, 'innerHeight', { value: 800, configurable: true, writable: true });
+        Object.defineProperty(dom.window.document.documentElement, 'scrollHeight', { value: 3000, configurable: true, writable: true });
+
+        // Simulate touch scroll down past threshold
+        dom.window.dispatchEvent(new dom.window.Event('touchstart'));
+        Object.defineProperty(dom.window, 'scrollY', { value: 220, configurable: true, writable: true });
+        dom.window.dispatchEvent(new dom.window.Event('scroll'));
+
+        expect(bottomBar.classList.contains('bottom-bar--hidden')).toBe(true);
+        expect(bottomBar.classList.contains('bottom-bar--collapsing')).toBe(true);
+
+        // Complete width transition
+        const collapseEndEvent = new dom.window.Event('transitionend') as TransitionEvent;
+        Object.defineProperty(collapseEndEvent, 'propertyName', { value: 'width' });
+        bottomBar.dispatchEvent(collapseEndEvent);
+        expect(bottomBar.classList.contains('bottom-bar--collapsing')).toBe(false);
+
+        // Swipe up by 10px (> UPWARD_THRESHOLD_PX)
+        dom.window.dispatchEvent(new dom.window.Event('touchstart'));
+        Object.defineProperty(dom.window, 'scrollY', { value: 210, configurable: true, writable: true });
+        dom.window.dispatchEvent(new dom.window.Event('scroll'));
+
+        expect(bottomBar.classList.contains('bottom-bar--hidden')).toBe(false);
+        expect(bottomBar.classList.contains('bottom-bar--expanding')).toBe(true);
+
+        const expandEndEvent = new dom.window.Event('transitionend') as TransitionEvent;
+        Object.defineProperty(expandEndEvent, 'propertyName', { value: 'width' });
+        bottomBar.dispatchEvent(expandEndEvent);
+        expect(bottomBar.classList.contains('bottom-bar--expanding')).toBe(false);
+    });
+
+    it('allows immediate swipe-up expansion when already near the bottom of the page', () => {
+        Object.defineProperty(dom.window, 'innerHeight', { value: 800, configurable: true, writable: true });
+        Object.defineProperty(dom.window.document.documentElement, 'scrollHeight', { value: 3000, configurable: true, writable: true });
+        // maxScroll is 2200
+        dom.window.dispatchEvent(new dom.window.Event('touchstart'));
+        Object.defineProperty(dom.window, 'scrollY', { value: 1800, configurable: true, writable: true });
+        dom.window.dispatchEvent(new dom.window.Event('scroll'));
+        expect(bottomBar.classList.contains('bottom-bar--hidden')).toBe(true);
+
+        // Reach document bottom (2198 >= maxScroll - 10)
+        Object.defineProperty(dom.window, 'scrollY', { value: 2198, configurable: true, writable: true });
+        dom.window.dispatchEvent(new dom.window.Event('scroll'));
+        expect(bottomBar.classList.contains('bottom-bar--hidden')).toBe(true);
+
+        // Swipe up cleanly inside the last 10px zone (2198 -> 2191, delta = -7px)
+        dom.window.dispatchEvent(new dom.window.Event('touchstart'));
+        Object.defineProperty(dom.window, 'scrollY', { value: 2191, configurable: true, writable: true });
+        dom.window.dispatchEvent(new dom.window.Event('scroll'));
+
+        expect(bottomBar.classList.contains('bottom-bar--hidden')).toBe(false);
+        expect(bottomBar.classList.contains('bottom-bar--expanding')).toBe(true);
+    });
 });
+

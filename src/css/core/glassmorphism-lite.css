@@ -201,27 +201,39 @@ body.dark-mode #mobileBottomBar.glassmorphism-lite {
 
 /* 1D. Explicit Unthrottled Protection for Full and Balanced Performance Modes */
 html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) #mobileBottomBar,
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .mobile-bottom-bar {
+  backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%) !important;
+}
+
 html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) #mobileBottomBar,
-html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .mobile-bottom-bar,
 html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .mobile-bottom-bar {
-  backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(var(--dock-blur, 22px)) saturate(200%) !important;
+  backdrop-filter: blur(var(--dock-blur, 10px)) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(var(--dock-blur, 10px)) saturate(120%) !important;
 }
 
 html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .unified-action-dock,
-html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .unified-action-dock,
 html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .sjccc-ai-fab,
-html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .sjccc-ai-fab,
-html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .enquiry-fab,
-html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .enquiry-fab {
-  backdrop-filter: blur(20px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(200%) !important;
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .enquiry-fab {
+  backdrop-filter: blur(14px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
 }
 
-html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .quick-actions-menu,
+html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .unified-action-dock,
+html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .sjccc-ai-fab,
+html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .enquiry-fab {
+  backdrop-filter: blur(10px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(120%) !important;
+}
+
+html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .quick-actions-menu {
+  backdrop-filter: blur(16px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(150%) !important;
+}
+
 html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .quick-actions-menu {
-  backdrop-filter: blur(24px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
+  backdrop-filter: blur(10px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(120%) !important;
 }
 
 /* ==========================================================================

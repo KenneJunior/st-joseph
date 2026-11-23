@@ -12,6 +12,9 @@
   align-items: center;
   background: transparent;
   isolation: isolate;
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   transition: all 0.3s ease;
   --blur-intensity: 3px;
 }

@@ -24,7 +24,7 @@ export class HeaderScroll {
 
     // Directional hysteresis thresholds
     public static readonly DOWNWARD_THRESHOLD_PX: number = 12;
-    public static readonly UPWARD_THRESHOLD_PX: number = 8;
+    public static readonly UPWARD_THRESHOLD_PX: number = 6;
     public static readonly TOP_PAGE_THRESHOLD_PX: number = 80;
 
     // Header scrolled class hysteresis thresholds (activating at 70px, deactivating at 50px)
@@ -35,6 +35,7 @@ export class HeaderScroll {
     public static readonly BLUR_RAMP_DISTANCE_PX: number = 150;
     public static readonly MIN_BLUR_PX: number = 3;
     public static readonly MAX_BLUR_PX: number = 8;
+    private static readonly DOCK_TRANSITION_FALLBACK_MS: number = 360;
 
     // Direction and pivot tracking for hysteresis
     private scrollPivotY: number = 0;
@@ -48,6 +49,7 @@ export class HeaderScroll {
     private cachedHeaderHeight: number = 0;
     private cachedBlurProgress: number = 0;
     private resizeObserver: ResizeObserver | null = null;
+    private dockTransitionTimer: number | null = null;
 
     constructor(
         private header: HTMLElement,
@@ -83,6 +85,10 @@ export class HeaderScroll {
         window.addEventListener('wheel', this.onWheel, { passive: true });
         window.addEventListener('keydown', this.onKeyDown, { passive: true });
 
+        if (this.bottomBar) {
+            this.bottomBar.addEventListener('transitionend', this.onBottomBarTransitionEnd);
+        }
+
         this.onScroll();
 
         // Guard anchor link clicks in bottom bar from triggering downward hide
@@ -98,6 +104,51 @@ export class HeaderScroll {
                 this.notifyProgrammaticScroll(1500);
             }
         });
+    }
+
+    private onBottomBarTransitionEnd = (e: TransitionEvent): void => {
+        if (!this.bottomBar || e.target !== this.bottomBar || e.propertyName !== 'width') return;
+        this.finishDockTransition();
+    };
+
+    private finishDockTransition(): void {
+        if (this.dockTransitionTimer !== null) {
+            window.clearTimeout(this.dockTransitionTimer);
+            this.dockTransitionTimer = null;
+        }
+        if (!this.bottomBar) return;
+
+        const wasExpanding = this.bottomBar.classList.contains('bottom-bar--expanding');
+        this.bottomBar.classList.remove('bottom-bar--expanding', 'bottom-bar--collapsing');
+
+        if (wasExpanding && !this.bottomBar.classList.contains('bottom-bar--hidden')) {
+            DockGlider.instance?.scheduleUpdate(true);
+        }
+    }
+
+    private beginDockTransition(expanding: boolean): void {
+        if (!this.bottomBar) return;
+        if (this.dockTransitionTimer !== null) {
+            window.clearTimeout(this.dockTransitionTimer);
+            this.dockTransitionTimer = null;
+        }
+
+        const prefersReduced = typeof window.matchMedia === 'function' &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduced) {
+            this.bottomBar.classList.remove('bottom-bar--expanding', 'bottom-bar--collapsing');
+            if (expanding) {
+                DockGlider.instance?.scheduleUpdate(true);
+            }
+            return;
+        }
+
+        this.bottomBar.classList.toggle('bottom-bar--expanding', expanding);
+        this.bottomBar.classList.toggle('bottom-bar--collapsing', !expanding);
+
+        this.dockTransitionTimer = window.setTimeout(() => {
+            this.finishDockTransition();
+        }, HeaderScroll.DOCK_TRANSITION_FALLBACK_MS);
     }
 
     private markUserGestureActive = (lingerMs: number = 800): void => {
@@ -131,13 +182,13 @@ export class HeaderScroll {
     };
 
     private onWheel = (): void => {
-        this.markUserGestureActive(450);
+        this.markUserGestureActive(850);
     };
 
     private onKeyDown = (e: KeyboardEvent): void => {
         const scrollKeys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Space', 'Home', 'End'];
         if (scrollKeys.includes(e.key) || scrollKeys.includes(e.code)) {
-            this.markUserGestureActive(600);
+            this.markUserGestureActive(700);
         }
     };
 
@@ -148,6 +199,10 @@ export class HeaderScroll {
         this.isProgrammaticScroll = true;
         this.isBottomBarHidden = false;
         this.currentDirection = 'none';
+        const wasHidden = Boolean(this.bottomBar?.classList.contains('bottom-bar--hidden'));
+        if (wasHidden) {
+            this.beginDockTransition(true);
+        }
         this.bottomBar?.classList.remove('bottom-bar--hidden');
         document.body.classList.remove('bottom-bar-hidden');
         document.body.classList.remove('bottom-bar-collapsed');
@@ -197,8 +252,9 @@ export class HeaderScroll {
                 // Focus, drawer, quick actions menu, AI modal, or programmatic scroll active: keep visible and update pivot
                 this.isBottomBarHidden = false;
                 this.scrollPivotY = currentScrollY;
-            } else if (currentScrollY >= maxScroll - 10) {
-                // Overscroll / bounce at document bottom: ignore downward trigger to prevent bounce jitter
+            } else if (currentScrollY >= maxScroll - 10 && delta >= 0) {
+                // Overscroll / bounce at document bottom: ignore downward trigger to prevent bounce jitter,
+                // while still allowing immediate upward swipes (delta < 0) to expand the bar
                 this.scrollPivotY = currentScrollY;
             } else if (this.isUserGesture) {
                 // ONLY evaluate hide/reveal transitions during active user scroll gestures
@@ -279,6 +335,9 @@ export class HeaderScroll {
                 // Mobile bottom bar visibility class & twin floating dock push coordination
                 if (this.bottomBar) {
                     const wasHidden = this.bottomBar.classList.contains('bottom-bar--hidden');
+                    if (wasHidden !== this.isBottomBarHidden) {
+                        this.beginDockTransition(!this.isBottomBarHidden);
+                    }
                     this.bottomBar.classList.toggle('bottom-bar--hidden', this.isBottomBarHidden);
                     document.body.classList.toggle('bottom-bar-hidden', this.isBottomBarHidden);
                     document.body.classList.toggle('bottom-bar-collapsed', this.isBottomBarHidden);
@@ -288,11 +347,6 @@ export class HeaderScroll {
                         this.bottomBar.setAttribute('aria-label', 'Mobile Navigation (Collapsed, tap or scroll up to expand)');
                     } else {
                         this.bottomBar.setAttribute('aria-label', 'Mobile Navigation');
-                        if (wasHidden) {
-                            window.requestAnimationFrame(() => {
-                                DockGlider.instance?.scheduleUpdate(true);
-                            });
-                        }
                     }
 
                     const assistanceDock = document.getElementById('unifiedAssistanceDock');
@@ -345,6 +399,14 @@ export class HeaderScroll {
         if (this.programmaticScrollTimer !== null) {
             window.clearTimeout(this.programmaticScrollTimer);
             this.programmaticScrollTimer = null;
+        }
+        if (this.dockTransitionTimer !== null) {
+            window.clearTimeout(this.dockTransitionTimer);
+            this.dockTransitionTimer = null;
+        }
+        if (this.bottomBar) {
+            this.bottomBar.removeEventListener('transitionend', this.onBottomBarTransitionEnd);
+            this.bottomBar.classList.remove('bottom-bar--expanding', 'bottom-bar--collapsing');
         }
         this.header?.style?.removeProperty?.('--header-blur-progress');
         this.header?.style?.removeProperty?.('--blur-intensity');

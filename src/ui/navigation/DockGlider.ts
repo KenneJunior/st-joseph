@@ -45,10 +45,25 @@ export class DockGlider {
         // Responsive dock resize observer (detects when media queries show/hide or resize the dock)
         if (typeof ResizeObserver !== 'undefined') {
             this.resizeObserver = new ResizeObserver(() => {
+                if (!this.isBarAvailable()) {
+                    if (this.glider) this.glider.style.opacity = '0';
+                    return;
+                }
                 this.scheduleUpdate(true);
             });
             this.resizeObserver.observe(this.bottomBar);
         }
+    }
+
+    private isBarAvailable(): boolean {
+        if (!this.bottomBar) return false;
+        return (
+            this.bottomBar.offsetWidth > 0 &&
+            this.bottomBar.offsetHeight > 0 &&
+            !this.bottomBar.classList.contains('bottom-bar--hidden') &&
+            !this.bottomBar.classList.contains('bottom-bar--expanding') &&
+            !this.bottomBar.classList.contains('bottom-bar--collapsing')
+        );
     }
 
     private ensureGlider(): void {
@@ -64,9 +79,7 @@ export class DockGlider {
     }
 
     private syncInitialState(): void {
-        if (!this.bottomBar) return;
-        const isVisible = this.bottomBar.offsetWidth > 0 && this.bottomBar.offsetHeight > 0;
-        if (!isVisible) {
+        if (!this.isBarAvailable()) {
             if (this.glider) this.glider.style.opacity = '0';
             return;
         }
@@ -90,12 +103,7 @@ export class DockGlider {
         }
         this.rafId = requestAnimationFrame(() => {
             this.rafId = null;
-            if (!this.bottomBar) return;
-
-            const isVisible = this.bottomBar.offsetWidth > 0 &&
-                this.bottomBar.offsetHeight > 0 &&
-                !this.bottomBar.classList.contains('bottom-bar--hidden');
-            if (!isVisible) {
+            if (!this.isBarAvailable()) {
                 if (this.glider) this.glider.style.opacity = '0';
                 return;
             }
@@ -117,10 +125,7 @@ export class DockGlider {
         this.ensureGlider();
         if (!this.glider) return;
 
-        const isVisible = this.bottomBar.offsetWidth > 0 &&
-            this.bottomBar.offsetHeight > 0 &&
-            !this.bottomBar.classList.contains('bottom-bar--hidden');
-        if (!isVisible) {
+        if (!this.isBarAvailable()) {
             this.glider.style.opacity = '0';
             return;
         }
@@ -140,10 +145,13 @@ export class DockGlider {
         const width = Math.round(itemRect.width);
 
         if (immediate || !this.hasInitialized) {
+            const wasHidden = this.glider.style.opacity === '0' || !this.hasInitialized;
             this.glider.style.transition = 'none';
             this.glider.style.transform = `translate3d(${x}px, 0, 0)`;
             this.glider.style.width = `${width}px`;
-            this.glider.style.opacity = '1';
+            if (!wasHidden) {
+                this.glider.style.opacity = '1';
+            }
             this.hasInitialized = true;
             this.currentTarget = active;
 
@@ -151,6 +159,9 @@ export class DockGlider {
                 requestAnimationFrame(() => {
                     if (this.glider) {
                         this.glider.style.transition = '';
+                        if (this.isBarAvailable()) {
+                            this.glider.style.opacity = '1';
+                        }
                     }
                 });
             });

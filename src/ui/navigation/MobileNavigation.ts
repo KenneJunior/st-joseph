@@ -81,9 +81,27 @@ export class MobileNavigation {
         this.bottomMenuToggle?.addEventListener('click', (e: MouseEvent) => {
             e.stopPropagation();
             if (this.bottomBar?.classList.contains('bottom-bar--hidden')) {
-                this.bottomBar.classList.remove('bottom-bar--hidden');
-                document.body.classList.remove('bottom-bar-collapsed');
-                document.body.classList.remove('bottom-bar-hidden');
+                const prefersReduced = typeof window.matchMedia === 'function' &&
+                    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (!prefersReduced) {
+                    this.bottomBar.classList.add('bottom-bar--expanding');
+                    window.setTimeout(() => {
+                        this.bottomBar?.classList.remove('bottom-bar--expanding', 'bottom-bar--collapsing');
+                    }, 360);
+                }
+                this.bottomBar.classList.remove('bottom-bar--hidden', 'bottom-bar--collapsing');
+                document.body.classList.remove('bottom-bar-collapsed', 'bottom-bar-hidden');
+                document.documentElement.classList.remove('bottom-bar-hidden');
+                const assistanceDock = document.getElementById('unifiedAssistanceDock');
+                if (assistanceDock) {
+                    assistanceDock.classList.remove('dock-retracted');
+                    assistanceDock.classList.add('dock-pushed');
+                }
+                const quickMenu = document.getElementById('quickActionsMenu');
+                if (quickMenu) {
+                    quickMenu.classList.remove('dock-retracted');
+                    quickMenu.classList.add('dock-pushed');
+                }
             }
             this.toggleMenu();
         });
@@ -103,8 +121,28 @@ export class MobileNavigation {
         this.updatePillScale();
         window.addEventListener('resize', () => this.updatePillScale(), { passive: true });
         window.addEventListener('orientationchange', () => this.updatePillScale(), { passive: true });
+        if (this.bottomBar) {
+            this.bottomBar.addEventListener('transitionend', (e: TransitionEvent) => {
+                if (e.target === this.bottomBar && e.propertyName === 'width') {
+                    this.bottomBar?.classList.remove('bottom-bar--expanding', 'bottom-bar--collapsing');
+                    requestAnimationFrame(() => {
+                        this.updatePillScale();
+                        this.dockGlider?.scheduleUpdate(true);
+                    });
+                }
+            });
+        }
         if (typeof ResizeObserver !== 'undefined' && this.bottomBar) {
-            const ro = new ResizeObserver(() => this.updatePillScale());
+            const ro = new ResizeObserver(() => {
+                if (
+                    this.bottomBar?.classList.contains('bottom-bar--hidden') ||
+                    this.bottomBar?.classList.contains('bottom-bar--expanding') ||
+                    this.bottomBar?.classList.contains('bottom-bar--collapsing')
+                ) {
+                    return;
+                }
+                this.updatePillScale();
+            });
             ro.observe(this.bottomBar);
         }
     }
@@ -116,7 +154,14 @@ export class MobileNavigation {
      * Minimum 4 sections (Home, Academics, Map, Location), scaling to 5, 6, or 7.
      */
     public updatePillScale(): void {
-        if (!this.bottomBar || this.bottomBar.classList.contains('bottom-bar--hidden')) return;
+        if (
+            !this.bottomBar ||
+            this.bottomBar.classList.contains('bottom-bar--hidden') ||
+            this.bottomBar.classList.contains('bottom-bar--expanding') ||
+            this.bottomBar.classList.contains('bottom-bar--collapsing')
+        ) {
+            return;
+        }
         const width = this.bottomBar.getBoundingClientRect().width || this.bottomBar.offsetWidth;
         if (width <= 60) return;
 

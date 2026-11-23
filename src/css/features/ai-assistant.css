@@ -1595,8 +1595,8 @@ html.dark-mode .sjccc-ai-footer__hint {
     box-shadow: 0 4px 16px rgba(7, 24, 46, 0.16),
                 0 0 12px rgba(201, 162, 41, 0.12),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    transition: bottom 440ms cubic-bezier(0.18, 1.25, 0.35, 1),
-                transform 440ms cubic-bezier(0.18, 1.25, 0.35, 1),
+    transition: bottom 320ms cubic-bezier(0.22, 1, 0.36, 1),
+                transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
                 box-shadow var(--duration-fast, 200ms) var(--ease-standard, ease);
   }
 
@@ -1625,7 +1625,7 @@ html.dark-mode .sjccc-ai-footer__hint {
     -webkit-backdrop-filter: blur(10px) saturate(130%);
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
-    transition: bottom 440ms cubic-bezier(0.18, 1.25, 0.35, 1);
+    transition: bottom 320ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   body.bottom-bar-hidden .sjccc-ai-fab,
