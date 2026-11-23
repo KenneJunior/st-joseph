@@ -177,3 +177,122 @@ body.dark-mode .form-group input#whatsappRoutingToggle:checked {
   outline: none;
   box-shadow: 0 0 0 3px var(--color-status-success-soft, rgba(37, 211, 102, 0.35));
 }
+
+/* Remember My Details Checkbox */
+.form-group.form-remember {
+  margin: 4px 0 12px 0;
+  padding: 2px 2px;
+}
+
+.form-group .remember-label {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  margin-bottom: 0;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text-body);
+}
+
+.form-group input#rememberDetailsToggle {
+  position: absolute;
+  opacity: 0;
+  width: 0 !important;
+  height: 0;
+  margin: 0;
+  padding: 0 !important;
+  pointer-events: none;
+}
+
+.remember-checkbox-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid rgba(7, 24, 46, 0.30);
+  background: var(--bg-white, #ffffff);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 180ms ease,
+              border-color 180ms ease,
+              transform 180ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)),
+              box-shadow 180ms ease;
+}
+
+.remember-checkbox-box svg {
+  width: 12px;
+  height: 12px;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 140ms ease, transform 180ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+
+body.dark-mode .remember-checkbox-box {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.form-group input#rememberDetailsToggle:checked + .remember-checkbox-box {
+  background: var(--sj-gold-500, #c9a229);
+  border-color: var(--sj-gold-500, #c9a229);
+  color: #07182e;
+  transform: scale(1.03);
+}
+
+.form-group input#rememberDetailsToggle:checked + .remember-checkbox-box svg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.form-group input#rememberDetailsToggle:focus-visible + .remember-checkbox-box {
+  outline: 2px solid var(--sj-gold-500, #c9a229);
+  outline-offset: 2px;
+}
+
+.remember-text {
+  line-height: 1.35;
+  color: var(--text-body);
+}
+
+body.dark-mode .remember-text {
+  color: rgba(226, 232, 240, 0.88);
+}
+
+.remember-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.form-group .remember-label:hover .remember-text {
+  color: var(--text-dark);
+}
+
+body.dark-mode .form-group .remember-label:hover .remember-text {
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .form-group.form-remember {
+    margin: 2px 0 10px 0;
+  }
+
+  .form-group .remember-label {
+    font-size: 0.78rem;
+    gap: 8px;
+  }
+
+  .remember-hint {
+    font-size: 0.72rem;
+  }
+
+  .form-group.form-toggle {
+    margin: 10px 0 14px 0;
+    padding: 10px 12px;
+  }
+}

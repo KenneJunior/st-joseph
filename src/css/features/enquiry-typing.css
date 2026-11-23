@@ -256,7 +256,7 @@ body.dark-mode .message-field-wrapper .char-count.near-limit {
 .form-group.form-group--floating {
   position: relative;
   margin-top: 6px;
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
 
 .form-group.form-group--floating .field-wrapper input,
@@ -274,12 +274,20 @@ body.dark-mode .message-field-wrapper .char-count.near-limit {
 
 .form-group.form-group--floating .field-wrapper input {
   min-height: 50px;
-  padding: 14px 40px 12px 14px;
+  padding: 14px 44px 12px 14px;
 }
 
 .form-group.form-group--floating .message-field-wrapper textarea {
   min-height: 98px;
-  padding: 15px 40px 28px 14px;
+  padding: 15px 44px 28px 14px;
+}
+
+/* Extra right clearance when both typing indicator and validation icon are active */
+.form-group.form-group--floating.is-focused.is-valid .field-wrapper input,
+.form-group.form-group--floating.is-focused.is-invalid .field-wrapper input,
+.form-group.form-group--floating.is-focused.is-valid .message-field-wrapper textarea,
+.form-group.form-group--floating.is-focused.is-invalid .message-field-wrapper textarea {
+  padding-right: 64px;
 }
 
 body.dark-mode .form-group.form-group--floating .field-wrapper input,
@@ -419,24 +427,401 @@ body.dark-mode .form-group.form-group--floating.is-focused label {
   color: var(--sj-gold-300, #f3d779);
 }
 
+/* ============================================
+   REAL-TIME VALIDATION STATES, ICONS & POPOVER TOOLTIPS
+   ============================================ */
+.form-group.form-group--floating.is-valid .field-wrapper input,
+.form-group.form-group--floating.is-valid .message-field-wrapper textarea {
+  border-color: #1f7a44;
+}
+
+.form-group.form-group--floating.is-valid .field-wrapper input:focus,
+.form-group.form-group--floating.is-valid .message-field-wrapper textarea:focus {
+  border-color: #1f7a44;
+  box-shadow: 0 0 0 1px #1f7a44,
+              0 0 0 4px rgba(31, 122, 68, 0.16);
+}
+
+.form-group.form-group--floating.is-valid label {
+  color: #1f7a44 !important;
+}
+
+body.dark-mode .form-group.form-group--floating.is-valid .field-wrapper input,
+body.dark-mode .form-group.form-group--floating.is-valid .message-field-wrapper textarea {
+  border-color: #4ade80;
+}
+
+body.dark-mode .form-group.form-group--floating.is-valid .field-wrapper input:focus,
+body.dark-mode .form-group.form-group--floating.is-valid .message-field-wrapper textarea:focus {
+  border-color: #4ade80;
+  box-shadow: 0 0 0 1px #4ade80,
+              0 0 0 4px rgba(74, 222, 128, 0.18);
+}
+
+body.dark-mode .form-group.form-group--floating.is-valid label {
+  color: #6ee7b7 !important;
+}
+
+.form-group.form-group--floating.is-invalid .field-wrapper input,
+.form-group.form-group--floating.is-invalid .message-field-wrapper textarea {
+  border-color: #c62828;
+}
+
+.form-group.form-group--floating.is-invalid .field-wrapper input:focus,
+.form-group.form-group--floating.is-invalid .message-field-wrapper textarea:focus {
+  border-color: #c62828;
+  box-shadow: 0 0 0 1px #c62828,
+              0 0 0 4px rgba(198, 40, 40, 0.16);
+}
+
+.form-group.form-group--floating.is-invalid label {
+  color: #c62828 !important;
+}
+
+body.dark-mode .form-group.form-group--floating.is-invalid .field-wrapper input,
+body.dark-mode .form-group.form-group--floating.is-invalid .message-field-wrapper textarea {
+  border-color: #f87171;
+}
+
+body.dark-mode .form-group.form-group--floating.is-invalid .field-wrapper input:focus,
+body.dark-mode .form-group.form-group--floating.is-invalid .message-field-wrapper textarea:focus {
+  border-color: #f87171;
+  box-shadow: 0 0 0 1px #f87171,
+              0 0 0 4px rgba(248, 113, 113, 0.20);
+}
+
+body.dark-mode .form-group.form-group--floating.is-invalid label {
+  color: #fca5a5 !important;
+}
+
+/* Inline Field Validation Icons (Checkmark & Exclamation) */
+.field-validation-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%) scale(0.75);
+  width: 19px;
+  height: 19px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+  transition: opacity 180ms ease,
+              transform 220ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)),
+              color 180ms ease;
+}
+
+.message-field-wrapper .field-validation-icon {
+  top: 14px;
+  transform: scale(0.75);
+}
+
+.field-validation-icon svg {
+  width: 100%;
+  height: 100%;
+  display: none;
+  transform-origin: center center;
+}
+
+@keyframes validationIconPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.42);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.22);
+  }
+  80% {
+    transform: scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.form-group.is-valid .field-validation-icon {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+  color: #1f7a44;
+}
+
+.form-group.is-valid .message-field-wrapper .field-validation-icon {
+  transform: scale(1);
+}
+
+.form-group.is-valid .field-validation-icon .validation-icon-valid {
+  display: block;
+  animation: validationIconPop 340ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+body.dark-mode .form-group.is-valid .field-validation-icon {
+  color: #4ade80;
+}
+
+.form-group.is-invalid .field-validation-icon {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+  color: #c62828;
+}
+
+.form-group.is-invalid .message-field-wrapper .field-validation-icon {
+  transform: scale(1);
+}
+
+.form-group.is-invalid .field-validation-icon .validation-icon-invalid {
+  display: block;
+  animation: validationIconPop 340ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+body.dark-mode .form-group.is-invalid .field-validation-icon {
+  color: #f87171;
+}
+
+/* Browser Autofill Cohesion & Detection Hook */
+@keyframes sjcccAutofillStart {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.form-group.form-group--floating .field-wrapper input:-webkit-autofill,
+.form-group.form-group--floating .field-wrapper input:-webkit-autofill:hover,
+.form-group.form-group--floating .field-wrapper input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-white, #F4F1EA) inset;
+  -webkit-text-fill-color: var(--text-dark, #1a1a2e);
+  caret-color: var(--color-brand-accent, #c9a229);
+  animation-name: sjcccAutofillStart;
+  animation-duration: 1ms;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+body.dark-mode .form-group.form-group--floating .field-wrapper input:-webkit-autofill,
+body.dark-mode .form-group.form-group--floating .field-wrapper input:-webkit-autofill:hover,
+body.dark-mode .form-group.form-group--floating .field-wrapper input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-white, #0E1828) inset;
+  -webkit-text-fill-color: var(--text-dark, #e0e0f0);
+}
+
+/* Shift typing indicator left when validation icon is active so they never collide */
+.form-group.is-valid .field-wrapper .typing-indicator,
+.form-group.is-invalid .field-wrapper .typing-indicator {
+  right: 38px;
+}
+
+.form-group.is-valid .message-field-wrapper .typing-indicator,
+.form-group.is-invalid .message-field-wrapper .typing-indicator {
+  top: 21px;
+  right: 38px;
+}
+
+/* Compact Popover Tooltips on Focus or Error */
+.field-popover-tooltip {
+  position: absolute;
+  bottom: calc(100% + 7px);
+  right: 0;
+  max-width: min(300px, calc(100% - 12px));
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+  z-index: 25;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px) scale(0.97);
+  transform-origin: bottom right;
+  box-shadow: 0 8px 20px -4px rgba(2, 12, 26, 0.28);
+  transition: opacity 160ms ease,
+              transform 180ms cubic-bezier(0.2, 0, 0, 1),
+              visibility 160ms ease,
+              background-color 180ms ease,
+              border-color 180ms ease;
+}
+
+.form-group.is-focused .field-popover-tooltip {
+  z-index: 35;
+}
+
+.field-popover-tooltip.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.field-popover-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 16px;
+  width: 8px;
+  height: 8px;
+  transform: translateY(-50%) rotate(45deg);
+  border-right: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+
+.field-popover-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.field-popover-text {
+  color: inherit;
+}
+
+/* Tooltip Semantic Variants */
+.field-popover-tooltip[data-state="info"] {
+  background: var(--sj-navy-900, #07182e);
+  color: #ffffff;
+  border: 1px solid rgba(201, 162, 41, 0.55);
+}
+
+.field-popover-tooltip[data-state="info"]::after {
+  background: var(--sj-navy-900, #07182e);
+  border-right-color: rgba(201, 162, 41, 0.55);
+  border-bottom-color: rgba(201, 162, 41, 0.55);
+}
+
+.field-popover-tooltip[data-state="info"] .field-popover-dot {
+  background: var(--sj-gold-300, #f3d779);
+}
+
+body.dark-mode .field-popover-tooltip[data-state="info"] {
+  background: #1d3250;
+  color: #f8fafc;
+  border-color: rgba(243, 215, 121, 0.48);
+}
+
+body.dark-mode .field-popover-tooltip[data-state="info"]::after {
+  background: #1d3250;
+  border-right-color: rgba(243, 215, 121, 0.48);
+  border-bottom-color: rgba(243, 215, 121, 0.48);
+}
+
+.field-popover-tooltip[data-state="error"] {
+  background: #991b1b;
+  color: #ffffff;
+  border: 1px solid #dc2626;
+}
+
+.field-popover-tooltip[data-state="error"]::after {
+  background: #991b1b;
+  border-right-color: #dc2626;
+  border-bottom-color: #dc2626;
+}
+
+.field-popover-tooltip[data-state="error"] .field-popover-dot {
+  background: #fecaca;
+}
+
+body.dark-mode .field-popover-tooltip[data-state="error"] {
+  background: #7f1d1d;
+  color: #fef2f2;
+  border-color: rgba(248, 113, 113, 0.65);
+}
+
+body.dark-mode .field-popover-tooltip[data-state="error"]::after {
+  background: #7f1d1d;
+  border-right-color: rgba(248, 113, 113, 0.65);
+  border-bottom-color: rgba(248, 113, 113, 0.65);
+}
+
+.field-popover-tooltip[data-state="valid"] {
+  background: #14532d;
+  color: #ffffff;
+  border: 1px solid #16a34a;
+}
+
+.field-popover-tooltip[data-state="valid"]::after {
+  background: #14532d;
+  border-right-color: #16a34a;
+  border-bottom-color: #16a34a;
+}
+
+.field-popover-tooltip[data-state="valid"] .field-popover-dot {
+  background: #86efac;
+}
+
+body.dark-mode .field-popover-tooltip[data-state="valid"] {
+  background: #064e3b;
+  color: #ecfdf5;
+  border-color: rgba(74, 222, 128, 0.55);
+}
+
+body.dark-mode .field-popover-tooltip[data-state="valid"]::after {
+  background: #064e3b;
+  border-right-color: rgba(74, 222, 128, 0.55);
+  border-bottom-color: rgba(74, 222, 128, 0.55);
+}
+
 @media (max-width: 768px) {
   .form-group.form-group--floating {
     margin-top: 5px;
-    margin-bottom: 14px;
+    margin-bottom: 18px;
   }
 
   .form-group.form-group--floating .field-wrapper input {
     min-height: 44px;
-    padding: 12px 34px 10px 12px;
+    padding: 12px 36px 10px 12px;
     font-size: 0.86rem;
     border-radius: 8px;
   }
 
   .form-group.form-group--floating .message-field-wrapper textarea {
     min-height: 82px;
-    padding: 13px 34px 24px 12px;
+    padding: 13px 36px 24px 12px;
     font-size: 0.86rem;
     border-radius: 8px;
+  }
+
+  .form-group.form-group--floating.is-focused.is-valid .field-wrapper input,
+  .form-group.form-group--floating.is-focused.is-invalid .field-wrapper input,
+  .form-group.form-group--floating.is-focused.is-valid .message-field-wrapper textarea,
+  .form-group.form-group--floating.is-focused.is-invalid .message-field-wrapper textarea {
+    padding-right: 54px;
+  }
+
+  .field-validation-icon {
+    right: 10px;
+    width: 17px;
+    height: 17px;
+  }
+
+  .message-field-wrapper .field-validation-icon {
+    top: 12px;
+  }
+
+  .form-group.is-valid .field-wrapper .typing-indicator,
+  .form-group.is-invalid .field-wrapper .typing-indicator {
+    right: 32px;
+  }
+
+  .form-group.is-valid .message-field-wrapper .typing-indicator,
+  .form-group.is-invalid .message-field-wrapper .typing-indicator {
+    top: 18px;
+    right: 32px;
+  }
+
+  .field-popover-tooltip {
+    font-size: 0.69rem;
+    padding: 5px 8px;
+    max-width: min(260px, calc(100% - 8px));
+    bottom: calc(100% + 6px);
   }
 
   .form-group.form-group--floating label {
@@ -464,14 +849,30 @@ body.dark-mode .form-group.form-group--floating.is-focused label {
 @media (max-width: 360px) {
   .form-group.form-group--floating .field-wrapper input {
     min-height: 42px;
-    padding: 11px 30px 9px 10px;
+    padding: 11px 32px 9px 10px;
     font-size: 0.82rem;
   }
 
   .form-group.form-group--floating .message-field-wrapper textarea {
     min-height: 76px;
-    padding: 12px 30px 22px 10px;
+    padding: 12px 32px 22px 10px;
     font-size: 0.82rem;
+  }
+
+  .field-validation-icon {
+    right: 8px;
+    width: 15px;
+    height: 15px;
+  }
+
+  .form-group.is-valid .field-wrapper .typing-indicator,
+  .form-group.is-invalid .field-wrapper .typing-indicator {
+    right: 28px;
+  }
+
+  .form-group.is-valid .message-field-wrapper .typing-indicator,
+  .form-group.is-invalid .message-field-wrapper .typing-indicator {
+    right: 28px;
   }
 
   .form-group.form-group--floating label {
@@ -488,7 +889,9 @@ body.dark-mode .form-group.form-group--floating.is-focused label {
    ACCESSIBILITY: PREFERS-REDUCED-MOTION
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
-  .typing-dot {
+  .typing-dot,
+  .form-group.is-valid .field-validation-icon .validation-icon-valid,
+  .form-group.is-invalid .field-validation-icon .validation-icon-invalid {
     animation: none !important;
   }
 
@@ -496,7 +899,9 @@ body.dark-mode .form-group.form-group--floating.is-focused label {
   .form-group.form-group--floating .message-field-wrapper textarea,
   .form-group.form-group--floating label,
   .form-group.form-group--floating input::placeholder,
-  .form-group.form-group--floating textarea::placeholder {
+  .form-group.form-group--floating textarea::placeholder,
+  .field-validation-icon,
+  .field-popover-tooltip {
     transition: none !important;
   }
 }
