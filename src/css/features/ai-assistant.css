@@ -78,6 +78,7 @@
   --ai-send-btn-disabled-color: #9CA3AF;
 
   --ai-dock-bg: rgba(255, 255, 255, 0.52);
+  --ai-dock-bg-solid: #ffffff;
   --ai-dock-border: rgba(201, 162, 41, 0.38);
   --ai-dock-shadow: 0 8px 26px -4px rgba(10, 31, 63, 0.12), 0 0 16px rgba(201, 162, 41, 0.12);
   --ai-dock-text-ai: #8C6A21;
@@ -157,6 +158,7 @@ body.dark-mode {
 
   --ai-dock-bg: radial-gradient(circle at top left, rgba(201, 162, 41, 0.20) 0%, transparent 80%),
                 linear-gradient(135deg, rgba(7, 24, 46, 0.48) 10%, rgba(10, 31, 63, 0.50) 100%);
+  --ai-dock-bg-solid: #07182e;
   --ai-dock-border: rgba(201, 162, 41, 0.50);
   --ai-dock-shadow: 0 10px 32px -4px rgba(2, 12, 26, 0.70), 0 0 24px rgba(201, 162, 41, 0.28);
   --ai-dock-text-ai: #F3D779;
@@ -195,10 +197,9 @@ body.dark-mode {
   padding: 4px 6px;
   box-shadow: var(--ai-dock-shadow),
               inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(20px) saturate(200%);
-  -webkit-backdrop-filter: blur(20px) saturate(200%);
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
+  overflow: hidden;
   contain: layout paint;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -209,6 +210,25 @@ body.dark-mode {
               box-shadow var(--duration-fast, 200ms) var(--ease-standard, ease),
               border-color var(--duration-fast, 200ms) ease,
               background var(--duration-normal, 350ms) ease;
+}
+
+/* Solid Color Fallback: reduced transparency or LiquidGlass fallback */
+@media (prefers-reduced-transparency: reduce) {
+  #unifiedAssistanceDock,
+  .unified-action-dock {
+    background: var(--ai-dock-bg-solid, #ffffff) !important;
+  }
+}
+
+.no-liquid-glass #unifiedAssistanceDock,
+.no-liquid-glass .unified-action-dock,
+.no-backdrop-filter #unifiedAssistanceDock,
+.no-backdrop-filter .unified-action-dock,
+#unifiedAssistanceDock.glass-fallback,
+#unifiedAssistanceDock[data-glass-fallback="true"],
+.unified-action-dock.glass-fallback,
+.unified-action-dock[data-glass-fallback="true"] {
+  background: var(--ai-dock-bg-solid, #ffffff) !important;
 }
 
 @keyframes appleDockSpringEntrance {

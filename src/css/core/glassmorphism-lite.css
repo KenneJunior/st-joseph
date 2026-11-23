@@ -124,16 +124,21 @@ body.dark-mode .stat-card[data-backdrop-blur="throttled"] {
 
 /* 1C. Floating Buttons & Dock Pill Fallback (Light: rgba(255, 255, 255, 0.65), Dark: rgba(7, 24, 46, 0.65)) */
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  .unified-action-dock,
   .sjccc-ai-fab,
-  .enquiry-fab,
-  #mobileBottomBar,
-  .mobile-bottom-bar {
+  .enquiry-fab {
     background: rgba(255, 255, 255, 0.65) !important;
     border: 1px solid rgba(201, 162, 41, 0.40) !important;
     box-shadow: 0 10px 32px -4px rgba(7, 24, 46, 0.18), 0 0 14px rgba(201, 162, 41, 0.12) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+  }
+
+  .unified-action-dock,
+  #mobileBottomBar,
+  .mobile-bottom-bar {
+    background: rgba(255, 255, 255, 0.65) !important;
+    border: 1px solid rgba(201, 162, 41, 0.40) !important;
+    box-shadow: 0 10px 32px -4px rgba(7, 24, 46, 0.18), 0 0 14px rgba(201, 162, 41, 0.12) !important;
   }
 
   body.dark-mode .unified-action-dock,
@@ -152,30 +157,35 @@ body.dark-mode .stat-card[data-backdrop-blur="throttled"] {
   }
 }
 
-html[data-backdrop-blur="throttled"] .unified-action-dock,
 html[data-backdrop-blur="throttled"] .sjccc-ai-fab,
 html[data-backdrop-blur="throttled"] .enquiry-fab,
-html[data-backdrop-blur="throttled"] #mobileBottomBar,
-html[data-backdrop-blur="throttled"] .mobile-bottom-bar,
-html.blur-throttled .unified-action-dock,
 html.blur-throttled .sjccc-ai-fab,
 html.blur-throttled .enquiry-fab,
-html.blur-throttled #mobileBottomBar,
-html.blur-throttled .mobile-bottom-bar,
-html.glassmorphism-lite .unified-action-dock,
 html.glassmorphism-lite .sjccc-ai-fab,
 html.glassmorphism-lite .enquiry-fab,
-html.glassmorphism-lite #mobileBottomBar,
-html.glassmorphism-lite .mobile-bottom-bar,
-.unified-action-dock.glassmorphism-lite,
-.enquiry-fab.glassmorphism-lite,
-#mobileBottomBar.glassmorphism-lite,
-.mobile-bottom-bar.glassmorphism-lite {
+.enquiry-fab.glassmorphism-lite {
   background: rgba(255, 255, 255, 0.65) !important;
   border: 1px solid rgba(201, 162, 41, 0.40) !important;
   box-shadow: 0 10px 32px -4px rgba(7, 24, 46, 0.18), 0 0 14px rgba(201, 162, 41, 0.12) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+}
+
+html[data-backdrop-blur="throttled"] .unified-action-dock,
+html[data-backdrop-blur="throttled"] #mobileBottomBar,
+html[data-backdrop-blur="throttled"] .mobile-bottom-bar,
+html.blur-throttled .unified-action-dock,
+html.blur-throttled #mobileBottomBar,
+html.blur-throttled .mobile-bottom-bar,
+html.glassmorphism-lite .unified-action-dock,
+html.glassmorphism-lite #mobileBottomBar,
+html.glassmorphism-lite .mobile-bottom-bar,
+.unified-action-dock.glassmorphism-lite,
+#mobileBottomBar.glassmorphism-lite,
+.mobile-bottom-bar.glassmorphism-lite {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(201, 162, 41, 0.40) !important;
+  box-shadow: 0 10px 32px -4px rgba(7, 24, 46, 0.18), 0 0 14px rgba(201, 162, 41, 0.12) !important;
 }
 
 html[data-backdrop-blur="throttled"].dark-mode .unified-action-dock,
@@ -200,26 +210,12 @@ body.dark-mode #mobileBottomBar.glassmorphism-lite {
 }
 
 /* 1D. Explicit Unthrottled Protection for Full and Balanced Performance Modes */
-html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) #mobileBottomBar,
-html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .mobile-bottom-bar {
-  backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(var(--dock-blur, 14px)) saturate(140%) !important;
-}
-
-html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) #mobileBottomBar,
-html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .mobile-bottom-bar {
-  backdrop-filter: blur(var(--dock-blur, 10px)) saturate(120%) !important;
-  -webkit-backdrop-filter: blur(var(--dock-blur, 10px)) saturate(120%) !important;
-}
-
-html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .unified-action-dock,
 html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .sjccc-ai-fab,
 html[data-performance-mode="full"]:not(.perf-mode-lite):not(.lite-mode) .enquiry-fab {
   backdrop-filter: blur(14px) saturate(140%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
 }
 
-html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .unified-action-dock,
 html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .sjccc-ai-fab,
 html[data-performance-mode="balanced"]:not(.perf-mode-lite):not(.lite-mode) .enquiry-fab {
   backdrop-filter: blur(10px) saturate(120%) !important;
