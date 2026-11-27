@@ -12,7 +12,7 @@
 // 1. Constants
 // ---------------------------------------------------------------------------
 
-const CACHE_VERSION = "v1.1";
+const CACHE_VERSION = "v2.0";
 const STATIC_CACHE   = `stjoseph-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE  = `stjoseph-dynamic-${CACHE_VERSION}`;   // fixed typo: "gradutation"
 const CSS_JS_CACHE   = `stjoseph-css_js-${CACHE_VERSION}`;
