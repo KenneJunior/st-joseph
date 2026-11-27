@@ -51,7 +51,18 @@ export const POPUP_SELECTORS = [
     '#sw-update-banner',
     '#offlineStatusIndicator',
     '.offline-status-indicator',
+    '#readingProgressBadge',
 ];
+
+const READING_PROGRESS_GLASS_CONFIG: LiquidGlassAdapterConfig = {
+    glassThickness: 36,
+    bezelWidth: 7,
+    refractionScale: 0.92,
+    specularAlpha: 0.38,
+    maxTilt: 0,
+    enableOrb: false,
+    backdropBlur: 0,
+};
 
 export const DOCK_SELECTORS = [
     '#mobileBottomBar',
@@ -339,11 +350,11 @@ export class LiquidGlassAdapter {
                             const el = node as HTMLElement;
                             for (const selector of POPUP_SELECTORS) {
                                 if (typeof el.matches === 'function' && el.matches(selector)) {
-                                    this.enhancePopup(el);
+                                    this.enhancePopupSurface(el);
                                 }
                                 if (typeof el.querySelectorAll === 'function') {
                                     const nested = el.querySelectorAll<HTMLElement>(selector);
-                                    nested.forEach((match) => this.enhancePopup(match));
+                                    nested.forEach((match) => this.enhancePopupSurface(match));
                                 }
                             }
                         }
@@ -366,8 +377,17 @@ export class LiquidGlassAdapter {
     private enhanceExistingPopups(): void {
         for (const selector of POPUP_SELECTORS) {
             const matches = document.querySelectorAll<HTMLElement>(selector);
-            matches.forEach((el) => this.enhancePopup(el));
+            matches.forEach((el) => this.enhancePopupSurface(el));
         }
+    }
+
+    private enhancePopupSurface(target: HTMLElement): void {
+        if (target.matches('#readingProgressBadge')) {
+            this.enhancePopup(target, READING_PROGRESS_GLASS_CONFIG);
+            return;
+        }
+
+        this.enhancePopup(target);
     }
 
     /**
