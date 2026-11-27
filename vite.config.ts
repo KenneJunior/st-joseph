@@ -75,7 +75,7 @@ export default defineConfig(({ mode }) => {
             target: 'esnext',
             manifest: true,
             cssTarget: ['chrome100', 'safari15', 'firefox100'],
-            cssMinify: "esbuild",
+            cssMinify: "false",
             copyPublicDir: true,
             rolldownOptions: {
                 input: {
