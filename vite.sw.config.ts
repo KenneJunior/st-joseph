@@ -40,13 +40,13 @@ export default defineConfig(() => {
             minify: true,
             lib: {
                 entry: resolve(rootDir, 'src/sw.ts'),
-                formats: ['iife'],
+                formats: ['iife' as const],
                 name: 'SJCCCServiceWorker',
                 fileName: () => 'sw.js',
             },
-            rollupOptions: {
+            rolldownOptions: {
                 output: {
-                    inlineDynamicImports: true,
+                    codeSplitting: false,
                     entryFileNames: 'sw.js',
                 },
             },

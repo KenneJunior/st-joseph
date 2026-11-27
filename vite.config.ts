@@ -74,13 +74,36 @@ export default defineConfig(({ mode }) => {
             emptyOutDir: true,
             target: 'esnext',
             manifest: true,
-            cssMinify: true,
+            cssTarget: ['chrome100', 'safari15', 'firefox100'],
+            cssMinify: "esbuild",
             copyPublicDir: true,
-            rollupOptions: {
+            rolldownOptions: {
                 input: {
                     main: resolve(rootDir, 'index.html'),
                     prospectus: resolve(rootDir, 'prospectus.html')
-                }
+                },
+                output: {
+                    codeSplitting: {
+                        minSize: 20000,
+                        groups: [
+                            {
+                                name: 'vendor',
+                                test: /node_modules/,
+                                priority: 20,
+                            },
+                            {
+                                name: 'calendar',
+                                test: /src[\\/]features[\\/]calendar[\\/]/,
+                                priority: 15,
+                            },
+                            {
+                                name: 'campus',
+                                test: /src[\\/]features[\\/](campus|carousel)[\\/]/,
+                                priority: 10,
+                            },
+                        ],
+                    },
+                },
             }
         }
     };
