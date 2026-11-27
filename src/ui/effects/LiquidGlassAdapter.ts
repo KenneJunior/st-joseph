@@ -17,8 +17,10 @@
  * ============================================================================
  */
 
-import {LiquidGlass,type LiquidGlassOptions} from '@kennejunior/liquidglass';
+import { LiquidGlass } from '@kennejunior/liquidglass';
 import { performanceManager } from '../../core/performance/PerformanceManager.ts';
+
+type LiquidGlassOptions = NonNullable<Parameters<typeof LiquidGlass.init>[1]>;
 
 export interface LiquidGlassAdapterConfig extends Partial<LiquidGlassOptions> {
     /** Refractive index for optical bending (defaults to 1.45 - 1.6) */
@@ -33,6 +35,8 @@ export interface LiquidGlassAdapterConfig extends Partial<LiquidGlassOptions> {
     specularAlpha?: number;
     /** Maximum tilt angle in degrees on pointer hover */
     maxTilt?: number;
+    /** Maximum distance in pixels the element will move towards the cursor */
+    magneticPull?: number;
     /** Ambient trailing light orb toggle */
     enableOrb?: boolean;
     /** RGBA color for the ambient orb */
@@ -45,6 +49,13 @@ export interface LiquidGlassAdapterConfig extends Partial<LiquidGlassOptions> {
     rippleColor?: string;
     /** Optional SVG backdrop Gaussian blur stdDeviation (0 = sharp refraction) */
     backdropBlur?: number;
+    /** Optional backdrop filter configuration */
+    backdrop?: {
+        blur?: number;
+        saturation?: number;
+        brightness?: number;
+        reducedMotion?: boolean;
+    };
 }
 
 export const POPUP_SELECTORS = [
